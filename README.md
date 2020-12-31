@@ -13,8 +13,8 @@
 - Network Penetration Testing
 - SIEM & Log Management
 - Internet of Things
-- Bash Scripting
 - OWASP Top 10
+- Bash Scripting
 - JavaScript
 - SANS 25
 - GraphQL
