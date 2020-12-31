@@ -10,12 +10,13 @@
 - Web App and API Penetration Testing
 - Windows App Penetration Testing
 - Mobile App Penetration Testing
-- Wireless Penetration Testing
+- Network Penetration Testing
 - SIEM & Log Management
 - Internet of Things
-- OWASP Top 10
 - Bash Scripting
+- OWASP Top 10
 - JavaScript
+- SANS 25
 - GraphQL
 - Python
 
