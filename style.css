@@ -1,23 +1,23 @@
 #myBtn {
-  border: 2px solid transparent;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  cursor: pointer;
-  display: none;
-  bottom: 35px;
-  line-height: 24px;
-  justify-content: center;
-  align-items: center;
-  outline: none;
-  padding: 5px;
-  position: fixed;
-  right: 30px;
-  text-decoration: none;
-  text-align: center;
-  height: 38px;
-  width: 38px;
-  z-index: 999;
-  background-color: #e4e9ee;
+    border: 2px solid transparent;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    bottom: 35px;
+    padding: 0px;
+    line-height: 24px;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    position: fixed;
+    right: 30px;
+    text-decoration: none;
+    text-align: center;
+    height: 32px;
+    width: 32px;
+    z-index: 999;
+    background-color: #e4e9ee;
 }  
 #myBtn:hover {
   background-color: #33e885;
