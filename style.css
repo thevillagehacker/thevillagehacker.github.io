@@ -45,3 +45,19 @@ a:not([href]):hover {
   color: inherit;
   text-decoration: none
 }
+h3
+{
+  color: #a334a5;
+}
+h4
+{
+  color: #33e885;
+}
+h5
+{
+  color: #33e885;
+}
+h6
+{
+  color: #5c97f0;
+}
