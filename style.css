@@ -22,3 +22,23 @@
 #myBtn:hover {
   background-color: #33e885;
 }
+a {
+  color: #33e885;
+  text-decoration: none;
+  background-color: transparent
+}
+
+a:hover {
+  color: #33e885;
+  text-decoration: underline;
+}
+
+a:not([href]) {
+  color: inherit;
+  text-decoration: none
+}
+
+a:not([href]):hover {
+  color: inherit;
+  text-decoration: none
+}
