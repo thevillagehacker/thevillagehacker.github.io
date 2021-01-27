@@ -45,10 +45,12 @@ a:not([href]):hover {
   color: inherit;
   text-decoration: none
 }
+/*Body styles*/
 body
 {
   background-color: #141b24;
 }
+/*Header Styles*/
 h3
 {
   color: #df81ea;
