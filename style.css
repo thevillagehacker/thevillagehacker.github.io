@@ -67,3 +67,11 @@ h6
 {
   color: #5c97f0;
 }
+/*Nav Bar Hover*/
+.navbar-brand:hover,.navbar-brand:focus {
+  border-bottom: 3px solid #ec5881;
+}
+.navbar-brand:active
+{
+  border-bottom: 3px solid rgb(117, 245, 84);
+}
