@@ -69,7 +69,7 @@ h6
 }
 /*Nav Bar Hover*/
 .navbar-brand:hover,.navbar-brand:focus {
-  border-bottom: 3px solid #ec5881;
+  border-color: #ec5881;
 }
 .navbar-brand:active
 {
