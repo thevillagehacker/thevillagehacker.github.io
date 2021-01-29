@@ -75,3 +75,17 @@ h6
 {
   border-bottom: 3px solid rgb(117, 245, 84);
 }
+/*nav bar*/
+.navbar-brand {
+  display: inline-block;
+  padding-top: 0.32421875rem;
+  padding-bottom: 0.32421875rem;
+  margin-right: 1rem;
+  font-size: 1.171875rem;
+  line-height: inherit;
+  white-space: nowrap
+  color: aliceblue;
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 5px
+}
