@@ -69,11 +69,11 @@ h6
 }
 /*Nav Bar Hover*/
 .navbar-brand:hover,.navbar-brand:focus {
-  border-color: #ec5881;
+  border-color: #3498db;
 }
 .navbar-brand:active
 {
-  border-color: #33e885;
+  border-color: #3498db;
 }
 /*nav bar*/
 .navbar-brand {
