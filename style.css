@@ -73,7 +73,7 @@ h6
 }
 .navbar-brand:active
 {
-  border-bottom: 3px solid rgb(117, 245, 84);
+  border-color: #33e885;
 }
 /*nav bar*/
 .navbar-brand {
