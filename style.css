@@ -18,13 +18,11 @@
   width: 32px;
   z-index: 999;
   background-color: #e4e9ee;
-  margin-left: auto;
-  margin-right: auto;
 }  
 #myBtn:hover {
   background-color: #b9bbbe;
 }
-/*Link Highlight color code*/
+/*Link Highlight color*/
 a {
   color: #33e885;
   text-decoration: none;
@@ -45,12 +43,12 @@ a:not([href]):hover {
   color: inherit;
   text-decoration: none
 }
-/*Body styles*/
+/*Body*/
 body
 {
   background-color: #141b24;
 }
-/*Header Styles*/
+/*Headers*/
 h3
 {
   color: #ec5881;
@@ -67,13 +65,14 @@ h6
 {
   color: #5c97f0;
 }
+/*Paragraph*/
+p
+{
+  font-size: 16px;
+}
 /*Nav Bar Hover*/
 .navbar-brand:hover,.navbar-brand:focus {
-  border-color: #3498db;
-}
-.navbar-brand:active
-{
-  border-color: #3498db;
+  border-color: #ec5881;
 }
 /*nav bar*/
 .navbar-brand {
@@ -84,8 +83,8 @@ h6
   font-size: 1.171875rem;
   line-height: inherit;
   white-space: nowrap;
-  color: aliceblue;
   border: 3px solid;
   border-radius: 10px;
-  padding: 5px
+  padding: 5px;
+  border-color: #ec5881;
 }
