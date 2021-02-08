@@ -97,13 +97,6 @@ p
   border-color: #ec5881;
   color: white;
 }
-.banner
-{
-  border: 2px solid;
-  border-radius: 5px;
-  height: 334px;
-  width: 554px;
-}
 .year
 {
   font-weight: bold;
