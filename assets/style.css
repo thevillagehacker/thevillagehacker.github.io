@@ -66,6 +66,13 @@ h6
   color: #5c97f0;
   font-size: 17px;
 }
+.header
+{
+  color: #ec5881;
+  font-size: 1.40625rem;
+  padding-top: 2px;
+  
+}
 /*Paragraph*/
 p
 {
@@ -89,4 +96,16 @@ p
   padding: 5px;
   border-color: #ec5881;
   color: white;
+}
+.banner
+{
+  border: 2px solid;
+  border-radius: 5px;
+  height: 334px;
+  width: 554px;
+}
+.year
+{
+  font-weight: bold;
+  color: #33e885;
 }
