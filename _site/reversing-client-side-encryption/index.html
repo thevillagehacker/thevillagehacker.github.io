@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    
+
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta name=author content="Naveen J">
+
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Reverse Engineering Client side Encryption | Naveen J</title>
+<meta name="generator" content="Jekyll v3.9.2" />
+<meta property="og:title" content="Reverse Engineering Client side Encryption" />
+<meta name="author" content="naveen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Reverse Engineering client side Encryption" />
+<meta property="og:description" content="Reverse Engineering client side Encryption" />
+<link rel="canonical" href="http://localhost:4000/reversing-client-side-encryption/" />
+<meta property="og:url" content="http://localhost:4000/reversing-client-side-encryption/" />
+<meta property="og:site_name" content="Naveen J" />
+<meta property="og:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-02-18T12:00:00+05:30" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
+<meta property="twitter:title" content="Reverse Engineering Client side Encryption" />
+<meta name="twitter:site" content="@" />
+<meta name="twitter:creator" content="@naveen" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2023-02-18T12:00:00+05:30","datePublished":"2023-02-18T12:00:00+05:30","description":"Reverse Engineering client side Encryption","headline":"Reverse Engineering Client side Encryption","image":"http://localhost:4000/assets/images/blogs/IDOR/access-control.svg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/reversing-client-side-encryption/"},"url":"http://localhost:4000/reversing-client-side-encryption/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="60x60" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-128.png" sizes="128x128" />
+<meta name="application-name" content="&nbsp;"/>
+<meta name="msapplication-TileColor" content="#FFFFFF" />
+<meta name="msapplication-TileImage" content="mstile-144x144.png" />
+<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
+<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
+<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
+<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+
+
+    <link rel="canonical" href="http://localhost:4000/reversing-client-side-encryption/">
+    <link rel="alternate" type="application/rss+xml" title="Naveen J" href="http://localhost:4000/feed.xml" />
+
+    <script src="https://kit.fontawesome.com/d9b09040a7.js" crossorigin="anonymous"></script>
+
+    <style>
+    
+    
+
+    @charset "UTF-8";
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+/* Document ========================================================================== */
+/** 1. Correct the line height in all browsers. 2. Prevent adjustments of font size after orientation changes in iOS. */
+html { line-height: 1.15; /* 1 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/* Sections ========================================================================== */
+/** Remove the margin in all browsers. */
+body { margin: 0; }
+
+/** Render the `main` element consistently in IE. */
+main { display: block; }
+
+/** Correct the font size and margin on `h1` elements within `section` and `article` contexts in Chrome, Firefox, and Safari. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/* Grouping content ========================================================================== */
+/** 1. Add the correct box sizing in Firefox. 2. Show the overflow in Edge and IE. */
+hr { box-sizing: content-box; /* 1 */ height: 0; /* 1 */ overflow: visible; /* 2 */ }
+
+/** 1. Correct the inheritance and scaling of font size in all browsers. 2. Correct the odd `em` font sizing in all browsers. */
+pre { font-family: monospace, monospace; /* 1 */ font-size: 1em; /* 2 */ }
+
+/* Text-level semantics ========================================================================== */
+/** Remove the gray background on active links in IE 10. */
+a { background-color: transparent; }
+
+/** 1. Remove the bottom border in Chrome 57- 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari. */
+abbr[title] { border-bottom: none; /* 1 */ text-decoration: underline; /* 2 */ text-decoration: underline dotted; /* 2 */ }
+
+/** Add the correct font weight in Chrome, Edge, and Safari. */
+b, strong { font-weight: bolder; }
+
+/** 1. Correct the inheritance and scaling of font size in all browsers. 2. Correct the odd `em` font sizing in all browsers. */
+code, kbd, samp { font-family: monospace, monospace; /* 1 */ font-size: 1em; /* 2 */ }
+
+/** Add the correct font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` elements from affecting the line height in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sub { bottom: -0.25em; }
+
+sup { top: -0.5em; }
+
+/* Embedded content ========================================================================== */
+/** Remove the border on images inside links in IE 10. */
+img { border-style: none; }
+
+/* Forms ========================================================================== */
+/** 1. Change the font styles in all browsers. 2. Remove the margin in Firefox and Safari. */
+button, input, optgroup, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 1 */ line-height: 1.15; /* 1 */ margin: 0; /* 2 */ }
+
+/** Show the overflow in IE. 1. Show the overflow in Edge. */
+button, input { /* 1 */ overflow: visible; }
+
+/** Remove the inheritance of text transform in Edge, Firefox, and IE. 1. Remove the inheritance of text transform in Firefox. */
+button, select { /* 1 */ text-transform: none; }
+
+/** Correct the inability to style clickable types in iOS and Safari. */
+button, [type="button"], [type="reset"], [type="submit"] { -webkit-appearance: button; }
+
+/** Remove the inner border and padding in Firefox. */
+button::-moz-focus-inner, [type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner { border-style: none; padding: 0; }
+
+/** Restore the focus styles unset by the previous rule. */
+button:-moz-focusring, [type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring { outline: 1px dotted ButtonText; }
+
+/** Correct the padding in Firefox. */
+fieldset { padding: 0.35em 0.75em 0.625em; }
+
+/** 1. Correct the text wrapping in Edge and IE. 2. Correct the color inheritance from `fieldset` elements in IE. 3. Remove the padding so developers are not caught out when they zero out `fieldset` elements in all browsers. */
+legend { box-sizing: border-box; /* 1 */ color: inherit; /* 2 */ display: table; /* 1 */ max-width: 100%; /* 1 */ padding: 0; /* 3 */ white-space: normal; /* 1 */ }
+
+/** Add the correct vertical alignment in Chrome, Firefox, and Opera. */
+progress { vertical-align: baseline; }
+
+/** Remove the default vertical scrollbar in IE 10+. */
+textarea { overflow: auto; }
+
+/** 1. Add the correct box sizing in IE 10. 2. Remove the padding in IE 10. */
+[type="checkbox"], [type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** Correct the cursor style of increment and decrement buttons in Chrome. */
+[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button { height: auto; }
+
+/** 1. Correct the odd appearance in Chrome and Safari. 2. Correct the outline style in Safari. */
+[type="search"] { -webkit-appearance: textfield; /* 1 */ outline-offset: -2px; /* 2 */ }
+
+/** Remove the inner padding in Chrome and Safari on macOS. */
+[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** 1. Correct the inability to style clickable types in iOS and Safari. 2. Change font properties to `inherit` in Safari. */
+::-webkit-file-upload-button { -webkit-appearance: button; /* 1 */ font: inherit; /* 2 */ }
+
+/* Interactive ========================================================================== */
+/* Add the correct display in Edge, IE 10+, and Firefox. */
+details { display: block; }
+
+/* Add the correct display in all browsers. */
+summary { display: list-item; }
+
+/* Misc ========================================================================== */
+/** Add the correct display in IE 10+. */
+template { display: none; }
+
+/** Add the correct display in IE 10. */
+[hidden] { display: none; }
+
+.highlight .c { color: #999988; font-style: italic; }
+.highlight .err { color: #a61717; background-color: #e3d2d2; }
+.highlight .k { font-weight: bold; }
+.highlight .o { font-weight: bold; }
+.highlight .cm { color: #999988; font-style: italic; }
+.highlight .cp { color: #999999; font-weight: bold; }
+.highlight .c1 { color: #999988; font-style: italic; }
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic; }
+.highlight .gd { color: #000000; background-color: #ffdddd; }
+.highlight .gd .x { color: #000000; background-color: #ffaaaa; }
+.highlight .ge { font-style: italic; }
+.highlight .gr { color: #aa0000; }
+.highlight .gh { color: #999999; }
+.highlight .gi { color: #000000; background-color: #ddffdd; }
+.highlight .gi .x { color: #000000; background-color: #aaffaa; }
+.highlight .go { color: #888888; }
+.highlight .gp { color: #555555; }
+.highlight .gs { font-weight: bold; }
+.highlight .gu { color: #800080; font-weight: bold; }
+.highlight .gt { color: #aa0000; }
+.highlight .kc { font-weight: bold; }
+.highlight .kd { font-weight: bold; }
+.highlight .kn { font-weight: bold; }
+.highlight .kp { font-weight: bold; }
+.highlight .kr { font-weight: bold; }
+.highlight .kt { color: #445588; font-weight: bold; }
+.highlight .m { color: #009999; }
+.highlight .s { color: #dd1144; }
+.highlight .n { color: #333333; }
+.highlight .na { color: teal; }
+.highlight .nb { color: #0086b3; }
+.highlight .nc { color: #445588; font-weight: bold; }
+.highlight .no { color: teal; }
+.highlight .ni { color: purple; }
+.highlight .ne { color: #990000; font-weight: bold; }
+.highlight .nf { color: #990000; font-weight: bold; }
+.highlight .nn { color: #555555; }
+.highlight .nt { color: navy; }
+.highlight .nv { color: teal; }
+.highlight .ow { font-weight: bold; }
+.highlight .w { color: #bbbbbb; }
+.highlight .mf { color: #009999; }
+.highlight .mh { color: #009999; }
+.highlight .mi { color: #009999; }
+.highlight .mo { color: #009999; }
+.highlight .sb { color: #dd1144; }
+.highlight .sc { color: #dd1144; }
+.highlight .sd { color: #dd1144; }
+.highlight .s2 { color: #dd1144; }
+.highlight .se { color: #dd1144; }
+.highlight .sh { color: #dd1144; }
+.highlight .si { color: #dd1144; }
+.highlight .sx { color: #dd1144; }
+.highlight .sr { color: #009926; }
+.highlight .s1 { color: #dd1144; }
+.highlight .ss { color: #990073; }
+.highlight .bp { color: #999999; }
+.highlight .vc { color: teal; }
+.highlight .vg { color: teal; }
+.highlight .vi { color: teal; }
+.highlight .il { color: #009999; }
+.highlight .gc { color: #999; background-color: #EAF2F5; }
+
+body, html { font-size: 62.5%; }
+
+body { font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #666; background: #fff; }
+
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #222; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+h1 { font-size: 3rem; letter-spacing: -1px; color: #222; font-weight: 700; }
+
+h2 { font-size: 2.2rem; }
+
+h3 { font-size: 2rem; }
+
+h4 { font-size: 1.6rem; }
+
+a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+
+p { line-height: 1.7; color: #666; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
+@media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
+
+strong { font-weight: 400; color: #000; }
+
+ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #666; }
+
+img, pre, iframe { max-width: 100%; }
+
+img, pre { border-radius: 4px; }
+
+figcaption { position: relative; top: -20px; left: 0; right: 0; margin: 0 auto; width: 100%; text-align: center; font-size: 1.3rem; color: #aaa; font-weight: 300; }
+@media only screen and (max-width: 400px) { figcaption { font-size: 1.2rem; } }
+
+blockquote { padding-left: 15px; border-left: 3px solid #eee; }
+
+hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%; }
+
+figure.highlight { width: 100%; margin: 0; }
+
+code { padding: 2px 3px; font-family: "Consolas", Liberation Mono, Menlo, Courier, monospace; font-size: 12px; vertical-align: middle; background: #eee; border-radius: 2px; }
+
+pre > code, tt { padding: 1px 0; font-family: "Consolas", Liberation Mono, Menlo, Courier, monospace; font-size: 12px; line-height: 20px; background: #fff; border-radius: 2px; }
+
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Consolas", Liberation Mono, Menlo, Courier, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #fff; border: 1px solid #ededed; border-radius: 2px; }
+
+.wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
+@media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .wrapper-normal, .wrapper-large { width: 88%; } }
+
+.wrapper-normal { max-width: 560px; }
+
+.wrapper-large { max-width: 810px; }
+
+/* general helpers */
+.text-center { text-align: center; }
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+
+.clearfix:after { clear: both; }
+
+/* animations */
+.animated { animation: fade-in-down 0.6s; animation-delay: 0.3s; animation-fill-mode: both; }
+
+@keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); } }
+.home, .blog, .projects { margin-top: 125px; }
+.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+
+.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
+.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #666; }
+
+.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+
+.page { margin-top: 125px; }
+.page > h1 { text-align: center; margin-bottom: 6rem; }
+
+.about img { width: 50%; margin: 0 auto; display: block; }
+
+.post { margin-top: 125px; }
+.post > .title { text-align: center; margin-bottom: 3rem; }
+.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date { margin-bottom: 2rem; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #666; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > h2, .post > h3, .post > h4 { margin-top: 40px; }
+.post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
+.post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
+.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
+.post > .blog-navigation .next { text-align: right; }
+
+.tags { margin-top: 125px; }
+.tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #666; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+
+.tag-list > .list { padding: 0; }
+.tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
+.tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
+.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
+.tag-list > .list .item:hover .url aside { color: #666; }
+
+.author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
+.author > .toleft > .selfie { width: 90%; border-radius: 100%; }
+.author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
+@media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+@media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
+.author > .toleft { width: 10%; display: inline-block; }
+@media only screen and (max-width: 400px) { .author > .toleft { width: 20%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toleft { width: 20%; } }
+.author > .toright { width: 89%; display: inline-block; vertical-align: top; }
+@media only screen and (max-width: 400px) { .author > .toright { width: 78%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright { width: 78%; } }
+
+.no-disqus { border-bottom: none; padding-bottom: 0; }
+
+.disqus { margin: 0 auto; max-width: 100%; padding: 40px 0; }
+
+.footer-main { border-top: 1px solid #ededed; padding: 40px 0; margin: 40px 0 0; font-size: 1.3rem; color: #aaa; font-weight: 300; text-align: center; position: relative; }
+.footer-main:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.footer-main > .copyright { padding-left: 10px; }
+.footer-main > .link { display: inline; vertical-align: middle; }
+.footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
+.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
+.footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
+.footer-main > .extra > .link:hover { border-color: #aaa; }
+
+.header-home { display: block; margin: 0 auto; text-align: center; position: relative; z-index: 99; }
+.header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
+.header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
+.header-home > .title { font-size: 4rem; margin: 0 0 13px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description a { font-weight: 200; }
+
+.nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
+.nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+
+.nav { position: absolute; right: 0; top: 0; }
+.nav > .list { padding: 0 13px 0; }
+.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+
+.nav-home { margin-top: 40px; text-align: center; }
+.nav-home > .list { padding: 0; }
+.nav-home > .list > .item > .link { font-size: 2rem; padding: 7px 15px; margin: 0; border-radius: 4%; transition: all 0.4s ease-in-out; width: 70px; }
+.nav-home > .list > .item > .link:hover { color: #666; }
+
+.evidence { background-image: linear-gradient(to bottom, #27f36a26, #27f36a26); color: #222; }
+
+.star > .url > .title { width: auto !important; display: inline; background-image: linear-gradient(#27f36a26, #27f36a26); }
+
+.twitter-tweet { margin: 10px auto; }
+
+.icon { display: inline-block; width: 17px; height: 17px; fill: #000; text-align: center; color: #aaa; margin: 7px auto; }
+
+.caption { position: relative; top: 1rem; left: 0; right: 0; margin: 0 auto; width: 100%; text-align: center; font-size: 1.3rem; font-weight: 300; }
+
+.bigger-image { min-width: 130%; margin: 5rem 0 5rem -15%; }
+@media only screen and (max-width: 400px) { .bigger-image { min-width: 114%; margin: 2rem 0 2rem -7%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .bigger-image { min-width: 114%; margin: 2rem 0 2rem -7%; } }
+
+.breaker { height: 1px; margin: 6rem auto; width: 100%; }
+.breaker:before { content: "• • •"; width: 100%; text-align: center; display: block; color: #aaa; letter-spacing: 4px; position: relative; top: -8px; }
+
+.lost-container { text-align: center; }
+
+.pagination { width: 95%; margin: 3rem auto 0; text-align: center; }
+.pagination > .page_number { display: inline-block; font-size: 1.3rem; }
+.pagination > .previous, .pagination > .next { display: inline-block; font-size: 1.8rem; position: relative; top: 1px; padding: 1px 9px; }
+.pagination > .hidden { visibility: hidden; }
+
+.related { margin: 10rem 0 0rem; }
+.related a { font-weight: 300; }
+
+.share { float: right; width: 40%; display: inline; text-align: right; position: relative; }
+@media only screen and (max-width: 400px) { .share { width: 100%; display: block; top: 0; text-align: left; float: none; margin-top: 5px; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .share { width: 100%; display: block; top: 0; text-align: left; float: none; margin-top: 5px; } }
+.share > .twitter, .share > .facebook, .share > .linkedin { display: inline; vertical-align: middle; font-size: 13px; font-weight: 700; color: #fff; padding: 6px 10px; border-radius: 3px; margin-left: 5px; text-decoration: none; }
+@media only screen and (max-width: 400px) { .share > .twitter, .share > .facebook, .share > .linkedin { margin: 0 5px 10px 0; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .share > .twitter, .share > .facebook, .share > .linkedin { margin: 0 5px 10px 0; } }
+.share > .twitter { background: #4fafed; }
+.share > .facebook { background: #4361b3; }
+.share > .linkedin { background: #0077b5; }
+.share svg { fill: #fff; position: relative; top: 0; margin: 0; margin-right: 4px; display: inherit; }
+
+@media only screen and (min-width: 780px) { .side-by-side { width: 130%; margin: 6rem 0 6rem -15%; } }
+@media only screen and (max-width: 780px) { .side-by-side { width: 100%; margin: 4rem 0; } }
+.side-by-side > .toleft, .side-by-side > .toright { display: inline-block; width: 47.5%; }
+@media only screen and (max-width: 780px) { .side-by-side > .toleft img, .side-by-side > .toright img { text-align: center; display: block; margin: 0 auto; } }
+@media only screen and (min-width: 780px) { .side-by-side > .toleft { margin-right: 2%; } }
+@media only screen and (max-width: 780px) { .side-by-side > .toleft { width: 100%; margin: 0 0 4rem 0; } }
+@media only screen and (min-width: 780px) { .side-by-side > .toright { margin-left: 2%; vertical-align: top; } }
+@media only screen and (max-width: 780px) { .side-by-side > .toright { width: 100%; margin: 0 0 4rem 0; } }
+.side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0 0 4rem 0; }
+@media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
+
+.social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
+.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > svg { transition: all ease-in-out 0.2s; }
+
+.spoiler { position: relative; }
+.spoiler:before { content: ""; background-color: #fafae0; position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 50; }
+.spoiler:hover:before { display: none; }
+
+    </style>
+
+</head>
+<body>
+    <div class="wrapper-large">
+        
+            <div class="post">
+        
+
+            
+
+
+
+<nav class="nav">
+    <ul class="list">
+        
+            <li class="item">
+                <a class="link" href="http://localhost:4000/">Home</a>
+            </li>
+        
+
+        
+            
+                <li class="item">
+                    <a class="link" href="http://localhost:4000/blog">Blog</a>
+                </li>
+            
+        
+
+        
+            
+                <li class="item">
+                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                </li>
+            
+        
+
+        
+            
+                <li class="item">
+                    <a class="link" href="http://localhost:4000/about">About</a>
+                </li>
+            
+        
+
+        
+            <li class="item">
+                <a class="link" href="http://localhost:4000/assets/Naveen J_CV_Security_Consultant - 4years.pdf">Resume</a>
+            </li>
+        
+        
+            <li class="item">
+                <a class="link" href="https://thevillagehacker.medium.com/">Archive</a>
+            </li>
+        
+    </ul>
+</nav>
+
+
+
+
+
+<h1 class="title">Reverse Engineering Client side Encryption</h1>
+
+<span class="date">
+    <time datetime="18-02-2023">Saturday. February 18, 2023</time>
+     - <span class="reading-time" title="Estimated read time">
+    
+
+    
+        13 mins
+    
+</span>
+
+</span>
+
+
+    <div class="post-tags">
+        
+            <a class="item" href="http://localhost:4000/tags/#reverse-engineering">Reverse Engineering</a>
+        
+    </div>
+
+
+<h2 id="target-background">Target Background</h2>
+<p>Target is a web application but the same can be accessed via mobile applications as well including both android and iOS apps. The target application has a centralized CDN system which clearly shows that the target has several application with similar features and the resources served are almost same. By doing subdomain enumeration the target has more than 15 application has the same tech and all of them are served by the Amazon CDN.</p>
+
+<h2 id="overview">Overview</h2>
+<p>Recon is the most important thing in finding bugs in the wide targets. While doing recon i came up with the situation which is the application has been developed to encrypt all the communication. The application is using the REST API service and the host value in the REST API calls have different subdomain. All the data body in the request and response has been coded in a way to encrypt to make sure the comms is secured. But as far as the developer decided to hardcode the encryption keys and Initialization vectors in the client side code the application is never secured even it’s coded to provide an encrypted connection.</p>
+
+<h2 id="recon">Recon</h2>
+<ul>
+  <li>Check the technology stack - ReactJS</li>
+  <li>CDN - Amazon CDN</li>
+  <li>API service - REST API</li>
+  <li>REST API host is different than actual application URL</li>
+  <li>Check the sources that has been loaded in the debugger/sources tab in the browser dev tools</li>
+  <li>Check the REST API comms, authorization mechanism and encryptions</li>
+</ul>
+
+<h2 id="analyzing-loaded-sources">Analyzing loaded sources</h2>
+<p>As far as we know the target has a wide scope and they have same CDN system with almost similar code. And the REST API JSON bodies are encrypted so if we find a way to reverse engineer the client side encryption that will possibly lead us to exploit more vulnerablities.</p>
+
+<p><strong>Target - abc.com</strong><br />
+When the application is loaded in the browser it loads the web resources from another subdomain <code class="language-plaintext highlighter-rouge">assets.abc.com</code>. It would be the good idea to check the JS files other than the chunk files which are generated by the frameworks.</p>
+
+<h3 id="files-found">Files found</h3>
+<ul>
+  <li>booking.js</li>
+  <li>desktop.js</li>
+  <li>home.js</li>
+  <li>search.js</li>
+  <li>signin.js</li>
+  <li>signup.js</li>
+  <li>main.js</li>
+</ul>
+
+<p>By going through all the js files to check for keywords like <code class="language-plaintext highlighter-rouge">enc, encrypt, key, IV, initialization, vector</code> found nothing. But when i checked the <strong>main.js</strong> file i came up with few handy details which was worth checking for.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">91622</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+      <span class="dl">'</span><span class="s1">use strict</span><span class="dl">'</span><span class="p">;</span>
+      <span class="nx">t</span><span class="p">.</span><span class="nx">Z</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">apiDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://api.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">adminDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://admin.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">searchApiDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://search.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">searchApiDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://search.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">preprodApiDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://preprod.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">bookingApiDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://bookings.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">blogsApiDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://secure.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">analyticsDomain</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://analytics.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">cdnPath</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://cdn.abc.com</span><span class="dl">'</span><span class="p">,</span>       
+        <span class="na">s3accessKeyId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test-############</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">s3secretKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test-############</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">s3Region</span><span class="p">:</span> <span class="dl">'</span><span class="s1">west</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">dataHasKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">###################=</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">dataIVKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">jm8lgqa3j1d0ajus</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">zendesk</span><span class="p">:</span> <span class="dl">'</span><span class="s1">###########################</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">giftCardUrl</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://join.abc.com/gift-card/</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">ASSET_CDN_PATH</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://assets.abc.com</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">consoleEnv</span><span class="p">:</span> <span class="dl">'</span><span class="s1">production</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">recaptchaV2Key</span><span class="p">:</span> <span class="dl">'</span><span class="s1">###################-kAQFKNGH-</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">SHOPBACK_URL_DYNAMIC</span><span class="p">:</span> <span class="dl">'</span><span class="s1">https://shopback.abc.org/aff_l</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">SHOPBACK_MERCHANT_ID</span><span class="p">:</span> <span class="dl">'</span><span class="s1">#########</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">encryptionKeys</span><span class="p">:</span> <span class="dl">'</span><span class="s1">["##_analytics_detail||VWlRMVRtTnllWEJVSVRCdUo=","club_membership_detail||RFZEVW1WMEtFQlJKSDA9"]</span><span class="dl">'</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>After analyzing the code, finally i came to a conclusion that the application was loading resources from another CDN too and this main.js file only has the Initialization vector which was referred as <code class="language-plaintext highlighter-rouge">dataIVKey</code> in the code.</p>
+
+<p>Let’s load the application in the browser and check the encryption in the REST API.</p>
+
+<p><img src="/assets/images/blogs/RE/reqandresp.png" alt="img" /></p>
+
+<p>Alright! let’s check the JS source files in the CDN subdomain <code class="language-plaintext highlighter-rouge">cdnPath: 'https://cdn.abc.com'</code>. The subdomain has lots of files but there was only one file which is different than the other files <strong><em>app.js</em></strong>. The app.js file contains the below details which we need for our further exploitation.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abc</span><span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="dl">'</span><span class="s1">SiteSettingService</span><span class="dl">'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="dl">'</span><span class="s1">$cookies</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">$http</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">$q</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">SiteSettings</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">$rootScope</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">UrlFormatter</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">LocalStorage</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">$location</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">MessageModal</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">blockUI</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">EncryptDecrypt</span><span class="dl">'</span><span class="p">,</span>
+  <span class="dl">'</span><span class="s1">SearchConditions</span><span class="dl">'</span>
+  <span class="p">]</span>
+</code></pre></div></div>
+
+<p>The JS file has the function to encrypt and decrypt the API body in the HTTP request and response. Searching the keyword <code class="language-plaintext highlighter-rouge">encrypt</code> led me right into the encryt and decrypt function code as below.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abc</span><span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="dl">'</span><span class="s1">EncryptDecrypt</span><span class="dl">'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="dl">'</span><span class="s1">AppSettings</span><span class="dl">'</span><span class="p">,</span>
+  <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">encryptKEY</span><span class="p">:</span> <span class="dl">'</span><span class="s1">UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">setkey</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">encryptKEY</span> <span class="o">=</span> <span class="nx">t</span>
+      <span class="p">},</span>
+      <span class="na">encrypt</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">encryptKEY</span><span class="p">,</span>
+        <span class="nx">n</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">jm8lgqa3j1d0ajus</span><span class="dl">'</span><span class="p">,</span>
+        <span class="nx">r</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">t</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">AES</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">),</span> <span class="p">{</span>
+          <span class="na">iv</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">n</span><span class="p">),</span>
+          <span class="na">padding</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">pad</span><span class="p">.</span><span class="nx">Pkcs7</span><span class="p">,</span>
+          <span class="na">mode</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">mode</span><span class="p">.</span><span class="nx">CBC</span>
+        <span class="p">}).</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">---</span><span class="dl">'</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nx">btoa</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+      <span class="p">},</span>
+      <span class="na">decrypt</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="dl">'</span><span class="s1">---</span><span class="dl">'</span><span class="p">),</span>
+        <span class="nx">n</span> <span class="o">=</span> <span class="nx">browserCrypto</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="dl">'</span><span class="s1">base64</span><span class="dl">'</span><span class="p">),</span>
+        <span class="nx">r</span> <span class="o">=</span> <span class="nx">browserCrypto</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="dl">'</span><span class="s1">base64</span><span class="dl">'</span><span class="p">),</span>
+        <span class="nx">a</span> <span class="o">=</span> <span class="nx">browserCrypto</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">encryptKEY</span><span class="p">),</span>
+        <span class="nx">o</span> <span class="o">=</span> <span class="nx">browserCrypto</span><span class="p">.</span><span class="nx">createDecipheriv</span><span class="p">(</span><span class="dl">'</span><span class="s1">aes256</span><span class="dl">'</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">n</span><span class="p">),</span>
+        <span class="nx">i</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">_update</span><span class="p">(</span><span class="nx">r</span><span class="p">),</span>
+        <span class="nx">s</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">final</span><span class="p">(),</span>
+        <span class="nx">l</span> <span class="o">=</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="nx">browserCrypto</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">concat</span><span class="p">([</span><span class="nx">i</span><span class="p">,</span>
+        <span class="nx">s</span><span class="p">])).</span><span class="nx">toString</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">l</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">])</span>
+</code></pre></div></div>
+
+<p>By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.</p>
+
+<h3 id="handy-tools-to-break-the-wall">Handy tools to break the wall</h3>
+<p>Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
+IV = jm8lgqa3j1d0ajus
+Encryption Mode = CBC
+Encryption Algorithm = AES</p>
+
+<h2 id="lets-break">Let’s break</h2>
+
+<p>I used the online AES decruption application you can find it <a href="https://www.devglan.com/online-tools/aes-encryption-decryption">here</a>.
+Before start decrypting the json body let’s go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and <code class="language-plaintext highlighter-rouge">---</code> dashes and then follwed by the base64 encoded IV.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">AES</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">),</span> <span class="p">{</span>
+          <span class="na">iv</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">n</span><span class="p">),</span>
+          <span class="na">padding</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">pad</span><span class="p">.</span><span class="nx">Pkcs7</span><span class="p">,</span>
+          <span class="na">mode</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">mode</span><span class="p">.</span><span class="nx">CBC</span>
+        <span class="p">}).</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">---</span><span class="dl">'</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nx">btoa</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>        
+</code></pre></div></div>
+<p><strong><em>btoa()</em></strong> method is used for encoding a string in base-64 format, so the IV will be encoded in base64 format.</p>
+
+<p>Let’s break down the final payload  the API is sending to the server.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nl">"data"</span><span class="p">:</span><span class="s2">"Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1---am04bGdxYTNqMWQwYWp1cw=="</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In the last line in the final payload there are 3 <code class="language-plaintext highlighter-rouge">---</code> dashes and followed by base64 encoded string which is the dataIV.</p>
+
+<p>Alright! let decrypt the request payload and let’s see how can we create an actual impact.</p>
+
+<h3 id="decrypting-the-request-data">Decrypting the request data</h3>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"textToEncrypt"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"textToDecrypt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"secretKey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0="</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CBC"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"keySize"</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"output"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJmaXJzdF9uYW1lIjoidGVzdCIsImxhc3RfbmFtZSI6InVzZXIiLCJlbWFpbCI6Im5qQHR2aHNlYy5jb20iLCJwaG9uZSI6IjkxODc5NDU2MzIxNCIsInBhc3N3b3JkIjoiUGFzc0AxMjMiLCJjb25maXJtX3Bhc3N3b3JkIjoiUGFzc0AxMjMiLCJpc191bnN1YnNjcmliZWQiOnRydWUsImNhcHRjaGEiOiIwM0FGWV9hOFhONGNCUVFjMGRnQnNlYTRKc1NEdEpuYTFGb09yX1BWYlFOeGYwSnpLZEdLRXNyeWpfWXNKazlQQ05aaDhWNmV3R1dLam1xQkMyQzJ0NWNvSmR4OWFaZ00wUGRCbDRfMzQ1dTE0MlZrXzhDT2c4R3Z4dXRmRjJvQ1p6WGVUTVdnVmNXMlpnMzFMNWszd3VXVkVnSlFnQXJOZ1E0VUhwYW5BQ1lkeEZpTENRYl84SUpTMWdEbVNKY3pZZHRYZ1kybnNBOGQ3Sl9sd0xJNHJnb1Y1Z2IwVXAzWnJSUEZKTnduUk4tS3h0d0dtRGJpYjk2TF9ZbDF6Ym03TFZjSkJNRzZhbDJyMEw1dGt1eFdsdTV0RTZ4MTIzYWNFQ0lQUVJkMktKN2Fwc1owbkd3VF9GdFEtMnJCbjVRTDJtU0x5a0tlQ3ZsNFE1TUphZlR6OTV6ODNJcEs5QVZWUkwwRWl5dENVWjhSQ205NzRoOV9xTTVLa091RXoxQmU3THpMRDJFUzNpNjJQbHZvUGZ6UXlMV3RaUWNSSDRPTWhvcTlMMkduUXVTbE5SaHRqNGVycVRhdkV3eC1ZQklPNnpqeFdWWnBtTm5LWG1uREk0amZNa3FTUk1EaTVqdFFHeXYxQ0tMRVMyRHU0MTFkaGNYR3ZqVVhQSUh3SUlrTDhCdl9weWlENmJSTkdHdXJJSkhEWTZFdDlzUVBRbWJmU2JxQnYxNm1Fd0dxbEdmMWk4LThMbUQ1RSIsInZlcnNpb24iOiJ2MiIsInJlY3RWaWV3IjoidnVlIiwic291cmNlIjoiTG9naW5BY3Rpdml0eSJ9"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dataFormat"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Base64"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"iv"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jm8lgqa3j1d0ajus"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>decode the base64 encoded output from the above</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nj@tvhsec.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"918794563214"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pass@123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"confirm_password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pass@123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"is_unsubscribed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"captcha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"03AFY_a8XN4cBQQc0dgBsea4JsSDtJna1FoOr_PVbQNxf0JzKdGKEsryj_YsJk9PCNZh8V6ewGWKjmqBC2C2t5coJdx9aZgM0PdBl4_345u142Vk_8COg8GvxutfF2oCZzXeTMWgVcW2Zg31L5k3wuWVEgJQgArNgQ4UHpanACYdxFiLCQb_8IJS1gDmSJczYdtXgY2nsA8d7J_lwLI4rgoV5gb0Up3ZrRPFJNwnRN-KxtwGmDbib96L_Yl1zbm7LVcJBMG6al2r0L5tkuxWlu5tE6x123acECIPQRd2KJ7apsZ0nGwT_FtQ-2rBn5QL2mSLykKeCvl4Q5MJafTz95z83IpK9AVVRL0EiytCUZ8RCm974h9_qM5KkOuEz1Be7LzLD2ES3i62PlvoPfzQyLWtZQcRH4OMhoq9L2GnQuSlNRhtj4erqTavEwx-YBIO6zjxWVZpmNnKXmnDI4jfMkqSRMDi5jtQGyv1CKLES2Du411dhcXGvjUXPIHwIIkL8Bv_pyiD6bRNGGurIJHDY6Et9sQPQmbfSbqBv16mEwGqlGf1i8-8LmD5E"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"v2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"rectView"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vue"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"LoginActivity"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Now we have successfully decoded the JSON body and now we have to construct a fully working JSON payload to send it to the server, for that we have to contruct a payload as below in the js code.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">AES</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">),</span> <span class="p">{</span>
+          <span class="na">iv</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">n</span><span class="p">),</span>
+          <span class="na">padding</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">pad</span><span class="p">.</span><span class="nx">Pkcs7</span><span class="p">,</span>
+          <span class="na">mode</span><span class="p">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">mode</span><span class="p">.</span><span class="nx">CBC</span>
+        <span class="p">}).</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">---</span><span class="dl">'</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nx">btoa</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Valid request body = Encrypted payload + <code class="language-plaintext highlighter-rouge">---</code> + base64 encoded IV</p>
+
+<p><strong>Encrypted Payload</strong></p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"textToEncrypt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"{</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">first_name</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">enc</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">last_name</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">user</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">email</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">nj+1@tvhsec.com</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">phone</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">918794563214</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">password</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">Pass@123</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">confirm_password</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">Pass@123</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">is_unsubscribed</span><span class="se">\"</span><span class="s2">: true,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">captcha</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">03AFY_a8XN4cBQQc0dgBsea4JsSDtJna1FoOr_PVbQNxf0JzKdGKEsryj_YsJk9PCNZh8V6ewGWKjmqBC2C2t5coJdx9aZgM0PdBl4_345u142Vk_8COg8GvxutfF2oCZzXeTMWgVcW2Zg31L5k3wuWVEgJQgArNgQ4UHpanACYdxFiLCQb_8IJS1gDmSJczYdtXgY2nsA8d7J_lwLI4rgoV5gb0Up3ZrRPFJNwnRN-KxtwGmDbib96L_Yl1zbm7LVcJBMG6al2r0L5tkuxWlu5tE6x123acECIPQRd2KJ7apsZ0nGwT_FtQ-2rBn5QL2mSLykKeCvl4Q5MJafTz95z83IpK9AVVRL0EiytCUZ8RCm974h9_qM5KkOuEz1Be7LzLD2ES3i62PlvoPfzQyLWtZQcRH4OMhoq9L2GnQuSlNRhtj4erqTavEwx-YBIO6zjxWVZpmNnKXmnDI4jfMkqSRMDi5jtQGyv1CKLES2Du411dhcXGvjUXPIHwIIkL8Bv_pyiD6bRNGGurIJHDY6Et9sQPQmbfSbqBv16mEwGqlGf1i8-8LmD5E</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">version</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">v2</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">rectView</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">vue</span><span class="se">\"</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="se">\"</span><span class="s2">source</span><span class="se">\"</span><span class="s2">: </span><span class="se">\"</span><span class="s2">LoginActivity</span><span class="se">\"\n</span><span class="s2">}"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"textToDecrypt"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"secretKey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0="</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CBC"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"keySize"</span><span class="p">:</span><span class="w"> </span><span class="mi">256</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"output"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7LJE5P5kV3HvDdOdxWPQkQDbwqlTp2817vWfuCp/F3CzdTj9rWvrAlisK7/pRR0ff7g6Fd16im4Zrw1Zac5qHSbTRmV2cyvHgKcRwtonAGnU0toMYEuPkXdswUGKKgJRkZ0nQcYZVsPRX5D2gWoglp4kzFHZM8Y1dtVQLoYeqi3pc8vKI5FU5AeeTqZdAWWVEJcsZIlKY2o94fVzrXJ1XD/95aLXk3wbfDhJDP50jMfSM8TAl4Oa7mBbpMArnNU4XJscqfuXrXc5KyxvyPbmc/IwA7ndlhljJJ7zMjtnS9GzzkYjuWdISkLB1rH/pvXS7AUEj0UpIn2DBIsHayVYkBYHaRP6YZ8vVZGMoXVK1kS6w1W6JFUOzkfcTMWVbKAifJxxtlzt5cuJZa/iDHTMMrh/xAOqc04mdn73sBGAFMN5KlJx0lEe8XlKFkm3UcRdrzLj0/VmLHAN75dXX7iNs5ZvswYr8EcHG2fscIIoJ3mtySlDVgcR1fl8ZIcSXLVAzzazF8ZldJ9bzExMrFqUK73R9ZE5sEJIgoWqotlBIWUxC8WtfY8aLLcWiDHaPvoGtS5lnajJ0/zx5oHEFKdZaGDsGjOycGHeJbZgkDU5u3WhzrgTw8+FaNqluT+vDPHTlxpDPy/h1I7TL1YfpjLeUjSIEY2gYmD1Ew/ii5lBBPcqI7F3gWNh+t/wt7Y7xSmXJ92Z9X93iVAiM27yEnbreC8i5GQzU+OgqPogrEw8Lu0m86cpgGfXrv1bL2ihxW9fNKEWCexMx0U0cHdlqDVdoQ3PcyutXRvZH58F81Aw2jL0O6GC7/ijYN59gboFhoh7Fh0GWRlRkMA2gXnGgNZejFUE8qzTnusINmEeGwbmdIQ18w/WGKT0V5ZvCDbjVCIHK8fOx+64y0oJ4tN7a2/idP5Xlciz1qsitfuCB+7DBhIgSpOXbG+Pe6mW9lW31qlyljabDpk3SdX+X9z+9Hh7/7QooghpXePk+snSTtqHPxWlKI/np5cGcBmnB8kZXGOyyeBuLOciKdEdqJ8Luu6huLGNSo9ftaDgn9TMjcBw2c2MU6sClP31DYTlfake9iaFrXrdisi+YorPU4g+T8ojrVpDGWnnh1uHjc8KsTlsULU="</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dataFormat"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Base64"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"iv"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jm8lgqa3j1d0ajus"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong><em>Newly constructed request</em></strong>
+<img src="/assets/images/blogs/RE/reqandresp2.png" alt="img" /><br /></p>
+
+<p>Now it’s time to exploit issues and create a huge impact. Based on the decrypted data as we can see, the application is using the CAPTCHA system to protect the application from the brute-forcing and spamming vulnerabilities. If we can find a way to bypass the CAPTCHA protection then we can convince the triager to show the real imapcts like high resource usage, spamming and by create user accounts with false data. The last part creating false accounts using false data is only applicable when the application does not have data verification system. As per the recon the application is not validating anything at all, so now we can show the impact.</p>
+
+<p>Let’s jump into find a way to bypass the CAPTCHA.</p>
+
+<h3 id="captcha-recon">CAPTCHA Recon</h3>
+
+<p>The application is using google reCAPTCHA.</p>
+
+<p><img src="/assets/images/blogs/RE/captcha.png" alt="img" /><br /></p>
+
+<p>I have observed there was a strange behaviour in the reCAPTCHA system which is everytime you click the checkbox it sends two requests such as 1 to get the CAPTCHA response and other is to verify the CAPTCHA response in the next upcoming request.</p>
+
+<h3 id="bypass">Bypass</h3>
+<p>We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/2 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Sat, 18 Feb 2023 14:54:03 GMT
+Expires: Sat, 18 Feb 2023 14:54:03 GMT
+Cache-Control: private, max-age=0
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self'
+X-Xss-Protection: 1; mode=block
+Content-Length: 32
+Server: GSE
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+)]}'
+["uvresp",null,null,null,2]
+</code></pre></div></div>
+
+<p>From the below request what i have observed is you can send the below CAPTCHA request as long as we want and it will still provide us the response code to be verified in the upcoming verification request.</p>
+
+<p><img src="/assets/images/blogs/RE/captcha1.png" alt="img" /></p>
+
+<h3 id="workflow">Workflow</h3>
+
+<p>Get CAPTCHA code -&gt; use it in next verfication request -&gt; will provide the final CAPTCHA code which is included in the JSON body</p>
+
+<p>The final verification code can be obtained like the below,</p>
+
+<p><img src="/assets/images/blogs/RE/captcha2.png" alt="img" /></p>
+
+<p>So the entire flow will be automated by using a python script to get the final CAPTCHA code to be encrypted in the JSON body to create accounts/any other operations like brute-forcing usernames and passwords.</p>
+
+<p>By chaining the client side code encryption reverse engineering and the misconfigured CAPTCHA mechanism will allow us to create false accounts, resource consumption, increased data tables in DB which will add more cost to the company’s usage bill.</p>
+
+<p>Thanks for reading!</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+
+
+    <div class="blog-navigation">
+        
+            <a class="prev" href="http://localhost:4000/RCE-DLL-Hijacking/">&laquo; DLL Injection on one of the biggest Business Automation application</a>
+        
+        
+            <a class="next" href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Hacking MNC's Content Management System due to misconfiguration and lack of authorization &raquo;</a>
+        
+    </div>
+
+
+
+    <div class="related">
+    
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+    
+</div>
+
+
+
+
+    <section class="author">
+    <div class="toleft">
+        <img
+            class="selfie"
+            src="http://localhost:4000/"
+            alt=""
+        />
+    </div>
+
+    <div class="toright">
+        <h4 class="name"></h4>
+        <p class="bio"></p>
+
+        <div class="share">
+            <!-- Note: Only use three share links if your site width is set to large -->
+            <!-- If site width is set to normal, you may choose any two share links -->
+            <a
+                class="twitter"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/reversing-client-side-encryption/ - Reverse Engineering Client side Encryption by @"
+            >
+                <i class="fa-brands fa-twitter"></i>
+                <span class="icon-twitter">Tweet</span>
+            </a>
+
+            <a
+                class="facebook"
+                href="javascript:void(0)"
+                onclick="window.open('https://facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 'facebook-share-dialog', 'width=626,height=436'); return false;"
+            >
+                <i class="fa-brands fa-facebook"></i>
+                <span class="icon-facebook-rect">Share</span>
+            </a>
+
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/reversing-client-side-encryption/&amp;title=Reverse Engineering Client side Encryption&amp;summary=Reverse Engineering client side Encryption&amp;source=http://localhost:4000" target="_blank">
+                <i class="fa-brands fa-linkedin"></i>
+                <span class="icon-linkedin">Share</span>
+            </a> -->
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<footer class="footer-main">
+    Naveen J © 2023
+
+    <a class="link" href="http://localhost:4000/feed.xml" target="_blank">
+        <i class="fa-solid fa-rss"></i>
+    </a>
+
+    <p class="extra">
+        <a class="link" href="https://github.com/sergiokopplin/indigo">Indigo theme</a>
+        by
+        <a class="link" href="https://github.com/sergiokopplin/indigo">Kopplin</a>
+    </p>
+</footer>
+
+
+            </div>
+                </div>
+            </div>
+    </div>
+</body>
+</html>
+

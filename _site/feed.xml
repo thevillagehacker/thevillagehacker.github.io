@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-04-06T09:02:58+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Account Takeover via manipulating Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover via manipulating Session Storage" /><published>2023-04-01T12:00:00+05:30</published><updated>2023-04-01T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
+&lt;p&gt;A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application	.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;I have created a test account through the sign up functionality in the application and after logging in, the application have asked to create an organization so we can provide access to our team members and assign them a particular roles based on how they have to play in the application.&lt;/p&gt;
+
+&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;reactJS&lt;/li&gt;
+  &lt;li&gt;Akami Firewall&lt;/li&gt;
+  &lt;li&gt;REST APIs&lt;/li&gt;
+  &lt;li&gt;Cookie Authentication&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;user-enumeration&quot;&gt;User Enumeration&lt;/h2&gt;
+&lt;p&gt;At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.&lt;/p&gt;
+
+&lt;h3 id=&quot;request&quot;&gt;Request&lt;/h3&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;response&quot;&gt;Response&lt;/h3&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/1.1 200 OK 
+Date: Wed, 29 Mar 2023 05:59:48 GMT 
+X-Powered-By: Express 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Content-Length: 370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; 
+Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+  &quot;status&quot;: true,
+  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
+  &quot;result&quot;: [
+    {
+      &quot;UserId&quot;:601███,
+      &quot;EmailId&quot;: &quot;nj@tvhsecurity.com&quot;,
+      &quot;RegionId&quot;: 160,
+      &quot;RegionName&quot;: &quot;IN&quot;,
+      &quot;RoleId&quot;: 100,
+      &quot;RoleName&quot;: &quot;Admin&quot;,
+      &quot;CountryId&quot;: 26█,
+      &quot;CountryName&quot;: &quot;India&quot;,
+      &quot;Status&quot;: &quot;Approved&quot;,
+      &quot;Name&quot;: &quot;Naveen J&quot;,
+      &quot;DeliveryCentre&quot;: &quot;Bangalore, India&quot;,
+      &quot;IsActive&quot;: true,
+      &quot;SubProcess&quot;: &quot;null&quot;
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;post-login&quot;&gt;Post Login&lt;/h2&gt;
+&lt;p&gt;After logging in into the application i was going through the JS files and local storages and found that the session storage which stores the information that was fetched in the response from the above user verify request. The user results are stored exactly how it was fetched from the API response.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/session_storage.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;theory&quot;&gt;Theory&lt;/h2&gt;
+&lt;p&gt;My theory was initially to test the session storage once it might be vulnerable as the application is only using the encrypted cookies as authentication. In order to test that theory i need another user account so i have signed up another test account.&lt;/p&gt;
+
+&lt;p&gt;Now we have 2 legitimate user accounts and we just have to test out the theory, it will work 100% if the application validates the users based on the session storage key &lt;strong&gt;values&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The below screenshot shows the session storage of &lt;strong&gt;User1&lt;/strong&gt; account.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/Signed_up_user.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now i just have to pass the &lt;strong&gt;User2&lt;/strong&gt; account email Id in the email verify request and it will provide all the details that i want to do the manipulation.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I have copied the required payload fron the JSON response and changed the session value of the &lt;strong&gt;login&lt;/strong&gt; key. After refrshing the page i was able to login into the &lt;strong&gt;User2 account&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;notes-&quot;&gt;Notes:-&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;User1 = nj@tvhsecurity.com&lt;/li&gt;
+  &lt;li&gt;User2 = nj+1@tvhsecurity.com&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Since both the accounts are fresh accounts i was unable to verify the issue as it is 100% solid, so inorder to verify it i have to make some financial stuffs in the application which was not possible at the moment.&lt;/p&gt;
+
+&lt;p&gt;So i decided why not to give a try for a live account. I have to enumerate the users present in the application which is nearly very easy to do all I need is a list of email Ids which belongs to the target organization.&lt;/p&gt;
+
+&lt;h2 id=&quot;osint&quot;&gt;OSINT&lt;/h2&gt;
+&lt;p&gt;I have decided to do some OSINT recon on the target and get some email Id. After a while I did find some email Ids of the companies business peoples from the contact pages of the organization but all of them turned out to be a failure.&lt;/p&gt;
+
+&lt;h3 id=&quot;github-recon&quot;&gt;GitHub Recon&lt;/h3&gt;
+&lt;p&gt;So i decided to do some recon on github using the dorks and found few email Ids via the issues feature. The peoples from the organization commented few issues to their product/services repository codes.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/github.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I made a list and sent it to intruder and checked the content lenght, luckily few of them are valid.&lt;/p&gt;
+
+&lt;h2 id=&quot;verify-user&quot;&gt;Verify User&lt;/h2&gt;
+
+&lt;h3 id=&quot;request-1&quot;&gt;Request&lt;/h3&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /api/v1/user?email=ba████████@target.com HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;response-1&quot;&gt;Response&lt;/h3&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/1.1 200 OK 
+Date: Wed, 29 Mar 2023 05:59:48 GMT 
+X-Powered-By: Express 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Content-Length: 370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; 
+Set-Cookie: ; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+  &quot;status&quot;: true,
+  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
+  &quot;result&quot;: [
+    {
+      &quot;UserId&quot;: 10██,
+  &quot;EmailId&quot;: &quot;ba████████@target.com&quot;,
+      &quot;RegionId&quot;: [
+        300,
+        300
+      ],
+      &quot;RegionName&quot;: &quot;NA&quot;,
+      &quot;RoleId&quot;: 100,
+      &quot;RoleName&quot;: &quot;Admin&quot;,
+      &quot;CountryId&quot;: 200,
+      &quot;CountryName&quot;: &quot;United States&quot;,
+      &quot;Status&quot;: &quot;Approved&quot;,
+      &quot;Name&quot;: &quot;Bane Smith&quot;,
+      &quot;DeliveryCentre&quot;: &quot;New York, United States&quot;,
+      &quot;IsActive&quot;: true,
+      &quot;SubProcess&quot;: &quot;null&quot;
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;checkpoint&quot;&gt;Checkpoint&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;We have valid user email&lt;/li&gt;
+  &lt;li&gt;Details required to maipulate session value&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;extracted-new-session-value&quot;&gt;Extracted new session value&lt;/h3&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;UserId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;██&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;EmailId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ba████████@target.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NA&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RoleId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RoleName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;CountryId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;CountryName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;United States&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Approved&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Bane Smith&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;DeliveryCentre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;New York, United States&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;IsActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;SubProcess&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;null&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above is the value that we have to pass in the session storage to test the theory.&lt;/p&gt;
+
+&lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
+&lt;p&gt;Post successfully passing the extracted legitimate users details in the session storage value and after refreshing the page the application gave me access to that user’s accounts.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/Exploitation.png&quot; alt=&quot;exploit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see i am able to view the invoices generated in the target user’s account.&lt;/p&gt;
+
+&lt;p&gt;Please note that due to the non-disclosure agreement these are the only information i was allowed to share.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Session Storage" /><category term="Account Takeover" /><category term="Misconfiguration" /><summary type="html">Target Background A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application .</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Hacking MNC’s Content Management System due to misconfiguration and lack of authorization</title><link href="http://localhost:4000/Hacking_MNCs-CMS_Systems/" rel="alternate" type="text/html" title="Hacking MNC’s Content Management System due to misconfiguration and lack of authorization" /><published>2023-03-25T12:00:00+05:30</published><updated>2023-03-25T12:00:00+05:30</updated><id>http://localhost:4000/Hacking_MNCs-CMS_Systems</id><content type="html" xml:base="http://localhost:4000/Hacking_MNCs-CMS_Systems/">&lt;h2 id=&quot;target-background&quot;&gt;Target Background&lt;/h2&gt;
+&lt;p&gt;The target is a Multi National Company who has a billion dollar market and the stocks. The nature of the application is to create, edit and update the contents of their products/services. Once the content is published the updated contents will be pushed to the live website of the product/services page. Short form it’s a &lt;strong&gt;Content Management System application&lt;/strong&gt; - its a own product of the company built using reactJS.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;The application does not have any sign up page as this is a CMS application only the administrator of the application can create and assign roles to the users. The home page didn’t have any sign up buttons other than the login form - username, password, submit and forgot password buttons.&lt;/p&gt;
+
+&lt;h3 id=&quot;recon&quot;&gt;Recon&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;reactJS&lt;/li&gt;
+  &lt;li&gt;Amazon CDN&lt;/li&gt;
+  &lt;li&gt;REST APIs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;analyzing-loaded-source-files&quot;&gt;Analyzing loaded source files&lt;/h3&gt;
+&lt;p&gt;After analyzing the loaded source files in the application it clearlys shows that the user has to be legitimate to access the application. There were no REST API locations were mentioned in the JS files. The perfect way to proceed further is to fuzz the URL. After fuzzing the URL the signup endpoint were found &lt;strong&gt;https://abc.com/abc/xyz/signup.html&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;misconfiguration---1&quot;&gt;Misconfiguration - 1&lt;/h2&gt;
+&lt;h3 id=&quot;sign-up&quot;&gt;Sign up&lt;/h3&gt;
+&lt;p&gt;Since the application does not have the signup option in the home page and the same has been configured in the different directory than the home login page. The developer might be intentionally did it or might have used it for internal purpose or forgot to remove from the directory.&lt;/p&gt;
+
+&lt;p&gt;I have signed up an account, and luckily it doesn’t ask to confirm the information provided like email confirmation to create an account sccessfully.&lt;/p&gt;
+
+&lt;p&gt;After creating a user successfully, i have tried to login to the application but since the signed up user is not a legitmate user and no roles have been assigned to it, the application kept redirecting me to login page. The application contents were not accessible. But I was able to extract the embeded REST API locations from the page because we are able to login to the application but only the application pages are not available in the UI due to incorrect permissions.&lt;/p&gt;
+
+&lt;p&gt;So i have decided to circle back to the login request to understand the flow and what we are missing, after successfull login the application serves the authorization token (JWT) in the Location header along with the URL. I was able to decode the JWT and it doesn’t has any values for the cognito permission which solve the question why the contents are unavailable.&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;at_hash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ry3UaTl8rD1IPBffLSyQ7w&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sub&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;e03f561e-9392-437d-abf7-48715fde4a4e&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;cognito:groups&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;iss&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://cognito-idp.abc.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;cognito:username&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;origin_jti&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;cognito:roles&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;aud&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2kp93i4kj1ump55lid961qm7bv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;event_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;65f7336b-1b89-45e6-b9f9-be466f24207b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;token_use&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;auth_time&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;phone_number&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;exp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;iat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;jti&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;66d3189d-e26e-454f-9b8d-7863ac4de102&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nj@tvhsecurity.com&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;After decoding the JWT, it showed that the user doesn’t have any assigned roles to access the application pages.&lt;/p&gt;
+
+&lt;h3 id=&quot;fuzzing-jwt&quot;&gt;Fuzzing JWT&lt;/h3&gt;
+&lt;p&gt;In order to find the right &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cognito groups&lt;/code&gt; we have to fuzz the JWT payload but by adding random role permissions keywords, encoding it and sending it in the request turned to be a failure.&lt;/p&gt;
+
+&lt;p&gt;But with the token i was able to download page source through curl by passing the &lt;strong&gt;authorization header&lt;/strong&gt;. After downloading the page source i have used one of my own oneliners to extract the URL locations embeded in the application and I was able to successfull get a few static pages and REST API paths. We can also the &lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;URLScrapy&lt;/a&gt; a tool to extract the embeded location in the web page.&lt;/p&gt;
+
+&lt;h2 id=&quot;http-response-code&quot;&gt;HTTP response code&lt;/h2&gt;
+&lt;p&gt;I have placed all of the extracted URLs in a text file and used &lt;strong&gt;&lt;a href=&quot;https://github.com/projectdiscovery/httpx&quot;&gt;HTTPX&lt;/a&gt;&lt;/strong&gt; to check the status code and content length, luckily one of the page returned with different content length. After visiting the page it showed some static contents about the user role in the application.&lt;/p&gt;
+
+&lt;p&gt;So with the help of that recon i knew there are 2 user roles in the application which are &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;editor&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;publisher&lt;/code&gt;. The editor user can edit the contents and pubshier can approve those new contents.&lt;/p&gt;
+
+&lt;h2 id=&quot;checkpoint&quot;&gt;Checkpoint&lt;/h2&gt;
+&lt;p&gt;Let’s check what do we have as of now to access the application contents.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Newly signup account without any roles&lt;/li&gt;
+  &lt;li&gt;user roles in the application&lt;/li&gt;
+  &lt;li&gt;Working JWT token (Authorization)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Alright! now we have to find a way to assign the user roles to the token and access the application contents. After playing with dev-tools for a while i have noticed there is a variable in the local storage &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_role&lt;/code&gt; which is empty by the way for our user account. So i have set an value as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;editor&lt;/code&gt; and refreshed the page.&lt;/p&gt;
+
+&lt;p&gt;Voila! the application is checking the local storage variables as well to serve the content of the application, I was able to add and edit application contents.&lt;/p&gt;
+
+&lt;h2 id=&quot;misconfiguration---2&quot;&gt;Misconfiguration - 2&lt;/h2&gt;
+&lt;p&gt;Now we are able to access the application which concludes that the application is using aws cognito groups as authentication only and it was not used for authorization because we were able to become an editor user in the application by adding value as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;editor&lt;/code&gt; to the local storage variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_role&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;So we only need an legitimate authentication token to access the REST APIs, since the authorization is not implemented.&lt;/p&gt;
+
+&lt;h3 id=&quot;privilege-escalation&quot;&gt;Privilege Escalation&lt;/h3&gt;
+&lt;p&gt;I have escalated the privilege of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;publisher&lt;/code&gt; user by changing the local storage variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_role&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;publisher&lt;/code&gt;. After refreshing the page i was able to access the publisher contents pages in which we can approve and reject contents which have been added by the editor users in the application.&lt;/p&gt;
+
+&lt;p&gt;Please note that due to the non-disclosure agreement these are the only information i was allowed to share.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Reading Js files" /><category term="Privilege Escalation" /><category term="Fuzzing" /><category term="Misconfiguration" /><summary type="html">Target Background The target is a Multi National Company who has a billion dollar market and the stocks. The nature of the application is to create, edit and update the contents of their products/services. Once the content is published the updated contents will be pushed to the live website of the product/services page. Short form it’s a Content Management System application - its a own product of the company built using reactJS.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Reverse Engineering Client side Encryption</title><link href="http://localhost:4000/reversing-client-side-encryption/" rel="alternate" type="text/html" title="Reverse Engineering Client side Encryption" /><published>2023-02-18T12:00:00+05:30</published><updated>2023-02-18T12:00:00+05:30</updated><id>http://localhost:4000/reversing%20client%20side%20encryption</id><content type="html" xml:base="http://localhost:4000/reversing-client-side-encryption/">&lt;h2 id=&quot;target-background&quot;&gt;Target Background&lt;/h2&gt;
+&lt;p&gt;Target is a web application but the same can be accessed via mobile applications as well including both android and iOS apps. The target application has a centralized CDN system which clearly shows that the target has several application with similar features and the resources served are almost same. By doing subdomain enumeration the target has more than 15 application has the same tech and all of them are served by the Amazon CDN.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;Recon is the most important thing in finding bugs in the wide targets. While doing recon i came up with the situation which is the application has been developed to encrypt all the communication. The application is using the REST API service and the host value in the REST API calls have different subdomain. All the data body in the request and response has been coded in a way to encrypt to make sure the comms is secured. But as far as the developer decided to hardcode the encryption keys and Initialization vectors in the client side code the application is never secured even it’s coded to provide an encrypted connection.&lt;/p&gt;
+
+&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Check the technology stack - ReactJS&lt;/li&gt;
+  &lt;li&gt;CDN - Amazon CDN&lt;/li&gt;
+  &lt;li&gt;API service - REST API&lt;/li&gt;
+  &lt;li&gt;REST API host is different than actual application URL&lt;/li&gt;
+  &lt;li&gt;Check the sources that has been loaded in the debugger/sources tab in the browser dev tools&lt;/li&gt;
+  &lt;li&gt;Check the REST API comms, authorization mechanism and encryptions&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;analyzing-loaded-sources&quot;&gt;Analyzing loaded sources&lt;/h2&gt;
+&lt;p&gt;As far as we know the target has a wide scope and they have same CDN system with almost similar code. And the REST API JSON bodies are encrypted so if we find a way to reverse engineer the client side encryption that will possibly lead us to exploit more vulnerablities.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Target - abc.com&lt;/strong&gt;&lt;br /&gt;
+When the application is loaded in the browser it loads the web resources from another subdomain &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assets.abc.com&lt;/code&gt;. It would be the good idea to check the JS files other than the chunk files which are generated by the frameworks.&lt;/p&gt;
+
+&lt;h3 id=&quot;files-found&quot;&gt;Files found&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;booking.js&lt;/li&gt;
+  &lt;li&gt;desktop.js&lt;/li&gt;
+  &lt;li&gt;home.js&lt;/li&gt;
+  &lt;li&gt;search.js&lt;/li&gt;
+  &lt;li&gt;signin.js&lt;/li&gt;
+  &lt;li&gt;signup.js&lt;/li&gt;
+  &lt;li&gt;main.js&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;By going through all the js files to check for keywords like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enc, encrypt, key, IV, initialization, vector&lt;/code&gt; found nothing. But when i checked the &lt;strong&gt;main.js&lt;/strong&gt; file i came up with few handy details which was worth checking for.&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;91622&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;use strict&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Z&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;apiDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://api.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;adminDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://admin.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;searchApiDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://search.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;searchApiDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://search.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;preprodApiDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://preprod.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;bookingApiDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://bookings.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;blogsApiDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://secure.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;analyticsDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://analytics.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;cdnPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://cdn.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;       
+        &lt;span class=&quot;na&quot;&gt;s3accessKeyId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;test-############&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;s3secretKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;test-############&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;s3Region&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;west&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;dataHasKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;###################=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;dataIVKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;jm8lgqa3j1d0ajus&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;zendesk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;###########################&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;giftCardUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://join.abc.com/gift-card/&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;ASSET_CDN_PATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://assets.abc.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;consoleEnv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;production&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;recaptchaV2Key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;###################-kAQFKNGH-&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;SHOPBACK_URL_DYNAMIC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;https://shopback.abc.org/aff_l&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;SHOPBACK_MERCHANT_ID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#########&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;encryptionKeys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;[&quot;##_analytics_detail||VWlRMVRtTnllWEJVSVRCdUo=&quot;,&quot;club_membership_detail||RFZEVW1WMEtFQlJKSDA9&quot;]&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After analyzing the code, finally i came to a conclusion that the application was loading resources from another CDN too and this main.js file only has the Initialization vector which was referred as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dataIVKey&lt;/code&gt; in the code.&lt;/p&gt;
+
+&lt;p&gt;Let’s load the application in the browser and check the encryption in the REST API.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/RE/reqandresp.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Alright! let’s check the JS source files in the CDN subdomain &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cdnPath: &apos;https://cdn.abc.com&apos;&lt;/code&gt;. The subdomain has lots of files but there was only one file which is different than the other files &lt;strong&gt;&lt;em&gt;app.js&lt;/em&gt;&lt;/strong&gt;. The app.js file contains the below details which we need for our further exploitation.&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;SiteSettingService&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$cookies&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$http&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$q&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;SiteSettings&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$rootScope&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;UrlFormatter&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;LocalStorage&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$location&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;MessageModal&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;blockUI&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;EncryptDecrypt&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;SearchConditions&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The JS file has the function to encrypt and decrypt the API body in the HTTP request and response. Searching the keyword &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;encrypt&lt;/code&gt; led me right into the encryt and decrypt function code as below.&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;EncryptDecrypt&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;AppSettings&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;encryptKEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;setkey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encryptKEY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encryptKEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;jm8lgqa3j1d0ajus&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Pkcs7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CBC&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;btoa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;browserCrypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;base64&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;browserCrypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;base64&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;browserCrypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encryptKEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;o&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;browserCrypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createDecipheriv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;aes256&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;browserCrypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;concat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.&lt;/p&gt;
+
+&lt;h3 id=&quot;handy-tools-to-break-the-wall&quot;&gt;Handy tools to break the wall&lt;/h3&gt;
+&lt;p&gt;Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
+IV = jm8lgqa3j1d0ajus
+Encryption Mode = CBC
+Encryption Algorithm = AES&lt;/p&gt;
+
+&lt;h2 id=&quot;lets-break&quot;&gt;Let’s break&lt;/h2&gt;
+
+&lt;p&gt;I used the online AES decruption application you can find it &lt;a href=&quot;https://www.devglan.com/online-tools/aes-encryption-decryption&quot;&gt;here&lt;/a&gt;.
+Before start decrypting the json body let’s go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;---&lt;/code&gt; dashes and then follwed by the base64 encoded IV.&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Pkcs7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CBC&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;btoa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;        
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;btoa()&lt;/em&gt;&lt;/strong&gt; method is used for encoding a string in base-64 format, so the IV will be encoded in base64 format.&lt;/p&gt;
+
+&lt;p&gt;Let’s break down the final payload  the API is sending to the server.&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1---am04bGdxYTNqMWQwYWp1cw==&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the last line in the final payload there are 3 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;---&lt;/code&gt; dashes and followed by base64 encoded string which is the dataIV.&lt;/p&gt;
+
+&lt;p&gt;Alright! let decrypt the request payload and let’s see how can we create an actual impact.&lt;/p&gt;
+
+&lt;h3 id=&quot;decrypting-the-request-data&quot;&gt;Decrypting the request data&lt;/h3&gt;
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;textToEncrypt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;textToDecrypt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;secretKey&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CBC&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;keySize&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;output&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;eyJmaXJzdF9uYW1lIjoidGVzdCIsImxhc3RfbmFtZSI6InVzZXIiLCJlbWFpbCI6Im5qQHR2aHNlYy5jb20iLCJwaG9uZSI6IjkxODc5NDU2MzIxNCIsInBhc3N3b3JkIjoiUGFzc0AxMjMiLCJjb25maXJtX3Bhc3N3b3JkIjoiUGFzc0AxMjMiLCJpc191bnN1YnNjcmliZWQiOnRydWUsImNhcHRjaGEiOiIwM0FGWV9hOFhONGNCUVFjMGRnQnNlYTRKc1NEdEpuYTFGb09yX1BWYlFOeGYwSnpLZEdLRXNyeWpfWXNKazlQQ05aaDhWNmV3R1dLam1xQkMyQzJ0NWNvSmR4OWFaZ00wUGRCbDRfMzQ1dTE0MlZrXzhDT2c4R3Z4dXRmRjJvQ1p6WGVUTVdnVmNXMlpnMzFMNWszd3VXVkVnSlFnQXJOZ1E0VUhwYW5BQ1lkeEZpTENRYl84SUpTMWdEbVNKY3pZZHRYZ1kybnNBOGQ3Sl9sd0xJNHJnb1Y1Z2IwVXAzWnJSUEZKTnduUk4tS3h0d0dtRGJpYjk2TF9ZbDF6Ym03TFZjSkJNRzZhbDJyMEw1dGt1eFdsdTV0RTZ4MTIzYWNFQ0lQUVJkMktKN2Fwc1owbkd3VF9GdFEtMnJCbjVRTDJtU0x5a0tlQ3ZsNFE1TUphZlR6OTV6ODNJcEs5QVZWUkwwRWl5dENVWjhSQ205NzRoOV9xTTVLa091RXoxQmU3THpMRDJFUzNpNjJQbHZvUGZ6UXlMV3RaUWNSSDRPTWhvcTlMMkduUXVTbE5SaHRqNGVycVRhdkV3eC1ZQklPNnpqeFdWWnBtTm5LWG1uREk0amZNa3FTUk1EaTVqdFFHeXYxQ0tMRVMyRHU0MTFkaGNYR3ZqVVhQSUh3SUlrTDhCdl9weWlENmJSTkdHdXJJSkhEWTZFdDlzUVBRbWJmU2JxQnYxNm1Fd0dxbEdmMWk4LThMbUQ1RSIsInZlcnNpb24iOiJ2MiIsInJlY3RWaWV3IjoidnVlIiwic291cmNlIjoiTG9naW5BY3Rpdml0eSJ9&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;dataFormat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Base64&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;iv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jm8lgqa3j1d0ajus&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;decode the base64 encoded output from the above&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;first_name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;last_name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;user&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nj@tvhsec.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;phone&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;918794563214&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Pass@123&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;confirm_password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Pass@123&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;is_unsubscribed&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;captcha&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;03AFY_a8XN4cBQQc0dgBsea4JsSDtJna1FoOr_PVbQNxf0JzKdGKEsryj_YsJk9PCNZh8V6ewGWKjmqBC2C2t5coJdx9aZgM0PdBl4_345u142Vk_8COg8GvxutfF2oCZzXeTMWgVcW2Zg31L5k3wuWVEgJQgArNgQ4UHpanACYdxFiLCQb_8IJS1gDmSJczYdtXgY2nsA8d7J_lwLI4rgoV5gb0Up3ZrRPFJNwnRN-KxtwGmDbib96L_Yl1zbm7LVcJBMG6al2r0L5tkuxWlu5tE6x123acECIPQRd2KJ7apsZ0nGwT_FtQ-2rBn5QL2mSLykKeCvl4Q5MJafTz95z83IpK9AVVRL0EiytCUZ8RCm974h9_qM5KkOuEz1Be7LzLD2ES3i62PlvoPfzQyLWtZQcRH4OMhoq9L2GnQuSlNRhtj4erqTavEwx-YBIO6zjxWVZpmNnKXmnDI4jfMkqSRMDi5jtQGyv1CKLES2Du411dhcXGvjUXPIHwIIkL8Bv_pyiD6bRNGGurIJHDY6Et9sQPQmbfSbqBv16mEwGqlGf1i8-8LmD5E&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;v2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;rectView&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;vue&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;source&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;LoginActivity&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we have successfully decoded the JSON body and now we have to construct a fully working JSON payload to send it to the server, for that we have to contruct a payload as below in the js code.&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;iv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;padding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Pkcs7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CBC&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;btoa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Valid request body = Encrypted payload + &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;---&lt;/code&gt; + base64 encoded IV&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Encrypted Payload&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;textToEncrypt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;{&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;nj+1@tvhsec.com&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;phone&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;918794563214&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Pass@123&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;confirm_password&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Pass@123&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;is_unsubscribed&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: true,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;captcha&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;03AFY_a8XN4cBQQc0dgBsea4JsSDtJna1FoOr_PVbQNxf0JzKdGKEsryj_YsJk9PCNZh8V6ewGWKjmqBC2C2t5coJdx9aZgM0PdBl4_345u142Vk_8COg8GvxutfF2oCZzXeTMWgVcW2Zg31L5k3wuWVEgJQgArNgQ4UHpanACYdxFiLCQb_8IJS1gDmSJczYdtXgY2nsA8d7J_lwLI4rgoV5gb0Up3ZrRPFJNwnRN-KxtwGmDbib96L_Yl1zbm7LVcJBMG6al2r0L5tkuxWlu5tE6x123acECIPQRd2KJ7apsZ0nGwT_FtQ-2rBn5QL2mSLykKeCvl4Q5MJafTz95z83IpK9AVVRL0EiytCUZ8RCm974h9_qM5KkOuEz1Be7LzLD2ES3i62PlvoPfzQyLWtZQcRH4OMhoq9L2GnQuSlNRhtj4erqTavEwx-YBIO6zjxWVZpmNnKXmnDI4jfMkqSRMDi5jtQGyv1CKLES2Du411dhcXGvjUXPIHwIIkL8Bv_pyiD6bRNGGurIJHDY6Et9sQPQmbfSbqBv16mEwGqlGf1i8-8LmD5E&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;v2&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;rectView&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;vue&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;LoginActivity&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;textToDecrypt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;secretKey&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CBC&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;keySize&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;output&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;7LJE5P5kV3HvDdOdxWPQkQDbwqlTp2817vWfuCp/F3CzdTj9rWvrAlisK7/pRR0ff7g6Fd16im4Zrw1Zac5qHSbTRmV2cyvHgKcRwtonAGnU0toMYEuPkXdswUGKKgJRkZ0nQcYZVsPRX5D2gWoglp4kzFHZM8Y1dtVQLoYeqi3pc8vKI5FU5AeeTqZdAWWVEJcsZIlKY2o94fVzrXJ1XD/95aLXk3wbfDhJDP50jMfSM8TAl4Oa7mBbpMArnNU4XJscqfuXrXc5KyxvyPbmc/IwA7ndlhljJJ7zMjtnS9GzzkYjuWdISkLB1rH/pvXS7AUEj0UpIn2DBIsHayVYkBYHaRP6YZ8vVZGMoXVK1kS6w1W6JFUOzkfcTMWVbKAifJxxtlzt5cuJZa/iDHTMMrh/xAOqc04mdn73sBGAFMN5KlJx0lEe8XlKFkm3UcRdrzLj0/VmLHAN75dXX7iNs5ZvswYr8EcHG2fscIIoJ3mtySlDVgcR1fl8ZIcSXLVAzzazF8ZldJ9bzExMrFqUK73R9ZE5sEJIgoWqotlBIWUxC8WtfY8aLLcWiDHaPvoGtS5lnajJ0/zx5oHEFKdZaGDsGjOycGHeJbZgkDU5u3WhzrgTw8+FaNqluT+vDPHTlxpDPy/h1I7TL1YfpjLeUjSIEY2gYmD1Ew/ii5lBBPcqI7F3gWNh+t/wt7Y7xSmXJ92Z9X93iVAiM27yEnbreC8i5GQzU+OgqPogrEw8Lu0m86cpgGfXrv1bL2ihxW9fNKEWCexMx0U0cHdlqDVdoQ3PcyutXRvZH58F81Aw2jL0O6GC7/ijYN59gboFhoh7Fh0GWRlRkMA2gXnGgNZejFUE8qzTnusINmEeGwbmdIQ18w/WGKT0V5ZvCDbjVCIHK8fOx+64y0oJ4tN7a2/idP5Xlciz1qsitfuCB+7DBhIgSpOXbG+Pe6mW9lW31qlyljabDpk3SdX+X9z+9Hh7/7QooghpXePk+snSTtqHPxWlKI/np5cGcBmnB8kZXGOyyeBuLOciKdEdqJ8Luu6huLGNSo9ftaDgn9TMjcBw2c2MU6sClP31DYTlfake9iaFrXrdisi+YorPU4g+T8ojrVpDGWnnh1uHjc8KsTlsULU=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;dataFormat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Base64&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;iv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jm8lgqa3j1d0ajus&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Newly constructed request&lt;/em&gt;&lt;/strong&gt;
+&lt;img src=&quot;/assets/images/blogs/RE/reqandresp2.png&quot; alt=&quot;img&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now it’s time to exploit issues and create a huge impact. Based on the decrypted data as we can see, the application is using the CAPTCHA system to protect the application from the brute-forcing and spamming vulnerabilities. If we can find a way to bypass the CAPTCHA protection then we can convince the triager to show the real imapcts like high resource usage, spamming and by create user accounts with false data. The last part creating false accounts using false data is only applicable when the application does not have data verification system. As per the recon the application is not validating anything at all, so now we can show the impact.&lt;/p&gt;
+
+&lt;p&gt;Let’s jump into find a way to bypass the CAPTCHA.&lt;/p&gt;
+
+&lt;h3 id=&quot;captcha-recon&quot;&gt;CAPTCHA Recon&lt;/h3&gt;
+
+&lt;p&gt;The application is using google reCAPTCHA.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/RE/captcha.png&quot; alt=&quot;img&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;I have observed there was a strange behaviour in the reCAPTCHA system which is everytime you click the checkbox it sends two requests such as 1 to get the CAPTCHA response and other is to verify the CAPTCHA response in the next upcoming request.&lt;/p&gt;
+
+&lt;h3 id=&quot;bypass&quot;&gt;Bypass&lt;/h3&gt;
+&lt;p&gt;We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/2 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Sat, 18 Feb 2023 14:54:03 GMT
+Expires: Sat, 18 Feb 2023 14:54:03 GMT
+Cache-Control: private, max-age=0
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors &apos;self&apos;
+X-Xss-Protection: 1; mode=block
+Content-Length: 32
+Server: GSE
+Alt-Svc: h3=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000
+
+)]}&apos;
+[&quot;uvresp&quot;,null,null,null,2]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From the below request what i have observed is you can send the below CAPTCHA request as long as we want and it will still provide us the response code to be verified in the upcoming verification request.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/RE/captcha1.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;workflow&quot;&gt;Workflow&lt;/h3&gt;
+
+&lt;p&gt;Get CAPTCHA code -&amp;gt; use it in next verfication request -&amp;gt; will provide the final CAPTCHA code which is included in the JSON body&lt;/p&gt;
+
+&lt;p&gt;The final verification code can be obtained like the below,&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/RE/captcha2.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So the entire flow will be automated by using a python script to get the final CAPTCHA code to be encrypted in the JSON body to create accounts/any other operations like brute-forcing usernames and passwords.&lt;/p&gt;
+
+&lt;p&gt;By chaining the client side code encryption reverse engineering and the misconfigured CAPTCHA mechanism will allow us to create false accounts, resource consumption, increased data tables in DB which will add more cost to the company’s usage bill.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Reverse Engineering" /><summary type="html">Target Background Target is a web application but the same can be accessed via mobile applications as well including both android and iOS apps. The target application has a centralized CDN system which clearly shows that the target has several application with similar features and the resources served are almost same. By doing subdomain enumeration the target has more than 15 application has the same tech and all of them are served by the Amazon CDN.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">DLL Injection on one of the biggest Business Automation application</title><link href="http://localhost:4000/RCE-DLL-Hijacking/" rel="alternate" type="text/html" title="DLL Injection on one of the biggest Business Automation application" /><published>2022-12-15T12:00:00+05:30</published><updated>2022-12-15T12:00:00+05:30</updated><id>http://localhost:4000/RCE-DLL-Hijacking</id><content type="html" xml:base="http://localhost:4000/RCE-DLL-Hijacking/">&lt;h2 id=&quot;dll-hijacking&quot;&gt;DLL Hijacking&lt;/h2&gt;
+&lt;p&gt;DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).&lt;/p&gt;
+
+&lt;p&gt;Only Microsoft operating systems are susceptible to DLL hijacks.&lt;/p&gt;
+
+&lt;p&gt;By replacing a required DLL file with an infected version and placing it within the search parameters of an application, the infected file will be called upon when the application loads, activating its malicious operations.&lt;/p&gt;
+
+&lt;p&gt;For a DLL hijack to be successful, a victim needs to load an infected DLL file from the same directory as the targeted application.&lt;/p&gt;
+
+&lt;p&gt;If applications that are automatically loaded upon startup are compromised with a tainted DLL file, cybercriminals will be granted access to the infected computer whenever it loads.&lt;/p&gt;
+
+&lt;p&gt;DLL hijacking is not an innovative cyberattack method. It has been in circulation among cybercriminals since Windows 2000 launched.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-are-dll-files&quot;&gt;What are DLL Files?&lt;/h2&gt;
+&lt;p&gt;DLL files, or Dynamic Link Library files, contain the resources an application needs to run successfully. These could include images and a library of executable functions.&lt;/p&gt;
+
+&lt;p&gt;DLL files cannot be opened by end-users, they can only be opened by their associated application, which usually happens when the application starts up.&lt;/p&gt;
+
+&lt;p&gt;Windows systems require DLL files to understand how to use their resources, the host computer memory, and hard drive space most efficiently.&lt;/p&gt;
+
+&lt;p&gt;DLL files usually end with a .dll extension, but some could end in .drv, .drov and even .exe.&lt;/p&gt;
+
+&lt;p&gt;A single DLL file could run multiple programs, so multiple programs could potentially be comprised in a DLL hijacking attack.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-does-dll-hijacking-work&quot;&gt;How Does DLL Hijacking Work?&lt;/h2&gt;
+&lt;p&gt;For a DLL hijacking attack to be successful, a Windows application needs to be tricked into loading an infected DLL file instead of the legitimate DLL.&lt;/p&gt;
+
+&lt;p&gt;By exploiting the publicized DLL search order of Microsoft applications, this trickery is relatively simple to execute.&lt;/p&gt;
+
+&lt;p&gt;The standard DLL search order of Microsoft applications depends upon whether safe DLL search is enabled.&lt;/p&gt;
+
+&lt;p&gt;When safe DLL search mode is enabled, applications search for required DLL files in the following order:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The directory from which the application is loaded.&lt;/li&gt;
+  &lt;li&gt;The system directory.&lt;/li&gt;
+  &lt;li&gt;The 16-bit system directory.&lt;/li&gt;
+  &lt;li&gt;The Windows directory.&lt;/li&gt;
+  &lt;li&gt;The current directory.&lt;/li&gt;
+  &lt;li&gt;The directories that are listed in the PATH environment variable.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;When safe DLL search mode is disabled, the search order is as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The directory from which the application is loaded.&lt;/li&gt;
+  &lt;li&gt;The current directory.&lt;/li&gt;
+  &lt;li&gt;The system directory.&lt;/li&gt;
+  &lt;li&gt;The 16-bit directory.&lt;/li&gt;
+  &lt;li&gt;The Windows directory&lt;/li&gt;
+  &lt;li&gt;The directory listed in the PATH environment variable.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The difference between the two search modes is the order in which the user’s current directory is searched, it’s slightly elevated in the hierarchy when safe search is disabled.&lt;/p&gt;
+
+&lt;p&gt;When safe search is disabled, the user’s current directory is slightly elevated in the search order.&lt;/p&gt;
+
+&lt;p&gt;Windows applications will default to any one of the above DLL search protocols if an application does not specify the full path of associated DLL files.&lt;/p&gt;
+
+&lt;p&gt;This is the exploit that makes DLL hacking possible.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;For example&lt;/strong&gt;, if a Windows application requires a DLL file located in the system directory C:\Windows\System32 but there are no instructions in its code to search in this explicit location, the application will work through a DLL search order to locate the file.&lt;/p&gt;
+
+&lt;p&gt;Regardless of whether or not safe search is enabled, the directory from which the application is launched is the first location that is searched.&lt;/p&gt;
+
+&lt;p&gt;If a cybercriminal deposits an infected DLL file in this location, the application will open it instead of the original because its location was searched first, before the system directory.&lt;/p&gt;
+
+&lt;p&gt;This technique is also known as DLL search order hijacking.&lt;/p&gt;
+
+&lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
+&lt;h2 id=&quot;enumerate-the-process&quot;&gt;Enumerate the process&lt;/h2&gt;
+
+&lt;p&gt;Enumerating the process and it’s dll files using the process monitor tool.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/1.process.png&quot; alt=&quot;process_img&quot; title=&quot;Process Enumeration&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Post enummerating the process the malicious dll file which opens the calculator application in windows has been created with the help of metasploit framework.&lt;/p&gt;
+
+&lt;h2 id=&quot;generate-payload-to-check-blind-rce-by-popping-an-calculator&quot;&gt;Generate Payload to check blind RCE by popping an calculator&lt;/h2&gt;
+
+&lt;p&gt;Generating the payload using metasploit to open calculator to check whether the application is loading the malicious dll file or not.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/2.payload_gen.png&quot; alt=&quot;Calc_payload&quot; title=&quot;Calculator Payload&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;placing-malicious-dll-file-in-the-application-directory&quot;&gt;Placing Malicious DLL file in the application directory&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/3.dll_location.png&quot; alt=&quot;Placing_malicious_file&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The genetrated payload is placed in the respective application directory based on the process monitor information.&lt;/p&gt;
+
+&lt;h2 id=&quot;rce-calculator-pop-up&quot;&gt;RCE (Calculator Pop up)&lt;/h2&gt;
+&lt;h3 id=&quot;process-monitor&quot;&gt;Process Monitor&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/4.dll_accessed.png&quot; alt=&quot;proc_mon&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once the application starts running the dll file has been accessed by the application and the calculator application is opened.&lt;/p&gt;
+
+&lt;h3 id=&quot;calculator&quot;&gt;Calculator&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/5.rce.png&quot; alt=&quot;calc_popup&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;reverse-shell&quot;&gt;Reverse Shell&lt;/h2&gt;
+&lt;h3 id=&quot;generating-payload-for-reverse-shell&quot;&gt;Generating payload for Reverse shell&lt;/h3&gt;
+
+&lt;p&gt;Since we had the successful exploitation of RCE via opening the calculator application, let’s escalate this to get the remote shell to the targeted machine.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/6.1.rce.png&quot; alt=&quot;reverseshell_payload&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The reverse shell has been generated with the help of metasploit framework and the malicious dll has been placed in the respective application directoty for exploitation.&lt;/p&gt;
+
+&lt;h3 id=&quot;process-monitor-1&quot;&gt;Process monitor&lt;/h3&gt;
+&lt;p&gt;Checkinf whether the application validates the dll file or not.
+&lt;img src=&quot;/assets/images/blogs/dll-injection/6.2.rce.png&quot; alt=&quot;proc_mon&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;windows-reverse-shell-via-meterpreter&quot;&gt;Windows reverse shell via meterpreter&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/dll-injection/6.3.rce.png&quot; alt=&quot;reverse_tcp_shell&quot; /&gt;
+The application is nto validating the dll files, once the application is started then the metepreter shell connection is received from the targeted windows machine.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-prevent-dll-hijacking&quot;&gt;How to Prevent DLL Hijacking&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;The first line of defense needs to be established by software developers. Developers need to follow secure coding practices and specify the exact location of all associated DLL files to prevent Windows from defaulting to its DLL search path protocol.&lt;/li&gt;
+  &lt;li&gt;The application should not load the untruested dll files.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Adherence to secure coding practices can never be guaranteed, so organizations should implement the following additional defenses:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;Keep antivirus software up-to-date.&lt;/li&gt;
+      &lt;li&gt;Educate staff about phishing and social engineering warning signs.&lt;/li&gt;
+      &lt;li&gt;Strengthen your security posture by continuously monitoring your attack surface.&lt;/li&gt;
+      &lt;li&gt;Implement a vendor risk management solution.
+Thanks for reading.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="DLL Hijacking" /><category term="RCE" /><category term="Product Security" /><summary type="html">DLL Hijacking DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).</summary></entry><entry><title type="html">URLScrapy</title><link href="http://localhost:4000/urlscrapy/" rel="alternate" type="text/html" title="URLScrapy" /><published>2022-08-22T22:10:00+05:30</published><updated>2022-08-22T22:10:00+05:30</updated><id>http://localhost:4000/urlscrapy</id><content type="html" xml:base="http://localhost:4000/urlscrapy/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/urlscrapy.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;urlscrapy&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;urlscrapy&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;A web scrapper to extract the URLs embedded on the Website.&lt;/p&gt;
+
+&lt;h2 id=&quot;installation&quot;&gt;Installation&lt;/h2&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; github.com/thevillagehacker/urlscrapy@latest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/thevillagehacker/urlscrapy.git
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;urlscrapy
+go build
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;urlscrapy&lt;/strong&gt; binary will be created and Move the binary to the required folder and add the path to the environment variables.&lt;/p&gt;
+
+&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go run urlscrapy.go &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlscrapy &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;example&quot;&gt;Example&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlscrapy &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com | httpx -&amp;lt;flags&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="web scraper" /><category term="wordlist" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">IDOR leads to Takeover other user’s linked bank accounts</title><link href="http://localhost:4000/IDOR/" rel="alternate" type="text/html" title="IDOR leads to Takeover other user’s linked bank accounts" /><published>2022-08-10T12:00:00+05:30</published><updated>2022-08-10T12:00:00+05:30</updated><id>http://localhost:4000/IDOR</id><content type="html" xml:base="http://localhost:4000/IDOR/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/IDOR/access-control.svg&quot; alt=&quot;preview&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;target-information&quot;&gt;Target Information&lt;/h2&gt;
+&lt;p&gt;The target is a web application which will help the organization to track and pay their invoices, bills and other transactions. It’s totally a business banking application.&lt;/p&gt;
+
+&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;p&gt;Post checking all the feature and i have figured out that the application is vulnerable to IDOR because the application performs the actions on APIs based on the input details that the application pass through the URL and in JSON Objects of the request body.&lt;/p&gt;
+
+&lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
+&lt;p&gt;I have exploited several endpoints to view and edit other organization’s users invoices, able to access their transaction details and other bills.&lt;/p&gt;
+
+&lt;p&gt;Here comes the fun part that the application have a feature that you can add your bank accounts into the application and once the account is merged the application will provide you a virtual bank account which will be like &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; from &lt;strong&gt;ABC Internet Bank&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The application allow the users to add n-number of bank accounts to the &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; so in order to quickly find  the bank account details the application have a feature to rename the account name as any nicknames like the request below,&lt;/p&gt;
+
+&lt;h2 id=&quot;request&quot;&gt;Request&lt;/h2&gt;
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PUT /connected_banking/12345
+Host: app.abc.com
+
+{
+	&quot;bankid&quot;: 12345,
+	&quot;account_nickname&quot;: thevillagehacker,
+	&quot;account_id&quot;: 1111,
+	&quot;company_id&quot;: 0000
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;response&quot;&gt;Response&lt;/h2&gt;
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/2 200 OK
+{
+	&quot;abc_account_id&quot;: 12345,
+	&quot;account_nickname&quot;: thevillagehacker,
+	&quot;account_id&quot;: 1111,
+	&quot;company_id&quot;: 0000,
+	&quot;current_balance&quot;: XXXX.XX
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The above request shows that the application is using the details of the bank id from the URL and the JSON object in the request body. So by bruteforcing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bankid&lt;/code&gt; lead me to change the nicknames of other users bank account nickname.&lt;/p&gt;
+
+&lt;p&gt;And the IDOR didn’t stopped right there, whenever i changed the nickname of users bank accounts those bank accounts were linked to my &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt;. So now other users bank accounts are linked to me and i can access their bank account details, balances, transactions and etc,&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading.&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Account Takeover" /><category term="Broken Access Control" /><category term="IDOR" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">FileFetcher</title><link href="http://localhost:4000/filefetcher/" rel="alternate" type="text/html" title="FileFetcher" /><published>2022-05-03T22:10:00+05:30</published><updated>2022-05-03T22:10:00+05:30</updated><id>http://localhost:4000/filefetcher</id><content type="html" xml:base="http://localhost:4000/filefetcher/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/filefetcher.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;filefetcher&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/FileFetcher&quot;&gt;FileFetcher&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Fetcher fetches js, JSON, PHP, txt file endpoints, and other sensitive file endpoints like pdf, xlsx, Docx, and CSV from a list of URLs from waybackurls output and 
+URLs that user-supplied as input to the fetcher.&lt;/p&gt;
+
+&lt;h2 id=&quot;prerequisite&quot;&gt;prerequisite&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/tomnomnom/waybackurls&quot;&gt;waybackurls&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x fetcher.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;to-run-fetcher-against-single-target-as-input&quot;&gt;To run fetcher against single target as input&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./fetcher.sh &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; example.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;to-fetch-endpoints-from-input-file-which-contains-urls&quot;&gt;To fetch endpoints from input file which contains URLs&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./fetcher.sh &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; url.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;note&quot;&gt;Note&lt;/h4&gt;
+&lt;p&gt;All Output results are stored separately in results folder&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="Files" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Bigfoot</title><link href="http://localhost:4000/Bigfoot/" rel="alternate" type="text/html" title="Bigfoot" /><published>2022-03-21T22:10:00+05:30</published><updated>2022-03-21T22:10:00+05:30</updated><id>http://localhost:4000/Bigfoot</id><content type="html" xml:base="http://localhost:4000/Bigfoot/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/bigfoot.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;bigfoot&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Bigfoot&quot;&gt;Bigfoot&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Bigfoot is made for checking the subdomains which are vulnerable to takeover.&lt;/p&gt;
+
+&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
+&lt;p&gt;To scan single target&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./bigfoot.sh &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; example.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To scan multiple targets&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./bigfoot.sh &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; hosts.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;note-&quot;&gt;Note:-&lt;/h2&gt;
+&lt;p&gt;As for now Bigfoot is only capable to check the domains which are using &lt;strong&gt;heroku, Github, AWS, Bitbucket, Shopify, Tumblr, and wordpress&lt;/strong&gt; services.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="Subdomain Takeover" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Enumerate HTTP Methods</title><link href="http://localhost:4000/enum-http-methods/" rel="alternate" type="text/html" title="Enumerate HTTP Methods" /><published>2022-03-11T22:10:00+05:30</published><updated>2022-03-11T22:10:00+05:30</updated><id>http://localhost:4000/enum-http-methods</id><content type="html" xml:base="http://localhost:4000/enum-http-methods/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/http-methods.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;http-methods&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Enum-HTTP-Methods&quot;&gt;HTTP-Methods&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Automate HTTP methods enumeration using go and python.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="HTTP-Methods" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Bulk Ping</title><link href="http://localhost:4000/Bulk-Ping/" rel="alternate" type="text/html" title="Bulk Ping" /><published>2021-05-03T22:10:00+05:30</published><updated>2021-05-03T22:10:00+05:30</updated><id>http://localhost:4000/Bulk%20Ping</id><content type="html" xml:base="http://localhost:4000/Bulk-Ping/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/bulk-ping.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;bulk-ping&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Bulk-Ping&quot;&gt;Bulk-Ping&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;A tool made in bash to ping Multiple Targets from file and output the results in separate files.&lt;/p&gt;
+
+&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x bulk_ping.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;ping-bulk-targets-from-a-file&quot;&gt;Ping Bulk targets from a file&lt;/h2&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./bulk-ping.sh -f &amp;lt;filename&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>naveen</name></author><category term="project" /><category term="Network" /><category term="Ping probe" /><category term="recon" /><category term="enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
