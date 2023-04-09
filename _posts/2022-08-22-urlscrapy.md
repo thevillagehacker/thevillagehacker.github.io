@@ -6,8 +6,6 @@ tag:
 - Recon
 - web scraper
 - wordlist
-headerImage: false
-image: https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif
 projects: true
 hidden: true # don't count this post in blog pagination
 description: "Enumerate HTTP-Methods on the web applications."
@@ -18,7 +16,7 @@ externalLink: false
 
 ![img](/assets/images/Projects/urlscrapy.png)
 
-## [urlscrapy](https://github.com/thevillagehacker/urlscrapy)
+# [urlscrapy - GitHub](https://github.com/thevillagehacker/urlscrapy)
 A web scrapper to extract the URLs embedded on the Website.
 
 ## Installation
