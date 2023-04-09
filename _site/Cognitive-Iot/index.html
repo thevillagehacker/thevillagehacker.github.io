@@ -199,10 +199,10 @@ template { display: none; }
 .highlight .kp { font-weight: bold; }
 .highlight .kr { font-weight: bold; }
 .highlight .kt { color: #445588; font-weight: bold; }
-.highlight .m { color: #009999; }
+.highlight .m { color: #32f9f9; }
 .highlight .s { color: #dd1144; }
 .highlight .n { color: #333333; }
-.highlight .na { color: teal; }
+.highlight .na { color: #32f9f9; }
 .highlight .nb { color: #0086b3; }
 .highlight .nc { color: #445588; font-weight: bold; }
 .highlight .no { color: teal; }
@@ -238,7 +238,7 @@ template { display: none; }
 
 body, html { font-size: 62.5%; }
 
-body { font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #666; background: #fff; }
+body { font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2626; background: #fff; }
 
 h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #222; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
@@ -252,12 +252,12 @@ h4 { font-size: 1.6rem; }
 
 a { color: #3697e6; text-decoration: underline; font-weight: 300; }
 
-p { line-height: 1.7; color: #666; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
+p { line-height: 1.7; color: #2c2626; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
 @media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
 
 strong { font-weight: 400; color: #000; }
 
-ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #666; }
+ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #2c2626; }
 
 img, pre, iframe { max-width: 100%; }
 
@@ -272,11 +272,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 13px; vertical-align: middle; background: #000000; border-radius: 2px; color: #fff; }
+code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 13px; line-height: 20px; background: #000000; border-radius: 2px; color: #fff; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; line-height: 20px; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #000000; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #03030a; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -307,7 +307,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
 .home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
 .home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
-.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #666; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #2c2626; }
 
 .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
 .blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
@@ -321,7 +321,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .post > .title { text-align: center; margin-bottom: 3rem; }
 .post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 .post > .date { margin-bottom: 2rem; }
-.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #666; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
 .post > h2, .post > h3, .post > h4 { margin-top: 40px; }
 .post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
 .post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
@@ -333,7 +333,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
 .tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #666; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
 
 .tag-list > .list { padding: 0; }
 .tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
@@ -341,7 +341,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
 .tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
 .tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
-.tag-list > .list .item:hover .url aside { color: #666; }
+.tag-list > .list .item:hover .url aside { color: #2c2626; }
 
 .author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
 .author > .toleft > .selfie { width: 90%; border-radius: 100%; }
@@ -391,7 +391,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .nav-home { margin-top: 40px; text-align: center; }
 .nav-home > .list { padding: 0; }
 .nav-home > .list > .item > .link { font-size: 2rem; padding: 7px 15px; margin: 0; border-radius: 4%; transition: all 0.4s ease-in-out; width: 70px; }
-.nav-home > .list > .item > .link:hover { color: #666; }
+.nav-home > .list > .item > .link:hover { color: #2c2626; }
 
 .evidence { background-image: linear-gradient(to bottom, #27f36a26, #27f36a26); color: #222; }
 
