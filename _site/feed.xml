@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-04-06T09:02:58+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Account Takeover via manipulating Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover via manipulating Session Storage" /><published>2023-04-01T12:00:00+05:30</published><updated>2023-04-01T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-04-09T09:40:04+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Account Takeover via manipulating Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover via manipulating Session Storage" /><published>2023-04-01T12:00:00+05:30</published><updated>2023-04-01T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
 &lt;p&gt;A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application	.&lt;/p&gt;
 
 &lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
@@ -16,58 +16,58 @@
 &lt;p&gt;At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.&lt;/p&gt;
 
 &lt;h3 id=&quot;request&quot;&gt;Request&lt;/h3&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
-Host: www.target.com
-Cookie: blah...blah...blah...
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://www.target.com/
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: iframe
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-Te: trailers
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/user?email=nj@tvhsecurity.com&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;response&quot;&gt;Response&lt;/h3&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/1.1 200 OK 
-Date: Wed, 29 Mar 2023 05:59:48 GMT 
-X-Powered-By: Express 
-Access-Control-Allow-Origin: * 
-Content-Type: application/json; charset=utf-8 
-Content-Length: 370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; 
-Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
-X-Frame-Options: SAMEORIGIN 
-X-Content-Type-Options: nosniff 
-X-XSS-Protection: 1; mode=block 
-Referrer-Policy: strict-origin-when-cross-origin 
-Connection: close 
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Wed, 29 Mar 2023 05:59:48 GMT &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Powered-By&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Express &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
 
-{
-  &quot;status&quot;: true,
-  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
-  &quot;result&quot;: [
-    {
-      &quot;UserId&quot;:601███,
-      &quot;EmailId&quot;: &quot;nj@tvhsecurity.com&quot;,
-      &quot;RegionId&quot;: 160,
-      &quot;RegionName&quot;: &quot;IN&quot;,
-      &quot;RoleId&quot;: 100,
-      &quot;RoleName&quot;: &quot;Admin&quot;,
-      &quot;CountryId&quot;: 26█,
-      &quot;CountryName&quot;: &quot;India&quot;,
-      &quot;Status&quot;: &quot;Approved&quot;,
-      &quot;Name&quot;: &quot;Naveen J&quot;,
-      &quot;DeliveryCentre&quot;: &quot;Bangalore, India&quot;,
-      &quot;IsActive&quot;: true,
-      &quot;SubProcess&quot;: &quot;null&quot;
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Successfully Retrieved&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;result&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;UserId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;601&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;███&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;EmailId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nj@tvhsecurity.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;160&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;IN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RoleId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RoleName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;CountryId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;█&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;CountryName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;India&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Approved&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Naveen J&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;DeliveryCentre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Bangalore, India&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;IsActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;SubProcess&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;null&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;post-login&quot;&gt;Post Login&lt;/h2&gt;
 &lt;p&gt;After logging in into the application i was going through the JS files and local storages and found that the session storage which stores the information that was fetched in the response from the above user verify request. The user results are stored exactly how it was fetched from the API response.&lt;/p&gt;
@@ -85,19 +85,19 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 &lt;p&gt;Now i just have to pass the &lt;strong&gt;User2&lt;/strong&gt; account email Id in the email verify request and it will provide all the details that i want to do the manipulation.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
-Host: www.target.com
-Cookie: blah...blah...blah...
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://www.target.com/
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: iframe
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-Te: trailers
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/user?email=nj+1@tvhsecurity.com&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;I have copied the required payload fron the JSON response and changed the session value of the &lt;strong&gt;login&lt;/strong&gt; key. After refrshing the page i was able to login into the &lt;strong&gt;User2 account&lt;/strong&gt;.&lt;/p&gt;
@@ -125,61 +125,61 @@ Te: trailers
 &lt;h2 id=&quot;verify-user&quot;&gt;Verify User&lt;/h2&gt;
 
 &lt;h3 id=&quot;request-1&quot;&gt;Request&lt;/h3&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /api/v1/user?email=ba████████@target.com HTTP/2
-Host: www.target.com
-Cookie: blah...blah...blah...
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://www.target.com/
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: iframe
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-Te: trailers
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/user?email=ba████████@target.com&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;response-1&quot;&gt;Response&lt;/h3&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/1.1 200 OK 
-Date: Wed, 29 Mar 2023 05:59:48 GMT 
-X-Powered-By: Express 
-Access-Control-Allow-Origin: * 
-Content-Type: application/json; charset=utf-8 
-Content-Length: 370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; 
-Set-Cookie: ; Path=/; HttpOnly 
-X-Frame-Options: SAMEORIGIN 
-X-Content-Type-Options: nosniff 
-X-XSS-Protection: 1; mode=block 
-Referrer-Policy: strict-origin-when-cross-origin 
-Connection: close 
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Wed, 29 Mar 2023 05:59:48 GMT &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Powered-By&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Express &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
 
-{
-  &quot;status&quot;: true,
-  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
-  &quot;result&quot;: [
-    {
-      &quot;UserId&quot;: 10██,
-  &quot;EmailId&quot;: &quot;ba████████@target.com&quot;,
-      &quot;RegionId&quot;: [
-        300,
-        300
-      ],
-      &quot;RegionName&quot;: &quot;NA&quot;,
-      &quot;RoleId&quot;: 100,
-      &quot;RoleName&quot;: &quot;Admin&quot;,
-      &quot;CountryId&quot;: 200,
-      &quot;CountryName&quot;: &quot;United States&quot;,
-      &quot;Status&quot;: &quot;Approved&quot;,
-      &quot;Name&quot;: &quot;Bane Smith&quot;,
-      &quot;DeliveryCentre&quot;: &quot;New York, United States&quot;,
-      &quot;IsActive&quot;: true,
-      &quot;SubProcess&quot;: &quot;null&quot;
-    }
-  ]
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Successfully Retrieved&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;result&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;UserId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;██&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;EmailId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ba████████@target.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NA&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RoleId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RoleName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;CountryId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;CountryName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;United States&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Approved&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Bane Smith&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;DeliveryCentre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;New York, United States&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;IsActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;SubProcess&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;null&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;checkpoint&quot;&gt;Checkpoint&lt;/h2&gt;
 &lt;ul&gt;
@@ -814,15 +814,75 @@ URLs that user-supplied as input to the fetcher.&lt;/p&gt;
 &lt;p&gt;As for now Bigfoot is only capable to check the domains which are using &lt;strong&gt;heroku, Github, AWS, Bitbucket, Shopify, Tumblr, and wordpress&lt;/strong&gt; services.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="Subdomain Takeover" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Enumerate HTTP Methods</title><link href="http://localhost:4000/enum-http-methods/" rel="alternate" type="text/html" title="Enumerate HTTP Methods" /><published>2022-03-11T22:10:00+05:30</published><updated>2022-03-11T22:10:00+05:30</updated><id>http://localhost:4000/enum-http-methods</id><content type="html" xml:base="http://localhost:4000/enum-http-methods/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/http-methods.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;http-methods&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Enum-HTTP-Methods&quot;&gt;HTTP-Methods&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Automate HTTP methods enumeration using go and python.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="HTTP-Methods" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Bulk Ping</title><link href="http://localhost:4000/Bulk-Ping/" rel="alternate" type="text/html" title="Bulk Ping" /><published>2021-05-03T22:10:00+05:30</published><updated>2021-05-03T22:10:00+05:30</updated><id>http://localhost:4000/Bulk%20Ping</id><content type="html" xml:base="http://localhost:4000/Bulk-Ping/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/bulk-ping.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Automate HTTP methods enumeration using go and python.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="HTTP-Methods" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">API Security Misconfiguration Leads to tons of PII data Leakage</title><link href="http://localhost:4000/PII-Leak/" rel="alternate" type="text/html" title="API Security Misconfiguration Leads to tons of PII data Leakage" /><published>2021-07-01T12:00:00+05:30</published><updated>2021-07-01T12:00:00+05:30</updated><id>http://localhost:4000/PII-Leak</id><content type="html" xml:base="http://localhost:4000/PII-Leak/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/misconfig.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;bulk-ping&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Bulk-Ping&quot;&gt;Bulk-Ping&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;A tool made in bash to ping Multiple Targets from file and output the results in separate files.&lt;/p&gt;
+&lt;h1 id=&quot;what-is-api-misconfiguration&quot;&gt;What is API Misconfiguration?&lt;/h1&gt;
+&lt;h2 id=&quot;api72019-security-misconfiguration&quot;&gt;API7:2019 Security Misconfiguration&lt;/h2&gt;
+&lt;p&gt;Security misconfiguration is commonly a result of insecure default configurations, incomplete or ad-hoc configurations, open cloud storage, misconfigured HTTP headers, unnecessary HTTP methods, permissive Cross-Origin resource sharing (CORS), and verbose error messages containing sensitive information.&lt;/p&gt;
 
-&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x bulk_ping.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h2 id=&quot;target-information&quot;&gt;Target Information&lt;/h2&gt;
+&lt;p&gt;The target application is similar to uber, ola, and any other transport tracking application. The passengers can track their respective vehicles’ GPS locations to get the route information like ola, uber, and other taxi services.&lt;/p&gt;
 
-&lt;h2 id=&quot;ping-bulk-targets-from-a-file&quot;&gt;Ping Bulk targets from a file&lt;/h2&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./bulk-ping.sh -f &amp;lt;filename&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>naveen</name></author><category term="project" /><category term="Network" /><category term="Ping probe" /><category term="recon" /><category term="enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;p&gt;I downloaded and installed the application in the emulator and performed static analysis and reverse engineering using MOBSF, APKtool, jadx -&amp;gt; No luck. The Application having two types of users are users=passengers, administrators.&lt;/p&gt;
+
+&lt;h2 id=&quot;playing-with-proxy&quot;&gt;Playing with proxy&lt;/h2&gt;
+&lt;p&gt;Started the proxy program (Burp Suite) and clicking all the buttons to find other vulnerabilities in the API. After playing with the proxy I got knowledge about the API that the application is using to access information.&lt;/p&gt;
+
+&lt;h2 id=&quot;api-misconfiguration-in-the-target&quot;&gt;API Misconfiguration in the target&lt;/h2&gt;
+&lt;p&gt;The Application is using a REST API. The API generates an API key and authorization token at the time of user login actions. I logged in and logged out from the application to observe how the API authorization token works. It seems the API key is default and it will not change and the authorization token changes sometimes and sometimes not. I figured out that the application needs three things to access all the information including administrator access.&lt;/p&gt;
+
+&lt;h3 id=&quot;things-that-api-requires&quot;&gt;Things that API requires&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;API Key&lt;/li&gt;
+  &lt;li&gt;Authorization Token&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;api-key&quot;&gt;API Key&lt;/h3&gt;
+&lt;p&gt;We can get the API key at the time of log in the API key never changes from its default value&lt;/p&gt;
+
+&lt;h2 id=&quot;auth-token&quot;&gt;Auth Token&lt;/h2&gt;
+&lt;p&gt;The API does not properly validate the auth token what it validates is that the token is legit or not like in the format the developer created, so all we need is an API-generated token which we can get at the time of login it does not matter whether your credentials are right or wrong.&lt;/p&gt;
+
+&lt;h3 id=&quot;administrator-username&quot;&gt;Administrator Username&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Username Enumeration&lt;/li&gt;
+  &lt;li&gt;Response Manipulation -&amp;gt; change to admin Privileges&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;response-manipulation&quot;&gt;Response Manipulation&lt;/h2&gt;
+&lt;p&gt;Here comes the fun part I created two accounts and tried to take over those accounts using the response manipulation technique. I observe the server responses when I log in as user=passenger and noticed that the JSON body having an object named role and the value is base64 encoded.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/base64_encode.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I quickly changed the role value from user to admin in base64 encoded format and boom I logged in as administrator. There are so many different endpoints present for the administrator account.&lt;/p&gt;
+
+&lt;h2 id=&quot;pii-data-leak&quot;&gt;PII Data Leak&lt;/h2&gt;
+&lt;p&gt;As I stated above to access all those endpoints we need an API key, Auth token, and Administrator username.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/leak1.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we have all the three things that the API requires by using all those I accessed all the user=passengers PII data and vehicle information in plain Text in JSON body.&lt;/p&gt;
+
+&lt;h2 id=&quot;taking-over-other-administrator-accounts&quot;&gt;Taking Over other Administrator Accounts&lt;/h2&gt;
+&lt;p&gt;Since the API is misconfigured we can use the above-shown endpoint to enumerate the administrator usernames.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/leak2.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The endpoint only provides those outputs if the logged-in user is an administrator, the other normal users can’t access that information. So I prepared a bunch of username wordlists and brute-forced them and found more than 4 valid administrator usernames.&lt;/p&gt;
+
+&lt;p&gt;Then I started sending the requests with that valid username and found different PII data for each of them it seems the separate administrators have different data.&lt;/p&gt;
+
+&lt;p&gt;After some time I discovered that the API is very poorly configured which means you don’t have to be logged in to the application to access the administrator information. All we have to do to collect and craft a request with API Key, Auth token which we can get at the time of login, and valid username with all of these I can access all of the administrator information.&lt;/p&gt;
+
+&lt;h2 id=&quot;take-aways-&quot;&gt;Take-Aways:-&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Check for API documentation and collect the authentication and authorization inputs that are required to access data from the API endpoints.&lt;/li&gt;
+  &lt;li&gt;Check for API misconfigurations like does the Auth token, API key, and other auth mechanisms are validated properly.&lt;/li&gt;
+  &lt;li&gt;Check for Response manipulation attacks.&lt;/li&gt;
+  &lt;li&gt;Check for Rate Limiting vulnerability to enumerate Usernames.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thank you for reading.&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="PII Leak" /><category term="Misconfiguration" /><summary type="html"></summary></entry></feed>

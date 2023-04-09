@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    
+
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta name=author content="Naveen J">
+
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>API Security Misconfiguration Leads to tons of PII data Leakage | Naveen J</title>
+<meta name="generator" content="Jekyll v3.9.2" />
+<meta property="og:title" content="API Security Misconfiguration Leads to tons of PII data Leakage" />
+<meta name="author" content="naveen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="API Security Misconfiguration Leads to tons of PII data Leakage." />
+<meta property="og:description" content="API Security Misconfiguration Leads to tons of PII data Leakage." />
+<link rel="canonical" href="http://localhost:4000/PII-Leak/" />
+<meta property="og:url" content="http://localhost:4000/PII-Leak/" />
+<meta property="og:site_name" content="Naveen J" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-01T12:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="API Security Misconfiguration Leads to tons of PII data Leakage" />
+<meta name="twitter:site" content="@" />
+<meta name="twitter:creator" content="@naveen" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2021-07-01T12:00:00+05:30","datePublished":"2021-07-01T12:00:00+05:30","description":"API Security Misconfiguration Leads to tons of PII data Leakage.","headline":"API Security Misconfiguration Leads to tons of PII data Leakage","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/PII-Leak/"},"url":"http://localhost:4000/PII-Leak/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-57x57.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-114x114.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-72x72.png" />
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-144x144.png" />
+<link rel="apple-touch-icon-precomposed" sizes="60x60" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-60x60.png" />
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon-precomposed" sizes="76x76" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://localhost:4000/assets/images/favicon/apple-touch-icon-152x152.png" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-16x16.png" sizes="16x16" />
+<link rel="icon" type="image/png" href="http://localhost:4000/assets/images/favicon/favicon-128.png" sizes="128x128" />
+<meta name="application-name" content="&nbsp;"/>
+<meta name="msapplication-TileColor" content="#FFFFFF" />
+<meta name="msapplication-TileImage" content="mstile-144x144.png" />
+<meta name="msapplication-square70x70logo" content="mstile-70x70.png" />
+<meta name="msapplication-square150x150logo" content="mstile-150x150.png" />
+<meta name="msapplication-wide310x150logo" content="mstile-310x150.png" />
+<meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
+
+
+    <link rel="canonical" href="http://localhost:4000/PII-Leak/">
+    <link rel="alternate" type="application/rss+xml" title="Naveen J" href="http://localhost:4000/feed.xml" />
+
+    <script src="https://kit.fontawesome.com/d9b09040a7.js" crossorigin="anonymous"></script>
+
+    <style>
+    
+    
+
+    @charset "UTF-8";
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+/* Document ========================================================================== */
+/** 1. Correct the line height in all browsers. 2. Prevent adjustments of font size after orientation changes in iOS. */
+html { line-height: 1.15; /* 1 */ -webkit-text-size-adjust: 100%; /* 2 */ }
+
+/* Sections ========================================================================== */
+/** Remove the margin in all browsers. */
+body { margin: 0; }
+
+/** Render the `main` element consistently in IE. */
+main { display: block; }
+
+/** Correct the font size and margin on `h1` elements within `section` and `article` contexts in Chrome, Firefox, and Safari. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/* Grouping content ========================================================================== */
+/** 1. Add the correct box sizing in Firefox. 2. Show the overflow in Edge and IE. */
+hr { box-sizing: content-box; /* 1 */ height: 0; /* 1 */ overflow: visible; /* 2 */ }
+
+/** 1. Correct the inheritance and scaling of font size in all browsers. 2. Correct the odd `em` font sizing in all browsers. */
+pre { font-family: monospace, monospace; /* 1 */ font-size: 1em; /* 2 */ }
+
+/* Text-level semantics ========================================================================== */
+/** Remove the gray background on active links in IE 10. */
+a { background-color: transparent; }
+
+/** 1. Remove the bottom border in Chrome 57- 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari. */
+abbr[title] { border-bottom: none; /* 1 */ text-decoration: underline; /* 2 */ text-decoration: underline dotted; /* 2 */ }
+
+/** Add the correct font weight in Chrome, Edge, and Safari. */
+b, strong { font-weight: bolder; }
+
+/** 1. Correct the inheritance and scaling of font size in all browsers. 2. Correct the odd `em` font sizing in all browsers. */
+code, kbd, samp { font-family: monospace, monospace; /* 1 */ font-size: 1em; /* 2 */ }
+
+/** Add the correct font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` elements from affecting the line height in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sub { bottom: -0.25em; }
+
+sup { top: -0.5em; }
+
+/* Embedded content ========================================================================== */
+/** Remove the border on images inside links in IE 10. */
+img { border-style: none; }
+
+/* Forms ========================================================================== */
+/** 1. Change the font styles in all browsers. 2. Remove the margin in Firefox and Safari. */
+button, input, optgroup, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 1 */ line-height: 1.15; /* 1 */ margin: 0; /* 2 */ }
+
+/** Show the overflow in IE. 1. Show the overflow in Edge. */
+button, input { /* 1 */ overflow: visible; }
+
+/** Remove the inheritance of text transform in Edge, Firefox, and IE. 1. Remove the inheritance of text transform in Firefox. */
+button, select { /* 1 */ text-transform: none; }
+
+/** Correct the inability to style clickable types in iOS and Safari. */
+button, [type="button"], [type="reset"], [type="submit"] { -webkit-appearance: button; }
+
+/** Remove the inner border and padding in Firefox. */
+button::-moz-focus-inner, [type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner { border-style: none; padding: 0; }
+
+/** Restore the focus styles unset by the previous rule. */
+button:-moz-focusring, [type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring { outline: 1px dotted ButtonText; }
+
+/** Correct the padding in Firefox. */
+fieldset { padding: 0.35em 0.75em 0.625em; }
+
+/** 1. Correct the text wrapping in Edge and IE. 2. Correct the color inheritance from `fieldset` elements in IE. 3. Remove the padding so developers are not caught out when they zero out `fieldset` elements in all browsers. */
+legend { box-sizing: border-box; /* 1 */ color: inherit; /* 2 */ display: table; /* 1 */ max-width: 100%; /* 1 */ padding: 0; /* 3 */ white-space: normal; /* 1 */ }
+
+/** Add the correct vertical alignment in Chrome, Firefox, and Opera. */
+progress { vertical-align: baseline; }
+
+/** Remove the default vertical scrollbar in IE 10+. */
+textarea { overflow: auto; }
+
+/** 1. Add the correct box sizing in IE 10. 2. Remove the padding in IE 10. */
+[type="checkbox"], [type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** Correct the cursor style of increment and decrement buttons in Chrome. */
+[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button { height: auto; }
+
+/** 1. Correct the odd appearance in Chrome and Safari. 2. Correct the outline style in Safari. */
+[type="search"] { -webkit-appearance: textfield; /* 1 */ outline-offset: -2px; /* 2 */ }
+
+/** Remove the inner padding in Chrome and Safari on macOS. */
+[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** 1. Correct the inability to style clickable types in iOS and Safari. 2. Change font properties to `inherit` in Safari. */
+::-webkit-file-upload-button { -webkit-appearance: button; /* 1 */ font: inherit; /* 2 */ }
+
+/* Interactive ========================================================================== */
+/* Add the correct display in Edge, IE 10+, and Firefox. */
+details { display: block; }
+
+/* Add the correct display in all browsers. */
+summary { display: list-item; }
+
+/* Misc ========================================================================== */
+/** Add the correct display in IE 10+. */
+template { display: none; }
+
+/** Add the correct display in IE 10. */
+[hidden] { display: none; }
+
+.highlight .c { color: #999988; font-style: italic; }
+.highlight .err { color: #a61717; background-color: #e3d2d2; }
+.highlight .k { font-weight: bold; }
+.highlight .o { font-weight: bold; }
+.highlight .cm { color: #999988; font-style: italic; }
+.highlight .cp { color: #999999; font-weight: bold; }
+.highlight .c1 { color: #999988; font-style: italic; }
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic; }
+.highlight .gd { color: #000000; background-color: #ffdddd; }
+.highlight .gd .x { color: #000000; background-color: #ffaaaa; }
+.highlight .ge { font-style: italic; }
+.highlight .gr { color: #aa0000; }
+.highlight .gh { color: #999999; }
+.highlight .gi { color: #000000; background-color: #ddffdd; }
+.highlight .gi .x { color: #000000; background-color: #aaffaa; }
+.highlight .go { color: #888888; }
+.highlight .gp { color: #555555; }
+.highlight .gs { font-weight: bold; }
+.highlight .gu { color: #800080; font-weight: bold; }
+.highlight .gt { color: #aa0000; }
+.highlight .kc { font-weight: bold; }
+.highlight .kd { font-weight: bold; }
+.highlight .kn { font-weight: bold; }
+.highlight .kp { font-weight: bold; }
+.highlight .kr { font-weight: bold; }
+.highlight .kt { color: #445588; font-weight: bold; }
+.highlight .m { color: #009999; }
+.highlight .s { color: #dd1144; }
+.highlight .n { color: #333333; }
+.highlight .na { color: teal; }
+.highlight .nb { color: #0086b3; }
+.highlight .nc { color: #445588; font-weight: bold; }
+.highlight .no { color: teal; }
+.highlight .ni { color: purple; }
+.highlight .ne { color: #990000; font-weight: bold; }
+.highlight .nf { color: #990000; font-weight: bold; }
+.highlight .nn { color: #ffffff; }
+.highlight .nt { color: navy; }
+.highlight .nv { color: teal; }
+.highlight .ow { font-weight: bold; }
+.highlight .w { color: #bbbbbb; }
+.highlight .mf { color: #009999; }
+.highlight .mh { color: #009999; }
+.highlight .mi { color: #009999; }
+.highlight .mo { color: #009999; }
+.highlight .sb { color: #dd1144; }
+.highlight .sc { color: #dd1144; }
+.highlight .sd { color: #dd1144; }
+.highlight .s2 { color: #dd1144; }
+.highlight .se { color: #dd1144; }
+.highlight .sh { color: #dd1144; }
+.highlight .si { color: #dd1144; }
+.highlight .sx { color: #dd1144; }
+.highlight .sr { color: #009926; }
+.highlight .s1 { color: #dd1144; }
+.highlight .ss { color: #990073; }
+.highlight .bp { color: #999999; }
+.highlight .vc { color: teal; }
+.highlight .vg { color: teal; }
+.highlight .vi { color: teal; }
+.highlight .il { color: #009999; }
+.highlight .gc { color: #999; background-color: #EAF2F5; }
+
+body, html { font-size: 62.5%; }
+
+body { font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #666; background: #fff; }
+
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #222; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+h1 { font-size: 3rem; letter-spacing: -1px; color: #222; font-weight: 700; }
+
+h2 { font-size: 2.2rem; }
+
+h3 { font-size: 2rem; }
+
+h4 { font-size: 1.6rem; }
+
+a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+
+p { line-height: 1.7; color: #666; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
+@media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
+
+strong { font-weight: 400; color: #000; }
+
+ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #666; }
+
+img, pre, iframe { max-width: 100%; }
+
+img, pre { border-radius: 4px; }
+
+figcaption { position: relative; top: -20px; left: 0; right: 0; margin: 0 auto; width: 100%; text-align: center; font-size: 1.3rem; color: #aaa; font-weight: 300; }
+@media only screen and (max-width: 400px) { figcaption { font-size: 1.2rem; } }
+
+blockquote { padding-left: 15px; border-left: 3px solid #eee; }
+
+hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%; }
+
+figure.highlight { width: 100%; margin: 0; }
+
+code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 13px; vertical-align: middle; background: #000000; border-radius: 2px; color: #fff; }
+
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 13px; line-height: 20px; background: #000000; border-radius: 2px; color: #fff; }
+
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #000000; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+
+.wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
+@media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .wrapper-normal, .wrapper-large { width: 88%; } }
+
+.wrapper-normal { max-width: 560px; }
+
+.wrapper-large { max-width: 810px; }
+
+/* general helpers */
+.text-center { text-align: center; }
+
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+
+.clearfix:after { clear: both; }
+
+/* animations */
+.animated { animation: fade-in-down 0.6s; animation-delay: 0.3s; animation-fill-mode: both; }
+
+@keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); } }
+.home, .blog, .projects { margin-top: 125px; }
+.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+
+.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
+.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #666; }
+
+.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+
+.page { margin-top: 125px; }
+.page > h1 { text-align: center; margin-bottom: 6rem; }
+
+.about img { width: 50%; margin: 0 auto; display: block; }
+
+.post { margin-top: 125px; }
+.post > .title { text-align: center; margin-bottom: 3rem; }
+.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date { margin-bottom: 2rem; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #666; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > h2, .post > h3, .post > h4 { margin-top: 40px; }
+.post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
+.post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
+.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
+.post > .blog-navigation .next { text-align: right; }
+
+.tags { margin-top: 125px; }
+.tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #666; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+
+.tag-list > .list { padding: 0; }
+.tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
+.tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
+.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
+.tag-list > .list .item:hover .url aside { color: #666; }
+
+.author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
+.author > .toleft > .selfie { width: 90%; border-radius: 100%; }
+.author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
+@media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+@media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
+.author > .toleft { width: 10%; display: inline-block; }
+@media only screen and (max-width: 400px) { .author > .toleft { width: 20%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toleft { width: 20%; } }
+.author > .toright { width: 89%; display: inline-block; vertical-align: top; }
+@media only screen and (max-width: 400px) { .author > .toright { width: 78%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright { width: 78%; } }
+
+.no-disqus { border-bottom: none; padding-bottom: 0; }
+
+.disqus { margin: 0 auto; max-width: 100%; padding: 40px 0; }
+
+.footer-main { border-top: 1px solid #ededed; padding: 40px 0; margin: 40px 0 0; font-size: 1.3rem; color: #aaa; font-weight: 300; text-align: center; position: relative; }
+.footer-main:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.footer-main > .copyright { padding-left: 10px; }
+.footer-main > .link { display: inline; vertical-align: middle; }
+.footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
+.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
+.footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
+.footer-main > .extra > .link:hover { border-color: #aaa; }
+
+.header-home { display: block; margin: 0 auto; text-align: center; position: relative; z-index: 99; }
+.header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
+.header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
+.header-home > .title { font-size: 4rem; margin: 0 0 13px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description a { font-weight: 200; }
+
+.nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
+.nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+
+.nav { position: absolute; right: 0; top: 0; }
+.nav > .list { padding: 0 13px 0; }
+.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+
+.nav-home { margin-top: 40px; text-align: center; }
+.nav-home > .list { padding: 0; }
+.nav-home > .list > .item > .link { font-size: 2rem; padding: 7px 15px; margin: 0; border-radius: 4%; transition: all 0.4s ease-in-out; width: 70px; }
+.nav-home > .list > .item > .link:hover { color: #666; }
+
+.evidence { background-image: linear-gradient(to bottom, #27f36a26, #27f36a26); color: #222; }
+
+.star > .url > .title { width: auto !important; display: inline; background-image: linear-gradient(#27f36a26, #27f36a26); }
+
+.twitter-tweet { margin: 10px auto; }
+
+.icon { display: inline-block; width: 17px; height: 17px; fill: #000; text-align: center; color: #aaa; margin: 7px auto; }
+
+.caption { position: relative; top: 1rem; left: 0; right: 0; margin: 0 auto; width: 100%; text-align: center; font-size: 1.3rem; font-weight: 300; }
+
+.bigger-image { min-width: 130%; margin: 5rem 0 5rem -15%; }
+@media only screen and (max-width: 400px) { .bigger-image { min-width: 114%; margin: 2rem 0 2rem -7%; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .bigger-image { min-width: 114%; margin: 2rem 0 2rem -7%; } }
+
+.breaker { height: 1px; margin: 6rem auto; width: 100%; }
+.breaker:before { content: "• • •"; width: 100%; text-align: center; display: block; color: #aaa; letter-spacing: 4px; position: relative; top: -8px; }
+
+.lost-container { text-align: center; }
+
+.pagination { width: 95%; margin: 3rem auto 0; text-align: center; }
+.pagination > .page_number { display: inline-block; font-size: 1.3rem; }
+.pagination > .previous, .pagination > .next { display: inline-block; font-size: 1.8rem; position: relative; top: 1px; padding: 1px 9px; }
+.pagination > .hidden { visibility: hidden; }
+
+.related { margin: 10rem 0 0rem; }
+.related a { font-weight: 300; }
+
+.share { float: right; width: 40%; display: inline; text-align: right; position: relative; }
+@media only screen and (max-width: 400px) { .share { width: 100%; display: block; top: 0; text-align: left; float: none; margin-top: 5px; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .share { width: 100%; display: block; top: 0; text-align: left; float: none; margin-top: 5px; } }
+.share > .twitter, .share > .facebook, .share > .linkedin { display: inline; vertical-align: middle; font-size: 13px; font-weight: 700; color: #fff; padding: 6px 10px; border-radius: 3px; margin-left: 5px; text-decoration: none; }
+@media only screen and (max-width: 400px) { .share > .twitter, .share > .facebook, .share > .linkedin { margin: 0 5px 10px 0; } }
+@media only screen and (min-width: 400px) and (max-width: 1050px) { .share > .twitter, .share > .facebook, .share > .linkedin { margin: 0 5px 10px 0; } }
+.share > .twitter { background: #4fafed; }
+.share > .facebook { background: #4361b3; }
+.share > .linkedin { background: #0077b5; }
+.share svg { fill: #fff; position: relative; top: 0; margin: 0; margin-right: 4px; display: inherit; }
+
+@media only screen and (min-width: 780px) { .side-by-side { width: 130%; margin: 6rem 0 6rem -15%; } }
+@media only screen and (max-width: 780px) { .side-by-side { width: 100%; margin: 4rem 0; } }
+.side-by-side > .toleft, .side-by-side > .toright { display: inline-block; width: 47.5%; }
+@media only screen and (max-width: 780px) { .side-by-side > .toleft img, .side-by-side > .toright img { text-align: center; display: block; margin: 0 auto; } }
+@media only screen and (min-width: 780px) { .side-by-side > .toleft { margin-right: 2%; } }
+@media only screen and (max-width: 780px) { .side-by-side > .toleft { width: 100%; margin: 0 0 4rem 0; } }
+@media only screen and (min-width: 780px) { .side-by-side > .toright { margin-left: 2%; vertical-align: top; } }
+@media only screen and (max-width: 780px) { .side-by-side > .toright { width: 100%; margin: 0 0 4rem 0; } }
+.side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0 0 4rem 0; }
+@media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
+
+.social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
+.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > svg { transition: all ease-in-out 0.2s; }
+
+.spoiler { position: relative; }
+.spoiler:before { content: ""; background-color: #fafae0; position: absolute; top: 0; bottom: 0; left: 0; right: 0; z-index: 50; }
+.spoiler:hover:before { display: none; }
+
+    </style>
+
+</head>
+<body>
+    <div class="wrapper-large">
+        
+            <div class="post">
+        
+
+            
+
+
+
+<nav class="nav">
+    <ul class="list">
+        
+            <li class="item">
+                <a class="link" href="http://localhost:4000/">Home</a>
+            </li>
+        
+
+        
+            
+                <li class="item">
+                    <a class="link" href="http://localhost:4000/blog">Blog</a>
+                </li>
+            
+        
+
+        
+            
+                <li class="item">
+                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                </li>
+            
+        
+
+        
+            
+                <li class="item">
+                    <a class="link" href="http://localhost:4000/about">About</a>
+                </li>
+            
+        
+
+        
+    </ul>
+</nav>
+
+
+
+
+
+<h1 class="title">API Security Misconfiguration Leads to tons of PII data Leakage</h1>
+
+<span class="date">
+    <time datetime="01-07-2021">Thursday. July 01, 2021</time>
+     - <span class="reading-time" title="Estimated read time">
+    
+
+    
+        4 mins
+    
+</span>
+
+</span>
+
+
+    <div class="post-tags">
+        
+            <a class="item" href="http://localhost:4000/tags/#pii-leak">PII Leak</a>
+        
+            <a class="item" href="http://localhost:4000/tags/#misconfiguration">Misconfiguration</a>
+        
+    </div>
+
+
+<p><img src="/assets/images/blogs/PII_leak/misconfig.webp" alt="img" /></p>
+
+<h1 id="what-is-api-misconfiguration">What is API Misconfiguration?</h1>
+<h2 id="api72019-security-misconfiguration">API7:2019 Security Misconfiguration</h2>
+<p>Security misconfiguration is commonly a result of insecure default configurations, incomplete or ad-hoc configurations, open cloud storage, misconfigured HTTP headers, unnecessary HTTP methods, permissive Cross-Origin resource sharing (CORS), and verbose error messages containing sensitive information.</p>
+
+<h2 id="target-information">Target Information</h2>
+<p>The target application is similar to uber, ola, and any other transport tracking application. The passengers can track their respective vehicles’ GPS locations to get the route information like ola, uber, and other taxi services.</p>
+
+<h2 id="recon">Recon</h2>
+<p>I downloaded and installed the application in the emulator and performed static analysis and reverse engineering using MOBSF, APKtool, jadx -&gt; No luck. The Application having two types of users are users=passengers, administrators.</p>
+
+<h2 id="playing-with-proxy">Playing with proxy</h2>
+<p>Started the proxy program (Burp Suite) and clicking all the buttons to find other vulnerabilities in the API. After playing with the proxy I got knowledge about the API that the application is using to access information.</p>
+
+<h2 id="api-misconfiguration-in-the-target">API Misconfiguration in the target</h2>
+<p>The Application is using a REST API. The API generates an API key and authorization token at the time of user login actions. I logged in and logged out from the application to observe how the API authorization token works. It seems the API key is default and it will not change and the authorization token changes sometimes and sometimes not. I figured out that the application needs three things to access all the information including administrator access.</p>
+
+<h3 id="things-that-api-requires">Things that API requires</h3>
+<ul>
+  <li>API Key</li>
+  <li>Authorization Token</li>
+</ul>
+
+<h3 id="api-key">API Key</h3>
+<p>We can get the API key at the time of log in the API key never changes from its default value</p>
+
+<h2 id="auth-token">Auth Token</h2>
+<p>The API does not properly validate the auth token what it validates is that the token is legit or not like in the format the developer created, so all we need is an API-generated token which we can get at the time of login it does not matter whether your credentials are right or wrong.</p>
+
+<h3 id="administrator-username">Administrator Username</h3>
+<ul>
+  <li>Username Enumeration</li>
+  <li>Response Manipulation -&gt; change to admin Privileges</li>
+</ul>
+
+<h2 id="response-manipulation">Response Manipulation</h2>
+<p>Here comes the fun part I created two accounts and tried to take over those accounts using the response manipulation technique. I observe the server responses when I log in as user=passenger and noticed that the JSON body having an object named role and the value is base64 encoded.</p>
+
+<p><img src="/assets/images/blogs/PII_leak/base64_encode.webp" alt="img" /></p>
+
+<p>I quickly changed the role value from user to admin in base64 encoded format and boom I logged in as administrator. There are so many different endpoints present for the administrator account.</p>
+
+<h2 id="pii-data-leak">PII Data Leak</h2>
+<p>As I stated above to access all those endpoints we need an API key, Auth token, and Administrator username.</p>
+
+<p><img src="/assets/images/blogs/PII_leak/leak1.webp" alt="img" /></p>
+
+<p>Now we have all the three things that the API requires by using all those I accessed all the user=passengers PII data and vehicle information in plain Text in JSON body.</p>
+
+<h2 id="taking-over-other-administrator-accounts">Taking Over other Administrator Accounts</h2>
+<p>Since the API is misconfigured we can use the above-shown endpoint to enumerate the administrator usernames.</p>
+
+<p><img src="/assets/images/blogs/PII_leak/leak2.webp" alt="img" /></p>
+
+<p>The endpoint only provides those outputs if the logged-in user is an administrator, the other normal users can’t access that information. So I prepared a bunch of username wordlists and brute-forced them and found more than 4 valid administrator usernames.</p>
+
+<p>Then I started sending the requests with that valid username and found different PII data for each of them it seems the separate administrators have different data.</p>
+
+<p>After some time I discovered that the API is very poorly configured which means you don’t have to be logged in to the application to access the administrator information. All we have to do to collect and craft a request with API Key, Auth token which we can get at the time of login, and valid username with all of these I can access all of the administrator information.</p>
+
+<h2 id="take-aways-">Take-Aways:-</h2>
+<ul>
+  <li>Check for API documentation and collect the authentication and authorization inputs that are required to access data from the API endpoints.</li>
+  <li>Check for API misconfigurations like does the Auth token, API key, and other auth mechanisms are validated properly.</li>
+  <li>Check for Response manipulation attacks.</li>
+  <li>Check for Rate Limiting vulnerability to enumerate Usernames.</li>
+</ul>
+
+<p>Thank you for reading.</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+
+
+    <div class="blog-navigation">
+        
+            <a class="prev" href="http://localhost:4000/Insecure_Deserialization/">&laquo; Insecure Deserialization</a>
+        
+        
+    </div>
+
+
+
+    <div class="related">
+    
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+                    
+                    <h4>Related Posts</h4>
+                    <ul>
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Account_Takeover-via-session-storage/">Account Takeover via manipulating Session Storage
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Hacking MNC's Content Management System due to misconfiguration and lack of authorization
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Insecure_Deserialization/">Insecure Deserialization
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Sql-injection/">Time-Based SQL Injection to Dumping the Database
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/massive_subdomain-takeover/">Massive Subdomains Take Over
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+    
+        </ul>
+    
+</div>
+
+
+
+
+    <section class="author">
+    <div class="toleft">
+        <img
+            class="selfie"
+            src="http://localhost:4000/"
+            alt=""
+        />
+    </div>
+
+    <div class="toright">
+        <h4 class="name"></h4>
+        <p class="bio"></p>
+
+        <div class="share">
+            <!-- Note: Only use three share links if your site width is set to large -->
+            <!-- If site width is set to normal, you may choose any two share links -->
+            <a
+                class="twitter"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/PII-Leak/ - API Security Misconfiguration Leads to tons of PII data Leakage by @"
+            >
+                <i class="fa-brands fa-twitter"></i>
+                <span class="icon-twitter">Tweet</span>
+            </a>
+
+            <a
+                class="facebook"
+                href="javascript:void(0)"
+                onclick="window.open('https://facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 'facebook-share-dialog', 'width=626,height=436'); return false;"
+            >
+                <i class="fa-brands fa-facebook"></i>
+                <span class="icon-facebook-rect">Share</span>
+            </a>
+
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/PII-Leak/&amp;title=API Security Misconfiguration Leads to tons of PII data Leakage&amp;summary=API Security Misconfiguration Leads to tons of PII data Leakage.&amp;source=http://localhost:4000" target="_blank">
+                <i class="fa-brands fa-linkedin"></i>
+                <span class="icon-linkedin">Share</span>
+            </a> -->
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<footer class="footer-main">
+    Naveen J © 2023
+
+    <a class="link" href="http://localhost:4000/feed.xml" target="_blank">
+        <i class="fa-solid fa-rss"></i>
+    </a>
+
+    <p class="extra">
+        <a class="link" href="https://github.com/sergiokopplin/indigo">Indigo theme</a>
+        by
+        <a class="link" href="https://github.com/sergiokopplin/indigo">Kopplin</a>
+    </p>
+</footer>
+
+
+            </div>
+                </div>
+            </div>
+    </div>
+</body>
+</html>
+

