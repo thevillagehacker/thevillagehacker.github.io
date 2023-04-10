@@ -1,7 +1,7 @@
 ---
 title: "Account Takeover via manipulating Session Storage"
 layout: post
-date: 2023-04-01 12:00
+date: 2023-03-30 12:00
 image: /assets/images/blogs/IDOR/access-control.svg
 headerImage: false
 tag:
