@@ -1,7 +1,7 @@
 ---
 title: "Insecure Deserialization"
 layout: post
-date: 2021-06-09 12:00
+date: 2022-11-09 12:00
 tag:
 - Deserialization
 - Misconfiguration

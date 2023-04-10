@@ -174,20 +174,20 @@ template { display: none; }
 [hidden] { display: none; }
 
 .highlight .c { color: #999988; font-style: italic; }
-.highlight .err { color: #a61717; background-color: #e3d2d2; }
+.highlight .err { color: #f43434; font-weight: bold; background-color: #03030a; }
 .highlight .k { font-weight: bold; }
 .highlight .o { font-weight: bold; }
 .highlight .cm { color: #999988; font-style: italic; }
 .highlight .cp { color: #999999; font-weight: bold; }
 .highlight .c1 { color: #999988; font-style: italic; }
 .highlight .cs { color: #999999; font-weight: bold; font-style: italic; }
-.highlight .gd { color: #000000; background-color: #ffdddd; }
-.highlight .gd .x { color: #000000; background-color: #ffaaaa; }
+.highlight .gd { color: #000000; background-color: #03030a; }
+.highlight .gd .x { color: #000000; background-color: #03030a; }
 .highlight .ge { font-style: italic; }
 .highlight .gr { color: #aa0000; }
 .highlight .gh { color: #999999; }
-.highlight .gi { color: #000000; background-color: #ddffdd; }
-.highlight .gi .x { color: #000000; background-color: #aaffaa; }
+.highlight .gi { color: #000000; background-color: #03030a; }
+.highlight .gi .x { color: #000000; background-color: #03030a; }
 .highlight .go { color: #888888; }
 .highlight .gp { color: #555555; }
 .highlight .gs { font-weight: bold; }
@@ -208,7 +208,7 @@ template { display: none; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #990000; font-weight: bold; }
+.highlight .nf { color: #ed4646; font-weight: bold; }
 .highlight .nn { color: #ffffff; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
@@ -660,7 +660,7 @@ Encryption Algorithm = AES</p>
 
 <h2 id="lets-break">Let’s break</h2>
 
-<p>I used the online AES decruption application you can find it <a href="https://www.devglan.com/online-tools/aes-encryption-decryption">here</a>.
+<p>I used the online AES decryption application you can find it <a href="https://www.devglan.com/online-tools/aes-encryption-decryption">here</a>.
 Before start decrypting the json body let’s go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and <code class="language-plaintext highlighter-rouge">---</code> dashes and then follwed by the base64 encoded IV.</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">return</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">AES</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">(</span><span class="nx">r</span><span class="p">,</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Utf8</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">e</span><span class="p">),</span> <span class="p">{</span>
@@ -872,10 +872,6 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 
             
         
-            
-                
-            
-        
     
         
         
@@ -917,23 +913,27 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 
             
         
-    
-        
-        
-            
-                
-            
-        
-            
-                
-            
-        
             
                 
             
         
     
         
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
         
             
                 

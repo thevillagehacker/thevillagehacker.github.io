@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-04-09T10:23:24+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Account Takeover via manipulating Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover via manipulating Session Storage" /><published>2023-04-01T12:00:00+05:30</published><updated>2023-04-01T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-04-10T12:43:04+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Account Takeover via manipulating Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover via manipulating Session Storage" /><published>2023-04-01T12:00:00+05:30</published><updated>2023-04-01T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
 &lt;p&gt;A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application	.&lt;/p&gt;
 
 &lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
@@ -440,7 +440,7 @@ Encryption Algorithm = AES&lt;/p&gt;
 
 &lt;h2 id=&quot;lets-break&quot;&gt;Let’s break&lt;/h2&gt;
 
-&lt;p&gt;I used the online AES decruption application you can find it &lt;a href=&quot;https://www.devglan.com/online-tools/aes-encryption-decryption&quot;&gt;here&lt;/a&gt;.
+&lt;p&gt;I used the online AES decryption application you can find it &lt;a href=&quot;https://www.devglan.com/online-tools/aes-encryption-decryption&quot;&gt;here&lt;/a&gt;.
 Before start decrypting the json body let’s go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;---&lt;/code&gt; dashes and then follwed by the base64 encoded IV.&lt;/p&gt;
 
 &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CryptoJS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;enc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Utf8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -698,9 +698,190 @@ The application is nto validating the dll files, once the application is started
 Thanks for reading.&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="DLL Hijacking" /><category term="RCE" /><category term="Product Security" /><summary type="html">DLL Hijacking DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).</summary></entry><entry><title type="html">URLScrapy</title><link href="http://localhost:4000/urlscrapy/" rel="alternate" type="text/html" title="URLScrapy" /><published>2022-08-22T22:10:00+05:30</published><updated>2022-08-22T22:10:00+05:30</updated><id>http://localhost:4000/urlscrapy</id><content type="html" xml:base="http://localhost:4000/urlscrapy/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/urlscrapy.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="DLL Hijacking" /><category term="RCE" /><category term="Product Security" /><summary type="html">DLL Hijacking DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).</summary></entry><entry><title type="html">Insecure Deserialization</title><link href="http://localhost:4000/Insecure_Deserialization/" rel="alternate" type="text/html" title="Insecure Deserialization" /><published>2022-11-09T12:00:00+05:30</published><updated>2022-11-09T12:00:00+05:30</updated><id>http://localhost:4000/Insecure_Deserialization</id><content type="html" xml:base="http://localhost:4000/Insecure_Deserialization/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/1.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;urlscrapy&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;urlscrapy&lt;/a&gt;&lt;/h2&gt;
+&lt;h1 id=&quot;introduction&quot;&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Insecure Deserialization is a vulnerability that occurs when untrusted data is used to abuse the logic of an application, inflict a denial of service (DoS) attack, or even execute arbitrary code upon it being deserialized. It also occupies the #8 spot in the &lt;a href=&quot;https://www.acunetix.com/blog/articles/owasp-top-10-2017/&quot;&gt;OWASP Top 10 2017&lt;/a&gt; list.&lt;/p&gt;
+
+&lt;p&gt;To understand what insecure deserialization is, we first must understand what serialization and deserialization are. We’ll then cover some examples of insecure deserialization and how it can be used to execute code as well as discuss some possible mitigations for this class of vulnerability.&lt;/p&gt;
+
+&lt;h2 id=&quot;serialization-vs-deserialization&quot;&gt;Serialization vs deserialization&lt;/h2&gt;
+&lt;p&gt;Serialization is the process of turning some object into a data format that can be restored later. People often serialize those objects to save them to storage or send them as part of communications.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/2.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Deserialization&lt;/strong&gt; is the reverse of that process, taking data structured from some format, and rebuilding it into an object. Today, the most popular data format for serializing data is JSON. Before that, it was XML.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-insecure-deserialization&quot;&gt;What is insecure deserialization?&lt;/h2&gt;
+&lt;p&gt;Let’s first understand the whole picture here. When you learn a programming language, the first thing you learn is how to define variables, classes, and data structures that best suit your needs. Then, you learn how to manipulate them to achieve your needs. So far, they reside in memory, but sometimes, you need to store their states or share them with other systems. That’s where serialization and deserialization come into play.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-can-go-wrong-here&quot;&gt;What can go wrong here?&lt;/h2&gt;
+&lt;p&gt;When a software deserializes the user-controlled data without verification, we call it insecure deserialization. For example, an attacker might store a serialized file representing a malicious payload. The developer doesn’t perform a verification before deserializing the serialized data, then insecure deserialization will occur.&lt;/p&gt;
+
+&lt;p&gt;Most programming languages offer the ability to customize deserialization processes. Unfortunately, it’s frequently possible for an attacker to abuse these deserialization features when the application is deserializing untrusted data that the attacker controls.&lt;/p&gt;
+
+&lt;h2 id=&quot;java-serialization-and-deserialization-example-&quot;&gt;Java serialization and deserialization example:-&lt;/h2&gt;
+
+&lt;p&gt;The following is an example of the serialization and deserialization process in java.&lt;/p&gt;
+
+&lt;p&gt;This is a simple java class file in which the variables are declared&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/3.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The following below code will perform the basic serialization and deserialization process with the same objects created in the above code.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/4.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;serializing-the-objects-&quot;&gt;Serializing the objects:-&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/5.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The above code performs the serialization of the objects which are provided in the code.&lt;/p&gt;
+
+&lt;h2 id=&quot;deserializing-the-data-&quot;&gt;Deserializing the data:-&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/6.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The above code performs the deserialization of the data which was serialized before.&lt;/p&gt;
+
+&lt;h3 id=&quot;lets-run-&quot;&gt;Let’s Run:-&lt;/h3&gt;
+&lt;p&gt;Let’s run the program to see how java serializes the data. Once the program is compiled without error the java class files will be created as below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/7.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we can run the basic program,&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/8.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The program executed successfully. The objects we gave as input to the program are age, name, and nickname of a human being is serialized and stored in the file as humandata.ser.&lt;/p&gt;
+
+&lt;p&gt;Let’s view the serialized data and see if we can figure out anything from it&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Serialized data in normal view&lt;/strong&gt;
+&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/9.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Serialized data in Hex format&lt;/strong&gt;
+&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/10.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The above example is a serialized data and this is the same date that has been piped directly into the deserialization process without any verification. This is where the insecure deserialization vulnerability occurs.&lt;/p&gt;
+
+&lt;h2 id=&quot;python-serialization-and-deserialization-example-&quot;&gt;Python serialization and deserialization example:-&lt;/h2&gt;
+
+&lt;p&gt;The following is an example of serialization and deserialization in Python by using the python module for binary serialization and deserialization.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/11.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;dumps()&lt;/strong&gt; − returns a byte like an object by marshaling a Python object. Only objects of standard data types are supported for marshaling. Unsupported types raise the ValueError exception.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;loads()&lt;/strong&gt; − This function converts the byte-like object to the corresponding Python object. If the conversion doesn’t result in a valid Python object, ValueError or TypeError may be raised.&lt;/p&gt;
+
+&lt;h2 id=&quot;serialized-and-deserialized-data-&quot;&gt;Serialized and Deserialized data:-&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/12.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The above is the serialized and deserialized data using the marshal python module. The marshal module uses dumps() function to serialize the data and uses loads() function to deserialize them.&lt;/p&gt;
+
+&lt;h2 id=&quot;insecure-deserialization-to-remote-code-execution-&quot;&gt;Insecure Deserialization to Remote Code Execution:-&lt;/h2&gt;
+&lt;p&gt;The following is an example of insecure deserialization in Python. Python’s native module for binary serialization and deserialization is called pickle. This example will serialize an exploit to run the &lt;strong&gt;whoami and date&lt;/strong&gt; command, and deserialize it with pickle.loads().&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Example code to perform RCE&lt;/strong&gt;
+&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/13.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The dumps() function gets input, serializes it, and piped to the deserialization function. The serialized data is directly piped to the loads() function to perform the deserialization process without any validation.&lt;/p&gt;
+
+&lt;h3 id=&quot;lets-run--1&quot;&gt;Let’s Run:-&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Remote Code Execution&lt;/strong&gt;
+&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/14.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The above image shows the serialized data of the remote code execution command whoami and date.&lt;/p&gt;
+
+&lt;p&gt;The loads() function accepts the user-controlled serialized data without any verification in place which results in arbitrary code execution on the target.&lt;/p&gt;
+
+&lt;h3 id=&quot;example-codes-repository-&quot;&gt;Example Codes Repository:-&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/thevillagehacker/My-Presentation-Slides&quot;&gt;GitHub Repo&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-the-impact-of-insecure-deserialization&quot;&gt;What is the impact of insecure deserialization?&lt;/h2&gt;
+&lt;p&gt;The impact of insecure deserialization can be very severe because it provides an entry point to a massively increased attack surface. It allows an attacker to reuse existing application code in harmful ways, resulting in numerous other vulnerabilities, often &lt;a href=&quot;https://portswigger.net/web-security/os-command-injection&quot;&gt;remote code execution&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Even in cases where remote code execution is not possible, insecure deserialization can lead to privilege escalation, arbitrary file access, and denial-of-service attacks.&lt;/p&gt;
+
+&lt;h2 id=&quot;insecure-deserialization-tools&quot;&gt;Insecure deserialization tools.&lt;/h2&gt;
+&lt;p&gt;There are many tools that can assist you when you are hunting for insecure deserialization vulnerabilities. In the case of Java, you can use the &lt;a href=&quot;https://github.com/portswigger/java-deserialization-scanner&quot;&gt;Java Deserialization Scanner&lt;/a&gt; Burp Suite extension. It allows you to test for different libraries using predefined POP gadget chains. Then, you can use &lt;a href=&quot;https://github.com/frohoff/ysoserial&quot;&gt;Ysoserial&lt;/a&gt; to generate the appropriate payload. Therefore, I think that the most valuable tool for this vulnerability would be a good deal of white-box testing, patience, and analysis skills.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-prevent-insecure-deserialization-vulnerabilities&quot;&gt;How to prevent insecure deserialization vulnerabilities?&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Deserialization of user input should be avoided unless absolutely necessary.&lt;/li&gt;
+  &lt;li&gt;If you do need to deserialize data from untrusted sources, incorporate robust measures to make sure that the data has not been tampered with.&lt;/li&gt;
+  &lt;li&gt;If possible, you should avoid using generic deserialization features altogether.&lt;/li&gt;
+  &lt;li&gt;The method of serialization should be encrypted not encoded.&lt;/li&gt;
+  &lt;li&gt;Maintain integrity checks to prevent data tampering with the serialized objects.&lt;/li&gt;
+  &lt;li&gt;Run Deserialization code in a low privilege environment.&lt;/li&gt;
+  &lt;li&gt;Implementing integrity checks such as digital signatures on any serialized objects to prevent hostile object creation or data tampering.&lt;/li&gt;
+  &lt;li&gt;Log deserialization exceptions and failures, such as where the incoming type is not the expected type, or the deserialization throws exceptions.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;insecure-deserialization-hackerone-reports&quot;&gt;Insecure deserialization Hackerone reports&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hackerone.com/reports/562335&quot;&gt;https://hackerone.com/reports/562335&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hackerone.com/reports/153026&quot;&gt;https://hackerone.com/reports/153026&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hackerone.com/reports/415682&quot;&gt;https://hackerone.com/reports/415682&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hackerone.com/reports/350401&quot;&gt;https://hackerone.com/reports/350401&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hackerone.com/reports/350418&quot;&gt;https://hackerone.com/reports/350418&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references-&quot;&gt;References:-&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://thehackerish.com/insecure-deserialization-explained-with-examples/&quot;&gt;https://thehackerish.com/insecure-deserialization-explained-with-examples/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization&quot;&gt;https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html&quot;&gt;https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://portswigger.net/web-security/deserialization&quot;&gt;https://portswigger.net/web-security/deserialization&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thank you for reading.&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Deserialization" /><category term="Misconfiguration" /><summary type="html"></summary></entry><entry><title type="html">IDOR leads to Takeover other user’s linked bank accounts</title><link href="http://localhost:4000/IDOR/" rel="alternate" type="text/html" title="IDOR leads to Takeover other user’s linked bank accounts" /><published>2022-10-10T12:00:00+05:30</published><updated>2022-10-10T12:00:00+05:30</updated><id>http://localhost:4000/IDOR</id><content type="html" xml:base="http://localhost:4000/IDOR/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/IDOR/access-control.svg&quot; alt=&quot;preview&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;target-information&quot;&gt;Target Information&lt;/h2&gt;
+&lt;p&gt;The target is a web application which will help the organization to track and pay their invoices, bills and other transactions. It’s totally a business banking application.&lt;/p&gt;
+
+&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;p&gt;Post checking all the feature and i have figured out that the application is vulnerable to IDOR because the application performs the actions on APIs based on the input details that the application pass through the URL and in JSON Objects of the request body.&lt;/p&gt;
+
+&lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
+&lt;p&gt;I have exploited several endpoints to view and edit other organization’s users invoices, able to access their transaction details and other bills.&lt;/p&gt;
+
+&lt;p&gt;Here comes the fun part that the application have a feature that you can add your bank accounts into the application and once the account is merged the application will provide you a virtual bank account which will be like &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; from &lt;strong&gt;ABC Internet Bank&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The application allow the users to add n-number of bank accounts to the &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; so in order to quickly find  the bank account details the application have a feature to rename the account name as any nicknames like the request below,&lt;/p&gt;
+
+&lt;h2 id=&quot;request&quot;&gt;Request&lt;/h2&gt;
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;PUT /connected_banking/12345
+Host: app.abc.com
+
+{
+	&quot;bankid&quot;: 12345,
+	&quot;account_nickname&quot;: thevillagehacker,
+	&quot;account_id&quot;: 1111,
+	&quot;company_id&quot;: 0000
+}
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;response&quot;&gt;Response&lt;/h2&gt;
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;HTTP/2 200 OK
+{
+	&quot;abc_account_id&quot;: 12345,
+	&quot;account_nickname&quot;: thevillagehacker,
+	&quot;account_id&quot;: 1111,
+	&quot;company_id&quot;: 0000,
+	&quot;current_balance&quot;: XXXX.XX
+}
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The above request shows that the application is using the details of the bank id from the URL and the JSON object in the request body. So by bruteforcing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bankid&lt;/code&gt; lead me to change the nicknames of other users bank account nickname.&lt;/p&gt;
+
+&lt;p&gt;And the IDOR didn’t stopped right there, whenever i changed the nickname of users bank accounts those bank accounts were linked to my &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt;. So now other users bank accounts are linked to me and i can access their bank account details, balances, transactions and etc,&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading.&lt;/p&gt;
+
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Account Takeover" /><category term="Broken Access Control" /><category term="IDOR" /><summary type="html"></summary></entry><entry><title type="html">URLScrapy</title><link href="http://localhost:4000/urlscrapy/" rel="alternate" type="text/html" title="URLScrapy" /><published>2022-08-22T22:10:00+05:30</published><updated>2022-08-22T22:10:00+05:30</updated><id>http://localhost:4000/urlscrapy</id><content type="html" xml:base="http://localhost:4000/urlscrapy/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/urlscrapy.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;urlscrapy---github&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;urlscrapy - GitHub&lt;/a&gt;&lt;/h1&gt;
 &lt;p&gt;A web scrapper to extract the URLs embedded on the Website.&lt;/p&gt;
 
 &lt;h2 id=&quot;installation&quot;&gt;Installation&lt;/h2&gt;
@@ -727,50 +908,7 @@ go build
 
 &lt;h3 id=&quot;example&quot;&gt;Example&lt;/h3&gt;
 &lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlscrapy &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com | httpx -&amp;lt;flags&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="web scraper" /><category term="wordlist" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">IDOR leads to Takeover other user’s linked bank accounts</title><link href="http://localhost:4000/IDOR/" rel="alternate" type="text/html" title="IDOR leads to Takeover other user’s linked bank accounts" /><published>2022-08-10T12:00:00+05:30</published><updated>2022-08-10T12:00:00+05:30</updated><id>http://localhost:4000/IDOR</id><content type="html" xml:base="http://localhost:4000/IDOR/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/IDOR/access-control.svg&quot; alt=&quot;preview&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;target-information&quot;&gt;Target Information&lt;/h2&gt;
-&lt;p&gt;The target is a web application which will help the organization to track and pay their invoices, bills and other transactions. It’s totally a business banking application.&lt;/p&gt;
-
-&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
-&lt;p&gt;Post checking all the feature and i have figured out that the application is vulnerable to IDOR because the application performs the actions on APIs based on the input details that the application pass through the URL and in JSON Objects of the request body.&lt;/p&gt;
-
-&lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
-&lt;p&gt;I have exploited several endpoints to view and edit other organization’s users invoices, able to access their transaction details and other bills.&lt;/p&gt;
-
-&lt;p&gt;Here comes the fun part that the application have a feature that you can add your bank accounts into the application and once the account is merged the application will provide you a virtual bank account which will be like &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; from &lt;strong&gt;ABC Internet Bank&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;The application allow the users to add n-number of bank accounts to the &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; so in order to quickly find  the bank account details the application have a feature to rename the account name as any nicknames like the request below,&lt;/p&gt;
-
-&lt;h2 id=&quot;request&quot;&gt;Request&lt;/h2&gt;
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;PUT /connected_banking/12345
-Host: app.abc.com
-
-{
-	&quot;bankid&quot;: 12345,
-	&quot;account_nickname&quot;: thevillagehacker,
-	&quot;account_id&quot;: 1111,
-	&quot;company_id&quot;: 0000
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;response&quot;&gt;Response&lt;/h2&gt;
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/2 200 OK
-{
-	&quot;abc_account_id&quot;: 12345,
-	&quot;account_nickname&quot;: thevillagehacker,
-	&quot;account_id&quot;: 1111,
-	&quot;company_id&quot;: 0000,
-	&quot;current_balance&quot;: XXXX.XX
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;The above request shows that the application is using the details of the bank id from the URL and the JSON object in the request body. So by bruteforcing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bankid&lt;/code&gt; lead me to change the nicknames of other users bank account nickname.&lt;/p&gt;
-
-&lt;p&gt;And the IDOR didn’t stopped right there, whenever i changed the nickname of users bank accounts those bank accounts were linked to my &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt;. So now other users bank accounts are linked to me and i can access their bank account details, balances, transactions and etc,&lt;/p&gt;
-
-&lt;p&gt;Thanks for reading.&lt;/p&gt;
-
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Account Takeover" /><category term="Broken Access Control" /><category term="IDOR" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">FileFetcher</title><link href="http://localhost:4000/filefetcher/" rel="alternate" type="text/html" title="FileFetcher" /><published>2022-05-03T22:10:00+05:30</published><updated>2022-05-03T22:10:00+05:30</updated><id>http://localhost:4000/filefetcher</id><content type="html" xml:base="http://localhost:4000/filefetcher/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/filefetcher.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="web scraper" /><category term="wordlist" /><summary type="html"></summary></entry><entry><title type="html">FileFetcher</title><link href="http://localhost:4000/filefetcher/" rel="alternate" type="text/html" title="FileFetcher" /><published>2022-05-03T22:10:00+05:30</published><updated>2022-05-03T22:10:00+05:30</updated><id>http://localhost:4000/filefetcher</id><content type="html" xml:base="http://localhost:4000/filefetcher/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/filefetcher.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;filefetcher&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/FileFetcher&quot;&gt;FileFetcher&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;Fetcher fetches js, JSON, PHP, txt file endpoints, and other sensitive file endpoints like pdf, xlsx, Docx, and CSV from a list of URLs from waybackurls output and 
@@ -814,75 +952,4 @@ URLs that user-supplied as input to the fetcher.&lt;/p&gt;
 &lt;p&gt;As for now Bigfoot is only capable to check the domains which are using &lt;strong&gt;heroku, Github, AWS, Bitbucket, Shopify, Tumblr, and wordpress&lt;/strong&gt; services.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="Subdomain Takeover" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Enumerate HTTP Methods</title><link href="http://localhost:4000/enum-http-methods/" rel="alternate" type="text/html" title="Enumerate HTTP Methods" /><published>2022-03-11T22:10:00+05:30</published><updated>2022-03-11T22:10:00+05:30</updated><id>http://localhost:4000/enum-http-methods</id><content type="html" xml:base="http://localhost:4000/enum-http-methods/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/http-methods.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;http-methods&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Enum-HTTP-Methods&quot;&gt;HTTP-Methods&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Automate HTTP methods enumeration using go and python.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="HTTP-Methods" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">API Security Misconfiguration Leads to tons of PII data Leakage</title><link href="http://localhost:4000/PII-Leak/" rel="alternate" type="text/html" title="API Security Misconfiguration Leads to tons of PII data Leakage" /><published>2021-07-01T12:00:00+05:30</published><updated>2021-07-01T12:00:00+05:30</updated><id>http://localhost:4000/PII-Leak</id><content type="html" xml:base="http://localhost:4000/PII-Leak/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/misconfig.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;what-is-api-misconfiguration&quot;&gt;What is API Misconfiguration?&lt;/h1&gt;
-&lt;h2 id=&quot;api72019-security-misconfiguration&quot;&gt;API7:2019 Security Misconfiguration&lt;/h2&gt;
-&lt;p&gt;Security misconfiguration is commonly a result of insecure default configurations, incomplete or ad-hoc configurations, open cloud storage, misconfigured HTTP headers, unnecessary HTTP methods, permissive Cross-Origin resource sharing (CORS), and verbose error messages containing sensitive information.&lt;/p&gt;
-
-&lt;h2 id=&quot;target-information&quot;&gt;Target Information&lt;/h2&gt;
-&lt;p&gt;The target application is similar to uber, ola, and any other transport tracking application. The passengers can track their respective vehicles’ GPS locations to get the route information like ola, uber, and other taxi services.&lt;/p&gt;
-
-&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
-&lt;p&gt;I downloaded and installed the application in the emulator and performed static analysis and reverse engineering using MOBSF, APKtool, jadx -&amp;gt; No luck. The Application having two types of users are users=passengers, administrators.&lt;/p&gt;
-
-&lt;h2 id=&quot;playing-with-proxy&quot;&gt;Playing with proxy&lt;/h2&gt;
-&lt;p&gt;Started the proxy program (Burp Suite) and clicking all the buttons to find other vulnerabilities in the API. After playing with the proxy I got knowledge about the API that the application is using to access information.&lt;/p&gt;
-
-&lt;h2 id=&quot;api-misconfiguration-in-the-target&quot;&gt;API Misconfiguration in the target&lt;/h2&gt;
-&lt;p&gt;The Application is using a REST API. The API generates an API key and authorization token at the time of user login actions. I logged in and logged out from the application to observe how the API authorization token works. It seems the API key is default and it will not change and the authorization token changes sometimes and sometimes not. I figured out that the application needs three things to access all the information including administrator access.&lt;/p&gt;
-
-&lt;h3 id=&quot;things-that-api-requires&quot;&gt;Things that API requires&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;API Key&lt;/li&gt;
-  &lt;li&gt;Authorization Token&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;api-key&quot;&gt;API Key&lt;/h3&gt;
-&lt;p&gt;We can get the API key at the time of log in the API key never changes from its default value&lt;/p&gt;
-
-&lt;h2 id=&quot;auth-token&quot;&gt;Auth Token&lt;/h2&gt;
-&lt;p&gt;The API does not properly validate the auth token what it validates is that the token is legit or not like in the format the developer created, so all we need is an API-generated token which we can get at the time of login it does not matter whether your credentials are right or wrong.&lt;/p&gt;
-
-&lt;h3 id=&quot;administrator-username&quot;&gt;Administrator Username&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Username Enumeration&lt;/li&gt;
-  &lt;li&gt;Response Manipulation -&amp;gt; change to admin Privileges&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;response-manipulation&quot;&gt;Response Manipulation&lt;/h2&gt;
-&lt;p&gt;Here comes the fun part I created two accounts and tried to take over those accounts using the response manipulation technique. I observe the server responses when I log in as user=passenger and noticed that the JSON body having an object named role and the value is base64 encoded.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/base64_encode.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I quickly changed the role value from user to admin in base64 encoded format and boom I logged in as administrator. There are so many different endpoints present for the administrator account.&lt;/p&gt;
-
-&lt;h2 id=&quot;pii-data-leak&quot;&gt;PII Data Leak&lt;/h2&gt;
-&lt;p&gt;As I stated above to access all those endpoints we need an API key, Auth token, and Administrator username.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/leak1.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now we have all the three things that the API requires by using all those I accessed all the user=passengers PII data and vehicle information in plain Text in JSON body.&lt;/p&gt;
-
-&lt;h2 id=&quot;taking-over-other-administrator-accounts&quot;&gt;Taking Over other Administrator Accounts&lt;/h2&gt;
-&lt;p&gt;Since the API is misconfigured we can use the above-shown endpoint to enumerate the administrator usernames.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/PII_leak/leak2.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The endpoint only provides those outputs if the logged-in user is an administrator, the other normal users can’t access that information. So I prepared a bunch of username wordlists and brute-forced them and found more than 4 valid administrator usernames.&lt;/p&gt;
-
-&lt;p&gt;Then I started sending the requests with that valid username and found different PII data for each of them it seems the separate administrators have different data.&lt;/p&gt;
-
-&lt;p&gt;After some time I discovered that the API is very poorly configured which means you don’t have to be logged in to the application to access the administrator information. All we have to do to collect and craft a request with API Key, Auth token which we can get at the time of login, and valid username with all of these I can access all of the administrator information.&lt;/p&gt;
-
-&lt;h2 id=&quot;take-aways-&quot;&gt;Take-Aways:-&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Check for API documentation and collect the authentication and authorization inputs that are required to access data from the API endpoints.&lt;/li&gt;
-  &lt;li&gt;Check for API misconfigurations like does the Auth token, API key, and other auth mechanisms are validated properly.&lt;/li&gt;
-  &lt;li&gt;Check for Response manipulation attacks.&lt;/li&gt;
-  &lt;li&gt;Check for Rate Limiting vulnerability to enumerate Usernames.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Thank you for reading.&lt;/p&gt;
-
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="PII Leak" /><category term="Misconfiguration" /><summary type="html"></summary></entry></feed>
+&lt;p&gt;Automate HTTP methods enumeration using go and python.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="HTTP-Methods" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

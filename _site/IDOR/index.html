@@ -19,16 +19,14 @@
 <link rel="canonical" href="http://localhost:4000/IDOR/" />
 <meta property="og:url" content="http://localhost:4000/IDOR/" />
 <meta property="og:site_name" content="Naveen J" />
-<meta property="og:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2022-08-10T12:00:00+05:30" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
+<meta property="article:published_time" content="2022-10-10T12:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="IDOR leads to Takeover other user’s linked bank accounts" />
 <meta name="twitter:site" content="@" />
 <meta name="twitter:creator" content="@naveen" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2022-08-10T12:00:00+05:30","datePublished":"2022-08-10T12:00:00+05:30","description":"IDOR leads to Takeover other user’s bank accounts.","headline":"IDOR leads to Takeover other user’s linked bank accounts","image":"http://localhost:4000/assets/images/blogs/IDOR/access-control.svg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/IDOR/"},"url":"http://localhost:4000/IDOR/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2022-10-10T12:00:00+05:30","datePublished":"2022-10-10T12:00:00+05:30","description":"IDOR leads to Takeover other user’s bank accounts.","headline":"IDOR leads to Takeover other user’s linked bank accounts","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/IDOR/"},"url":"http://localhost:4000/IDOR/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -174,20 +172,20 @@ template { display: none; }
 [hidden] { display: none; }
 
 .highlight .c { color: #999988; font-style: italic; }
-.highlight .err { color: #a61717; background-color: #e3d2d2; }
+.highlight .err { color: #f43434; font-weight: bold; background-color: #03030a; }
 .highlight .k { font-weight: bold; }
 .highlight .o { font-weight: bold; }
 .highlight .cm { color: #999988; font-style: italic; }
 .highlight .cp { color: #999999; font-weight: bold; }
 .highlight .c1 { color: #999988; font-style: italic; }
 .highlight .cs { color: #999999; font-weight: bold; font-style: italic; }
-.highlight .gd { color: #000000; background-color: #ffdddd; }
-.highlight .gd .x { color: #000000; background-color: #ffaaaa; }
+.highlight .gd { color: #000000; background-color: #03030a; }
+.highlight .gd .x { color: #000000; background-color: #03030a; }
 .highlight .ge { font-style: italic; }
 .highlight .gr { color: #aa0000; }
 .highlight .gh { color: #999999; }
-.highlight .gi { color: #000000; background-color: #ddffdd; }
-.highlight .gi .x { color: #000000; background-color: #aaffaa; }
+.highlight .gi { color: #000000; background-color: #03030a; }
+.highlight .gi .x { color: #000000; background-color: #03030a; }
 .highlight .go { color: #888888; }
 .highlight .gp { color: #555555; }
 .highlight .gs { font-weight: bold; }
@@ -208,7 +206,7 @@ template { display: none; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #990000; font-weight: bold; }
+.highlight .nf { color: #ed4646; font-weight: bold; }
 .highlight .nn { color: #ffffff; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
@@ -506,7 +504,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 <h1 class="title">IDOR leads to Takeover other user's linked bank accounts</h1>
 
 <span class="date">
-    <time datetime="10-08-2022">Wednesday. August 10, 2022</time>
+    <time datetime="10-10-2022">Monday. October 10, 2022</time>
      - <span class="reading-time" title="Estimated read time">
     
 
@@ -545,7 +543,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 <p>The application allow the users to add n-number of bank accounts to the <strong>ABC Virtual Bank account</strong> so in order to quickly find  the bank account details the application have a feature to rename the account name as any nicknames like the request below,</p>
 
 <h2 id="request">Request</h2>
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PUT /connected_banking/12345
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">PUT /connected_banking/12345
 Host: app.abc.com
 
 {
@@ -554,10 +552,10 @@ Host: app.abc.com
 	"account_id": 1111,
 	"company_id": 0000
 }
-</code></pre></div></div>
+</span></code></pre></div></div>
 
 <h2 id="response">Response</h2>
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/2 200 OK
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">HTTP/2 200 OK
 {
 	"abc_account_id": 12345,
 	"account_nickname": thevillagehacker,
@@ -565,7 +563,7 @@ Host: app.abc.com
 	"company_id": 0000,
 	"current_balance": XXXX.XX
 }
-</code></pre></div></div>
+</span></code></pre></div></div>
 <p>The above request shows that the application is using the details of the bank id from the URL and the JSON object in the request body. So by bruteforcing the <code class="language-plaintext highlighter-rouge">bankid</code> lead me to change the nicknames of other users bank account nickname.</p>
 
 <p>And the IDOR didn’t stopped right there, whenever i changed the nickname of users bank accounts those bank accounts were linked to my <strong>ABC Virtual Bank account</strong>. So now other users bank accounts are linked to me and i can access their bank account details, balances, transactions and etc,</p>
@@ -580,6 +578,8 @@ Host: app.abc.com
         
             <a class="prev"></a>
         
+        
+            <a class="next" href="http://localhost:4000/Insecure_Deserialization/">Insecure Deserialization &raquo;</a>
         
     </div>
 
@@ -718,14 +718,6 @@ Host: app.abc.com
                 
             
         
-            
-                
-            
-                
-            
-                
-            
-        
     
         
         
@@ -799,25 +791,6 @@ Host: app.abc.com
                 
             
         
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
             
                 
             
@@ -828,6 +801,33 @@ Host: app.abc.com
         
     
         
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
         
             
                 
