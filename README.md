@@ -1,2 +1,1 @@
-# thevillagehacker.github.io
-Personal website and blog post
+# Personal website and blog post
