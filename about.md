@@ -43,7 +43,7 @@ layout: page
 </p>
 </details>
 
-<h3 style='color: #000000;'>MGK Enterprise Systems, Coimbatore - IoT Developer Intern</h3>
+<h3 style='color: #000000;'>MGK Enterprise Systems, Coimbatore - IoT Developer and Security Researcher</h3>
 <p>MARCH 2019 - AUGUST 2019</p>
 
 <details>
@@ -68,7 +68,7 @@ Received the "Out of the Box Thinker" award at SISA for demonstrating exceptiona
 Received the "Credo Award" for my consistent adherence to SISA's brand promise, demonstrating a steadfast commitment to upholding the highest standards of quality and excellence in all of my work.
 
 
-<h3 style='color: #000000;'>Security Research</h3>
+<h3 style='color: #000000;'>Security Researcher</h3>
 Identified and reported significant security vulnerabilities to a range of responsible disclosure programs, including but not limited to Mail.ru, Ruby, HealthifyMe, Swiggy, CSMoney, LMES, Palo Alto Networks, Astrazeneca, and Zebra, earning recognition for my contributions to cybersecurity.
 
 
