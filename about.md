@@ -43,7 +43,7 @@ layout: page
 </p>
 </details>
 
-<h3 style='color: #000000;'>MGK Enterprise Systems, Coimbatore - IoT Developer and Security Researcher</h3>
+<h3 style='color: #000000;'>MGK Enterprise Systems, Coimbatore - IoT Developer and Security Researcher (Intern)</h3>
 <p>MARCH 2019 - AUGUST 2019</p>
 
 <details>
