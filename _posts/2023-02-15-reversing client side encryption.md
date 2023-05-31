@@ -245,18 +245,16 @@ I have observed there was a strange behaviour in the reCAPTCHA system which is e
 We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,
 
 ```text
-HTTP/2 200 OK
-Content-Type: application/json; charset=utf-8
-Date: Sat, 18 Feb 2023 14:54:03 GMT
-Expires: Sat, 18 Feb 2023 14:54:03 GMT
-Cache-Control: private, max-age=0
-X-Content-Type-Options: nosniff
-X-Frame-Options: SAMEORIGIN
-Content-Security-Policy: frame-ancestors 'self'
-X-Xss-Protection: 1; mode=block
-Content-Length: 32
-Server: GSE
-Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+HTTP/1.1 200 OK 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 )]}'
 ["uvresp",null,null,null,2]

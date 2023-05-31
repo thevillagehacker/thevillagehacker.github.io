@@ -1,0 +1,87 @@
+<h2 id="target-background">Target Background</h2>
+<p>The target is a Multi National Company who has a billion dollar market and the stocks. The nature of the application is to create, edit and update the contents of their products/services. Once the content is published the updated contents will be pushed to the live website of the product/services page. Short form it’s a <strong>Content Management System application</strong> - its a own product of the company built using reactJS.</p>
+
+<h2 id="overview">Overview</h2>
+<p>The application does not have any sign up page as this is a CMS application only the administrator of the application can create and assign roles to the users. The home page didn’t have any sign up buttons other than the login form - username, password, submit and forgot password buttons.</p>
+
+<h3 id="recon">Recon</h3>
+<ul>
+  <li>reactJS</li>
+  <li>Amazon CDN</li>
+  <li>REST APIs</li>
+</ul>
+
+<h3 id="analyzing-loaded-source-files">Analyzing loaded source files</h3>
+<p>After analyzing the loaded source files in the application it clearlys shows that the user has to be legitimate to access the application. There were no REST API locations were mentioned in the JS files. The perfect way to proceed further is to fuzz the URL. After fuzzing the URL the signup endpoint were found <strong>https://abc.com/abc/xyz/signup.html</strong>.</p>
+
+<h2 id="misconfiguration---1">Misconfiguration - 1</h2>
+<h3 id="sign-up">Sign up</h3>
+<p>Since the application does not have the signup option in the home page and the same has been configured in the different directory than the home login page. The developer might be intentionally did it or might have used it for internal purpose or forgot to remove from the directory.</p>
+
+<p>I have signed up an account, and luckily it doesn’t ask to confirm the information provided like email confirmation to create an account sccessfully.</p>
+
+<p>After creating a user successfully, i have tried to login to the application but since the signed up user is not a legitmate user and no roles have been assigned to it, the application kept redirecting me to login page. The application contents were not accessible. But I was able to extract the embeded REST API locations from the page because we are able to login to the application but only the application pages are not available in the UI due to incorrect permissions.</p>
+
+<p>So i have decided to circle back to the login request to understand the flow and what we are missing, after successfull login the application serves the authorization token (JWT) in the Location header along with the URL. I was able to decode the JWT and it doesn’t has any values for the cognito permission which solve the question why the contents are unavailable.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"at_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ry3UaTl8rD1IPBffLSyQ7w"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e03f561e-9392-437d-abf7-48715fde4a4e"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"cognito:groups"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">""</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://cognito-idp.abc.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"cognito:username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"origin_jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"cognito:roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">""</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2kp93i4kj1ump55lid961qm7bv"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"65f7336b-1b89-45e6-b9f9-be466f24207b"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"token_use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"id"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"auth_time"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"phone_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"exp"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"iat"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">"66d3189d-e26e-454f-9b8d-7863ac4de102"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"nj@tvhsecurity.com"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>After decoding the JWT, it showed that the user doesn’t have any assigned roles to access the application pages.</p>
+
+<h3 id="fuzzing-jwt">Fuzzing JWT</h3>
+<p>In order to find the right <code class="language-plaintext highlighter-rouge">cognito groups</code> we have to fuzz the JWT payload but by adding random role permissions keywords, encoding it and sending it in the request turned to be a failure.</p>
+
+<p>But with the token i was able to download page source through curl by passing the <strong>authorization header</strong>. After downloading the page source i have used one of my own oneliners to extract the URL locations embeded in the application and I was able to successfull get a few static pages and REST API paths. We can also the <a href="https://github.com/thevillagehacker/urlscrapy">URLScrapy</a> a tool to extract the embeded location in the web page.</p>
+
+<h2 id="http-response-code">HTTP response code</h2>
+<p>I have placed all of the extracted URLs in a text file and used <strong><a href="https://github.com/projectdiscovery/httpx">HTTPX</a></strong> to check the status code and content length, luckily one of the page returned with different content length. After visiting the page it showed some static contents about the user role in the application.</p>
+
+<p>So with the help of that recon i knew there are 2 user roles in the application which are <code class="language-plaintext highlighter-rouge">editor</code> and <code class="language-plaintext highlighter-rouge">publisher</code>. The editor user can edit the contents and pubshier can approve those new contents.</p>
+
+<h2 id="checkpoint">Checkpoint</h2>
+<p>Let’s check what do we have as of now to access the application contents.</p>
+
+<ul>
+  <li>Newly signup account without any roles</li>
+  <li>user roles in the application</li>
+  <li>Working JWT token (Authorization)</li>
+</ul>
+
+<p>Alright! now we have to find a way to assign the user roles to the token and access the application contents. After playing with dev-tools for a while i have noticed there is a variable in the local storage <code class="language-plaintext highlighter-rouge">user_role</code> which is empty by the way for our user account. So i have set an value as <code class="language-plaintext highlighter-rouge">editor</code> and refreshed the page.</p>
+
+<p>Voila! the application is checking the local storage variables as well to serve the content of the application, I was able to add and edit application contents.</p>
+
+<h2 id="misconfiguration---2">Misconfiguration - 2</h2>
+<p>Now we are able to access the application which concludes that the application is using aws cognito groups as authentication only and it was not used for authorization because we were able to become an editor user in the application by adding value as <code class="language-plaintext highlighter-rouge">editor</code> to the local storage variable <code class="language-plaintext highlighter-rouge">user_role</code>.</p>
+
+<p>So we only need an legitimate authentication token to access the REST APIs, since the authorization is not implemented.</p>
+
+<h3 id="privilege-escalation">Privilege Escalation</h3>
+<p>I have escalated the privilege of <code class="language-plaintext highlighter-rouge">publisher</code> user by changing the local storage variable <code class="language-plaintext highlighter-rouge">user_role</code> to <code class="language-plaintext highlighter-rouge">publisher</code>. After refreshing the page i was able to access the publisher contents pages in which we can approve and reject contents which have been added by the editor users in the application.</p>
+
+<p>Please note that due to the non-disclosure agreement these are the only information i was allowed to share.</p>
+
+<p>Thanks for reading!</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>

@@ -1,0 +1,25 @@
+<p><img src="/assets/images/Projects/filefetcher.png" alt="img" /></p>
+
+<h2 id="filefetcher"><a href="https://github.com/thevillagehacker/FileFetcher">FileFetcher</a></h2>
+<p>Fetcher fetches js, JSON, PHP, txt file endpoints, and other sensitive file endpoints like pdf, xlsx, Docx, and CSV from a list of URLs from waybackurls output and 
+URLs that user-supplied as input to the fetcher.</p>
+
+<h2 id="prerequisite">prerequisite</h2>
+<ul>
+  <li><a href="https://github.com/tomnomnom/waybackurls">waybackurls</a></li>
+</ul>
+
+<h2 id="usage">Usage</h2>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x fetcher.sh
+</code></pre></div></div>
+
+<h3 id="to-run-fetcher-against-single-target-as-input">To run fetcher against single target as input</h3>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./fetcher.sh <span class="nt">-d</span> example.com
+</code></pre></div></div>
+
+<h3 id="to-fetch-endpoints-from-input-file-which-contains-urls">To fetch endpoints from input file which contains URLs</h3>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./fetcher.sh <span class="nt">-f</span> url.txt
+</code></pre></div></div>
+
+<h4 id="note">Note</h4>
+<p>All Output results are stored separately in results folder</p>

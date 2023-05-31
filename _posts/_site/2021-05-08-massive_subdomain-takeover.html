@@ -1,0 +1,48 @@
+<p>Hello all, It’s been a long time I hope everyone on planet earth is okay during this pandemic situation. Today I came up with a new writeup which is I found recently.</p>
+
+<p>I mostly work on responsible disclosure because I thought I can help the companies who can’t afford the pen-testing services. So let’s get started, the program is a responsible disclosure program as I always do. let’s consider the target as abc.com and I started my recon as I always do. The target has 2000+ subdomains and I thought wow I am going to have a very big time working on this target.</p>
+
+<p>So I thought let’s start with subdomain recons I used <a href="https://github.com/projectdiscovery/dnsx">dnsx</a> to recon all the subdomains CNAME records. I luckily found out that the 20 + subdomain of the target having CNAME records pointing to <a href="https://www.heroku.com/">Heroku</a> cloud services.</p>
+
+<p>So I did my homework to takeover the subdomains and I found this good article <a href="https://0xpatrik.com/subdomain-takeover-providers/">Subdomain Takeover: Identifying Providers</a>. So I quickly wanted things to be done faster and I used the grep to filter the results that match “Heroku” and got 20+ subdomains.</p>
+
+<p><strong>dnsx results</strong>
+<img src="/assets/images/blogs/Massive_subdomain_takeover/1.webp" alt="img" /></p>
+
+<p>We gotta filter the results to check if the subdomains are vulnerable or not. I quickly did this bash trick to filter out the results as below,</p>
+
+<p>First I have to extract the Heroku subdomains from the results, due to the non-disclosure agreements I can’t disclose the targets.</p>
+
+<p><code class="language-plaintext highlighter-rouge">cat vuln-subs.txt | awk ‘{print $2}’</code></p>
+
+<p><img src="/assets/images/blogs/Massive_subdomain_takeover/2.webp" alt="img" /></p>
+
+<p>Now we need to remove the open and close bracket present at the start and end of the line. Now this command will sort out our problem.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat </span>vuln-subs.txt | <span class="nb">awk</span> ‘<span class="o">{</span>print <span class="nv">$2</span><span class="o">}</span>’ | <span class="nb">awk</span> ‘<span class="o">{</span>print substr<span class="o">(</span><span class="nv">$0</span>,2,length<span class="o">()</span><span class="nt">-2</span><span class="o">)</span><span class="p">;</span><span class="o">}</span>’
+</code></pre></div></div>
+
+<p><img src="/assets/images/blogs/Massive_subdomain_takeover/3.webp" alt="img" /></p>
+
+<p>Now we got everything to automate the process. Now I can run all those subdomains with <a href="https://github.com/LukaSikic/subzy">subzy</a>.</p>
+
+<p><img src="/assets/images/blogs/Massive_subdomain_takeover/4.webp" alt="img" /></p>
+
+<p>Not all of the subdomains are vulnerable to take over, those subdomains which are not having any apps deployed on them are vulnerable to take over.</p>
+
+<p><img src="/assets/images/blogs/Massive_subdomain_takeover/5.webp" alt="img" /></p>
+
+<p>So now I have to check if there are any apps deployed on those subdomains yet. So I quickly checked the response of those subdomains to verify that the apps are deployed or not by using curl.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">cat </span>vuln-heroku-subs.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$i</span><span class="p">;</span> curl — <span class="nb">head</span> <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/blogs/Massive_subdomain_takeover/6.webp" alt="img" /></p>
+
+<p>So as per my recon, it seems the subdomains with 404 response are vulnerable takeover, I cross verified those results with subzy results and came up with this conclusion.</p>
+
+<p>I quickly created a good Proof of concept and reported to the respective company.</p>
+
+<p>Thank you for reading.</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>

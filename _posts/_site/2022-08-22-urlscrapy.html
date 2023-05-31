@@ -1,0 +1,30 @@
+<p><img src="/assets/images/Projects/urlscrapy.png" alt="img" /></p>
+
+<h1 id="urlscrapy---github"><a href="https://github.com/thevillagehacker/urlscrapy">urlscrapy - GitHub</a></h1>
+<p>A web scrapper to extract the URLs embedded on the Website.</p>
+
+<h2 id="installation">Installation</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go <span class="nb">install</span> <span class="nt">-v</span> github.com/thevillagehacker/urlscrapy@latest
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/thevillagehacker/urlscrapy.git
+<span class="nb">cd </span>urlscrapy
+go build
+</code></pre></div></div>
+<p><strong>urlscrapy</strong> binary will be created and Move the binary to the required folder and add the path to the environment variables.</p>
+
+<h2 id="usage">Usage</h2>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go run urlscrapy.go <span class="nt">-u</span> https://example.com
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>urlscrapy <span class="nt">-u</span> https://example.com
+</code></pre></div></div>
+
+<h3 id="example">Example</h3>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>urlscrapy <span class="nt">-u</span> https://example.com | httpx -&lt;flags&gt;
+</code></pre></div></div>

@@ -1,0 +1,44 @@
+<p><img src="/assets/images/blogs/IDOR/access-control.svg" alt="preview" /></p>
+
+<h2 id="target-information">Target Information</h2>
+<p>The target is a web application which will help the organization to track and pay their invoices, bills and other transactions. It’s totally a business banking application.</p>
+
+<h2 id="recon">Recon</h2>
+<p>Post checking all the feature and i have figured out that the application is vulnerable to IDOR because the application performs the actions on APIs based on the input details that the application pass through the URL and in JSON Objects of the request body.</p>
+
+<h2 id="exploitation">Exploitation</h2>
+<p>I have exploited several endpoints to view and edit other organization’s users invoices, able to access their transaction details and other bills.</p>
+
+<p>Here comes the fun part that the application have a feature that you can add your bank accounts into the application and once the account is merged the application will provide you a virtual bank account which will be like <strong>ABC Virtual Bank account</strong> from <strong>ABC Internet Bank</strong>.</p>
+
+<p>The application allow the users to add n-number of bank accounts to the <strong>ABC Virtual Bank account</strong> so in order to quickly find  the bank account details the application have a feature to rename the account name as any nicknames like the request below,</p>
+
+<h2 id="request">Request</h2>
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">PUT /connected_banking/12345
+Host: app.abc.com
+
+{
+	"bankid": 12345,
+	"account_nickname": thevillagehacker,
+	"account_id": 1111,
+	"company_id": 0000
+}
+</span></code></pre></div></div>
+
+<h2 id="response">Response</h2>
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">HTTP/2 200 OK
+{
+	"abc_account_id": 12345,
+	"account_nickname": thevillagehacker,
+	"account_id": 1111,
+	"company_id": 0000,
+	"current_balance": XXXX.XX
+}
+</span></code></pre></div></div>
+<p>The above request shows that the application is using the details of the bank id from the URL and the JSON object in the request body. So by bruteforcing the <code class="language-plaintext highlighter-rouge">bankid</code> lead me to change the nicknames of other users bank account nickname.</p>
+
+<p>And the IDOR didn’t stopped right there, whenever i changed the nickname of users bank accounts those bank accounts were linked to my <strong>ABC Virtual Bank account</strong>. So now other users bank accounts are linked to me and i can access their bank account details, balances, transactions and etc,</p>
+
+<p>Thanks for reading.</p>
+
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
