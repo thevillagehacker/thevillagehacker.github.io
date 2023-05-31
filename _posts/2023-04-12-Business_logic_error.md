@@ -90,7 +90,7 @@ The above shown is the checkout request that was sent to the server to make paym
 ## Bypass
 After a while going through the application flow and requests i decided to check the `checkout` request by digging deeper to find something. I notice there is a paramater called `quantity` which is used to create orders based on the amount of quantity a customer requires. So i changed the value of it in **negative** value.
 
-#### Manipulated Request
+### Manipulated Request
 
 ```http
 POST /api/v1/checkout HTTP/2
