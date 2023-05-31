@@ -29,7 +29,7 @@ After checking the application traffic i came to know the application is encrypt
 
 As usual while going through the JavaScript file i have found the encryption key, type of algorithm, mode and Initialization vector. So then i have used the online encryption tools to encrypt the payloads.
 
-## Playing with fire 🔥
+## Playing with fire🔥
 I have tried playing with the price parameter in the request but no luck the application validates the amount shoud be paid with the salted Hash that's been mapped with the purchase order.
 
 ### Actual Request and Response
