@@ -138,7 +138,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
   "product_id": "121212",
   "price": "10",
   "quantity": "-5",
-  "amount_to_be_paid": "50",
+  "amount_to_be_paid": "6",
   "address": "ABC city, ABC.",
   "zipcode": "123456"
 }
