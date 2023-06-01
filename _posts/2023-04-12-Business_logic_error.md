@@ -1,5 +1,5 @@
 ---
-title: "Business Logic Error: Price Manipulation"
+title: "Business Logic Error: Pay Less"
 layout: post
 date: 2023-04-12 12:00
 headerImage: false
@@ -16,7 +16,7 @@ description: Business Logic Error leads to pay less to the products/service the 
 The target is an web application which allows the users to buy prduct/services online like the ecommerce application. 
 
 ## Overview
-The Target company have disclosed a vulnerability report long back and the attak surface on the report "a hacker was able to manipulate the amount of money should be paid for the product/service in the checkout/order page". I have tried the same exact steps to check what type of validation has been implemented in the application as a fix to that issue.
+The Target company have disclosed a vulnerability report long back and the vulnerability was "a hacker was able to manipulate the amount of money should be paid for the product/service in the checkout/order page". I have tried the same exact steps to check what type of validation has been implemented in the application as a fix to that issue.
 
 ## Recon
 - Hosted on AWS
@@ -78,7 +78,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
   "saltedhash": "hashcode",
   "product_id": "121212",
   "price": "10",
-  "quantity": "-10",
+  "quantity": "10",
   "amount_to_be_paid": "100",
   "address": "ABC city, ABC.",
   "zipcode": "123456"
