@@ -94,21 +94,21 @@ After sending the request it responded with `200 OK` response, so then i changed
 As i have mentioned the `request_module` parameter is fishy, i have configured the `X-Forwarded-For: localhost:4563
 ` header in the request header in the request where the `request_module` parameter is present. Then automated the request with `sqlmap*.
 
-`Automate using Sqlmap`
+#### Automate using Sqlmap
 
 ![img](/assets/images/blogs/sqli2/1.png)
 
-`Vulnerability Confirmation`
+#### Vulnerability Confirmation
 
 After increasing the risk and level to 3 and 4 it detected the parameter is vulnerable to Boolean based SQL injection attack.
 
 ![img](/assets/images/blogs/sqli2/2.png)
 
-`Enumerating Database`
+#### Enumerating Database
 
 ![img](/assets/images/blogs/sqli2/3.png)
 
-`Available Databases`
+#### Available Databases
 
 ![img](/assets/images/blogs/sqli2/4.png)
 
