@@ -15,12 +15,23 @@ layout: page
 <summary style='color: #3697e6;'>Click to Expand</summary>
 <p>
 <ul>
-	<li>Conducted security reviews of application designs and source code using commercial applications, identifying vulnerabilities and recommending solutions.</li>
-	<li>Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring adherence to industry standards.</li>
-	<li>Conducted vulnerability and penetration testing on payment gateway applications and APIs to ensure their security.</li>
-	<li>Managed end-to-end delivery of over 150+ application security assessments, ensuring their timely completion.</li>
-	<li>Conducted 80+ application penetration tests for finance and banking software products, identifying potential security threats.</li>
-	<li>Conducted over 25+ web and mobile code review activities, ensuring code quality and security compliance.</li>
+	<li>Conducted 80+ application penetration tests for finance and banking software products, identifying potential
+	security threats.</li>
+	<li>Actively exploited identified vulnerabilities, assessing their impact on application confidentiality, integrity, and availability to assist in risk mitigation and remediation efforts.</li>
+	<li>Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring
+	adherence to industry standards.</li>
+	<li>Conducted over 25+ web and mobile source code review activities, ensuring the security compliance.</li>
+	<li>Conducted security reviews of application source codes using commercial auditing tools, identifying vulnerabilities
+	and recommending solutions.</li>
+	<li>Collaborated closely with development teams, effectively communicating findings and providing guidance on secure
+	coding practices to ensure the timely and effective resolution of identified vulnerabilities.</li>
+	<li>Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential
+	attack vectors and adherence to project requirements.</li>
+	<li>Conducted vulnerability and penetration testing for payment gateway applications and APIs to ensure their security.</li>
+	<li>Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.</li>
+	<li>Demonstrated a commitment to ongoing professional growth by conducting extensive research and staying up to
+	date with the latest security vulnerabilities, techniques, and tools, enhancing testing methodologies and maintaining
+	industry best practices.</li>
 </ul>
 </p>
 </details>
