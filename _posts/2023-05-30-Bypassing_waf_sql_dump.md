@@ -114,7 +114,7 @@ After increasing the risk and level to 3 and 4 it detected the parameter is vuln
 
 The scanning was running for almost an hour then it enumerated all the databases. Later then i have dumped the entire DB.
 
-Note: For faster enumeration of tables increase threads. 
+**Note:** *For faster enumeration of tables increase threads.* 
 
 Thanks for reading!
 
