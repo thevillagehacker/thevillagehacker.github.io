@@ -14,7 +14,7 @@ description: "Bypassing Web Application Firewall to exploit SQL injection"
 # Target Background
 The target is a web application which allows the users to manage financial stuffs, make payments in bulk, raise invoices, send messages to customers about the promo offers on the cards, etc.
 
-# Overview
+## Overview
 The application has input validations on the input fields and there is a web application firewall that detects and rejects requests with malicious pattern sent as payload in the request. But checking all the requests by clicking every buttons in the application will lead us to find a bypass for the firewall due to rookie misconfigguration.
 
 ## Recon
