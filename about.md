@@ -12,7 +12,7 @@ layout: page
 <p>SEPTEMBER 2021 - PRESENT</p>
 
 <details>
-<summary style='color: #3697e6;'>Click to Expand</summary>
+<summary style='color: #253cc3;'>Click to Expand</summary>
 <p>
 <ul>
 	<li>Conducted 80+ application penetration tests for finance and banking software products, identifying potential
@@ -40,7 +40,7 @@ layout: page
 <P>SEPTEMBER 2019 - SEPTEMBER 2021</p>
 
 <details>
-<summary style='color: #3697e6;'>Click to Expand</summary>
+<summary style='color: #253cc3;'>Click to Expand</summary>
 <p>
 <ul>
 	<li>Conducted Web Applications, Mobile applications, and Thick client Application Penetration Testing, identifying potential vulnerabilities and mitigating them.</li>
@@ -58,7 +58,7 @@ layout: page
 <p>MARCH 2019 - AUGUST 2019</p>
 
 <details>
-<summary style='color: #3697e6;'>Click to Expand</summary>
+<summary style='color: #253cc3;'>Click to Expand</summary>
 <p>
 <ul>
 	<li>Designed hardware, including microcontroller, sensors, and circuit, to meet the specific needs of clients, ensuring a high level of quality and precision.</li>
