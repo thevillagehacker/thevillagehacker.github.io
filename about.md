@@ -7,7 +7,7 @@ layout: page
 <h1><i>Naveen J</i></h1>
 <p>As an experienced Security Consultant, I possess a deep understanding of the complex challenges facing modern organizations in today's rapidly evolving threat landscape. With a proven track record of developing and implementing comprehensive security strategies and solutions, I have helped clients across a diverse range of industries to effectively mitigate risks and protect their most valuable assets. With a keen eye for detail and a commitment to delivering results, I am dedicated to helping organizations achieve and maintain the highest standards of security and compliance.</p>
 
-<h2 style='color: #3697e6;'>Work Experience</h2>
+<h2 style='color: #000000;'>Work Experience</h2>
 <h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
 <p>SEPTEMBER 2021 - PRESENT</p>
 
@@ -69,7 +69,7 @@ layout: page
 </p>
 </details>
 
-<h2 style='color: #3697e6;'>Awards and Honors</h2>
+<h2 style='color: #000000;'>Awards and Honors</h2>
 
 <h3 style='color: #000000;'>Out of the Box thinker Award</h3>
 Received the "Out of the Box Thinker" award at SISA for demonstrating exceptional creativity and innovative problem-solving skills in developing unique security strategies, resulting in successful mitigation of potential security threats, streamlined security protocols, and enhanced protection of sensitive data and assets.
