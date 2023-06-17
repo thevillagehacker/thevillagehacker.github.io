@@ -8,7 +8,7 @@ layout: page
 <p>As an experienced Security Consultant, I possess a deep understanding of the complex challenges facing modern organizations in today's rapidly evolving threat landscape. With a proven track record of developing and implementing comprehensive security strategies and solutions, I have helped clients across a diverse range of industries to effectively mitigate risks and protect their most valuable assets. With a keen eye for detail and a commitment to delivering results, I am dedicated to helping organizations achieve and maintain the highest standards of security and compliance.</p>
 
 <h2 style='color: #000000;'>Work Experience</h2>
-<h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
+<h3 style='color: #000000;'>SISA Information Security - Specialist</h3>
 <p>June 2023 - PRESENT</p>
 
 <h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
