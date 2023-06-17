@@ -1,6 +1,6 @@
 # main text of home
 title: Naveen J
-bio: Security Researcher | Web 3 Security Enthusiast
+bio: Security Researcher | Appsec Specialist @SISA Information Security | Web 3 Security Enthusiast
 
 # twitter summary info
 description: A blog about IT-Security and related stuff.
@@ -18,7 +18,7 @@ dark-theme: false
 # and specify source (external or local).
 resume: false
 resume-external: false
-# resume-url: assets/Naveen J_CV_Security_Consultant - 4years.pdf
+# resume-url: 
 
 url: https://thevillagehacker.com
 # your url: https://USERNAME.github.io
@@ -42,7 +42,7 @@ email: nvnj1998@gmail.com
 authors:
   Naveen:
     name: Naveen J
-    bio: Security Consultant | Security Researcher
+    bio: Security Researcher | Appsec Specialist @SISA Information Security | Web 3 Security Enthusiast
     external-image: false
     picture: assets/images/profile.jpg
     twitter: thevillagehackr
@@ -61,12 +61,11 @@ pagination:
   permalink: "/:num/" # pagination link that will be appended
 
 # if you don't need projects, comment the *projects* configs below
-projects: true
+projects: false
 
 # if you don't need "about" or "blog", comment them out below
 about: true
 blog: true
-archive: true
 
 # do you want to show the "read time" of the posts?
 read-time: true
