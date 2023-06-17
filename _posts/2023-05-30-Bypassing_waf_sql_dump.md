@@ -28,7 +28,7 @@ I have signed up an account and checked all the features and so far there was no
 And no luck with the results there was sensitive endpoints and so then decided to look into the SQL, XSS like injection related vulnerabilities.
 
 ## SQL Injection 💉
-After checking 100 of requests and 1000 input fields, there was one parameter that was fishy which is `request_module`. The parameter seems like a param created by the framework used by the application. I couldn't find whcih frameweokr it is but after doing some automation though `sqmap` the tool detected a possible Boolean based sql injection.
+After checking 100 of requests and 1000 input fields, there was one parameter that was fishy which is **request_module**. The parameter seems like a param created by the framework used by the application. I couldn't find whcih frameweokr it is but after doing some automation though **sqmap** the tool detected a possible Boolean based sql injection.
 
 ### WAF🛡️
 Since the application was configured with a web application firewall, all of my injection payloads has been rejected with 400 bad request. After a while my IP address has been blocked for 15 minutes.
@@ -86,13 +86,12 @@ Te: trailers
 }
 ```
 
-The API endpoint directory location starts with `internal` and has the same post request as we have saw before and there is only one more addition to the request which is the `X-Forwarded-For: localhost:4563` header in the request.
+The API endpoint directory location starts with **internal** and has the same post request as we have saw before and there is only one more addition to the request which is the X-Forwarded-For: localhost:4563** header in the request.
 
-After sending the request it responded with `200 OK` response, so then i changed the payload from the HTML to some SQL injection payloads the response was 200 OK but there was nothing to exploit.
+After sending the request it responded with **200 OK** response, so then i changed the payload from the HTML to some SQL injection payloads the response was 200 OK but there was nothing to exploit.
 
 ### Bypass 💉
-As i have mentioned the `request_module` parameter is fishy, i have configured the `X-Forwarded-For: localhost:4563
-` header in the request header in the request where the `request_module` parameter is present. Then automated the request with `sqlmap*.
+As i have mentioned the **request_module** parameter is fishy, i have configured the **X-Forwarded-For: localhost:4563** header in the request header in the request where the **request_module** parameter is present. Then automated the request with **sqlmap**.
 
 #### Automate using Sqlmap
 
