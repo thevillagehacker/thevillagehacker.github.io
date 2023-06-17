@@ -9,7 +9,10 @@ layout: page
 
 <h2 style='color: #000000;'>Work Experience</h2>
 <h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
-<p>SEPTEMBER 2021 - PRESENT</p>
+<p>June 2023 - PRESENT</p>
+
+<h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
+<p>SEPTEMBER 2021 - June 2023</p>
 
 <details>
 <summary style='color: #253cc3;'>Click to Expand</summary>
@@ -18,20 +21,14 @@ layout: page
 	<li>Conducted 80+ application penetration tests for finance and banking software products, identifying potential
 	security threats.</li>
 	<li>Actively exploited identified vulnerabilities, assessing their impact on application confidentiality, integrity, and availability to assist in risk mitigation and remediation efforts.</li>
-	<li>Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring
-	adherence to industry standards.</li>
-	<li>Conducted over 25+ web and mobile source code review activities, ensuring the security compliance.</li>
-	<li>Conducted security reviews of application source codes using commercial auditing tools, identifying vulnerabilities
+	<li>Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring adherence to industry standards.</li>
+	<li>Conducted over 25+ web and mobile source code review activities, ensuring the security compliance using commercial auditing tools, identifying vulnerabilities
 	and recommending solutions.</li>
-	<li>Collaborated closely with development teams, effectively communicating findings and providing guidance on secure
-	coding practices to ensure the timely and effective resolution of identified vulnerabilities.</li>
-	<li>Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential
-	attack vectors and adherence to project requirements.</li>
+	<li>Collaborated closely with development teams, effectively communicating findings and providing guidance on secure coding practices to ensure the timely and effective resolution of identified vulnerabilities.</li>
+	<li>Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential attack vectors and adherence to project requirements.</li>
 	<li>Conducted vulnerability and penetration testing for payment gateway applications and APIs to ensure their security.</li>
 	<li>Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.</li>
-	<li>Demonstrated a commitment to ongoing professional growth by conducting extensive research and staying up to
-	date with the latest security vulnerabilities, techniques, and tools, enhancing testing methodologies and maintaining
-	industry best practices.</li>
+	<li>Demonstrated a commitment to ongoing professional growth by conducting extensive research and staying up to date with the latest security vulnerabilities, techniques, and tools, enhancing testing methodologies and maintaining industry best practices.</li>
 </ul>
 </p>
 </details>
@@ -74,14 +71,11 @@ layout: page
 <h3 style='color: #000000;'>Out of the Box thinker Award</h3>
 Received the "Out of the Box Thinker" award at SISA for demonstrating exceptional creativity and innovative problem-solving skills in developing unique security strategies, resulting in successful mitigation of potential security threats, streamlined security protocols, and enhanced protection of sensitive data and assets.
 
-
 <h3 style='color: #000000;'>Credo Award</h3>
 Received the "Credo Award" for my consistent adherence to SISA's brand promise, demonstrating a steadfast commitment to upholding the highest standards of quality and excellence in all of my work.
 
-
 <h3 style='color: #000000;'>Security Researcher</h3>
 Identified and reported significant security vulnerabilities to a range of responsible disclosure programs, including but not limited to Mail.ru, Ruby, HealthifyMe, Swiggy, CSMoney, LMES, Palo Alto Networks, Astrazeneca, and Zebra, earning recognition for my contributions to cybersecurity.
-
 
 <h3 style='color: #000000;'>Student Mentor</h3>
 Served as a student mentor in the Internet of Things and Robotics Club at Kgisl Institute of Technology, providing guidance and support to students as they pursued their academic goals.
