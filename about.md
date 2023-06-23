@@ -5,6 +5,7 @@ layout: page
 ![Profile Image]({% if site.external-image %}{{ site.picture }}{% else %}{{ site.url }}/{{ site.picture }}{% endif %})
 
 <h1><i>Naveen J</i></h1>
+<div style='text-align: justify'>
 <p>As an experienced Security Consultant, I possess a deep understanding of the complex challenges facing modern organizations in today's rapidly evolving threat landscape. With a proven track record of developing and implementing comprehensive security strategies and solutions, I have helped clients across a diverse range of industries to effectively mitigate risks and protect their most valuable assets. With a keen eye for detail and a commitment to delivering results, I am dedicated to helping organizations achieve and maintain the highest standards of security and compliance.</p>
 
 <h2 style='color: #000000;'>Work Experience</h2>
@@ -79,3 +80,4 @@ Identified and reported significant security vulnerabilities to a range of respo
 
 <h3 style='color: #000000;'>Student Mentor</h3>
 Served as a student mentor in the Internet of Things and Robotics Club at Kgisl Institute of Technology, providing guidance and support to students as they pursued their academic goals.
+</div>
