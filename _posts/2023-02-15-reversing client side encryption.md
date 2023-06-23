@@ -228,7 +228,8 @@ Valid request body = Encrypted payload + `---` + base64 encoded IV
 }
 ```
 
-***Newly constructed request***
+**Newly constructed request**
+
 ![img](/assets/images/blogs/RE/reqandresp2.png)<br>
 
 Now it's time to exploit issues and create a huge impact. Based on the decrypted data as we can see, the application is using the CAPTCHA system to protect the application from the brute-forcing and spamming vulnerabilities. If we can find a way to bypass the CAPTCHA protection then we can convince the triager to show the real imapcts like high resource usage, spamming and by create user accounts with false data. The last part creating false accounts using false data is only applicable when the application does not have data verification system. As per the recon the application is not validating anything at all, so now we can show the impact.
