@@ -17,21 +17,16 @@ layout: page
 
 <details>
 <summary style='color: #253cc3;'>Click to Expand</summary>
-<p>
-<ul>
-	<li>Conducted 80+ application penetration tests for finance and banking software products, identifying potential
-	security threats.</li>
-	<li>Actively exploited identified vulnerabilities, assessing their impact on application confidentiality, integrity, and availability to assist in risk mitigation and remediation efforts.</li>
-	<li>Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring adherence to industry standards.</li>
-	<li>Conducted over 25+ web and mobile source code review activities, ensuring the security compliance using commercial auditing tools, identifying vulnerabilities
-	and recommending solutions.</li>
-	<li>Collaborated closely with development teams, effectively communicating findings and providing guidance on secure coding practices to ensure the timely and effective resolution of identified vulnerabilities.</li>
-	<li>Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential attack vectors and adherence to project requirements.</li>
-	<li>Conducted vulnerability and penetration testing for payment gateway applications and APIs to ensure their security.</li>
-	<li>Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.</li>
-	<li>Demonstrated a commitment to ongoing professional growth by conducting extensive research and staying up to date with the latest security vulnerabilities, techniques, and tools, enhancing testing methodologies and maintaining industry best practices.</li>
-</ul>
-</p>
+- Conducted 80+ application penetration tests for finance and banking software products, identifying potential
+security threats.<br>
+- Actively exploited identified vulnerabilities, assessing their impact on application confidentiality, integrity, and availability to assist in risk mitigation and remediation efforts.<br>
+- Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring adherence to industry standards.<br>
+- Conducted over 25+ web and mobile source code review activities, ensuring the security compliance using commercial auditing tools, identifying vulnerabilities and recommending solutions.<br>
+- Collaborated closely with development teams, effectively communicating findings and providing guidance on secure coding practices to ensure the timely and effective resolution of identified vulnerabilities.<br>
+- Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential attack vectors and adherence to project requirements.<br>
+- Conducted vulnerability and penetration testing for payment gateway applications and APIs to ensure their security.<br>
+- Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.<br>
+- Demonstrated a commitment to ongoing professional growth by conducting extensive research and staying up to date with the latest security vulnerabilities, techniques, and tools, enhancing testing methodologies and maintaining industry best practices.
 </details>
 
 <h3 style='color: #000000;'>KGiSL - GSS, Coimbatore - Information Security Engineer</h3>
@@ -39,17 +34,13 @@ layout: page
 
 <details>
 <summary style='color: #253cc3;'>Click to Expand</summary>
-<p>
-<ul>
-	<li>Conducted Web Applications, Mobile applications, and Thick client Application Penetration Testing, identifying potential vulnerabilities and mitigating them.</li>
-	<li>Utilized both automated and manual tools to perform Network penetration testing activities, ensuring the security of the organization's infrastructure.</li>
-	<li>Conducted Security audits for network devices, adhering to security standards and Minimum Security Baseline for the client.</li>
-	<li>Conducted vulnerability and compliance scanning on target machines and reviewed security results, assisting in monthly conference calls to discuss implementation and upgrade of critical infrastructure.</li>
-	<li>Analyzed security results, drew conclusions, and developed targeted testing as necessary to maintain a secure environment.</li>
-	<li>Collaborated with application developers to validate, assess, understand the root cause, and mitigate vulnerabilities, ensuring compliance with industry standards.</li>
-	<li>Developed and implemented tools and techniques to perform ongoing security assessments of the environment, ensuring continued security and compliance.</li>
-</ul>
-</p>
+- Conducted Web Applications, Mobile applications, and Thick client Application Penetration Testing, identifying potential vulnerabilities and mitigating them.<br>
+- Utilized both automated and manual tools to perform Network penetration testing activities, ensuring the security of the organization's infrastructure.<br>
+- Conducted Security audits for network devices, adhering to security standards and Minimum Security Baseline for the client.<br>
+- Conducted vulnerability and compliance scanning on target machines and reviewed security results, assisting in monthly conference calls to discuss implementation and upgrade of critical infrastructure.<br>
+- Analyzed security results, drew conclusions, and developed targeted testing as necessary to maintain a secure environment.<br>
+- Collaborated with application developers to validate, assess, understand the root cause, and mitigate vulnerabilities, ensuring compliance with industry standards.<br>
+- Developed and implemented tools and techniques to perform ongoing security assessments of the environment, ensuring continued security and compliance.
 </details>
 
 <h3 style='color: #000000;'>MGK Enterprise Systems, Coimbatore - IoT Developer and Security Researcher (Intern)</h3>
@@ -57,14 +48,10 @@ layout: page
 
 <details>
 <summary style='color: #253cc3;'>Click to Expand</summary>
-<p>
-<ul>
-	<li>Designed hardware, including microcontroller, sensors, and circuit, to meet the specific needs of clients, ensuring a high level of quality and precision.</li>
-	<li>Tested individual I/O systems, ensuring optimal performance and reliability. Additionally, performed Penetration Testing on IoT dashboard web and Android applications, identifying potential vulnerabilities and mitigating them.</li>
-	<li>Collaborated with clients to define and develop IoT roadmaps, providing technical support and making sound technical decisions to achieve their desired outcomes.</li>
-	<li>Possess a thorough understanding of IoT Strategy, standards, and protocols, ensuring adherence to industry best practices and compliance with all relevant standards.</li>
-</ul>
-</p>
+- Designed hardware, including microcontroller, sensors, and circuit, to meet the specific needs of clients, ensuring a high level of quality and precision.<br>
+- Tested individual I/O systems, ensuring optimal performance and reliability. Additionally, performed Penetration Testing on IoT dashboard web and Android applications, identifying potential vulnerabilities and mitigating them.<br>
+- Collaborated with clients to define and develop IoT roadmaps, providing technical support and making sound technical decisions to achieve their desired outcomes.<br>
+- Possess a thorough understanding of IoT Strategy, standards, and protocols, ensuring adherence to industry best practices and compliance with all relevant standards.
 </details>
 
 <h2 style='color: #000000;'>Awards and Honors</h2>
