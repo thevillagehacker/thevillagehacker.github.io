@@ -247,7 +247,7 @@ I have observed there was a strange behaviour in the reCAPTCHA system which is e
 ### Bypass
 We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,
 
-```text
+```http
 HTTP/1.1 200 OK 
 Access-Control-Allow-Origin: * 
 Content-Type: application/json; charset=utf-8 
@@ -259,7 +259,6 @@ Referrer-Policy: strict-origin-when-cross-origin
 Connection: close 
 Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-)]}'
 ["uvresp",null,null,null,2]
 ```
 
