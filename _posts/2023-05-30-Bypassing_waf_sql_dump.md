@@ -53,7 +53,7 @@ Te: trailers
 
 {
   "Titel": "Promo1",
-  "Content": "<h2>This is a winderful offer</h2><p>Hurry up tp get best deals out of it...</p>"
+  "Content": "<h2>This is a wonderful offer</h2><p>Hurry up tp get best deals out of it...</p>"
 }
 ```
 
@@ -82,7 +82,7 @@ Te: trailers
 
 {
   "Titel": "Promo1",
-  "Content": "<h2>This is a winderful offer</h2><p>Hurry up tp get best deals out of it...</p>"
+  "Content": "<h2>This is a wonderful offer</h2><p>Hurry up tp get best deals out of it...</p>"
 }
 ```
 
