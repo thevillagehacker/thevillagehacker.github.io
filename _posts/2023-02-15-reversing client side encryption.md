@@ -138,10 +138,10 @@ abc.factory('EncryptDecrypt', [
 By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.
 
 ### Handy tools to break the wall
-Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
-IV = jm8lgqa3j1d0ajus
-Encryption Mode = CBC
-Encryption Algorithm = AES
+- Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
+- IV = jm8lgqa3j1d0ajus
+- Encryption Mode = CBC
+- Encryption Algorithm = AES
 
 ## Let's break
 
