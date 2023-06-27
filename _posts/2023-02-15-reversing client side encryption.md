@@ -144,7 +144,6 @@ By reading the above code we clearly have an idea of what are the tools are requ
 - Encryption Algorithm = AES
 
 ## Let's break
-
 I used the online AES decryption application you can find it [here](https://www.devglan.com/online-tools/aes-encryption-decryption).
 Before start decrypting the json body let's go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and `---` dashes and then follwed by the base64 encoded IV.
 
