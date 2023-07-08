@@ -138,13 +138,12 @@ abc.factory('EncryptDecrypt', [
 By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.
 
 ### Handy tools to break the wall
-Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
-IV = jm8lgqa3j1d0ajus
-Encryption Mode = CBC
-Encryption Algorithm = AES
+- Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
+- IV = jm8lgqa3j1d0ajus
+- Encryption Mode = CBC
+- Encryption Algorithm = AES
 
 ## Let's break
-
 I used the online AES decryption application you can find it [here](https://www.devglan.com/online-tools/aes-encryption-decryption).
 Before start decrypting the json body let's go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and `---` dashes and then follwed by the base64 encoded IV.
 
