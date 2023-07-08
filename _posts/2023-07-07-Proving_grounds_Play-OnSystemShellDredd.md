@@ -120,7 +120,7 @@ hannah@ShellDredd:~$
 ```
 
 # Privilege Escalation
-Get SUID and GUID
+Get SUIDs and GUIDs
 
 ### SUIDs
 ```sh
@@ -160,7 +160,7 @@ Search for the exploit in GFTObins for the strange binary `mawk`
 
 ![img](/assets/images/CTF/Pg-Play/OnSystemShellDredd/suid_mawk.png)
 
-The exploit worked and i am able to view the shadow file which contains hash of the users passwords.
+The exploit worked and we are able to view the shadow file which contains hash of the users passwords.
 
 ```sh
 hannah@ShellDredd:~$ mawk '//' "/etc/shadow" | grep -iE 'root|hannah'
@@ -184,7 +184,7 @@ Will run 4 OpenMP threads
 Press 'q' or Ctrl-C to abort, almost any other key for status
 ```
 
-After a while there is no progress, so decided to check another way.
+After a while there is no progress, so lets check another way.
 
 Let's check the `/usr/bin/cpulimit` binary in GTFObins for exploits.
 
