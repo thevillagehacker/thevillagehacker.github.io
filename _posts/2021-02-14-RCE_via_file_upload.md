@@ -1,41 +1,41 @@
 ---
-title: "RCE via File Upload"
+title: "Remote Code Execution through Unrestricted File Upload"
 layout: post
 date: 2021-02-14 12:00
-tag:
+tags:
 - Remote Code Execution
 - Misconfiguration
 category: blog
-author: naveen
-description: Remote Code Execution Due to Unrestricted File Upload.
+author: Naveen
+description: This blog post describes a scenario of remote code execution (RCE) that occurred due to unrestricted file upload functionality.
 ---
 
 # Remote Code Execution
-Remote code execution (RCE) refers to the ability of a cyber attacker to access and make changes to a computer owned by another, without authority and regardless of where the computer is geographically located. RCE allows an attacker to take over a computer or a server by running arbitrary malicious software (malware).
+Remote code execution (RCE) refers to the ability of a cyber attacker to access and manipulate a computer or server without authorization, regardless of its geographic location. By exploiting RCE vulnerabilities, attackers can run arbitrary malicious software on the target system.
 
-Found a target using google dorks which having a responsible disclosure program. Let’s consider the target as abc.com the target website have no functions other than uploading CV to the company.
+During my bug hunting endeavors, I discovered a target with a responsible disclosure program using Google Dorks. For the purposes of this blog post, let's refer to the target website as abc.com. The primary functionality of this website was to allow users to upload their CVs (resumes) to the company.
 
 ## Find more Google Dorks
 [GitHub Repo](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Dorks/Google_dorks.md)
 
 ![img](/assets/images/blogs/RCE3/1.webp)
 
-So I quickly filled out all the necessary details and attached [php reverse shell](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_rev_shell.php) as attachment and uploaded.
+I proceeded to fill out the necessary details and attached a [PHP reverse shell](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_rev_shell.php) as the CV file and uploaded it.
 
 ![img](/assets/images/blogs/RCE3/2.webp)
 
-Intercepted the request and checked does this function allow to upload php files and it turns yes. They don’t have any validations on file content types and file contents.
+I intercepted the request and checked whether the file upload functionality allowed PHP files. To my surprise, it did not have any validations for file content types or file contents.
 
 ![img](/assets/images/blogs/RCE3/3.webp)
 
-So I used ngrok for PORT forwarding to gain reverse shell. I updated the IP address and PORT from ngrok and uploaded the reverse shell successfully.
+I utilized ngrok for port forwarding in order to establish a reverse shell. After updating the IP address and port with the details from ngrok, I successfully uploaded the reverse shell.
 
-The website shown the location of the uploaded files in the response, so I quickly directed to the php file location and triggered the reverse shell and the objective is completed.
+The website displayed the location of the uploaded files in the response. I quickly navigated to the location of the PHP file and triggered the reverse shell, thus achieving the objective of remote code execution.
 
 ![img](/assets/images/blogs/RCE3/4.webp)
 
-I Quickly reported the Issue to the respective company and they acknowledged the report, reproduced the issue, and rewarded me $500 for reporting the issue.
+I promptly reported the issue to the relevant company, and they acknowledged the report, reproduced the issue, and rewarded me with $500 for responsibly disclosing the vulnerability.
 
 Thank you for reading.
 
-Follow me on Twitter : [thevillagehacker](https://twitter.com/thevillagehackr)
+Follow me on Twitter: [thevillagehacker](https://twitter.com/thevillagehackr)

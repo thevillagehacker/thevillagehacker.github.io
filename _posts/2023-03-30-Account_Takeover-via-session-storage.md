@@ -1,5 +1,5 @@
 ---
-title: "Account Takeover via manipulating Session Storage"
+title: "Account Takeover Through Manipulation of Session Storage"
 layout: post
 date: 2023-03-30 12:00
 image: /assets/images/blogs/IDOR/access-control.svg
@@ -9,24 +9,24 @@ tag:
 - Account Takeover
 - Misconfiguration
 category: blog
-author: naveen
-description: Taking over other user account via manipulating the local session Storage.
+author: Naveen
+description: This blog explores the method of account takeover by manipulating the local session storage in a financial web application.
 ---
 
 # Target Background
-A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application	.
+The target of this analysis is a web application designed for financial purposes. It provides a comprehensive suite of features for generating, tracking, and reconciling invoices. Users can effectively manage payments and perform various financial activities within the application.
 
 ## Overview
-I have created a test account through the sign up functionality in the application and after logging in, the application have asked to create an organization so we can provide access to our team members and assign them a particular roles based on how they have to play in the application.
+To evaluate the application's security, I created a test account through the signup functionality. After logging in, the application prompted me to create an organization, allowing access to team members and assigning them specific roles based on their responsibilities.
 
-## Recon
-- reactJS
-- Akami Firewall
-- REST APIs
-- Cookie Authentication
+## Reconnaissance
+- ReactJS framework
+- Akamai Web Application Firewall (WAF)
+- Relies on REST APIs
+- Utilizes cookie-based authentication
 
 ## User Enumeration
-At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.
+During the login process, after entering my username and password, the application sent a request to an API endpoint to verify if the user was part of the organization or if the user existed in the database.
 
 ### Request
 ```http
@@ -52,7 +52,8 @@ Date: Wed, 29 Mar 2023 05:59:48 GMT
 X-Powered-By: Express 
 Access-Control-Allow-Origin: * 
 Content-Type: application/json; charset=utf-8 
-Content-Length: 370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" 
+Content-Length: 370 
+ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" 
 Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
 X-Frame-Options: SAMEORIGIN 
 X-Content-Type-Options: nosniff 
@@ -85,20 +86,20 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 ## Post Login
-After logging in into the application i was going through the JS files and local storages and found that the session storage which stores the information that was fetched in the response from the above user verify request. The user results are stored exactly how it was fetched from the API response.
+After logging into the application, I explored the JavaScript files and local storage. I discovered that the session storage stored information retrieved from the user verification request response, preserving the user's details.
 
 ![img](/assets/images/blogs/ATO/session_storage.png) 
 
 ## Theory
-My theory was initially to test the session storage once it might be vulnerable as the application is only using the encrypted cookies as authentication. In order to test that theory i need another user account so i have signed up another test account.
+My initial theory aimed to test the session storage vulnerability as the application solely relied on encrypted cookies for authentication. To validate this theory, I needed another user account, so I created an additional test account.
 
-Now we have 2 legitimate user accounts and we just have to test out the theory, it will work 100% if the application validates the users based on the session storage key **values**.
+With two legitimate user accounts, I tested the theory that it would work if the application verified users based on the session storage key **values**.
 
-The below screenshot shows the session storage of **User1** account.
+The screenshot below displays the session storage of the **User1** account.
 
 ![img](/assets/images/blogs/ATO/Signed_up_user.png)
 
-Now i just have to pass the **User2** account email Id in the email verify request and it will provide all the details that i want to do the manipulation.
+I simply had to pass the email ID of the **User2** account in the email verification request to obtain the desired details for manipulation.
 
 ```http
 GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
@@ -116,25 +117,25 @@ Sec-Fetch-Site: cross-site
 Te: trailers
 ```
 
-I have copied the required payload fron the JSON response and changed the session value of the **login** key. After refrshing the page i was able to login into the **User2 account**.
+I copied the required payload from the JSON response and modified the session value of the **login** key. Upon refreshing the page, I successfully logged into the **User2** account.
 
-### Notes:-
+### Notes:
 - User1 = nj@tvhsecurity.com
 - User2 = nj+1@tvhsecurity.com
 
-Since both the accounts are fresh accounts i was unable to verify the issue as it is 100% solid, so inorder to verify it i have to make some financial stuffs in the application which was not possible at the moment.
+Since both accounts were fresh and lacked real-world financial data, I was unable to definitively confirm the issue. To validate it, I needed to engage with the application's financial functionalities, which was not feasible at that time.
 
-So i decided why not to give a try for a live account. I have to enumerate the users present in the application which is nearly very easy to do all I need is a list of email Ids which belongs to the target organization.
+Therefore, I decided to try the theory with a live account. To do so, I needed to enumerate the users within the application, which was relatively simple. I compiled a list of email IDs belonging to the target organization.
 
 ## OSINT
-I have decided to do some OSINT recon on the target and get some email Id. After a while I did find some email Ids of the companies business peoples from the contact pages of the organization but all of them turned out to be a failure.
+I conducted OSINT reconnaissance on the target, searching for email IDs. While browsing through the organization's contact pages, I discovered some email IDs belonging to the company's business personnel. Unfortunately, none of them proved to be successful.
 
 ### GitHub Recon
-So i decided to do some recon on github using the dorks and found few email Ids via the issues feature. The peoples from the organization commented few issues to their product/services repository codes.
+Next, I performed reconnaissance on GitHub using specific search queries and found a few email IDs in the issues section. Individuals from the organization had commented on issues related to their product/service repositories.
 
 ![img](/assets/images/blogs/ATO/github.png)
 
-I made a list and sent it to intruder and checked the content lenght, luckily few of them are valid.
+I compiled a list of these email IDs and submitted them to Intruder to check the content length. Fortunately, a few of them yielded positive results.
 
 ## Verify User
 
@@ -160,9 +161,11 @@ Te: trailers
 HTTP/1.1 200 OK 
 Date: Wed, 29 Mar 2023 05:59:48 GMT 
 X-Powered-By: Express 
-Access-Control-Allow-Origin: * 
+Access-Control-Allow-Origin: *
+
 Content-Type: application/json; charset=utf-8 
-Content-Length: 370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" 
+Content-Length: 370 
+ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" 
 Set-Cookie: ; Path=/; HttpOnly 
 X-Frame-Options: SAMEORIGIN 
 X-Content-Type-Options: nosniff 
@@ -177,7 +180,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
   "result": [
     {
       "UserId": 10██,
-  "EmailId": "ba████████@target.com",
+      "EmailId": "ba████████@target.com",
       "RegionId": [
         300,
         300
@@ -198,10 +201,10 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 ```
 
 ## Checkpoint
-- We have valid user email
-- Details required to maipulate session value
+- We have a valid user email
+- Obtained the required details for session value manipulation
 
-### Extracted new session value
+### Extracted New Session Value
 
 ```json
 {
@@ -221,17 +224,17 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 }
 ```
 
-The above is the value that we have to pass in the session storage to test the theory.
+The above value needs to be passed to the session storage to test the theory.
 
 ## Exploitation
-Post successfully passing the extracted legitimate users details in the session storage value and after refreshing the page the application gave me access to that user's accounts.
+After successfully passing the extracted legitimate user's details in the session storage value and refreshing the page, the application granted me access to the user's account.
 
 ![exploit](/assets/images/blogs/ATO/Exploitation.png)
 
-As you can see i am able to view the invoices generated in the target user's account.
+As depicted in the screenshot, I was able to view the invoices generated in the target user's account.
 
-Please note that due to the non-disclosure agreement these are the only information i was allowed to share.
+Please note that due to non-disclosure agreements, the information shared is limited.
 
-Thanks for reading!
+Thank you for reading!
 
-Follow me on Twitter : [thevillagehacker](https://twitter.com/thevillagehackr)
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

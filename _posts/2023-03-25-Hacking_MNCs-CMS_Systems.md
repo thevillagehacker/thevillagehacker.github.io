@@ -1,42 +1,44 @@
 ---
-title: "Hacking MNC's Content Management System due to misconfiguration and lack of authorization"
+title: "Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System"
 layout: post
 date: 2023-03-25 12:00
 image: /assets/images/blogs/IDOR/access-control.svg
 headerImage: false
 tag:
-- Reading Js files
+- JavaScript Files Analysis
 - Privilege Escalation
 - Fuzzing
 - Misconfiguration
 category: blog
-author: naveen
-description: Hacking MNC's Content Management System due to misconfiguration and lack of authorization in the application.
+author: Naveen
+description: This blog discusses the exploitation of misconfigurations and authorization vulnerabilities in a Multinational Company's Content Management System (CMS) application.
 ---
 
 ## Target Background
-The target is a Multi National Company who has a billion dollar market and the stocks. The nature of the application is to create, edit and update the contents of their products/services. Once the content is published the updated contents will be pushed to the live website of the product/services page. Short form it's a **Content Management System application** - its a own product of the company built using reactJS.
+The target of this analysis is a prominent Multinational Company (MNC) with a significant market value and stock presence. The company utilizes a Content Management System (CMS) application built with ReactJS to create, edit, and update the content for their products and services. Once the content is published, it is pushed to the live website associated with the corresponding product or service.
 
 ## Overview
-The application does not have any sign up page as this is a CMS application only the administrator of the application can create and assign roles to the users. The home page didn't have any sign up buttons other than the login form - username, password, submit and forgot password buttons. 
+The CMS application lacks a sign-up page, and only the application administrator has the privilege to create user accounts and assign roles. The home page exclusively presents a login form, with no sign-up buttons. 
 
-### Recon
-- reactJS
-- Amazon CDN
+### Reconnaissance
+During the reconnaissance phase, the following technologies and components were identified:
+
+- ReactJS
+- Amazon CDN (Content Delivery Network)
 - REST APIs
 
-### Analyzing loaded source files
-After analyzing the loaded source files in the application it clearlys shows that the user has to be legitimate to access the application. There were no REST API locations were mentioned in the JS files. The perfect way to proceed further is to fuzz the URL. After fuzzing the URL the signup endpoint were found **https://abc.com/abc/xyz/signup.html**. 
+### Analysis of Loaded Source Files
+After thoroughly analyzing the loaded source files, it became evident that legitimate user credentials are required to access the application. No REST API endpoints were explicitly mentioned in the JavaScript files. To proceed further, a URL fuzzing technique was employed, leading to the discovery of the signup endpoint: **https://abc.com/abc/xyz/signup.html**.
 
 ## Misconfiguration - 1
-### Sign up
-Since the application does not have the signup option in the home page and the same has been configured in the different directory than the home login page. The developer might be intentionally did it or might have used it for internal purpose or forgot to remove from the directory.
+### Sign-up Process
+Due to the application's design, the sign-up functionality is not accessible from the home page. It appears that the developer might have intentionally kept it separate, possibly for internal use or as a legacy feature that was not removed.
 
-I have signed up an account, and luckily it doesn't ask to confirm the information provided like email confirmation to create an account sccessfully.
+By signing up for an account, it was observed that no additional confirmation steps, such as email verification, were required. The account creation process was successful without any validation of the provided information.
 
-After creating a user successfully, i have tried to login to the application but since the signed up user is not a legitmate user and no roles have been assigned to it, the application kept redirecting me to login page. The application contents were not accessible. But I was able to extract the embeded REST API locations from the page because we are able to login to the application but only the application pages are not available in the UI due to incorrect permissions.
+However, upon attempting to log in with the newly created account, it was redirected back to the login page. Since the account lacked proper authorization and assigned roles, the application denied access to its contents. Nonetheless, by examining the page, embedded REST API locations were identified, indicating that successful authentication was achieved. The only issue pertained to incorrect permissions preventing access to application pages.
 
-So i have decided to circle back to the login request to understand the flow and what we are missing, after successfull login the application serves the authorization token (JWT) in the Location header along with the URL. I was able to decode the JWT and it doesn't has any values for the cognito permission which solve the question why the contents are unavailable.
+To understand the flow and identify potential missing elements, a detailed analysis of the login request was conducted. Upon successful login, the application provided an authorization token (JWT) in the Location header. Decoding the JWT revealed that it did not contain any values for Cognito permissions, thereby explaining the unavailability of application contents.
 
 ```json
 {
@@ -62,39 +64,38 @@ So i have decided to circle back to the login request to understand the flow and
   "email": "nj@tvhsecurity.com"
 }
 ```
-After decoding the JWT, it showed that the user doesn't have any assigned roles to access the application pages.
 
-### Fuzzing JWT
-In order to find the right `cognito groups` we have to fuzz the JWT payload but by adding random role permissions keywords, encoding it and sending it in the request turned to be a failure.
+The decoded JWT revealed that the user did not possess any assigned roles to access the application pages.
 
-But with the token i was able to download page source through curl by passing the **authorization header**. After downloading the page source i have used one of my own oneliners to extract the URL locations embeded in the application and I was able to successfull get a few static pages and REST API paths. We can also the [URLScrapy](https://github.com/thevillagehacker/urlscrapy) a tool to extract the embeded location in the web page.
+### Fuzzing the JWT
+In an attempt to identify the correct "Cognito groups," the JWT payload was fuzzed by adding random role permission keywords. However, encoding and sending the modified JWT in the request did not yield any successful results.
 
-## HTTP response code
-I have placed all of the extracted URLs in a text file and used **[HTTPX](https://github.com/projectdiscovery/httpx)** to check the status code and content length, luckily one of the page returned with different content length. After visiting the page it showed some static contents about the user role in the application.
+Nevertheless, utilizing the obtained token, the page source was downloaded using curl and the "authorization header." A personal one-liner script was then utilized to extract embedded URL locations from the application. Alternatively, the tool [URLScrapy](https://github.com/thevillagehacker/urlscrapy) could also be employed to achieve this.
 
-So with the help of that recon i knew there are 2 user roles in the application which are `editor` and `publisher`. The editor user can edit the contents and pubshier can approve those new contents.
+## HTTP Response Codes
+All extracted URLs were compiled into a text file, and the tool **[HTTPX](https://github.com/projectdiscovery/httpx)** was utilized to check the status codes and content lengths. Fortunately, one of the pages returned a different content length. Upon visiting the page, static content related to user roles within the application was revealed.
+
+This reconnaissance effort revealed the presence of two user roles: "editor" and "publisher." Editors possess the ability to edit contents, while publishers can approve new content submissions made by editors.
 
 ## Checkpoint
-Let's check what do we have as of now to access the application contents.
+At this stage, the following elements are available for accessing the application contents:
 
-- Newly signup account without any roles
-- user roles in the application
-- Working JWT token (Authorization)
+- A newly signed-up account without any assigned roles
+- Knowledge of user roles within the application
+- A functioning JWT token (Authorization)
 
-Alright! now we have to find a way to assign the user roles to the token and access the application contents. After playing with dev-tools for a while i have noticed there is a variable in the local storage `user_role` which is empty by the way for our user account. So i have set an value as `editor` and refreshed the page.
-
-Voila! the application is checking the local storage variables as well to serve the content of the application, I was able to add and edit application contents.
+With these resources in hand, the next step is to find a way to assign user roles to the token and gain access to the application contents. Through experimentation with the browser's developer tools, it was discovered that a local storage variable, "user_role," was present but had no value assigned for our user account. By setting its value to "editor" and refreshing the page, the application started utilizing the local storage variables to determine content access. As a result, the ability to add and edit application contents was obtained.
 
 ## Misconfiguration - 2
-Now we are able to access the application which concludes that the application is using aws cognito groups as authentication only and it was not used for authorization because we were able to become an editor user in the application by adding value as `editor` to the local storage variable `user_role`.
+Having gained access to the application, it was determined that the application exclusively employs AWS Cognito groups for authentication, without utilizing them for authorization. This was evident from the fact that by merely adding the value "editor" to the local storage variable "user_role," one could assume the role of an editor within the application.
 
-So we only need an legitimate authentication token to access the REST APIs, since the authorization is not implemented.
+Therefore, the only requirement to access the REST APIs was a legitimate authentication token, as authorization was not properly implemented.
 
 ### Privilege Escalation
-I have escalated the privilege of `publisher` user by changing the local storage variable `user_role` to `publisher`. After refreshing the page i was able to access the publisher contents pages in which we can approve and reject contents which have been added by the editor users in the application.
+Privilege escalation was achieved by modifying the "user_role" local storage variable to "publisher." Upon refreshing the page, access to publisher content pages was obtained, enabling the approval or rejection of contents created by editor users in the application.
 
-Please note that due to the non-disclosure agreement these are the only information i was allowed to share.
+It should be noted that due to non-disclosure agreements, only limited information could be shared in this blog post.
 
-Thanks for reading!
+Thank you for reading!
 
-Follow me on Twitter : [thevillagehacker](https://twitter.com/thevillagehackr)
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

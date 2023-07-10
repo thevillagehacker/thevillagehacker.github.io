@@ -1,16 +1,17 @@
 ---
-title: "DLL Injection on one of the biggest Business Automation application"
+title: "Remote Code Execution via DLL Hijacking on a Prominent Business Automation Application"
 layout: post
 date: 2022-12-15 12:00
 headerImage: false
 tag:
 - DLL Hijacking
-- RCE
+- Remote Code Execution (RCE)
 - Product Security
 category: blog
 author: Naveen
-description: Remote Code Execution via DLL Hijacking on a #5 business automation product.
+description: An in-depth analysis of the DLL hijacking vulnerability leading to remote code execution in one of the leading business automation products.
 ---
+
 ## DLL Hijacking
 DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).
 
@@ -131,4 +132,7 @@ The application is nto validating the dll files, once the application is started
 	- Educate staff about phishing and social engineering warning signs.
 	- Strengthen your security posture by continuously monitoring your attack surface.
 	- Implement a vendor risk management solution.
+
 Thanks for reading.
+
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

@@ -1,5 +1,5 @@
 ---
-title: "Business Logic Error: Pay Less"
+title: "Exploiting Business Logic Error: Price Manipulation"
 layout: post
 date: 2023-04-12 12:00
 headerImage: false
@@ -8,29 +8,29 @@ tag:
 - Misconfiguration
 - Price Manipulation
 category: blog
-author: naveen
-description: Business Logic Error leads to pay less to the products/service the target company offers to the customers/users.
+author: Naveen
+description: This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company.
 ---
 
 # Target Background
-The target is an web application which allows the users to buy prduct/services online like the ecommerce application. 
+The target of this analysis is a web application functioning as an e-commerce platform. It facilitates online purchases of various products and services by users.
 
 ## Overview
-The Target company have disclosed a vulnerability report long back and the vulnerability was "a hacker was able to manipulate the amount of money should be paid for the product/service in the checkout/order page". I have tried the same exact steps to check what type of validation has been implemented in the application as a fix to that issue.
+The Target company previously disclosed a vulnerability report regarding a specific issue: "hackers were able to manipulate the payment amount during the checkout/order process." To understand the application's fix for this vulnerability, I attempted the same steps to examine the implemented validation mechanisms.
 
-## Recon
+## Reconnaissance
 - Hosted on AWS
-- react application
-- Mobile application also available
-- Application requests and responses are encrypted
+- Utilizes React for web application development
+- Mobile application version is also available
+- All application requests and responses are encrypted
 
-## Finding the Enc key
-After checking the application traffic i came to know the application is encrypting the JSON payloads in the requests and responses. In order to manipulate or play with the request payload i have to find the encryption and decryption keys to encrypt and decrypt the request and response.
+## Finding the Encryption Key
+Upon inspecting the application traffic, I discovered that the JSON payloads in requests and responses were encrypted. To manipulate or interact with these encrypted payloads, I needed to locate the encryption and decryption keys.
 
-As usual while going through the JavaScript file i have found the encryption key, type of algorithm, mode and Initialization vector. So then i have used the online encryption tools to encrypt the payloads.
+During my analysis of the JavaScript files, I identified the encryption key, the encryption algorithm, the mode, and the initialization vector. Armed with this information, I used online encryption tools to encrypt the payloads.
 
 ## Playing with fire🔥
-I have tried playing with the price parameter in the request but no luck the application validates the amount shoud be paid with the salted Hash that's been mapped with the purchase order.
+I attempted to modify the price parameter in the request, but the application's validation mechanism prevented any successful manipulation. The amount to be paid was validated against a salted hash that was associated with the purchase order.
 
 ### Actual Request and Response
 
@@ -85,10 +85,10 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 }
 ````
 
-The above shown is the checkout request that was sent to the server to make payments for the purchase order. The dev implemented a additional paramater `saltedhash` as the fix for the previously exploited price manipulation vulnerability.
+The above request represents a checkout request sent to the server to facilitate payment for a purchase order. To address the previously exploited price manipulation vulnerability, the developer implemented an additional parameter named `saltedhash`.
 
 ## Bypass
-After a while going through the application flow and requests i decided to check the `checkout` request by digging deeper to find something. I notice there is a paramater called `quantity` which is used to create orders based on the amount of quantity a customer requires. So i changed the value of it in **negative** value.
+During my exploration of the application flow and requests, I decided to conduct a deeper investigation of the `checkout` request. I noticed a parameter called `quantity`, which was responsible for creating orders based on the desired quantity specified by customers. I attempted to modify this value to a negative number.
 
 ### Manipulated Request
 
@@ -117,7 +117,7 @@ Te: trailers
 }
 ```
 
-After changing the paramater in negative value and sending the request the server responded with a change in the amount value. The dev haven't implemented a validation on the quantity paramter which is the variable that stores the amount `quantity` value is a signed integer so the negative values will be accepted and the backend calculation on the money to be paid will be calculated based on the amount per quantity and nummber of quantities in the cart.
+Upon sending the request with a negative value for the `quantity` parameter, the server responded by adjusting the amount to be paid accordingly. The lack of validation on the `quantity` parameter allowed negative values to be accepted. As a result, the backend calculation for the amount to be paid was based on the per-quantity price and the number of quantities in the cart.
 
 ### Response
 
@@ -144,8 +144,8 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 }
 ````
 
-Now we can pay less amount of money for the orders we place by changing the quantity value to negative values.
+By changing the `quantity` value to a negative number, it was possible to pay a reduced amount for the orders placed.
 
 Thanks for reading!
 
-Follow me on Twitter : [thevillagehacker](https://twitter.com/thevillagehackr)
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

