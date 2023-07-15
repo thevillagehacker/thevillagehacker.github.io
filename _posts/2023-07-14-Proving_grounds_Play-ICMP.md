@@ -1,7 +1,7 @@
 ---
 title: "Proving grounds Play: ICMP"
 layout: post
-date: 2023-07-15 12:00
+date: 2023-07-14 12:00
 tag: 
 - CTF
 - Offsec labs
