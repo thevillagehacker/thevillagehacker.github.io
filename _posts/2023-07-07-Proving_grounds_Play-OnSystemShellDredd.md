@@ -5,6 +5,7 @@ date: 2023-07-07 22:10
 tag: 
 - CTF
 - Offsec labs
+- OSCP
 - Writeup
 writeups: true
 hidden: true
