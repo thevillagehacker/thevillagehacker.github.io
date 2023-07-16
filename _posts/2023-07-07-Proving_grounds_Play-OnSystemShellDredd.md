@@ -8,9 +8,6 @@ tag:
 - Writeup
 writeups: true
 hidden: true
-=======
-category: blog
->>>>>>> dac5b8d8776a636829b6073315c6ebb35a7d22eb
 author: Naveen
 description: "Offsec proving grounds play linux machine writeup"
 ---
