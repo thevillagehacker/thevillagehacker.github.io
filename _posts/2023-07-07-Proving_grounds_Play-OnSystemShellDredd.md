@@ -6,7 +6,6 @@ tag:
 - CTF
 - Offsec labs
 - Writeup
-<<<<<<< HEAD
 writeups: true
 hidden: true
 =======
