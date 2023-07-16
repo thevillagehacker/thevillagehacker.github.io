@@ -5,8 +5,9 @@ date: 2023-07-07 22:10
 tag: 
 - CTF
 - Offsec labs
-- Wtriteup
-category: blog
+- Writeup
+writeups: true
+hidden: true
 author: Naveen
 description: "Offsec proving grounds play linux machine writeup"
 ---

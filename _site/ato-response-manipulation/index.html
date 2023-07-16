@@ -9,24 +9,24 @@
     <meta name=author content="Naveen J">
 
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Account Take Over by Response Manipulation | Naveen J</title>
+<title>Account Takeover through Response Manipulation | Naveen J</title>
 <meta name="generator" content="Jekyll v3.9.2" />
-<meta property="og:title" content="Account Take Over by Response Manipulation" />
-<meta name="author" content="naveen" />
+<meta property="og:title" content="Account Takeover through Response Manipulation" />
+<meta name="author" content="Naveen" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="The Story of Taking over tons of users Accounts." />
-<meta property="og:description" content="The Story of Taking over tons of users Accounts." />
+<meta name="description" content="This blog post recounts a scenario of account takeover where user accounts were compromised through response manipulation during the login process." />
+<meta property="og:description" content="This blog post recounts a scenario of account takeover where user accounts were compromised through response manipulation during the login process." />
 <link rel="canonical" href="http://localhost:4000/ato-response-manipulation/" />
 <meta property="og:url" content="http://localhost:4000/ato-response-manipulation/" />
 <meta property="og:site_name" content="Naveen J" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-02-17T12:00:00+05:30" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Account Take Over by Response Manipulation" />
+<meta property="twitter:title" content="Account Takeover through Response Manipulation" />
 <meta name="twitter:site" content="@" />
-<meta name="twitter:creator" content="@naveen" />
+<meta name="twitter:creator" content="@Naveen" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2021-02-17T12:00:00+05:30","datePublished":"2021-02-17T12:00:00+05:30","description":"The Story of Taking over tons of users Accounts.","headline":"Account Take Over by Response Manipulation","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/ato-response-manipulation/"},"url":"http://localhost:4000/ato-response-manipulation/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Naveen"},"dateModified":"2021-02-17T12:00:00+05:30","datePublished":"2021-02-17T12:00:00+05:30","description":"This blog post recounts a scenario of account takeover where user accounts were compromised through response manipulation during the login process.","headline":"Account Takeover through Response Manipulation","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/ato-response-manipulation/"},"url":"http://localhost:4000/ato-response-manipulation/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -197,17 +197,17 @@ template { display: none; }
 .highlight .kp { font-weight: bold; }
 .highlight .kr { font-weight: bold; }
 .highlight .kt { color: #445588; font-weight: bold; }
-.highlight .m { color: #32f9f9; }
-.highlight .s { color: #dd1144; }
+.highlight .m { color: #2725ff; }
+.highlight .s { color: dd1144; }
 .highlight .n { color: #333333; }
-.highlight .na { color: #32f9f9; }
+.highlight .na { color: #395aef; }
 .highlight .nb { color: #0086b3; }
 .highlight .nc { color: #445588; font-weight: bold; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #ed4646; font-weight: bold; }
-.highlight .nn { color: #ffffff; }
+.highlight .nf { color: #c44dff; font-weight: bold; }
+.highlight .nn { color: #f1771ddb; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
 .highlight .ow { font-weight: bold; }
@@ -236,11 +236,11 @@ template { display: none; }
 
 body, html { font-size: 62.5%; }
 
-body { font: 14px Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #2c2626; background: #fff; text-align: justify; }
+body { font: 18px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2626; background: #fff; text-align: left; line-height: 1.75; font-size: 1.8rem; }
 
-h1, h2, h3, h4 { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #3697e6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000000; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
-h1 { font-size: 3rem; letter-spacing: -1px; color: #3697e6; font-weight: 700; }
+h1 { font-size: 3rem; letter-spacing: 0px; color: #000000; font-weight: 700; }
 
 h2 { font-size: 2.2rem; }
 
@@ -248,14 +248,14 @@ h3 { font-size: 2rem; }
 
 h4 { font-size: 1.6rem; }
 
-a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+a { color: #253cc3; text-decoration: underline; font-weight: 300; }
 
 p { line-height: 1.7; color: #2c2626; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
 @media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
 
-strong { font-weight: 400; color: #000; }
+strong { font-weight: 400; color: #253cc3; }
 
-ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #2c2626; }
+ul li, ol li { line-height: 3rem; font-weight: 300; color: #2c2626; }
 
 img, pre, iframe { max-width: 100%; }
 
@@ -270,11 +270,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
+code { padding: 2px 3px; font-family: "Cascadia Code PL", monospace; font-size: 15px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; line-height: 20px; background: #03030a; border-radius: 2px; color: #fff; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code PL", monospace; font-size: 1.5rem; line-height: 1.6rem; border-radius: 2px; background: #f9f9f9; color: #000; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #03030a; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code PL", monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #f9f9f9; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -296,19 +296,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 1; transform: translateY(0); } }
-.home, .blog, .projects { margin-top: 125px; }
-.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
-.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.home, .blog, .writeups { margin-top: 125px; }
+.home > .list, .blog > .list, .writeups > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .writeups > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
-.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
-.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
-.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
-.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
-.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #2c2626; }
+.home > .list > .item, .blog > .list > .item, .writeups > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .writeups > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .writeups > .list > .item:hover > .url > .title { color: #253cc3; }
+.home > .list aside, .blog > .list aside, .writeups > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .writeups > .list .item:hover .url aside { color: #2c2626; }
 
-.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
-.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+.blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .writeups > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
 
 .page { margin-top: 125px; }
 .page > h1 { text-align: center; margin-bottom: 6rem; }
@@ -317,13 +317,13 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 .post { margin-top: 125px; }
 .post > .title { text-align: center; margin-bottom: 3rem; }
-.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date, .post > .post-tags { color: #253cc3; font-size: 18px; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 .post > .date { margin-bottom: 2rem; }
-.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
 .post > h2, .post > h3, .post > h4 { margin-top: 40px; }
 .post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
 .post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
-.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation { font-size: 1.6rem; display: block; width: auto; overflow: hidden; }
 .post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
 .post > .blog-navigation .next { text-align: right; }
 
@@ -331,23 +331,23 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
 .tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
 
 .tag-list > .list { padding: 0; }
 .tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
 .tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
 .tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
-.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list > .item:hover > .url > .title { color: #253cc3; }
 .tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
 .tag-list > .list .item:hover .url aside { color: #2c2626; }
 
 .author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
 .author > .toleft > .selfie { width: 90%; border-radius: 100%; }
 .author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
-.author > .toright > .name { font-size: 1.5rem; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 500; margin: 6px 0 0; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
-.author > .toright > .bio { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
 .author > .toleft { width: 10%; display: inline-block; }
@@ -366,7 +366,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .footer-main > .copyright { padding-left: 10px; }
 .footer-main > .link { display: inline; vertical-align: middle; }
 .footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
-.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .link > .icon:hover { fill: #253cc3 !important; }
 .footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
 .footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
 .footer-main > .extra > .link:hover { border-color: #aaa; }
@@ -375,16 +375,16 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
 .header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
 .header-home > .title { font-size: 4rem; margin: 0 0 13px; }
-.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #474646; width: 100%; margin: 0 auto 30px; }
 .header-home > .description a { font-weight: 200; }
 
 .nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
 .nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
-.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.8rem; padding: 20px 10px; text-decoration: none; }
 
 .nav { position: absolute; right: 0; top: 0; }
 .nav > .list { padding: 0 13px 0; }
-.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+.nav > .list > .item > .link { font-size: 1.8rem; padding: 20px 10px; }
 
 .nav-home { margin-top: 40px; text-align: center; }
 .nav-home > .list { padding: 0; }
@@ -441,7 +441,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 @media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
 
 .social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
-.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > .link:hover > svg { color: #253cc3; }
 .social-links > svg { transition: all ease-in-out 0.2s; }
 
 .spoiler { position: relative; }
@@ -480,7 +480,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
             
                 <li class="item">
-                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                    <a class="link" href="http://localhost:4000/writeups">Writeups</a>
                 </li>
             
         
@@ -501,7 +501,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 
 
-<h1 class="title">Account Take Over by Response Manipulation</h1>
+<h1 class="title">Account Takeover through Response Manipulation</h1>
 
 <span class="date">
     <time datetime="17-02-2021">Wednesday. February 17, 2021</time>
@@ -509,7 +509,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     
 
     
-        1 min
+        2 mins
     
 </span>
 
@@ -525,59 +525,63 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     </div>
 
 
+<div style="text-align: justify;">
+
 <p><img src="/assets/images/blogs/ATO/no_rate-limit/1.webp" alt="img" /></p>
 
-<p>Hi all I hope everyone is doing well. This writeup is all about account take Over vulnerability by manipulating the login response.</p>
+<p>Greetings, everyone! I hope you’re all doing well. In this write-up, I will discuss an account takeover vulnerability that I discovered by manipulating the login response.</p>
 
-<h2 id="technical-information">Technical information</h2>
-<p>I have been testing for bugs in responsible disclosure programs and as usual I found a program and read all of their rule of engagements and finally decided to check. Let’s consider the target as target.com which is a online platform to make payments, order foods and etc.I quickly signed up with necessary informations Account 1 (abc@gmail.com) as below.</p>
+<h2 id="technical-information">Technical Information</h2>
+<p>As part of my bug testing efforts in responsible disclosure programs, I came across a program that caught my interest. After thoroughly reading their rules of engagement, I decided to assess their security. For the purpose of this write-up, let’s refer to the target website as target.com, an online platform that facilitates payments and food ordering. I signed up with the necessary information for Account 1 (abc@gmail.com), as shown below.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/1.webp" alt="img" /></p>
 
-<p>After signed_up the application sent an confirmation link to the given email and I verified the email and it directed to the account settings page. I decided to logout and login again to observe how the application is handling the login request.</p>
+<p>After signing up, the application sent a confirmation link to the provided email, which I verified. Upon verification, I was directed to the account settings page. To better understand how the application handled login requests, I decided to log out and log in again.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/2.webp" alt="img" /></p>
 
-<p>I figured out that the application is using an API to authenticate the user so I intercepted the request and observe how the API handles the login process.</p>
+<p>I noticed that the application utilized an API to authenticate users. Intrigued, I intercepted the login request to observe how the API processed the login process.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/3.webp" alt="img" /></p>
 
-<p>I observed that the signup and login responses are similar but some different changes so I decided to manipulate the login response with signup response. I quickly logged out and created another account and captured the signup response of Account 2 (xyz@gmail.com).</p>
+<p>I observed that the signup and login responses were similar, but with some differences. This led me to the idea of manipulating the login response with the signup response. To proceed, I logged out and created another account, capturing the signup response for Account 2 (xyz@gmail.com).</p>
 
-<p>It’s a go time…</p>
+<p>It’s go time…</p>
 
-<p>Again Logged_in with Account 1(abc@gmail.com) same email ID but different password.</p>
+<p>Once again, I logged in with Account 1 (abc@gmail.com), using the same email ID but a different password.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/4.webp" alt="img" /></p>
 
-<p>Intercepted the login request as below.</p>
+<p>I intercepted the login request as shown below.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/5.webp" alt="img" /></p>
 
-<p>and applied do -&gt; intercept this request -&gt; response in burp suite proxy and changed the response 401 Unauthorized of login response into Account 2 (xyz@gmail.com) signup response with 200 OK.</p>
+<p>Using Burp Suite’s proxy, I applied “Do -&gt; Intercept This Request -&gt; Response” and changed the response status of the login request from 401 Unauthorized to the signup response of Account 2 (xyz@gmail.com), which returned a 200 OK status.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/6.webp" alt="img" /></p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/7.webp" alt="img" /></p>
 
-<p>and changed the email parameter in the response to Account 1 (abc@gmail.com) email ID and forwarded all the request.</p>
+<p>I also modified the email parameter in the response to reflect Account 1’s email (abc@gmail.com), and then forwarded all the requests.</p>
 
 <p><img src="/assets/images/blogs/ATO/response_manipulation/8.webp" alt="img" /></p>
 
-<p>It quickly directed me into Account 1(abc@gmail.com) settings page now I successfully logged into Account 1(abc@gmail.com) without password by manipulating the login response into signup response.</p>
+<p>As a result, I was immediately directed to Account 1’s settings page, successfully logging in without requiring a password by manipulating the login response with the signup response.</p>
 
 <p>Thank you for reading.</p>
 
-<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+<p>For more insights and updates, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
 
+
+</div>
 
 
     <div class="blog-navigation">
         
-            <a class="prev" href="http://localhost:4000/RCE_via_file_upload/">&laquo; RCE via File Upload</a>
+            <a class="prev" href="http://localhost:4000/RCE_via_file_upload/">&laquo; Remote Code Execution through Unrestricted File Upload</a>
         
         
-            <a class="next" href="http://localhost:4000/RCE_via_file_upload/">RCE via File Upload &raquo;</a>
+            <a class="next" href="http://localhost:4000/RCE_via_file_upload/">Remote Code Execution through Unrestricted File Upload &raquo;</a>
         
     </div>
 
@@ -596,12 +600,132 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
             
                 
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
                     
                     <h4>Related Posts</h4>
                     <ul>
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/Account_Takeover-via-session-storage/">Account Takeover via manipulating Session Storage
+                        <a href="http://localhost:4000/Business_logic_error/">Exploiting Business Logic Error: Price Manipulation
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+        
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Account_Takeover-via-session-storage/">Account Takeover Through Manipulation of Session Storage
                         
                         </a>
                     </li>
@@ -645,7 +769,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Hacking MNC's Content Management System due to misconfiguration and lack of authorization
+                        <a href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System
                         
                         </a>
                     </li>
@@ -715,7 +839,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/IDOR/">IDOR leads to Takeover other user's linked bank accounts
+                        <a href="http://localhost:4000/IDOR/">Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts
                         
                         </a>
                     </li>
@@ -753,93 +877,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
             
         
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-                    
-                    <li class="relatedPost">
-                        <a href="http://localhost:4000/PII-Leak/">API Security Misconfiguration Leads to tons of PII data Leakage
-                        
-                        </a>
-                    </li>
-                    
-                    
-                
-            
-        
     
         
         
@@ -872,78 +909,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
     
         
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
         
             
                 
@@ -1040,27 +1005,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
     
         
-        
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
         
             
                 
@@ -1087,21 +1031,21 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     <div class="toleft">
         <img
             class="selfie"
-            src="http://localhost:4000/"
-            alt=""
+            src="http://localhost:4000/assets/images/profile.jpg"
+            alt="Naveen J"
         />
     </div>
 
     <div class="toright">
-        <h4 class="name"></h4>
-        <p class="bio"></p>
+        <h4 class="name">Naveen J</h4>
+        <p class="bio">Security Researcher | Appsec Specialist@SISA Information Security | Web 3 Security Enthusiast</p>
 
         <div class="share">
             <!-- Note: Only use three share links if your site width is set to large -->
             <!-- If site width is set to normal, you may choose any two share links -->
             <a
                 class="twitter"
-                href="https://twitter.com/intent/tweet?text=http://localhost:4000/ato-response-manipulation/ - Account Take Over by Response Manipulation by @"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/ato-response-manipulation/ - Account Takeover through Response Manipulation by @thevillagehackr"
             >
                 <i class="fa-brands fa-twitter"></i>
                 <span class="icon-twitter">Tweet</span>
@@ -1116,7 +1060,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 <span class="icon-facebook-rect">Share</span>
             </a>
 
-            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/ato-response-manipulation/&amp;title=Account Take Over by Response Manipulation&amp;summary=The Story of Taking over tons of users Accounts.&amp;source=http://localhost:4000" target="_blank">
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/ato-response-manipulation/&amp;title=Account Takeover through Response Manipulation&amp;summary=This blog post recounts a scenario of account takeover where user accounts were compromised through response manipulation during the login process.&amp;source=http://localhost:4000" target="_blank">
                 <i class="fa-brands fa-linkedin"></i>
                 <span class="icon-linkedin">Share</span>
             </a> -->

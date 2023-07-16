@@ -1,12 +1,13 @@
 ---
 title: "Proving grounds Play: ICMP"
 layout: post
-date: 2023-07-15 12:00
+date: 2023-07-14 12:00
 tag: 
 - CTF
 - Offsec labs
 - Wtriteup
-category: blog
+writeups: true
+hidden: true
 author: Naveen
 description: "Offsec proving grounds play linux machine writeup"
 ---

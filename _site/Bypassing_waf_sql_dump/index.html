@@ -9,26 +9,24 @@
     <meta name=author content="Naveen J">
 
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Enumerate HTTP Methods | Naveen J</title>
+<title>Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities | Naveen J</title>
 <meta name="generator" content="Jekyll v3.9.2" />
-<meta property="og:title" content="Enumerate HTTP Methods" />
+<meta property="og:title" content="Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities" />
 <meta name="author" content="Naveen" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Enumerate HTTP-Methods on the web applications." />
-<meta property="og:description" content="Enumerate HTTP-Methods on the web applications." />
-<link rel="canonical" href="http://localhost:4000/enum-http-methods/" />
-<meta property="og:url" content="http://localhost:4000/enum-http-methods/" />
+<meta name="description" content="This blog delves into the techniques used to bypass a Web Application Firewall (WAF) and exploit SQL injection vulnerabilities in a financial management web application." />
+<meta property="og:description" content="This blog delves into the techniques used to bypass a Web Application Firewall (WAF) and exploit SQL injection vulnerabilities in a financial management web application." />
+<link rel="canonical" href="http://localhost:4000/Bypassing_waf_sql_dump/" />
+<meta property="og:url" content="http://localhost:4000/Bypassing_waf_sql_dump/" />
 <meta property="og:site_name" content="Naveen J" />
-<meta property="og:image" content="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2022-03-11T22:10:00+05:30" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" />
-<meta property="twitter:title" content="Enumerate HTTP Methods" />
+<meta property="article:published_time" content="2023-05-30T22:10:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities" />
 <meta name="twitter:site" content="@" />
 <meta name="twitter:creator" content="@Naveen" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Naveen"},"dateModified":"2022-03-11T22:10:00+05:30","datePublished":"2022-03-11T22:10:00+05:30","description":"Enumerate HTTP-Methods on the web applications.","headline":"Enumerate HTTP Methods","image":"https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/enum-http-methods/"},"url":"http://localhost:4000/enum-http-methods/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Naveen"},"dateModified":"2023-05-30T22:10:00+05:30","datePublished":"2023-05-30T22:10:00+05:30","description":"This blog delves into the techniques used to bypass a Web Application Firewall (WAF) and exploit SQL injection vulnerabilities in a financial management web application.","headline":"Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/Bypassing_waf_sql_dump/"},"url":"http://localhost:4000/Bypassing_waf_sql_dump/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -54,7 +52,7 @@
 <meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
 
 
-    <link rel="canonical" href="http://localhost:4000/enum-http-methods/">
+    <link rel="canonical" href="http://localhost:4000/Bypassing_waf_sql_dump/">
     <link rel="alternate" type="application/rss+xml" title="Naveen J" href="http://localhost:4000/feed.xml" />
 
     <script src="https://kit.fontawesome.com/d9b09040a7.js" crossorigin="anonymous"></script>
@@ -199,17 +197,17 @@ template { display: none; }
 .highlight .kp { font-weight: bold; }
 .highlight .kr { font-weight: bold; }
 .highlight .kt { color: #445588; font-weight: bold; }
-.highlight .m { color: #32f9f9; }
-.highlight .s { color: #dd1144; }
+.highlight .m { color: #2725ff; }
+.highlight .s { color: dd1144; }
 .highlight .n { color: #333333; }
-.highlight .na { color: #32f9f9; }
+.highlight .na { color: #395aef; }
 .highlight .nb { color: #0086b3; }
 .highlight .nc { color: #445588; font-weight: bold; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #ed4646; font-weight: bold; }
-.highlight .nn { color: #ffffff; }
+.highlight .nf { color: #c44dff; font-weight: bold; }
+.highlight .nn { color: #f1771ddb; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
 .highlight .ow { font-weight: bold; }
@@ -238,11 +236,11 @@ template { display: none; }
 
 body, html { font-size: 62.5%; }
 
-body { font: 14px Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #2c2626; background: #fff; text-align: justify; }
+body { font: 18px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2626; background: #fff; text-align: left; line-height: 1.75; font-size: 1.8rem; }
 
-h1, h2, h3, h4 { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #3697e6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000000; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
-h1 { font-size: 3rem; letter-spacing: -1px; color: #3697e6; font-weight: 700; }
+h1 { font-size: 3rem; letter-spacing: 0px; color: #000000; font-weight: 700; }
 
 h2 { font-size: 2.2rem; }
 
@@ -250,14 +248,14 @@ h3 { font-size: 2rem; }
 
 h4 { font-size: 1.6rem; }
 
-a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+a { color: #253cc3; text-decoration: underline; font-weight: 300; }
 
 p { line-height: 1.7; color: #2c2626; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
 @media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
 
-strong { font-weight: 400; color: #000; }
+strong { font-weight: 400; color: #253cc3; }
 
-ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #2c2626; }
+ul li, ol li { line-height: 3rem; font-weight: 300; color: #2c2626; }
 
 img, pre, iframe { max-width: 100%; }
 
@@ -272,11 +270,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
+code { padding: 2px 3px; font-family: "Cascadia Code PL", monospace; font-size: 15px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; line-height: 20px; background: #03030a; border-radius: 2px; color: #fff; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code PL", monospace; font-size: 1.5rem; line-height: 1.6rem; border-radius: 2px; background: #f9f9f9; color: #000; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #03030a; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code PL", monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #f9f9f9; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -298,19 +296,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 1; transform: translateY(0); } }
-.home, .blog, .projects { margin-top: 125px; }
-.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
-.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.home, .blog, .writeups { margin-top: 125px; }
+.home > .list, .blog > .list, .writeups > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .writeups > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
-.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
-.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
-.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
-.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
-.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #2c2626; }
+.home > .list > .item, .blog > .list > .item, .writeups > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .writeups > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .writeups > .list > .item:hover > .url > .title { color: #253cc3; }
+.home > .list aside, .blog > .list aside, .writeups > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .writeups > .list .item:hover .url aside { color: #2c2626; }
 
-.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
-.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+.blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .writeups > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
 
 .page { margin-top: 125px; }
 .page > h1 { text-align: center; margin-bottom: 6rem; }
@@ -319,13 +317,13 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 .post { margin-top: 125px; }
 .post > .title { text-align: center; margin-bottom: 3rem; }
-.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date, .post > .post-tags { color: #253cc3; font-size: 18px; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 .post > .date { margin-bottom: 2rem; }
-.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
 .post > h2, .post > h3, .post > h4 { margin-top: 40px; }
 .post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
 .post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
-.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation { font-size: 1.6rem; display: block; width: auto; overflow: hidden; }
 .post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
 .post > .blog-navigation .next { text-align: right; }
 
@@ -333,23 +331,23 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
 .tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
 
 .tag-list > .list { padding: 0; }
 .tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
 .tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
 .tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
-.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list > .item:hover > .url > .title { color: #253cc3; }
 .tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
 .tag-list > .list .item:hover .url aside { color: #2c2626; }
 
 .author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
 .author > .toleft > .selfie { width: 90%; border-radius: 100%; }
 .author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
-.author > .toright > .name { font-size: 1.5rem; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 500; margin: 6px 0 0; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
-.author > .toright > .bio { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
 .author > .toleft { width: 10%; display: inline-block; }
@@ -368,7 +366,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .footer-main > .copyright { padding-left: 10px; }
 .footer-main > .link { display: inline; vertical-align: middle; }
 .footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
-.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .link > .icon:hover { fill: #253cc3 !important; }
 .footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
 .footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
 .footer-main > .extra > .link:hover { border-color: #aaa; }
@@ -377,16 +375,16 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
 .header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
 .header-home > .title { font-size: 4rem; margin: 0 0 13px; }
-.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #474646; width: 100%; margin: 0 auto 30px; }
 .header-home > .description a { font-weight: 200; }
 
 .nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
 .nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
-.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.8rem; padding: 20px 10px; text-decoration: none; }
 
 .nav { position: absolute; right: 0; top: 0; }
 .nav > .list { padding: 0 13px 0; }
-.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+.nav > .list > .item > .link { font-size: 1.8rem; padding: 20px 10px; }
 
 .nav-home { margin-top: 40px; text-align: center; }
 .nav-home > .list { padding: 0; }
@@ -443,7 +441,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 @media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
 
 .social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
-.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > .link:hover > svg { color: #253cc3; }
 .social-links > svg { transition: all ease-in-out 0.2s; }
 
 .spoiler { position: relative; }
@@ -482,7 +480,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
             
                 <li class="item">
-                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                    <a class="link" href="http://localhost:4000/writeups">Writeups</a>
                 </li>
             
         
@@ -503,15 +501,15 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 
 
-<h1 class="title">Enumerate HTTP Methods</h1>
+<h1 class="title">Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities</h1>
 
 <span class="date">
-    <time datetime="11-03-2022">Friday. March 11, 2022</time>
+    <time datetime="30-05-2023">Tuesday. May 30, 2023</time>
      - <span class="reading-time" title="Estimated read time">
     
 
     
-        1 min
+        4 mins
     
 </span>
 
@@ -520,21 +518,133 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
     <div class="post-tags">
         
-            <a class="item" href="http://localhost:4000/tags/#recon">Recon</a>
+            <a class="item" href="http://localhost:4000/tags/#web-application-firewall">Web Application Firewall</a>
         
-            <a class="item" href="http://localhost:4000/tags/#http-methods">HTTP-Methods</a>
+            <a class="item" href="http://localhost:4000/tags/#bypass-techniques">Bypass Techniques</a>
         
-            <a class="item" href="http://localhost:4000/tags/#enumeration">Enumeration</a>
+            <a class="item" href="http://localhost:4000/tags/#sql-injection">SQL Injection</a>
         
     </div>
 
 
-<p><img src="/assets/images/Projects/http-methods.png" alt="img" /></p>
+<div style="text-align: justify;">
 
-<h2 id="http-methods"><a href="https://github.com/thevillagehacker/Enum-HTTP-Methods">HTTP-Methods</a></h2>
-<p>Automate HTTP methods enumeration using go and python.</p>
+<h1 id="target-background">Target Background</h1>
+
+<p>The target of this analysis is a web application developed for financial management purposes. It offers a range of features, including bulk payment management, invoicing, and sending promotional messages to customers regarding card offers.</p>
+
+<h2 id="overview">Overview</h2>
+<p>The application incorporates input validation for its fields and employs a web application firewall (WAF) to detect and reject requests containing malicious payloads. However, due to a rookie misconfiguration, manually checking each button in the application could potentially reveal a bypass for the firewall.</p>
+
+<h2 id="reconnaissance">Reconnaissance</h2>
+<ul>
+  <li>The application is built using ReactJS.</li>
+  <li>It is hosted on a non-cloud environment.</li>
+  <li>It might be running on IIS.</li>
+</ul>
+
+<h2 id="crawl-and-audit-">Crawl and Audit 🪲</h2>
+<p>I created an account and thoroughly tested all the features, but couldn’t find any vulnerabilities. To dig deeper, I utilized a custom tool I developed to identify embedded locations and URLs within the application. By enumerating all the pages and analyzing the embedded locations, I hoped to discover potential vulnerabilities, particularly SQL and cross-site scripting (XSS) injection points.</p>
+
+<h2 id="sql-injection-">SQL Injection 💉</h2>
+<p>After scrutinizing hundreds of requests and thousands of input fields, I identified a suspicious parameter named <strong>request_module</strong>. This parameter appears to be generated by the application’s underlying framework, although I couldn’t determine which framework it is. Using an automated tool called <strong>sqmap</strong>, I detected a potential Boolean-based SQL injection vulnerability.</p>
+
+<h3 id="waf️">WAF🛡️</h3>
+<p>Since the application employs a web application firewall, all of my injection payloads were rejected with a 400 Bad Request response. After a while, my IP address was blocked for 15 minutes.</p>
+
+<p>Feeling discouraged, I decided to examine the requests further. I discovered that in one endpoint, the application sends a POST request to a page where users can create HTML content to be published to their customers.</p>
+
+<h3 id="request">Request</h3>
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/api/v1/promo_offers</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
+
+{
+  "Title": "Promo1",
+  "Content": "&lt;h2&gt;This is a wonderful offer&lt;/h2&gt;&lt;p&gt;Hurry up to get the best deals out of it...&lt;/p&gt;"
+}
+</code></pre></div></div>
+
+<p>In the above request, the application publishes HTML content. The input validation for this page allows only whitelisted HTML tags and content.</p>
+
+<p>While reviewing the requests again, I came across an internal request that was likely meant for testing purposes but was unintentionally left in the production code.</p>
+
+<h3 id="internal-request">Internal Request</h3>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/internal/api/v1/promo_offers</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">X-Forwarded-For</span><span class="p">:</span> <span class="s">localhost:4563</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
+
+{
+  "Title": "Promo1",
+  "Content": "&lt;h2&gt;This is a wonderful offer&lt;/h2&gt;&lt;p&gt;Hurry up to get the best deals out of it...&lt;/p&gt;"
+}
+</code></pre></div></div>
+
+<p>The API endpoint directory location begins with <strong>internal</strong>, and it shares the same POST request as before, with the addition of the <strong>X-Forwarded-For: localhost:4563</strong> header.</p>
+
+<p>When I sent the request, it responded with a <strong>200 OK</strong> response. Consequently, I modified the payload from HTML to various SQL injection payloads, but the response remained 200 OK, suggesting no exploitable vulnerabilities.</p>
+
+<h3 id="bypass-">Bypass 💉</h3>
+<p>Considering the suspicious nature of the <strong>request_module</strong> parameter, I configured the <strong>X-Forwarded-For: localhost:4563</strong> header in the request containing the <strong>request_module</strong> parameter. I then automated this request using <strong>sqlmap</strong>.</p>
+
+<h4 id="automated-process-using-sqlmap">Automated Process using Sqlmap</h4>
+
+<p><img src="/assets/images/blogs/sqli2/1.png" alt="img" /></p>
+
+<h4 id="confirming-vulnerability">Confirming Vulnerability</h4>
+
+<p>By increasing the risk level to 3 and 4, sqlmap identified that the <strong>request_module</strong> parameter is vulnerable to a Boolean-based SQL injection attack.</p>
+
+<p><img src="/assets/images/blogs/sqli2/2.png" alt="img" /></p>
+
+<h4 id="enumerating-the-database">Enumerating the Database</h4>
+
+<p><img src="/assets/images/blogs/sqli2/3.png" alt="img" /></p>
+
+<h4 id="available-databases">Available Databases</h4>
+
+<p><img src="/assets/images/blogs/sqli2/4.png" alt="img" /></p>
+
+<p>The scanning process took approximately an hour, during which all the databases were enumerated. I then proceeded to dump the entire database.</p>
+
+<p><strong>Note:</strong> <em>To expedite the table enumeration process, increase the number of threads.</em></p>
+
+<p>Thank you for reading!</p>
+
+<p>For more insights and updates, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
 
 
+</div>
+
+
+    <div class="blog-navigation">
+        
+            <a class="prev" href="http://localhost:4000/Business_logic_error/">&laquo; Exploiting Business Logic Error: Price Manipulation</a>
+        
+        
+    </div>
 
 
 
@@ -592,116 +702,32 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
             
                 
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
                     
                     <h4>Related Posts</h4>
                     <ul>
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/urlscrapy/">URLScrapy
+                        <a href="http://localhost:4000/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability/">Unveiling the Consequences: Database Dump Exploitation through Mass Assignment Vulnerability
                         
                         </a>
                     </li>
                     
                     
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
                 
             
                 
@@ -728,11 +754,234 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     
         
         
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
             
                 
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/filefetcher/">FileFetcher
+                        <a href="http://localhost:4000/Sql-injection/">Time-Based SQL Injection to Dumping the Database
                         
                         </a>
                     </li>
@@ -740,73 +989,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                     
                 
             
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-                    
-                    <li class="relatedPost">
-                        <a href="http://localhost:4000/Bigfoot/">Bigfoot
-                        
-                        </a>
-                    </li>
-                    
-                    
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -837,138 +1019,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
     
         
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -1091,33 +1141,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
     
         
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -1155,14 +1178,14 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
     <div class="toright">
         <h4 class="name">Naveen J</h4>
-        <p class="bio">Security Consultant | Security Researcher</p>
+        <p class="bio">Security Researcher | Appsec Specialist@SISA Information Security | Web 3 Security Enthusiast</p>
 
         <div class="share">
             <!-- Note: Only use three share links if your site width is set to large -->
             <!-- If site width is set to normal, you may choose any two share links -->
             <a
                 class="twitter"
-                href="https://twitter.com/intent/tweet?text=http://localhost:4000/enum-http-methods/ - Enumerate HTTP Methods by @thevillagehackr"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/Bypassing_waf_sql_dump/ - Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities by @thevillagehackr"
             >
                 <i class="fa-brands fa-twitter"></i>
                 <span class="icon-twitter">Tweet</span>
@@ -1177,7 +1200,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 <span class="icon-facebook-rect">Share</span>
             </a>
 
-            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/enum-http-methods/&amp;title=Enumerate HTTP Methods&amp;summary=Enumerate HTTP-Methods on the web applications.&amp;source=http://localhost:4000" target="_blank">
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/Bypassing_waf_sql_dump/&amp;title=Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities&amp;summary=This blog delves into the techniques used to bypass a Web Application Firewall (WAF) and exploit SQL injection vulnerabilities in a financial management web application.&amp;source=http://localhost:4000" target="_blank">
                 <i class="fa-brands fa-linkedin"></i>
                 <span class="icon-linkedin">Share</span>
             </a> -->

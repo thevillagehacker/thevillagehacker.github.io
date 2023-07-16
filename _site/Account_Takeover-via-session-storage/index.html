@@ -9,26 +9,26 @@
     <meta name=author content="Naveen J">
 
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Account Takeover via manipulating Session Storage | Naveen J</title>
+<title>Account Takeover Through Manipulation of Session Storage | Naveen J</title>
 <meta name="generator" content="Jekyll v3.9.2" />
-<meta property="og:title" content="Account Takeover via manipulating Session Storage" />
-<meta name="author" content="naveen" />
+<meta property="og:title" content="Account Takeover Through Manipulation of Session Storage" />
+<meta name="author" content="Naveen" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Taking over other user account via manipulating the local session Storage." />
-<meta property="og:description" content="Taking over other user account via manipulating the local session Storage." />
+<meta name="description" content="This blog explores the method of account takeover by manipulating the local session storage in a financial web application." />
+<meta property="og:description" content="This blog explores the method of account takeover by manipulating the local session storage in a financial web application." />
 <link rel="canonical" href="http://localhost:4000/Account_Takeover-via-session-storage/" />
 <meta property="og:url" content="http://localhost:4000/Account_Takeover-via-session-storage/" />
 <meta property="og:site_name" content="Naveen J" />
 <meta property="og:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2023-04-01T12:00:00+05:30" />
+<meta property="article:published_time" content="2023-03-30T12:00:00+05:30" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
-<meta property="twitter:title" content="Account Takeover via manipulating Session Storage" />
+<meta property="twitter:title" content="Account Takeover Through Manipulation of Session Storage" />
 <meta name="twitter:site" content="@" />
-<meta name="twitter:creator" content="@naveen" />
+<meta name="twitter:creator" content="@Naveen" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2023-04-01T12:00:00+05:30","datePublished":"2023-04-01T12:00:00+05:30","description":"Taking over other user account via manipulating the local session Storage.","headline":"Account Takeover via manipulating Session Storage","image":"http://localhost:4000/assets/images/blogs/IDOR/access-control.svg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/Account_Takeover-via-session-storage/"},"url":"http://localhost:4000/Account_Takeover-via-session-storage/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Naveen"},"dateModified":"2023-03-30T12:00:00+05:30","datePublished":"2023-03-30T12:00:00+05:30","description":"This blog explores the method of account takeover by manipulating the local session storage in a financial web application.","headline":"Account Takeover Through Manipulation of Session Storage","image":"http://localhost:4000/assets/images/blogs/IDOR/access-control.svg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/Account_Takeover-via-session-storage/"},"url":"http://localhost:4000/Account_Takeover-via-session-storage/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -199,17 +199,17 @@ template { display: none; }
 .highlight .kp { font-weight: bold; }
 .highlight .kr { font-weight: bold; }
 .highlight .kt { color: #445588; font-weight: bold; }
-.highlight .m { color: #32f9f9; }
-.highlight .s { color: #dd1144; }
+.highlight .m { color: #2725ff; }
+.highlight .s { color: dd1144; }
 .highlight .n { color: #333333; }
-.highlight .na { color: #32f9f9; }
+.highlight .na { color: #395aef; }
 .highlight .nb { color: #0086b3; }
 .highlight .nc { color: #445588; font-weight: bold; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #ed4646; font-weight: bold; }
-.highlight .nn { color: #ffffff; }
+.highlight .nf { color: #c44dff; font-weight: bold; }
+.highlight .nn { color: #f1771ddb; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
 .highlight .ow { font-weight: bold; }
@@ -238,11 +238,11 @@ template { display: none; }
 
 body, html { font-size: 62.5%; }
 
-body { font: 14px Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #2c2626; background: #fff; text-align: justify; }
+body { font: 18px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2626; background: #fff; text-align: left; line-height: 1.75; font-size: 1.8rem; }
 
-h1, h2, h3, h4 { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #3697e6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000000; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
-h1 { font-size: 3rem; letter-spacing: -1px; color: #3697e6; font-weight: 700; }
+h1 { font-size: 3rem; letter-spacing: 0px; color: #000000; font-weight: 700; }
 
 h2 { font-size: 2.2rem; }
 
@@ -250,14 +250,14 @@ h3 { font-size: 2rem; }
 
 h4 { font-size: 1.6rem; }
 
-a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+a { color: #253cc3; text-decoration: underline; font-weight: 300; }
 
 p { line-height: 1.7; color: #2c2626; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
 @media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
 
-strong { font-weight: 400; color: #000; }
+strong { font-weight: 400; color: #253cc3; }
 
-ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #2c2626; }
+ul li, ol li { line-height: 3rem; font-weight: 300; color: #2c2626; }
 
 img, pre, iframe { max-width: 100%; }
 
@@ -272,11 +272,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
+code { padding: 2px 3px; font-family: "Cascadia Code PL", monospace; font-size: 15px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; line-height: 20px; background: #03030a; border-radius: 2px; color: #fff; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code PL", monospace; font-size: 1.5rem; line-height: 1.6rem; border-radius: 2px; background: #f9f9f9; color: #000; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #03030a; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code PL", monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #f9f9f9; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -298,19 +298,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 1; transform: translateY(0); } }
-.home, .blog, .projects { margin-top: 125px; }
-.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
-.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.home, .blog, .writeups { margin-top: 125px; }
+.home > .list, .blog > .list, .writeups > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .writeups > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
-.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
-.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
-.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
-.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
-.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #2c2626; }
+.home > .list > .item, .blog > .list > .item, .writeups > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .writeups > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .writeups > .list > .item:hover > .url > .title { color: #253cc3; }
+.home > .list aside, .blog > .list aside, .writeups > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .writeups > .list .item:hover .url aside { color: #2c2626; }
 
-.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
-.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+.blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .writeups > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
 
 .page { margin-top: 125px; }
 .page > h1 { text-align: center; margin-bottom: 6rem; }
@@ -319,13 +319,13 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 .post { margin-top: 125px; }
 .post > .title { text-align: center; margin-bottom: 3rem; }
-.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date, .post > .post-tags { color: #253cc3; font-size: 18px; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 .post > .date { margin-bottom: 2rem; }
-.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
 .post > h2, .post > h3, .post > h4 { margin-top: 40px; }
 .post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
 .post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
-.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation { font-size: 1.6rem; display: block; width: auto; overflow: hidden; }
 .post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
 .post > .blog-navigation .next { text-align: right; }
 
@@ -333,23 +333,23 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
 .tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
 
 .tag-list > .list { padding: 0; }
 .tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
 .tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
 .tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
-.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list > .item:hover > .url > .title { color: #253cc3; }
 .tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
 .tag-list > .list .item:hover .url aside { color: #2c2626; }
 
 .author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
 .author > .toleft > .selfie { width: 90%; border-radius: 100%; }
 .author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
-.author > .toright > .name { font-size: 1.5rem; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 500; margin: 6px 0 0; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
-.author > .toright > .bio { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
 .author > .toleft { width: 10%; display: inline-block; }
@@ -368,7 +368,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .footer-main > .copyright { padding-left: 10px; }
 .footer-main > .link { display: inline; vertical-align: middle; }
 .footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
-.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .link > .icon:hover { fill: #253cc3 !important; }
 .footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
 .footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
 .footer-main > .extra > .link:hover { border-color: #aaa; }
@@ -377,16 +377,16 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
 .header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
 .header-home > .title { font-size: 4rem; margin: 0 0 13px; }
-.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #474646; width: 100%; margin: 0 auto 30px; }
 .header-home > .description a { font-weight: 200; }
 
 .nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
 .nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
-.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.8rem; padding: 20px 10px; text-decoration: none; }
 
 .nav { position: absolute; right: 0; top: 0; }
 .nav > .list { padding: 0 13px 0; }
-.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+.nav > .list > .item > .link { font-size: 1.8rem; padding: 20px 10px; }
 
 .nav-home { margin-top: 40px; text-align: center; }
 .nav-home > .list { padding: 0; }
@@ -443,7 +443,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 @media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
 
 .social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
-.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > .link:hover > svg { color: #253cc3; }
 .social-links > svg { transition: all ease-in-out 0.2s; }
 
 .spoiler { position: relative; }
@@ -482,7 +482,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
             
                 <li class="item">
-                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                    <a class="link" href="http://localhost:4000/writeups">Writeups</a>
                 </li>
             
         
@@ -503,10 +503,10 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 
 
-<h1 class="title">Account Takeover via manipulating Session Storage</h1>
+<h1 class="title">Account Takeover Through Manipulation of Session Storage</h1>
 
 <span class="date">
-    <time datetime="01-04-2023">Saturday. April 01, 2023</time>
+    <time datetime="30-03-2023">Thursday. March 30, 2023</time>
      - <span class="reading-time" title="Estimated read time">
     
 
@@ -529,22 +529,24 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     </div>
 
 
+<div style="text-align: justify;">
+
 <h1 id="target-background">Target Background</h1>
-<p>A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application	.</p>
+<p>The target of this analysis is a web application designed for financial purposes. It provides a comprehensive suite of features for generating, tracking, and reconciling invoices. Users can effectively manage payments and perform various financial activities within the application.</p>
 
 <h2 id="overview">Overview</h2>
-<p>I have created a test account through the sign up functionality in the application and after logging in, the application have asked to create an organization so we can provide access to our team members and assign them a particular roles based on how they have to play in the application.</p>
+<p>To evaluate the application’s security, I created a test account through the signup functionality. After logging in, the application prompted me to create an organization, allowing access to team members and assigning them specific roles based on their responsibilities.</p>
 
-<h2 id="recon">Recon</h2>
+<h2 id="reconnaissance">Reconnaissance</h2>
 <ul>
-  <li>reactJS</li>
-  <li>Akami Firewall</li>
-  <li>REST APIs</li>
-  <li>Cookie Authentication</li>
+  <li>ReactJS framework</li>
+  <li>Akamai Web Application Firewall (WAF)</li>
+  <li>Relies on REST APIs</li>
+  <li>Utilizes cookie-based authentication</li>
 </ul>
 
 <h2 id="user-enumeration">User Enumeration</h2>
-<p>At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.</p>
+<p>During the login process, after entering my username and password, the application sent a request to an API endpoint to verify if the user was part of the organization or if the user existed in the database.</p>
 
 <h3 id="request">Request</h3>
 <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/api/v1/user?email=nj@tvhsecurity.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
@@ -568,7 +570,8 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 <span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">Express </span>
 <span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
-<span class="na">Content-Length</span><span class="p">:</span> <span class="s">370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" </span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">370 </span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" </span>
 <span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...; Path=/; HttpOnly </span>
 <span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
 <span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
@@ -601,20 +604,20 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 </span></code></pre></div></div>
 
 <h2 id="post-login">Post Login</h2>
-<p>After logging in into the application i was going through the JS files and local storages and found that the session storage which stores the information that was fetched in the response from the above user verify request. The user results are stored exactly how it was fetched from the API response.</p>
+<p>After logging into the application, I explored the JavaScript files and local storage. I discovered that the session storage stored information retrieved from the user verification request response, preserving the user’s details.</p>
 
 <p><img src="/assets/images/blogs/ATO/session_storage.png" alt="img" /></p>
 
 <h2 id="theory">Theory</h2>
-<p>My theory was initially to test the session storage once it might be vulnerable as the application is only using the encrypted cookies as authentication. In order to test that theory i need another user account so i have signed up another test account.</p>
+<p>My initial theory aimed to test the session storage vulnerability as the application solely relied on encrypted cookies for authentication. To validate this theory, I needed another user account, so I created an additional test account.</p>
 
-<p>Now we have 2 legitimate user accounts and we just have to test out the theory, it will work 100% if the application validates the users based on the session storage key <strong>values</strong>.</p>
+<p>With two legitimate user accounts, I tested the theory that it would work if the application verified users based on the session storage key <strong>values</strong>.</p>
 
-<p>The below screenshot shows the session storage of <strong>User1</strong> account.</p>
+<p>The screenshot below displays the session storage of the <strong>User1</strong> account.</p>
 
 <p><img src="/assets/images/blogs/ATO/Signed_up_user.png" alt="img" /></p>
 
-<p>Now i just have to pass the <strong>User2</strong> account email Id in the email verify request and it will provide all the details that i want to do the manipulation.</p>
+<p>I simply had to pass the email ID of the <strong>User2</strong> account in the email verification request to obtain the desired details for manipulation.</p>
 
 <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">GET</span> <span class="nn">/api/v1/user?email=nj+1@tvhsecurity.com</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
@@ -631,27 +634,27 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 <span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
 </code></pre></div></div>
 
-<p>I have copied the required payload fron the JSON response and changed the session value of the <strong>login</strong> key. After refrshing the page i was able to login into the <strong>User2 account</strong>.</p>
+<p>I copied the required payload from the JSON response and modified the session value of the <strong>login</strong> key. Upon refreshing the page, I successfully logged into the <strong>User2</strong> account.</p>
 
-<h3 id="notes-">Notes:-</h3>
+<h3 id="notes">Notes:</h3>
 <ul>
   <li>User1 = nj@tvhsecurity.com</li>
   <li>User2 = nj+1@tvhsecurity.com</li>
 </ul>
 
-<p>Since both the accounts are fresh accounts i was unable to verify the issue as it is 100% solid, so inorder to verify it i have to make some financial stuffs in the application which was not possible at the moment.</p>
+<p>Since both accounts were fresh and lacked real-world financial data, I was unable to definitively confirm the issue. To validate it, I needed to engage with the application’s financial functionalities, which was not feasible at that time.</p>
 
-<p>So i decided why not to give a try for a live account. I have to enumerate the users present in the application which is nearly very easy to do all I need is a list of email Ids which belongs to the target organization.</p>
+<p>Therefore, I decided to try the theory with a live account. To do so, I needed to enumerate the users within the application, which was relatively simple. I compiled a list of email IDs belonging to the target organization.</p>
 
 <h2 id="osint">OSINT</h2>
-<p>I have decided to do some OSINT recon on the target and get some email Id. After a while I did find some email Ids of the companies business peoples from the contact pages of the organization but all of them turned out to be a failure.</p>
+<p>I conducted OSINT reconnaissance on the target, searching for email IDs. While browsing through the organization’s contact pages, I discovered some email IDs belonging to the company’s business personnel. Unfortunately, none of them proved to be successful.</p>
 
 <h3 id="github-recon">GitHub Recon</h3>
-<p>So i decided to do some recon on github using the dorks and found few email Ids via the issues feature. The peoples from the organization commented few issues to their product/services repository codes.</p>
+<p>Next, I performed reconnaissance on GitHub using specific search queries and found a few email IDs in the issues section. Individuals from the organization had commented on issues related to their product/service repositories.</p>
 
 <p><img src="/assets/images/blogs/ATO/github.png" alt="img" /></p>
 
-<p>I made a list and sent it to intruder and checked the content lenght, luckily few of them are valid.</p>
+<p>I compiled a list of these email IDs and submitted them to Intruder to check the content length. Fortunately, a few of them yielded positive results.</p>
 
 <h2 id="verify-user">Verify User</h2>
 
@@ -675,9 +678,10 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 <div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK </span>
 <span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 29 Mar 2023 05:59:48 GMT </span>
 <span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">Express </span>
-<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">*</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
-<span class="na">Content-Length</span><span class="p">:</span> <span class="s">370 ETag: W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" </span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">370 </span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">W/"172-rQhbOJIDRtY57xxDgEWDAhUpziE" </span>
 <span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">; Path=/; HttpOnly </span>
 <span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
 <span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
@@ -692,7 +696,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
   </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
       </span><span class="nl">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="err">██</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"EmailId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ba████████@target.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"EmailId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ba████████@target.com"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"RegionId"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="mi">300</span><span class="p">,</span><span class="w">
         </span><span class="mi">300</span><span class="w">
@@ -714,11 +718,11 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 <h2 id="checkpoint">Checkpoint</h2>
 <ul>
-  <li>We have valid user email</li>
-  <li>Details required to maipulate session value</li>
+  <li>We have a valid user email</li>
+  <li>Obtained the required details for session value manipulation</li>
 </ul>
 
-<h3 id="extracted-new-session-value">Extracted new session value</h3>
+<h3 id="extracted-new-session-value">Extracted New Session Value</h3>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"UserId"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="err">██</span><span class="p">,</span><span class="w">
@@ -737,27 +741,31 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
-<p>The above is the value that we have to pass in the session storage to test the theory.</p>
+<p>The above value needs to be passed to the session storage to test the theory.</p>
 
 <h2 id="exploitation">Exploitation</h2>
-<p>Post successfully passing the extracted legitimate users details in the session storage value and after refreshing the page the application gave me access to that user’s accounts.</p>
+<p>After successfully passing the extracted legitimate user’s details in the session storage value and refreshing the page, the application granted me access to the user’s account.</p>
 
 <p><img src="/assets/images/blogs/ATO/Exploitation.png" alt="exploit" /></p>
 
-<p>As you can see i am able to view the invoices generated in the target user’s account.</p>
+<p>As depicted in the screenshot, I was able to view the invoices generated in the target user’s account.</p>
 
-<p>Please note that due to the non-disclosure agreement these are the only information i was allowed to share.</p>
+<p>Please note that due to non-disclosure agreements, the information shared is limited.</p>
 
-<p>Thanks for reading!</p>
+<p>Thank you for reading!</p>
 
-<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+<p>For more insights and updates, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
 
+
+</div>
 
 
     <div class="blog-navigation">
         
-            <a class="prev" href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">&laquo; Hacking MNC's Content Management System due to misconfiguration and lack of authorization</a>
+            <a class="prev" href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">&laquo; Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System</a>
         
+        
+            <a class="next" href="http://localhost:4000/Business_logic_error/">Exploiting Business Logic Error: Price Manipulation &raquo;</a>
         
     </div>
 
@@ -825,12 +833,164 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
             
                 
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
                     
                     <h4>Related Posts</h4>
                     <ul>
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Hacking MNC's Content Management System due to misconfiguration and lack of authorization
+                        <a href="http://localhost:4000/Business_logic_error/">Exploiting Business Logic Error: Price Manipulation
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System
                         
                         </a>
                     </li>
@@ -914,112 +1074,12 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
                     
                     <li class="relatedPost">
-                        <a href="http://localhost:4000/IDOR/">IDOR leads to Takeover other user's linked bank accounts
+                        <a href="http://localhost:4000/IDOR/">Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts
                         
                         </a>
                     </li>
                     
                     
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
                 
             
                 
@@ -1086,15 +1146,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
             
                 
-                    
-                    <li class="relatedPost">
-                        <a href="http://localhost:4000/Sql-injection/">Time-Based SQL Injection to Dumping the Database
-                        
-                        </a>
-                    </li>
-                    
-                    
-                
             
         
     
@@ -1118,100 +1169,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
     
         
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -1334,33 +1291,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
     
         
-        
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -1391,21 +1321,21 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     <div class="toleft">
         <img
             class="selfie"
-            src="http://localhost:4000/"
-            alt=""
+            src="http://localhost:4000/assets/images/profile.jpg"
+            alt="Naveen J"
         />
     </div>
 
     <div class="toright">
-        <h4 class="name"></h4>
-        <p class="bio"></p>
+        <h4 class="name">Naveen J</h4>
+        <p class="bio">Security Researcher | Appsec Specialist@SISA Information Security | Web 3 Security Enthusiast</p>
 
         <div class="share">
             <!-- Note: Only use three share links if your site width is set to large -->
             <!-- If site width is set to normal, you may choose any two share links -->
             <a
                 class="twitter"
-                href="https://twitter.com/intent/tweet?text=http://localhost:4000/Account_Takeover-via-session-storage/ - Account Takeover via manipulating Session Storage by @"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/Account_Takeover-via-session-storage/ - Account Takeover Through Manipulation of Session Storage by @thevillagehackr"
             >
                 <i class="fa-brands fa-twitter"></i>
                 <span class="icon-twitter">Tweet</span>
@@ -1420,7 +1350,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 <span class="icon-facebook-rect">Share</span>
             </a>
 
-            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/Account_Takeover-via-session-storage/&amp;title=Account Takeover via manipulating Session Storage&amp;summary=Taking over other user account via manipulating the local session Storage.&amp;source=http://localhost:4000" target="_blank">
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/Account_Takeover-via-session-storage/&amp;title=Account Takeover Through Manipulation of Session Storage&amp;summary=This blog explores the method of account takeover by manipulating the local session storage in a financial web application.&amp;source=http://localhost:4000" target="_blank">
                 <i class="fa-brands fa-linkedin"></i>
                 <span class="icon-linkedin">Share</span>
             </a> -->

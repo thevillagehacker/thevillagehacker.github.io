@@ -9,13 +9,13 @@
     <meta name=author content="Naveen J">
 
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Reverse Engineering Client side Encryption | Naveen J</title>
+<title>Analysis of Client-Side Encryption Reverse Engineering | Naveen J</title>
 <meta name="generator" content="Jekyll v3.9.2" />
-<meta property="og:title" content="Reverse Engineering Client side Encryption" />
-<meta name="author" content="naveen" />
+<meta property="og:title" content="Analysis of Client-Side Encryption Reverse Engineering" />
+<meta name="author" content="Naveen" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Reverse Engineering client side Encryption" />
-<meta property="og:description" content="Reverse Engineering client side Encryption" />
+<meta name="description" content="An in-depth analysis of reverse engineering client-side encryption in a web application." />
+<meta property="og:description" content="An in-depth analysis of reverse engineering client-side encryption in a web application." />
 <link rel="canonical" href="http://localhost:4000/reversing-client-side-encryption/" />
 <meta property="og:url" content="http://localhost:4000/reversing-client-side-encryption/" />
 <meta property="og:site_name" content="Naveen J" />
@@ -24,11 +24,11 @@
 <meta property="article:published_time" content="2023-02-18T12:00:00+05:30" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="http://localhost:4000/assets/images/blogs/IDOR/access-control.svg" />
-<meta property="twitter:title" content="Reverse Engineering Client side Encryption" />
+<meta property="twitter:title" content="Analysis of Client-Side Encryption Reverse Engineering" />
 <meta name="twitter:site" content="@" />
-<meta name="twitter:creator" content="@naveen" />
+<meta name="twitter:creator" content="@Naveen" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"naveen"},"dateModified":"2023-02-18T12:00:00+05:30","datePublished":"2023-02-18T12:00:00+05:30","description":"Reverse Engineering client side Encryption","headline":"Reverse Engineering Client side Encryption","image":"http://localhost:4000/assets/images/blogs/IDOR/access-control.svg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/reversing-client-side-encryption/"},"url":"http://localhost:4000/reversing-client-side-encryption/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Naveen"},"dateModified":"2023-02-18T12:00:00+05:30","datePublished":"2023-02-18T12:00:00+05:30","description":"An in-depth analysis of reverse engineering client-side encryption in a web application.","headline":"Analysis of Client-Side Encryption Reverse Engineering","image":"http://localhost:4000/assets/images/blogs/IDOR/access-control.svg","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/reversing-client-side-encryption/"},"url":"http://localhost:4000/reversing-client-side-encryption/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -199,17 +199,17 @@ template { display: none; }
 .highlight .kp { font-weight: bold; }
 .highlight .kr { font-weight: bold; }
 .highlight .kt { color: #445588; font-weight: bold; }
-.highlight .m { color: #32f9f9; }
-.highlight .s { color: #dd1144; }
+.highlight .m { color: #2725ff; }
+.highlight .s { color: dd1144; }
 .highlight .n { color: #333333; }
-.highlight .na { color: #32f9f9; }
+.highlight .na { color: #395aef; }
 .highlight .nb { color: #0086b3; }
 .highlight .nc { color: #445588; font-weight: bold; }
 .highlight .no { color: teal; }
 .highlight .ni { color: purple; }
 .highlight .ne { color: #990000; font-weight: bold; }
-.highlight .nf { color: #ed4646; font-weight: bold; }
-.highlight .nn { color: #ffffff; }
+.highlight .nf { color: #c44dff; font-weight: bold; }
+.highlight .nn { color: #f1771ddb; }
 .highlight .nt { color: navy; }
 .highlight .nv { color: teal; }
 .highlight .ow { font-weight: bold; }
@@ -238,11 +238,11 @@ template { display: none; }
 
 body, html { font-size: 62.5%; }
 
-body { font: 14px Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #2c2626; background: #fff; text-align: justify; }
+body { font: 18px "Helvetica Neue", Helvetica, Arial, sans-serif; color: #2c2626; background: #fff; text-align: left; line-height: 1.75; font-size: 1.8rem; }
 
-h1, h2, h3, h4 { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; color: #3697e6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+h1, h2, h3, h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #000000; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
-h1 { font-size: 3rem; letter-spacing: -1px; color: #3697e6; font-weight: 700; }
+h1 { font-size: 3rem; letter-spacing: 0px; color: #000000; font-weight: 700; }
 
 h2 { font-size: 2.2rem; }
 
@@ -250,14 +250,14 @@ h3 { font-size: 2rem; }
 
 h4 { font-size: 1.6rem; }
 
-a { color: #3697e6; text-decoration: underline; font-weight: 300; }
+a { color: #253cc3; text-decoration: underline; font-weight: 300; }
 
 p { line-height: 1.7; color: #2c2626; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.4px; }
 @media only screen and (max-width: 400px) { p { letter-spacing: 0.2px; } }
 
-strong { font-weight: 400; color: #000; }
+strong { font-weight: 400; color: #253cc3; }
 
-ul li, ol li { line-height: 2.4rem; font-weight: 300; color: #2c2626; }
+ul li, ol li { line-height: 3rem; font-weight: 300; color: #2c2626; }
 
 img, pre, iframe { max-width: 100%; }
 
@@ -272,11 +272,11 @@ hr { border: none; height: 1px; margin: 40px auto; background: #eee; width: 100%
 
 figure.highlight { width: 100%; margin: 0; }
 
-code { padding: 2px 3px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
+code { padding: 2px 3px; font-family: "Cascadia Code PL", monospace; font-size: 15px; vertical-align: middle; background: #03030a; border-radius: 2px; color: #fff; }
 
-pre > code, tt { padding: 1px 0; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 13px; line-height: 20px; background: #03030a; border-radius: 2px; color: #fff; }
+pre > code, tt { padding: 1px 0; font-family: "Cascadia Code PL", monospace; font-size: 1.5rem; line-height: 1.6rem; border-radius: 2px; background: #f9f9f9; color: #000; }
 
-pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code", Liberation Mono, monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #03030a; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
+pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10px; font-family: "Cascadia Code PL", monospace; font-size: 1.2rem; line-height: 2rem; overflow: auto; background: #f9f9f9; border: 1px solid #ededed; border-radius: 2px; color: #fff; }
 
 .wrapper-normal, .wrapper-large { height: 100%; width: 96%; margin: 0 auto; }
 @media only screen and (max-width: 400px) { .wrapper-normal, .wrapper-large { width: 88%; } }
@@ -298,19 +298,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 1; transform: translateY(0); } }
-.home, .blog, .projects { margin-top: 125px; }
-.home > .list, .blog > .list, .projects > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
-.home > .list:before, .blog > .list:before, .projects > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
+.home, .blog, .writeups { margin-top: 125px; }
+.home > .list, .blog > .list, .writeups > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
+.home > .list:before, .blog > .list:before, .writeups > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.home > .list > .item, .blog > .list > .item, .projects > .list > .item { display: block; width: 95%; margin: 0 auto; }
-.home > .list > .item > .url, .blog > .list > .item > .url, .projects > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
-.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
-.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .projects > .list > .item:hover > .url > .title { color: #3697e6; }
-.home > .list aside, .blog > .list aside, .projects > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
-.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .projects > .list .item:hover .url aside { color: #2c2626; }
+.home > .list > .item, .blog > .list > .item, .writeups > .list > .item { display: block; width: 95%; margin: 0 auto; }
+.home > .list > .item > .url, .blog > .list > .item > .url, .writeups > .list > .item > .url { width: 100%; display: block; padding: 20px 0; text-decoration: none; }
+.home > .list > .item > .url > .title, .blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 500; transition: all ease-in-out 0.2s; }
+.home > .list > .item:hover > .url > .title, .blog > .list > .item:hover > .url > .title, .writeups > .list > .item:hover > .url > .title { color: #253cc3; }
+.home > .list aside, .blog > .list aside, .writeups > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; }
+.home > .list .item:hover .url aside, .blog > .list .item:hover .url aside, .writeups > .list .item:hover .url aside { color: #2c2626; }
 
-.blog > .list > .item > .url > .title, .projects > .list > .item > .url > .title { display: inline; }
-.blog > .list > .item > .url > .emoji, .projects > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
+.blog > .list > .item > .url > .title, .writeups > .list > .item > .url > .title { display: inline; }
+.blog > .list > .item > .url > .emoji, .writeups > .list > .item > .url > .emoji { display: inline; position: relative; top: -4px; margin-right: 10px; }
 
 .page { margin-top: 125px; }
 .page > h1 { text-align: center; margin-bottom: 6rem; }
@@ -319,13 +319,13 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 .post { margin-top: 125px; }
 .post > .title { text-align: center; margin-bottom: 3rem; }
-.post > .date, .post > .post-tags { color: #aaa; font-weight: 300; font-size: 1.4rem; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.post > .date, .post > .post-tags { color: #253cc3; font-size: 18px; text-transform: uppercase; text-align: center; display: block; margin-bottom: 6rem; letter-spacing: 1px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 .post > .date { margin-bottom: 2rem; }
-.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.1rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
+.post > .post-tags > .item { padding: 2px 8px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 3px 1px; text-decoration: none; display: inline-block; }
 .post > h2, .post > h3, .post > h4 { margin-top: 40px; }
 .post > h2 a, .post > h3 a, .post > h4 a { text-decoration: none; }
 .post > .title-image { max-height: 120px; display: block; margin: 0 auto; }
-.post > .blog-navigation { font-size: 1.4rem; display: block; width: auto; overflow: hidden; }
+.post > .blog-navigation { font-size: 1.6rem; display: block; width: auto; overflow: hidden; }
 .post > .blog-navigation a { display: block; width: 50%; float: left; margin: 1em 0; }
 .post > .blog-navigation .next { text-align: right; }
 
@@ -333,23 +333,23 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .tags > .list { border-top: 1px solid #ededed; margin-top: 30px; padding-top: 40px; position: relative; }
 .tags > .list:before { display: block; content: " "; width: 7px; height: 7px; border: #ededed 1px solid; position: absolute; top: -5px; left: 50%; margin-left: -5px; background: #fff; box-shadow: #fff 0 0 0 5px; border-radius: 3px; }
 
-.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.3rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
+.tags > .list > .item { font-weight: 300; text-transform: uppercase; text-align: center; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; padding: 3px 9px; border-radius: 3px; font-size: 1.4rem; background: #ededed; color: #2c2626; letter-spacing: 1px; margin: 0 0.5rem 1rem; text-decoration: none; display: inline-block; }
 
 .tag-list > .list { padding: 0; }
 .tag-list > .list > .item { display: block; width: 80%; margin: 0 10%; }
 .tag-list > .list > .item > .url { width: 100%; height: 100%; display: block; padding: 20px 0; text-decoration: none; }
 .tag-list > .list > .item > .url > .title { margin: 0; width: 75%; font-weight: 400; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
-.tag-list > .list > .item:hover > .url > .title { color: #3697e6; }
+.tag-list > .list > .item:hover > .url > .title { color: #253cc3; }
 .tag-list > .list aside { position: relative; top: 2px; margin: 0; width: 25%; float: right; font-weight: 300; color: #aaa; text-align: right; transition: all ease-in-out 0.2s; font-size: 1.6rem; }
 .tag-list > .list .item:hover .url aside { color: #2c2626; }
 
 .author { padding: 3rem 0; border-bottom: 1px solid #ededed; border-top: 1px solid #ededed; max-width: 100%; margin: 4rem auto 0; }
 .author > .toleft > .selfie { width: 90%; border-radius: 100%; }
 .author > .toright > .name, .author > .toright > .bio { width: 60%; display: inline-block; }
-.author > .toright > .name { font-size: 1.5rem; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 500; margin: 6px 0 0; }
+.author > .toright > .name { font-size: 1.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 500; margin: 6px 0 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .name { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .name { width: 100%; display: block; } }
-.author > .toright > .bio { font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
+.author > .toright > .bio { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; color: #aaa; font-size: 1.3rem; text-align: justify; line-height: 1.5; margin: 0; }
 @media only screen and (max-width: 400px) { .author > .toright > .bio { width: 100%; display: block; } }
 @media only screen and (min-width: 400px) and (max-width: 1050px) { .author > .toright > .bio { width: 100%; display: block; } }
 .author > .toleft { width: 10%; display: inline-block; }
@@ -368,7 +368,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .footer-main > .copyright { padding-left: 10px; }
 .footer-main > .link { display: inline; vertical-align: middle; }
 .footer-main > .link > .icon { width: 15px !important; fill: #aaa !important; transition: ease-in-out all 0.3s; position: relative; display: inherit; top: -2px; margin: 0; left: 2px; }
-.footer-main > .link > .icon:hover { fill: #3697e6 !important; }
+.footer-main > .link > .icon:hover { fill: #253cc3 !important; }
 .footer-main > .extra { color: #aaa; margin-top: 0; font-weight: 300; }
 .footer-main > .extra > .link { color: #222; text-decoration: none; border-bottom: 1px solid transparent; transition: ease-in-out all 0.3s; padding-bottom: 1px; font-weight: 300; }
 .footer-main > .extra > .link:hover { border-color: #aaa; }
@@ -377,16 +377,16 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .header-home > .link > .selfie { width: 125px; height: 125px; margin-bottom: 25px; border-radius: 100%; transition: all 0.2s; opacity: 1; }
 .header-home > .link > .selfie:hover { box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.18), 0 0px 12px 0 rgba(0, 0, 0, 0.15); opacity: 0.8; }
 .header-home > .title { font-size: 4rem; margin: 0 0 13px; }
-.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #aaa; width: 70%; margin: 0 auto 30px; }
+.header-home > .description { font-size: 1.85rem; font-weight: 300; font-style: normal; color: #474646; width: 100%; margin: 0 auto 30px; }
 .header-home > .description a { font-weight: 200; }
 
 .nav > .list, .nav-home > .list { list-style: none; margin: 0; padding: 0 13px 0; }
 .nav > .list > .item, .nav-home > .list > .item { display: inline-block; }
-.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.4rem; padding: 20px 10px; text-decoration: none; }
+.nav > .list > .item > .link, .nav-home > .list > .item > .link { display: inline-block; font-weight: 300; font-size: 1.8rem; padding: 20px 10px; text-decoration: none; }
 
 .nav { position: absolute; right: 0; top: 0; }
 .nav > .list { padding: 0 13px 0; }
-.nav > .list > .item > .link { font-size: 1.4rem; padding: 20px 10px; }
+.nav > .list > .item > .link { font-size: 1.8rem; padding: 20px 10px; }
 
 .nav-home { margin-top: 40px; text-align: center; }
 .nav-home > .list { padding: 0; }
@@ -443,7 +443,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 @media only screen and (max-width: 780px) { .side-by-side > .toleft > p, .side-by-side > .toright > p { margin: 0; } }
 
 .social-links > .link { margin: 0; text-decoration: none; position: relative; display: inline-block; height: 35px; width: 35px; color: #000; }
-.social-links > .link:hover > svg { color: #3697e6; }
+.social-links > .link:hover > svg { color: #253cc3; }
 .social-links > svg { transition: all ease-in-out 0.2s; }
 
 .spoiler { position: relative; }
@@ -482,7 +482,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
         
             
                 <li class="item">
-                    <a class="link" href="http://localhost:4000/projects">Projects</a>
+                    <a class="link" href="http://localhost:4000/writeups">Writeups</a>
                 </li>
             
         
@@ -503,7 +503,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 
 
 
-<h1 class="title">Reverse Engineering Client side Encryption</h1>
+<h1 class="title">Analysis of Client-Side Encryption Reverse Engineering</h1>
 
 <span class="date">
     <time datetime="18-02-2023">Saturday. February 18, 2023</time>
@@ -511,7 +511,7 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     
 
     
-        13 mins
+        12 mins
     
 </span>
 
@@ -525,29 +525,37 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
     </div>
 
 
-<h2 id="target-background">Target Background</h2>
-<p>Target is a web application but the same can be accessed via mobile applications as well including both android and iOS apps. The target application has a centralized CDN system which clearly shows that the target has several application with similar features and the resources served are almost same. By doing subdomain enumeration the target has more than 15 application has the same tech and all of them are served by the Amazon CDN.</p>
+<div style="text-align: justify;">
 
-<h2 id="overview">Overview</h2>
-<p>Recon is the most important thing in finding bugs in the wide targets. While doing recon i came up with the situation which is the application has been developed to encrypt all the communication. The application is using the REST API service and the host value in the REST API calls have different subdomain. All the data body in the request and response has been coded in a way to encrypt to make sure the comms is secured. But as far as the developer decided to hardcode the encryption keys and Initialization vectors in the client side code the application is never secured even it’s coded to provide an encrypted connection.</p>
+<h3 id="target-background">Target Background</h3>
 
-<h2 id="recon">Recon</h2>
+<p>The target is a web application accessible through both web browsers and mobile applications on Android and iOS platforms. The application utilizes a centralized CDN (Content Delivery Network) system, indicating that there are multiple applications with similar features and shared resources. Through subdomain enumeration, it was discovered that the target has more than 15 applications sharing the same technology and all served by Amazon CDN.</p>
+
+<h3 id="overview">Overview</h3>
+
+<p>Reconnaissance is a crucial step in identifying vulnerabilities in wide-ranging targets. During the recon phase, an interesting scenario was encountered where the application had been developed to encrypt all communication. The application employs a REST API service, and the host value in the REST API calls differs from the actual application URL. The request and response data bodies are encoded to ensure secure communication. However, due to the developer’s decision to hardcode encryption keys and initialization vectors (IVs) in the client-side code, the application’s security is compromised, despite being coded to provide an encrypted connection.</p>
+
+<h3 id="recon">Recon</h3>
+
+<p>The following elements were investigated during the reconnaissance phase:</p>
+
 <ul>
-  <li>Check the technology stack - ReactJS</li>
-  <li>CDN - Amazon CDN</li>
-  <li>API service - REST API</li>
-  <li>REST API host is different than actual application URL</li>
-  <li>Check the sources that has been loaded in the debugger/sources tab in the browser dev tools</li>
-  <li>Check the REST API comms, authorization mechanism and encryptions</li>
+  <li>Technology stack: ReactJS</li>
+  <li>CDN: Amazon CDN</li>
+  <li>API service: REST API</li>
+  <li>REST API host differs from the actual application URL</li>
+  <li>Sources loaded in the debugger/sources tab of the browser’s development tools were examined</li>
+  <li>REST API communications, authorization mechanism, and encryption were analyzed</li>
 </ul>
 
-<h2 id="analyzing-loaded-sources">Analyzing loaded sources</h2>
-<p>As far as we know the target has a wide scope and they have same CDN system with almost similar code. And the REST API JSON bodies are encrypted so if we find a way to reverse engineer the client side encryption that will possibly lead us to exploit more vulnerablities.</p>
+<h3 id="analyzing-loaded-sources">Analyzing Loaded Sources</h3>
 
-<p><strong>Target - abc.com</strong><br />
-When the application is loaded in the browser it loads the web resources from another subdomain <code class="language-plaintext highlighter-rouge">assets.abc.com</code>. It would be the good idea to check the JS files other than the chunk files which are generated by the frameworks.</p>
+<p>Considering the wide scope of the target and the shared CDN system, it was decided to examine the JavaScript (JS) files, excluding the chunk files generated by frameworks.</p>
 
-<h3 id="files-found">Files found</h3>
+<h4 id="files-discovered">Files Discovered</h4>
+
+<p>The following JS files were identified:</p>
+
 <ul>
   <li>booking.js</li>
   <li>desktop.js</li>
@@ -558,7 +566,7 @@ When the application is loaded in the browser it loads the web resources from an
   <li>main.js</li>
 </ul>
 
-<p>By going through all the js files to check for keywords like <code class="language-plaintext highlighter-rouge">enc, encrypt, key, IV, initialization, vector</code> found nothing. But when i checked the <strong>main.js</strong> file i came up with few handy details which was worth checking for.</p>
+<p>An in-depth analysis of all JS files was performed to identify keywords such as “enc,” “encrypt,” “key,” “IV,” “initialization,” and “vector.” However, no significant findings were obtained from these files. However, further investigation of the <strong>main.js</strong> file revealed valuable information.</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">91622</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
       <span class="dl">'</span><span class="s1">use strict</span><span class="dl">'</span><span class="p">;</span>
@@ -589,13 +597,13 @@ When the application is loaded in the browser it loads the web resources from an
     <span class="p">}</span>
 </code></pre></div></div>
 
-<p>After analyzing the code, finally i came to a conclusion that the application was loading resources from another CDN too and this main.js file only has the Initialization vector which was referred as <code class="language-plaintext highlighter-rouge">dataIVKey</code> in the code.</p>
+<p>A detailed analysis of the code revealed that the application also loads resources from another CDN. The <strong>main.js</strong> file contained the initialization vector (IV) referred to as <code class="language-plaintext highlighter-rouge">dataIVKey</code> in the code.</p>
 
-<p>Let’s load the application in the browser and check the encryption in the REST API.</p>
+<p>To investigate the encryption used in REST API calls, the application was loaded in the browser.</p>
 
 <p><img src="/assets/images/blogs/RE/reqandresp.png" alt="img" /></p>
 
-<p>Alright! let’s check the JS source files in the CDN subdomain <code class="language-plaintext highlighter-rouge">cdnPath: 'https://cdn.abc.com'</code>. The subdomain has lots of files but there was only one file which is different than the other files <strong><em>app.js</em></strong>. The app.js file contains the below details which we need for our further exploitation.</p>
+<p>The JS source files on the CDN subdomain <code class="language-plaintext highlighter-rouge">cdnPath: 'https://cdn.abc.com'</code> were inspected. While there were numerous files present, one file stood out: <strong><em>app.js</em></strong>. This file contained the necessary details for further exploitation.</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abc</span><span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="dl">'</span><span class="s1">SiteSettingService</span><span class="dl">'</span><span class="p">,</span> <span class="p">[</span>
   <span class="dl">'</span><span class="s1">$cookies</span><span class="dl">'</span><span class="p">,</span>
@@ -613,7 +621,7 @@ When the application is loaded in the browser it loads the web resources from an
   <span class="p">]</span>
 </code></pre></div></div>
 
-<p>The JS file has the function to encrypt and decrypt the API body in the HTTP request and response. Searching the keyword <code class="language-plaintext highlighter-rouge">encrypt</code> led me right into the encryt and decrypt function code as below.</p>
+<p>The JS file contained functions for encrypting and decrypting the API body in HTTP requests and responses. The keyword “encrypt” led to the discovery of the encryption and decryption function code shown below:</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">abc</span><span class="p">.</span><span class="nx">factory</span><span class="p">(</span><span class="dl">'</span><span class="s1">EncryptDecrypt</span><span class="dl">'</span><span class="p">,</span> <span class="p">[</span>
   <span class="dl">'</span><span class="s1">AppSettings</span><span class="dl">'</span><span class="p">,</span>
@@ -653,13 +661,14 @@ When the application is loaded in the browser it loads the web resources from an
 <p>By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.</p>
 
 <h3 id="handy-tools-to-break-the-wall">Handy tools to break the wall</h3>
-<p>Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
-IV = jm8lgqa3j1d0ajus
-Encryption Mode = CBC
-Encryption Algorithm = AES</p>
+<ul>
+  <li>Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=</li>
+  <li>IV = jm8lgqa3j1d0ajus</li>
+  <li>Encryption Mode = CBC</li>
+  <li>Encryption Algorithm = AES</li>
+</ul>
 
 <h2 id="lets-break">Let’s break</h2>
-
 <p>I used the online AES decryption application you can find it <a href="https://www.devglan.com/online-tools/aes-encryption-decryption">here</a>.
 Before start decrypting the json body let’s go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and <code class="language-plaintext highlighter-rouge">---</code> dashes and then follwed by the base64 encoded IV.</p>
 
@@ -673,7 +682,9 @@ Before start decrypting the json body let’s go through the code first. The bel
 
 <p>Let’s break down the final payload  the API is sending to the server.</p>
 
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nl">"data"</span><span class="p">:</span><span class="s2">"Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1---am04bGdxYTNqMWQwYWp1cw=="</span><span class="p">}</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ht2YM+y/yp4cn11iaWs/PmqQlSuLgrxMZwrQKnAt+qwRBYL2gt3uCHtPWC4soU1j0861mHg4Ij2jSJ0sq5R4iQK0lJ25hRjDf8OqwpNG97jv5jcCSNSFyYhjLqZYRGeFTLcxM7p4Jj9dl54LcXYWCPgAinKdQiPx/y9NC1g02g06HtCLFNFZlrTtJXPoFA70vkuT3VF84pHS+0yX3tVS0d0+b0AYlrePSuF8qxfnGGCcnhcbD/tCqesu3gFp3VCvZUaAnc9SzQlpF04a/D3R+izDG97FHEIFDsULmX0YOW5tEoUcsWRbDTfuswChDmrpNx6wMK8VR5+oSMF5r/y8eWEak0Xiaa9vc8J/TIt+j26pvDIgHRzCwfe7E9NpbBgiTt9OqoyZEyL61PRZ5UybCqqfj659WBKbF3B6ThQNQWw56CJDUTGp3sK59izgl4Bn3P76MvlpDC7rg4JTmprlk1BqxvMjmG/vqZn6IXUDR+TNHr+6zCfSTDkbeYKojs663BvddsrJIuhzgFryHe3DUZFnOahR1ViDanCahRZFkK97mfxUwHfAfJqkWkkpEhpAEV1ZUiBUpohmCWIYxjxtOBo9M9oiAxcAHZW9rbVu1X1KyadnRnO/i4JU40e8EmwsokGoufbi5Z5wOgK9sEO9LFTDH5LnF+UwXBM25oI3UFmwWrrYljNPdexm4iksslRUZGx1FQa1BlHQ8hGH+ch+ZOFu/AI8wfWx0v6lUiAx8ZTpmb+JQDb90S38rMIuh08frCixM9uyNiP1ue/W6lPW4GThtLSXcT+Ua+d4xrIHaEXP4mNNSUIQwUSo2m7kq3OoxNpbvjd3EtM9EkyJEIXcI0nn7cXuTfRpmJNMzJ0mrx6wMgJkPGJVrttNfhP4/FUXj/RrG4KYt+bpHrd7vExXNYYQCHRCKjRUzvr1ON99wBkaSHzvKHz9x/i0IMQ9kNBNB3Bge9mTsHaYs3nFqQOXS+HkASZkmc0jF+dK33X2fv8tBfJvQF4FL2AFPKyvPId3cq+RWLmvWde9h19ewuLBX/0adpiDea7HgnnIH3NewQhcrCZvfWodqtmhPKowtwk1---am04bGdxYTNqMWQwYWp1cw=="</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
 <p>In the last line in the final payload there are 3 <code class="language-plaintext highlighter-rouge">---</code> dashes and followed by base64 encoded string which is the dataIV.</p>
@@ -735,8 +746,9 @@ Before start decrypting the json body let’s go through the code first. The bel
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
-<p><strong><em>Newly constructed request</em></strong>
-<img src="/assets/images/blogs/RE/reqandresp2.png" alt="img" /><br /></p>
+<p><strong>Newly constructed request</strong></p>
+
+<p><img src="/assets/images/blogs/RE/reqandresp2.png" alt="img" /><br /></p>
 
 <p>Now it’s time to exploit issues and create a huge impact. Based on the decrypted data as we can see, the application is using the CAPTCHA system to protect the application from the brute-forcing and spamming vulnerabilities. If we can find a way to bypass the CAPTCHA protection then we can convince the triager to show the real imapcts like high resource usage, spamming and by create user accounts with false data. The last part creating false accounts using false data is only applicable when the application does not have data verification system. As per the recon the application is not validating anything at all, so now we can show the impact.</p>
 
@@ -753,22 +765,19 @@ Before start decrypting the json body let’s go through the code first. The bel
 <h3 id="bypass">Bypass</h3>
 <p>We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,</p>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/2 200 OK
-Content-Type: application/json; charset=utf-8
-Date: Sat, 18 Feb 2023 14:54:03 GMT
-Expires: Sat, 18 Feb 2023 14:54:03 GMT
-Cache-Control: private, max-age=0
-X-Content-Type-Options: nosniff
-X-Frame-Options: SAMEORIGIN
-Content-Security-Policy: frame-ancestors 'self'
-X-Xss-Protection: 1; mode=block
-Content-Length: 32
-Server: GSE
-Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK </span>
+<span class="na">Access-Control-Allow-Origin</span><span class="p">:</span> <span class="s">* </span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8 </span>
+<span class="na">Set-Cookie</span><span class="p">:</span> <span class="s">blah...blah...blah...; Path=/; HttpOnly </span>
+<span class="na">X-Frame-Options</span><span class="p">:</span> <span class="s">SAMEORIGIN </span>
+<span class="na">X-Content-Type-Options</span><span class="p">:</span> <span class="s">nosniff </span>
+<span class="na">X-XSS-Protection</span><span class="p">:</span> <span class="s">1; mode=block </span>
+<span class="na">Referrer-Policy</span><span class="p">:</span> <span class="s">strict-origin-when-cross-origin </span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close </span>
+<span class="na">Strict-Transport-Security</span><span class="p">:</span> <span class="s">max-age=31536000; includeSubDomains</span>
 
-)]}'
-["uvresp",null,null,null,2]
-</code></pre></div></div>
+<span class="p">[</span><span class="s2">"uvresp"</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
 
 <p>From the below request what i have observed is you can send the below CAPTCHA request as long as we want and it will still provide us the response code to be verified in the upcoming verification request.</p>
 
@@ -788,16 +797,18 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
 
 <p>Thanks for reading!</p>
 
-<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+<p>For more insights and updates, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
 
+
+</div>
 
 
     <div class="blog-navigation">
         
-            <a class="prev" href="http://localhost:4000/RCE-DLL-Hijacking/">&laquo; DLL Injection on one of the biggest Business Automation application</a>
+            <a class="prev" href="http://localhost:4000/RCE-DLL-Hijacking/">&laquo; Remote Code Execution via DLL Hijacking on a Prominent Business Automation Application</a>
         
         
-            <a class="next" href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Hacking MNC's Content Management System due to misconfiguration and lack of authorization &raquo;</a>
+            <a class="next" href="http://localhost:4000/Hacking_MNCs-CMS_Systems/">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System &raquo;</a>
         
     </div>
 
@@ -846,24 +857,6 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 
             
         
-    
-        
-        
-            
-                
-            
-        
-            
-                
-            
-        
-            
-                
-            
-        
-    
-        
-        
             
                 
             
@@ -928,24 +921,6 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 
             
         
-    
-        
-        
-            
-                
-            
-        
-            
-                
-            
-        
-            
-                
-            
-        
-    
-        
-        
             
                 
             
@@ -956,21 +931,6 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
         
     
         
-        
-            
-                
-            
-        
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
         
             
                 
@@ -991,43 +951,8 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 
             
         
-            
-                
-            
-        
     
         
-        
-            
-                
-            
-        
-            
-                
-            
-        
-    
-        
-        
-            
-                
-            
-        
-            
-                
-            
-        
-            
-                
-            
-        
-            
-                
-            
-        
-            
-                
-            
         
             
                 
@@ -1107,12 +1032,56 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 
             
         
+            
+                
+            
+        
     
         
         
             
                 
             
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
+        
+            
+                
+            
+        
+            
+                
+            
+        
+    
+        
         
             
                 
@@ -1133,21 +1102,21 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
     <div class="toleft">
         <img
             class="selfie"
-            src="http://localhost:4000/"
-            alt=""
+            src="http://localhost:4000/assets/images/profile.jpg"
+            alt="Naveen J"
         />
     </div>
 
     <div class="toright">
-        <h4 class="name"></h4>
-        <p class="bio"></p>
+        <h4 class="name">Naveen J</h4>
+        <p class="bio">Security Researcher | Appsec Specialist@SISA Information Security | Web 3 Security Enthusiast</p>
 
         <div class="share">
             <!-- Note: Only use three share links if your site width is set to large -->
             <!-- If site width is set to normal, you may choose any two share links -->
             <a
                 class="twitter"
-                href="https://twitter.com/intent/tweet?text=http://localhost:4000/reversing-client-side-encryption/ - Reverse Engineering Client side Encryption by @"
+                href="https://twitter.com/intent/tweet?text=http://localhost:4000/reversing-client-side-encryption/ - Analysis of Client-Side Encryption Reverse Engineering by @thevillagehackr"
             >
                 <i class="fa-brands fa-twitter"></i>
                 <span class="icon-twitter">Tweet</span>
@@ -1162,7 +1131,7 @@ Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
                 <span class="icon-facebook-rect">Share</span>
             </a>
 
-            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/reversing-client-side-encryption/&amp;title=Reverse Engineering Client side Encryption&amp;summary=Reverse Engineering client side Encryption&amp;source=http://localhost:4000" target="_blank">
+            <!-- <a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://localhost:4000/reversing-client-side-encryption/&amp;title=Analysis of Client-Side Encryption Reverse Engineering&amp;summary=An in-depth analysis of reverse engineering client-side encryption in a web application.&amp;source=http://localhost:4000" target="_blank">
                 <i class="fa-brands fa-linkedin"></i>
                 <span class="icon-linkedin">Share</span>
             </a> -->
