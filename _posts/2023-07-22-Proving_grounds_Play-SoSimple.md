@@ -16,7 +16,7 @@ description: "Offsec proving grounds play linux machine writeup"
 
 [![youtube](/assets/images/CTF/Pg-Play/SoSimple/youtube.png)](https://youtu.be/KodURDujWxs)
 
-# NMAP
+## NMAP
 ```sh
 PORT   STATE SERVICE VERSION
 22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.1 (Ubuntu Linux; protocol 2.0)
