@@ -1,7 +1,7 @@
 ---
 title: "Proving grounds Play: SoSimple"
 layout: post
-date: 2023-07-22 09:00
+date: 2023-07-22 12:00
 tag: 
 - CTF
 - Offsec labs
