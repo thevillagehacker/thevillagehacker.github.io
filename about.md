@@ -9,24 +9,28 @@ layout: page
 <p>As an experienced Security Consultant, I possess a deep understanding of the complex challenges facing modern organizations in today's rapidly evolving threat landscape. With a proven track record of developing and implementing comprehensive security strategies and solutions, I have helped clients across a diverse range of industries to effectively mitigate risks and protect their most valuable assets. With a keen eye for detail and a commitment to delivering results, I am dedicated to helping organizations achieve and maintain the highest standards of security and compliance.</p>
 
 <h2 style='color: #000000;'>Work Experience</h2>
-<h3 style='color: #000000;'>SISA Information Security - Specialist</h3>
-<p>June 2023 - PRESENT</p>
+<h3 style='color: #000000;'>SISA Information Security - Senior Specialist</h3>
+<p>July 2023 - PRESENT</p>
+
+<details>
+<summary style='color: #253cc3;'>Click to Expand</summary>
+- Provide mentorship and guidance to junior security consultants, overseeing their work and assisting in their professional development.<br>
+- Act as the primary point of contact for key clients, understanding their security needs and providing expert advice and guidance.<br>
+- Cultivate strong relationships with clients, understanding their evolving security needs and providing ongoing support and recommendations.<br>
+- Lead and conduct in-depth security assessments for Web, API, Mobile, and Thick client applications to identify and address potential vulnerabilities.
+</details>
 
 <h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
 <p>SEPTEMBER 2021 - June 2023</p>
 
 <details>
 <summary style='color: #253cc3;'>Click to Expand</summary>
-- Conducted 80+ application penetration tests for finance and banking software products, identifying potential
-security threats.<br>
-- Actively exploited identified vulnerabilities, assessing their impact on application confidentiality, integrity, and availability to assist in risk mitigation and remediation efforts.<br>
+- Conducted 100+ application penetration tests for finance and banking software products, identifying potential security threats.<br>
 - Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring adherence to industry standards.<br>
-- Conducted over 25+ web and mobile source code review activities, ensuring the security compliance using commercial auditing tools, identifying vulnerabilities and recommending solutions.<br>
-- Collaborated closely with development teams, effectively communicating findings and providing guidance on secure coding practices to ensure the timely and effective resolution of identified vulnerabilities.<br>
+- Conducted over 25+ web and mobile source code review activities, ensuring the security compliance using commercial auditing tools and manual source code review, identifying vulnerabilities and recommending solutions.<br>
 - Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential attack vectors and adherence to project requirements.<br>
 - Conducted vulnerability and penetration testing for payment gateway applications and APIs to ensure their security.<br>
-- Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.<br>
-- Demonstrated a commitment to ongoing professional growth by conducting extensive research and staying up to date with the latest security vulnerabilities, techniques, and tools, enhancing testing methodologies and maintaining industry best practices.
+- Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.
 </details>
 
 <h3 style='color: #000000;'>KGiSL - GSS, Coimbatore - Information Security Engineer</h3>
@@ -38,7 +42,6 @@ security threats.<br>
 - Utilized both automated and manual tools to perform Network penetration testing activities, ensuring the security of the organization's infrastructure.<br>
 - Conducted Security audits for network devices, adhering to security standards and Minimum Security Baseline for the client.<br>
 - Conducted vulnerability and compliance scanning on target machines and reviewed security results, assisting in monthly conference calls to discuss implementation and upgrade of critical infrastructure.<br>
-- Analyzed security results, drew conclusions, and developed targeted testing as necessary to maintain a secure environment.<br>
 - Collaborated with application developers to validate, assess, understand the root cause, and mitigate vulnerabilities, ensuring compliance with industry standards.<br>
 - Developed and implemented tools and techniques to perform ongoing security assessments of the environment, ensuring continued security and compliance.
 </details>
