@@ -21,7 +21,7 @@ layout: page
 </details>
 
 <h3 style='color: #000000;'>SISA Information Security Private Limited - Specialist</h3>
-<p>SEPTEMBER 2021 - June 2023</p>
+<p>June 2023 - June 2023</p>
 
 <details>
 <summary style='color: #253cc3;'>Click to Expand</summary>
