@@ -9,7 +9,7 @@ layout: page
 <p>As an experienced Security Consultant, I possess a deep understanding of the complex challenges facing modern organizations in today's rapidly evolving threat landscape. With a proven track record of developing and implementing comprehensive security strategies and solutions, I have helped clients across a diverse range of industries to effectively mitigate risks and protect their most valuable assets. With a keen eye for detail and a commitment to delivering results, I am dedicated to helping organizations achieve and maintain the highest standards of security and compliance.</p>
 
 <h2 style='color: #000000;'>Work Experience</h2>
-<h3 style='color: #000000;'>SISA Information Security - Senior Specialist</h3>
+<h3 style='color: #000000;'>SISA Information Security Private Limited - Senior Specialist</h3>
 <p>July 2023 - PRESENT</p>
 
 <details>
@@ -20,7 +20,21 @@ layout: page
 - Lead and conduct in-depth security assessments for Web, API, Mobile, and Thick client applications to identify and address potential vulnerabilities.
 </details>
 
-<h3 style='color: #000000;'>SISA Information Security - Associate Consultant</h3>
+<h3 style='color: #000000;'>SISA Information Security Private Limited - Specialist</h3>
+<p>SEPTEMBER 2021 - June 2023</p>
+
+<details>
+<summary style='color: #253cc3;'>Click to Expand</summary>
+- Provide mentorship and guidance to junior security consultants, overseeing their work and assisting in their professional development.<br>
+- Conducted 100+ application penetration tests for finance and banking software products, identifying potential security threats.<br>
+- Conducted Application Penetration Testing activities for applications that require PCI DSS compliance, ensuring adherence to industry standards.<br>
+- Conducted over 25+ web and mobile source code review activities, ensuring the security compliance using commercial auditing tools and manual source code review, identifying vulnerabilities and recommending solutions.<br>
+- Developed and implemented detailed Test Plans and methodologies, ensuring comprehensive coverage of potential attack vectors and adherence to project requirements.<br>
+- Conducted vulnerability and penetration testing for payment gateway applications and APIs to ensure their security.<br>
+- Managed end-to-end delivery of over 200+ application security assessments, and ensuring their timely completion.
+</details>
+
+<h3 style='color: #000000;'>SISA Information Security Private Limited - Associate Consultant</h3>
 <p>SEPTEMBER 2021 - June 2023</p>
 
 <details>
