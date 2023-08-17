@@ -83,7 +83,7 @@ Upload the php remote code execution code to the server with extension as `rce.e
 
 - Transfer PowerView.ps1 to the attacking machine.
 
-** Extract Users Information**
+**Extract Users Information**
 
 ```text
 -------------------------------------------------------------------------------
