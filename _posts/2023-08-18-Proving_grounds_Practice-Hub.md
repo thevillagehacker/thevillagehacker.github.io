@@ -11,7 +11,7 @@ tag:
 writeups: true
 hidden: true
 author: Naveen
-description: "Offsec proving grounds practice windows machine writeup"
+description: "Offsec proving grounds practice linux machine writeup"
 ---
 
 ## Nmap
