@@ -13,6 +13,8 @@ hidden: true
 author: Naveen
 description: "Offsec proving grounds practice windows machine writeup"
 ---
+![img](/assets/images/CTF/Pg-Play/Squid/preview-card.png)
+
 ## Nmap
 
 ```sh
