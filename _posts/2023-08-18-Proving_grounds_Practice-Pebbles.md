@@ -1,7 +1,7 @@
 ---
 title: "Proving grounds Practice: Pebbles"
 layout: post
-date: 2023-08-18 06:00
+date: 2023-08-18 13:00
 tag: 
 - CTF
 - Offsec labs
