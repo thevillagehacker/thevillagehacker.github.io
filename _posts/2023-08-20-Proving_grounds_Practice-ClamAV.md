@@ -1,7 +1,7 @@
 ---
 title: "Proving grounds Practice: ClamAV"
 layout: post
-date: 2023-08-20 13:00
+date: 2023-08-20 10:00 AM
 tag: 
 - CTF
 - Offsec labs
