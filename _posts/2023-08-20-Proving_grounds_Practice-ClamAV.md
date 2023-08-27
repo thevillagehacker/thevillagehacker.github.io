@@ -80,4 +80,4 @@ Root obtained.
 
 Thanks for reading!
 
-For more insights and updates, follow me on X: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
