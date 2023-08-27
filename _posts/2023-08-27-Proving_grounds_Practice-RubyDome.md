@@ -36,6 +36,8 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 WEBrick 1.7.0 is vulnerable to Command injection and as per the above screenshot the application gets the URL and converts the page content into pdf. Passing malicious inputs or invalid URL resulted in server error with exception shown in the web page.
 
+![img](/assets/images/CTF/Pg-Play/RubyDome/url.png)
+
 The PDFKit is used to convert the contents to pdf. The PDFkit used in the application is vulnerable to [Command Injection](https://www.exploit-db.com/exploits/51293).
 
 ![img](/assets/images/CTF/Pg-Play/RubyDome/if.png)
