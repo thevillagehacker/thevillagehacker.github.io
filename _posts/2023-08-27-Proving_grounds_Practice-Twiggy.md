@@ -1,7 +1,7 @@
 ---
 title: "Proving grounds Practice: Twiggy"
 layout: post
-date: 2023-08-27 06:00
+date: 2023-08-27 01:00
 tag: 
 - CTF
 - Offsec labs
