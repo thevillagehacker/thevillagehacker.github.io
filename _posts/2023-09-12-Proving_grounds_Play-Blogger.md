@@ -41,7 +41,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ![img](/assets/images/CTF/Pg-Play/Blogger/dirf.png)
 
-Upon visting the `/assets/` folder there are folder named `/assets/fonts/blog/` found in the directory.
+Upon visting the `/assets/` folder there is a folder named `/assets/fonts/blog/` found in the directory.
 
 ![img](/assets/images/CTF/Pg-Play/Blogger/blogs.png)
 
