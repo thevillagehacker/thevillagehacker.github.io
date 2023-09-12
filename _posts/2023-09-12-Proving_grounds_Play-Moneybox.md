@@ -102,9 +102,9 @@ SSH to user `renu` using the password.
 
 ![img](/assets/images/CTF/Pg-Play/Moneybox/renu-dir.png)
 
-After searching the directoriees in renu user ,a another user found in the `/home` directory `lily`.
+After searching the directoriees in renu user ,an another user was found in the `/home` directory `lily`.
 
-The liliy user has a SSH authorized key which belogs to the user renu, SSH to user lily from user renu.
+The user lily has a SSH authorized key which belongs to the user renu, SSH to user lily from user renu.
 
 ![img](/assets/images/CTF/Pg-Play/Moneybox/lily.png)
 
