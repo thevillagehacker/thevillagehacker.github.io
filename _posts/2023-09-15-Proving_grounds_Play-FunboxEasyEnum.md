@@ -57,9 +57,9 @@ oracle
 sally
 ```
 
-The above are the list of users who have home directory in the machine, perform SSH bruteforce attack using hydra. The user `goat` has SSH password configured as same as username `goat`.
+The above are the list of users who have home directory in the machine. The user `goat` has the password configured as same as username `goat`.
 
-SSH to the user `goat`.
+SSH to the user `goat` or switch user.
 
 ## Privilege Escalation
 
