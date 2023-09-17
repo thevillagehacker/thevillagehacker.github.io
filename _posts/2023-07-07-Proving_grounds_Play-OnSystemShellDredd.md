@@ -133,12 +133,12 @@ hannah@ShellDredd:~$ find / -perm -u=s -type f 2>/dev/null
 /usr/bin/gpasswd
 /usr/bin/newgrp
 /usr/bin/umount
-/usr/bin/mawk --strange binary
+/usr/bin/mawk #--strange binary
 /usr/bin/chfn
 /usr/bin/su
 /usr/bin/chsh
 /usr/bin/fusermount
-/usr/bin/cpulimit --strange binary
+/usr/bin/cpulimit #--strange binary
 /usr/bin/mount
 /usr/bin/passwd
 ```
