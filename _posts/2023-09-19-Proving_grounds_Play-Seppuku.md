@@ -49,7 +49,7 @@ PORT     STATE SERVICE       VERSION
 
 ![img](/assets/images/CTF/Pg-Play/Seppuku/dir.png)
 
-### Folder: [Secret]
+### Folder: /Secret/
 
 ![img](/assets/images/CTF/Pg-Play/Seppuku/secret.png)
 
