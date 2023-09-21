@@ -8,6 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Linux
+- Pg-PLay
 writeups: true
 hidden: true
 author: Naveen

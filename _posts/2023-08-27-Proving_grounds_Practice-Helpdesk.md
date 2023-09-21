@@ -8,6 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Windows
+- Pg-Practice
 writeups: true
 hidden: true
 author: Naveen

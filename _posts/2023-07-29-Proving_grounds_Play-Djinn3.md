@@ -7,6 +7,7 @@ tag:
 - Offsec labs
 - OSCP
 - Writeup
+- Pg-PLay
 writeups: true
 hidden: true
 author: Naveen
