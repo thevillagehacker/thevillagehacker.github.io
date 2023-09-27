@@ -9,6 +9,7 @@ tag:
 - Writeup
 - Linux
 - Pg-PLay
+- Dirtyc0w
 writeups: true
 hidden: true
 author: Naveen
