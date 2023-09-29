@@ -1,7 +1,7 @@
 ---
 title: "Proving grounds Play: Katana"
 layout: post
-date: 2023-09-28 02:00
+date: 2023-09-28 01:00
 tag: 
 - CTF
 - Offsec labs
