@@ -58,7 +58,7 @@ Target: http://192.168.151.128/
 
 Register ➡️ login ➡️ Upload Avatar ➡️ upload reverse shell/php code execution code as avatar.
 
-***Note:*** In order to do a successfull registration the CAPTCHA must be sumitted and which is not available on the registration page. So it can be obtained by viewing page source and check the CAPTCHA.php code `view-source:http://192.168.151.128/captcha.php`
+***Note:*** In order to do a successfull registration the CAPTCHA must be sumitted and which is not available on the registration page. So it can be obtained by viewing the CAPTCHA page source `view-source:http://192.168.151.128/captcha.php`
 
 **Upload.php**
 
@@ -93,7 +93,7 @@ www-data@cute:/var/www/html/uploads$
 Enumerate user executable permissions using `sudo -l`.
 
 ```sh
-www-data@cute:/$ sudo -l    #user executable permissions
+www-data@cute:/$ sudo -l    #check executable permissions
 sudo -l
 Matching Defaults entries for www-data on cute:
     env_reset, mail_badpass,
