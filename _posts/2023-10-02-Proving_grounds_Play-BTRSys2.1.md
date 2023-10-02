@@ -80,7 +80,7 @@ Login to the admin account using credentials `admin:admin`.
 
 Download pentest monkey PHP reverse shell and make changes accordingly. 
 
-Navigate to Dashboard Appearance Editor Comments.php. Please ensure the changes we are making is to the right theme, in order to confirm the theme is use to a particular page is by view-source of the page and check the theme.
+Navigate to Dashboard ➡️ Appearance ➡️ Editor ➡️ Comments.php. Ensure the changes we are making is to the right theme, and in order to confirm the theme is use to a particular page is by view-source of the page and check the theme.
 
 
 Replace the contents of the `comments.php` file with the pentest monkey revserse shell and save the file.
@@ -204,7 +204,7 @@ mysql>
 root: a318e4507e5a74604aafb45e4741edd3
 ```
 
-Crack the hash for the above, and use switch user to root. Cracked password for root `roottoor`.
+Crack the hash for the above, and use switch user command to login to root user. Cracked password for root `roottoor`.
 
 ```sh
 www-data@ubuntu:/$ su root
