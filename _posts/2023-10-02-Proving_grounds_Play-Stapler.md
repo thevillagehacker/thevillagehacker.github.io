@@ -264,7 +264,7 @@ Session completed.
 
 Now login to worpress https://192.168.208.148:12380/blogblog/wp-login.php using credentials `john:incorrect`.
 
-Direct to Plugins  Add New Upload Plugin 
+Direct to Plugins ➡️ Add New ➡️ Upload Plugin .
 
 Download pentest monkey PHP reverse shell and make changes accordingly and select the file to upload and Click Install Now.
 

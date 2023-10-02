@@ -35,6 +35,7 @@ Since the application employs a web application firewall, all of my injection pa
 Feeling discouraged, I decided to examine the requests further. I discovered that in one endpoint, the application sends a POST request to a page where users can create HTML content to be published to their customers.
 
 ### Request 
+
 ```http
 POST /api/v1/promo_offers HTTP/2
 Host: www.target.com

@@ -2,7 +2,6 @@
 title: "Exploiting Business Logic Error: Price Manipulation"
 layout: post
 date: 2023-04-12 12:00
-headerImage: false
 tag:
 - Business Logic Error
 - Misconfiguration
@@ -62,6 +61,7 @@ Te: trailers
 ```
 
 ### Response
+
 ```http
 HTTP/1.1 200 OK 
 Access-Control-Allow-Origin: * 
@@ -83,7 +83,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
   "address": "ABC city, ABC.",
   "zipcode": "123456"
 }
-````
+```
 
 The above request represents a checkout request sent to the server to facilitate payment for a purchase order. To address the previously exploited price manipulation vulnerability, the developer implemented an additional parameter named `saltedhash`.
 
@@ -142,7 +142,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
   "address": "ABC city, ABC.",
   "zipcode": "123456"
 }
-````
+```
 
 By changing the `quantity` value to a negative number, it was possible to pay a reduced amount for the orders placed.
 
