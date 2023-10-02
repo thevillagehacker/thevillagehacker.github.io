@@ -37,7 +37,7 @@ make entry in the `/etc/hosts` file as `dc-2` for the attacking machine IP.
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/DC-2/web.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-2/web.png)
 
 **Techstack**
 - Wordpress
@@ -71,7 +71,7 @@ wpscan --url http://dc-2/ -U users -P password
 
 **Credentials Obtained**
 
-![img](/assets/images/CTF/Pg-Play/DC-2/credentials.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-2/credentials.png)
 
 SSH to the machine using the credentials. The user `jerry` doesn't have SSH login permission, so login to user `tom`.
 
@@ -87,13 +87,13 @@ Type the above commmands to escape from the rbash to standard unix shell.
 
 User `tom` may not run anything as sudo on machine DC-2. So switch to user `jerry`.
 
-![img](/assets/images/CTF/Pg-Play/DC-2/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-2/shell.png)
 
 User tom can run `/usr/bin/git` as sudo.
 
 Search for exploit on GTFO Bins. As per the page the binary can be used to elevate sudo permissions using below commands.
 
-![img](/assets/images/CTF/Pg-Play/DC-2/exploit.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-2/exploit.png)
 
 ```sh
 sudo git -p help config
@@ -104,7 +104,7 @@ sudo git -p help config
 
 **Root Shell Obtained**
 
-![img](/assets/images/CTF/Pg-Play/DC-2/root.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-2/root.png)
 
 Thanks for reading!
 

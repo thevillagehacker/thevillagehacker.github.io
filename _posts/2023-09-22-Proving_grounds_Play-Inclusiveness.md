@@ -50,17 +50,17 @@ Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/Inclusiveness/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Inclusiveness/web.png)
 
 ## Directory Fuzzing
 
 robots.txt file shows `You are not a search engine! You can't read my robots.txt!`. The restriction can be bypassed by changing the useragent in the request to `GoogleBot`.
 
-![img](/assets/images/CTF/Pg-Play/Inclusiveness/curl.png)
+![img](/assets/images/CTF/Proving_Grounds/Inclusiveness/curl.png)
 
 ## /secret_information/
 
-![img](/assets/images/CTF/Pg-Play/Inclusiveness/SI.png)
+![img](/assets/images/CTF/Proving_Grounds/Inclusiveness/SI.png)
 
 Upon clicking the `english` language button the website fetches the `en.php` file, which can be abused to read local files in the system.
 

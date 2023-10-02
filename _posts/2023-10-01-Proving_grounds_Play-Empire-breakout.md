@@ -47,7 +47,7 @@ Using `enum4linux` the username cyber has been discovered.
 
 ## 80/tcp - open  http - Apache httpd 2.4.51 ((Debian))
 
-![img](/assets/images/CTF/Pg-Play/Empire-breakout/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Empire-breakout/web.png)
 
 There is a encrypted text commented in the source code of the apache page `view-source:http://192.168.240.238/`.
 
@@ -63,11 +63,11 @@ don't worry no one will get here, it's safe to share with you my access. Its enc
 
 [https://www.dcode.fr/cipher-identifier](https://www.dcode.fr/cipher-identifier)
 
-![img](/assets/images/CTF/Pg-Play/Empire-breakout/analysis1.png)
+![img](/assets/images/CTF/Proving_Grounds/Empire-breakout/analysis1.png)
 
 **Brainfuck**
 
-![img](/assets/images/CTF/Pg-Play/Empire-breakout/analysis2.png)
+![img](/assets/images/CTF/Proving_Grounds/Empire-breakout/analysis2.png)
 
 Upon analysis the algorithm of the encrypted text has been discovered which is `Brainfuck`.
 
@@ -83,13 +83,13 @@ Upon analysis the algorithm of the encrypted text has been discovered which is `
 
 ## 20000/tcp - open  http - MiniServ 1.830 (Webmin httpd)
 
-![img](/assets/images/CTF/Pg-Play/Empire-breakout/web2.png)
+![img](/assets/images/CTF/Proving_Grounds/Empire-breakout/web2.png)
 
 Login to the portal using the username `cyber` and password `.2uqPEfj3D<P'a-3`.
 
 Click on the interactive shell and create a reverse shell connection.
 
-![img](/assets/images/CTF/Pg-Play/Empire-breakout/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Empire-breakout/shell.png)
 
 ```sh
 naveenj@hackerspace:|01:09|~/pg-play/Empire-breakout$ nc -lvnp 1234

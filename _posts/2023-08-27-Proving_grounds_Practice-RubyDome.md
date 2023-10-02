@@ -33,15 +33,15 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web
 
-![img](/assets/images/CTF/Pg-Play/RubyDome/web.png)
+![img](/assets/images/CTF/Proving_Grounds/RubyDome/web.png)
 
 WEBrick 1.7.0 is vulnerable to Command injection and as per the above screenshot the application gets the URL and converts the page content into pdf. Passing malicious inputs or invalid URL resulted in server error with exception shown in the web page.
 
-![img](/assets/images/CTF/Pg-Play/RubyDome/url.png)
+![img](/assets/images/CTF/Proving_Grounds/RubyDome/url.png)
 
 The PDFKit is used to convert the contents to pdf. The PDFkit used in the application is vulnerable to [Command Injection](https://www.exploit-db.com/exploits/51293).
 
-![img](/assets/images/CTF/Pg-Play/RubyDome/if.png)
+![img](/assets/images/CTF/Proving_Grounds/RubyDome/if.png)
 
 **Initial Foothold Obtained**
 
@@ -49,7 +49,7 @@ The PDFKit is used to convert the contents to pdf. The PDFkit used in the applic
 
 Check the system user executable permissions.
 
-![img](/assets/images/CTF/Pg-Play/RubyDome/permissions.png)
+![img](/assets/images/CTF/Proving_Grounds/RubyDome/permissions.png)
 
 As per the above image the user `andrew` can run the file `app.rb` using ruby as sudo user without password.
 
@@ -59,7 +59,7 @@ Add the below content to the `app.rb` file and execute the file using `/usr/bin/
 echo 'exec "/bin/bash"' > app.rb
 ```
 
-![img](/assets/images/CTF/Pg-Play/RubyDome/root.png)
+![img](/assets/images/CTF/Proving_Grounds/RubyDome/root.png)
 
 **Root Obtained**
 

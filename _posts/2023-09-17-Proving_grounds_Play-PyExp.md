@@ -45,7 +45,7 @@ hydra -l root -P /usr/share/wordlists/rockyou.txt mysql://192.168.204.118
 
 Credentials obtained `root:prettywoman`.
 
-![img](/assets/images/CTF/Pg-Play/PyExp/mysql.png)
+![img](/assets/images/CTF/Proving_Grounds/PyExp/mysql.png)
 
 Select database `data` and check the tables.
 
@@ -80,7 +80,7 @@ MariaDB [data]>
 
 ## Fernet Decode
 
-![img](/assets/images/CTF/Pg-Play/PyExp/fernet.png)
+![img](/assets/images/CTF/Proving_Grounds/PyExp/fernet.png)
 
 ### Decoded data
 
@@ -113,7 +113,7 @@ SSH to user `lucy` using the password obtained in the above step.
 
 Check permissions for the user.
 
-![img](/assets/images/CTF/Pg-Play/PyExp/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/PyExp/shell.png)
 
 The user can run python2 as root without password and check the python code.
 
@@ -130,7 +130,7 @@ Run the python code as super user as below with the input as a OS command.
 import os; os.system("/bin/dash")
 ```
 
-![img](/assets/images/CTF/Pg-Play/PyExp/root.png)
+![img](/assets/images/CTF/Proving_Grounds/PyExp/root.png)
 
 **Root Obtained**
 

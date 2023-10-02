@@ -40,13 +40,13 @@ http://192.168.177.132/mini.php
 
 ## Upload reverse shell
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasyEnum/web.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasyEnum/web.png)
 
 Trigger reverse shell by visiting `192.168.177.132/shell.php` URL.
 
 **Initial Foothold obtained**
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasyEnum/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasyEnum/shell.png)
 
 ## User Enumeration
 
@@ -77,9 +77,9 @@ User goat may run the following commands on funbox7:
 
 Search for sudo exploit on GTFOBins for `mysql`.
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasyEnum/gtfo.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasyEnum/gtfo.png)
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasyEnum/root.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasyEnum/root.png)
 
 **Root Obtained**
 

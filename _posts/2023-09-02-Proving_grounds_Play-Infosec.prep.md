@@ -41,17 +41,17 @@ PORT      STATE SERVICE VERSION
 
 ## Web
 
-![img](/assets/images/CTF/Pg-Play/Infosecprep/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Infosecprep/web.png)
 
 Nmap scan shows there is disallowed entry present in the robots.txt file `/secret.txt`.
 
 ### Base64 encoded text
 
-![img](/assets/images/CTF/Pg-Play/Infosecprep/enc-ssh.png)
+![img](/assets/images/CTF/Proving_Grounds/Infosecprep/enc-ssh.png)
 
 ### Decoded text
 
-![img](/assets/images/CTF/Pg-Play/Infosecprep/ssh-key.png)
+![img](/assets/images/CTF/Proving_Grounds/Infosecprep/ssh-key.png)
 
 Save the decoded SSH key as `id_rsa` and apply neccessary permission as `chmod 600`.
 
@@ -61,7 +61,7 @@ As mentioned in the blog post by the author there is only one user in the system
 
 SSH to `oscp` user using the SSH key.
 
-![img](/assets/images/CTF/Pg-Play/Infosecprep/user.png)
+![img](/assets/images/CTF/Proving_Grounds/Infosecprep/user.png)
 
 ## Privilege Escalation
 
@@ -78,7 +78,7 @@ The setuid bit simply indicates that when running the executable, it will set it
 
 In that case the owner is the root user so we can simply run `/bin/bash -p` to obtain root access.
 
-![img](/assets/images/CTF/Pg-Play/Infosecprep/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Infosecprep/root.png)
 
 Thanks for reading!
 

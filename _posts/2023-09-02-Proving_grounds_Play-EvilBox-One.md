@@ -26,21 +26,21 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## PORT 80 || Web
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/web.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/web.png)
 
 ## Fuzzing
 
 ### Files
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/robots.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/robots.png)
 
 ### Directory
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/dir1.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/dir1.png)
 
 Fuzz for files in `/secrets` directory.
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/dir2.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/dir2.png)
 
 **Found file evil.php**
 
@@ -52,11 +52,11 @@ http://192.168.152.212/secret/evil.php?FUZZ=/etc/passwd
 
 Trying local file inclusion vulnerability to check the words retieved in the response to confirm the parameter.
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/param.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/param.png)
 
 http://192.168.152.212/secret/evil.php?command=/etc/passwd
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/lfi.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/lfi.png)
 
 As shown in the above `/etc/passwd` file we have a user `mowree`.
 
@@ -68,19 +68,19 @@ Using the LFI vulnerability we can obtain the SSH key for the user `mowree`.
 
 http://192.168.152.212/secret/evil.php?command=/home/mowree/.ssh/id_rsa
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/mowree-ssh.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/mowree-ssh.png)
 
 SSH to mowree using the SSH key.
 
 Using id_rsa key to login to the `mowree` user account is prompted with password to continue. So use `ssh2john` to create hash for the SSH key and crack the same using john.
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/crack-password.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/crack-password.png)
 
 Extracted password `unicorn`
 
 **Initial Foothold Obtained**
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/user.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/user.png)
 
 ## Privilege Escalation
 
@@ -96,7 +96,7 @@ echo "hacker:bWBoOyE1sFaiQ:0:0:root:/root:/bin/bash" >> /etc/passwd
 
 Switch to user `hacker` and enter password `mypass` to obtain root.
 
-![img](/assets/images/CTF/Pg-Play/EvilBox-One/root.png)
+![img](/assets/images/CTF/Proving_Grounds/EvilBox-One/root.png)
 
 Thanks for reading!
 

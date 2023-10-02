@@ -44,27 +44,27 @@ PORT     STATE SERVICE       VERSION
 
 ## Web PORT: 7601
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/web1706.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/web1706.png)
 
 ### Directory Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/dir.png)
 
 ### Folder: /Secret/
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/secret.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/secret.png)
 
 There is a username in the hostname file and a list of passwords which is a wordlist that allows us to bruteforce the SSH credentials.
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/hydra.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/hydra.png)
 
 Login to the attacking machine using the SSH credentials cracked on the above step.
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/shell.png)
 
 Upon checking the files in the `seppuku` user there is a file named `.passwd` which contains the password for the user `samurai`. Switch to user samurai using the password and check the executable permissions.
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/samurai.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/samurai.png)
 
 The user samurai can run a program located in the directory `/../../../../../../home/tanto/.cgi_bin/bin` which is located in the user tanto.
 
@@ -88,11 +88,11 @@ vi
 
 Create a file named bin with content to just spawn a bash shell and apply `chmod 777` permission. The permission allows any users in the machine to read, write and execute the program.
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/tanto.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/tanto.png)
 
 Now execute the command the user samurai is allowed to get root shell.
 
-![img](/assets/images/CTF/Pg-Play/Seppuku/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Seppuku/root.png)
 
 **Root Obtained**
 

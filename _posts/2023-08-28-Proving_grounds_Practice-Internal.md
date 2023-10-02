@@ -61,7 +61,7 @@ Host script results:
 ```
 **Exploit DB**
 
-![img](/assets/images/CTF/Pg-Play/Internal/exploitdb.png)
+![img](/assets/images/CTF/Proving_Grounds/Internal/exploitdb.png)
 
 ## Exploit using metasploit
 
@@ -225,7 +225,7 @@ run
 
 Run the exploit code along with the target IP and wait for few seconds.
 
-![img](/assets/images/CTF/Pg-Play/Internal/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Internal/shell.png)
 
 Reverse shell obtained.
 

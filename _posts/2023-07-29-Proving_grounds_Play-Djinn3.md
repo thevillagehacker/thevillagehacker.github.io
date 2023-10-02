@@ -38,7 +38,7 @@ No interesting files found
 
 ### Files: PORT : 5000
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/port5000.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/port5000.png)
 
 Based on the nmap scan results the port 5000 is running with template engine, Sever Side Template Injection is possible to acheive.
 
@@ -52,17 +52,17 @@ In order to create tickets in the system the user has to connect to port `31337/
 
 ## Connecting to PORT 31337/tcp as guest
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/port31337.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/port31337.png)
 
 ### Create New Ticket with SSTI Payload
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/SSTI.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/SSTI.png)
 
 Server Side Template Injection Confirmed.
 
 ### Payload to list files/directories in remote server
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/jinja.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/jinja.png)
 
 [More Payloads](https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection/jinja2-ssti)
 
@@ -83,17 +83,17 @@ pty.spawn("sh")
 
 **Download reverse shell to the attacking machine**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/revshell1.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/revshell1.png)
 
 **HTTP Server Log to confirm download**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/httplog.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/httplog.png)
 
 **Code Execution**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/pyexec.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/pyexec.png)
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/revshell2.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/revshell2.png)
 
 Reverse Shell obtained.
 
@@ -110,12 +110,12 @@ mzfr:x:1002:1004:,,,:/home/mzfr:/bin/bash
 
 **IO Operation in cron**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/cron1.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/cron1.png)
 
 
 ### Download and decompile the pyc files
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/pyc1.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/pyc1.png)
 
 **Decompiled Code**
 
@@ -220,41 +220,41 @@ Copy the json file to `/tmp` folder in the attacking machine and wait for the sy
 
 **authorized_keys overwritten**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/authz_key.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/authz_key.png)
 
 successfully logged into user `saint`.
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/saint.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/saint.png)
 
 user `saint` has the ability to add an user as super user. As shown in the below screenshot the root user already exists in the system, so we are adding a new user to the root user group.
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/adduser.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/adduser.png)
 
 The user `nj` doesn't has the persmission to execute anything in the machine djinn3.
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/nj_sudo_l.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/nj_sudo_l.png)
 
 Upon checking the `/etc/sudoers` file found a hidden user. The administrator forgot to remove `jason` from the sudoers file.
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/new_user.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/new_user.png)
 
 Adding `jason` as new user to get root access.
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/add_jason.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/add_jason.png)
 
 Listing jason user permissions.
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/jason_l.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/jason_l.png)
 
 jason can run `apt-get`.
 
 **Search for exploit in GTFO Bins**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/gtfo.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/gtfo.png)
 
 **Running Exploit**
 
-![img](/assets/images/CTF/Pg-Play/Djinn3/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Djinn3/root.png)
 
 Root obtained.
 

@@ -38,7 +38,7 @@ Service Info: Host: 127.0.0.1; OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## 80/tcp - open  http - Apache httpd 2.4.38
 
-![img](/assets/images/CTF/Pg-Play/SunsetDecoy/web.png)
+![img](/assets/images/CTF/Proving_Grounds/SunsetDecoy/web.png)
 
 Download the zip file http://192.168.240.85/save.zip.
 

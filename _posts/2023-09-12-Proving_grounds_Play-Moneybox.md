@@ -56,7 +56,7 @@ Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
 ### Landing page
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/web1.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/web1.png)
 
 View-source disclosed a hint about the secret directory 
 
@@ -70,7 +70,7 @@ The secret directory source disclosed a secret key `<!..Secret Key 3xtr4ctd4t4 >
 
 FTP allows anonymous login.
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/ftp.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/ftp.png)
 
 Download the image file and use the secretkey found earlier as password to extract information.
 
@@ -78,7 +78,7 @@ Download the image file and use the secretkey found earlier as password to extra
 steghide extract -sf trytofind.jpg
 ```
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/steghide.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/steghide.png)
 
 A file names data.txt has been written to the same directory, that contains hint about the user and password.
 
@@ -95,19 +95,19 @@ Don't Underestimate it.......
 hydra -l renu -P /usr/share/wordlists/rockyou.txt 192.168.180.230 -t 4 ssh
 ```
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/ssh-crack.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/ssh-crack.png)
 
 SSH to user `renu` using the password.
 
 **Initial Foothold obtained**
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/renu-dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/renu-dir.png)
 
 After searching the directoriees in renu user ,an another user was found in the `/home` directory `lily`.
 
 The user lily has a SSH authorized key which belongs to the user renu, SSH to user lily from user renu.
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/lily.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/lily.png)
 
 ## Enumerate user permission
 
@@ -115,7 +115,7 @@ The user lily has a SSH authorized key which belongs to the user renu, SSH to us
 sudo -l
 ```
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/sudo-l.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/sudo-l.png)
 
 ## Privilege Escalation
 
@@ -127,7 +127,7 @@ If the binary is allowed to run as superuser by sudo, it does not drop the eleva
 sudo perl -e 'exec "/bin/sh";'
 ```
 
-![img](/assets/images/CTF/Pg-Play/Moneybox/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Moneybox/root.png)
 
 **Root Obtained**
 

@@ -47,17 +47,17 @@ Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Directory Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/dir.png)
 
 **ZoneMinder v1.29.0**
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/zm.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/zm.png)
 
 Zoneminder v1.29.0 is vulnerable to SQL Injection vulnerability.
 
 **Searchsploit**
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/searchsploit.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/searchsploit.png)
 
 ## Construct and Exploit SQL Injection vulnerability
 
@@ -84,7 +84,7 @@ view=request&request=log&task=query&limit=100;(SELECT * FROM (SELECT(SLEEP(5)))O
 
 ### Response
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/response.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/response.png)
 
 The vulnerability says the `limit` parameter is vulnerable and automate the exploit using sqlmap.
 
@@ -92,21 +92,21 @@ The vulnerability says the `limit` parameter is vulnerable and automate the expl
 sqlmap -u http://192.168.210.52/zm/index.php --data="view=request&request=log&task=query&limit=100&minTime=1" -p limit --batch --dbs --risk 3 --level 4
 ```
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/db.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/db.png)
 
 **Obtain reverse shell via sqlmap**
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/os-shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/os-shell.png)
 
 **Transfer nc and obtain reverse shell**
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/os-shell2.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/os-shell2.png)
 
 **Root Obtained**
 
 Use PORT `3305` to get reverse connection sucessfully. Other ports are not allowed in the system.
 
-![img](/assets/images/CTF/Pg-Play/Pebbles/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Pebbles/root.png)
 
 Thanks for reading!
 

@@ -31,7 +31,7 @@ PORT   STATE SERVICE VERSION
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/DriftingBlues6/web.png)
+![img](/assets/images/CTF/Proving_Grounds/DriftingBlues6/web.png)
 
 ## Fuzzing for files
 
@@ -51,7 +51,7 @@ dont forget to add .zip extension to your dir-brute
 
 http://192.168.151.219/textpattern/textpattern/
 
-![img](/assets/images/CTF/Pg-Play/DriftingBlues6/login.png)
+![img](/assets/images/CTF/Proving_Grounds/DriftingBlues6/login.png)
 
 Zip file found at `http://192.168.151.219/spammer.zip`. File is password protected and which can be easliy cracked using `fcrackzip` tool.
 
@@ -69,13 +69,13 @@ mayer:lionheart
 
 Login to the application and upload reverse shell.
 
-![img](/assets/images/CTF/Pg-Play/DriftingBlues6/upload.png)
+![img](/assets/images/CTF/Proving_Grounds/DriftingBlues6/upload.png)
 
 Checked the document root configuration and triggered the reverse shell file.
 
 **Initial foothold obtained**
 
-![img](/assets/images/CTF/Pg-Play/DriftingBlues6/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/DriftingBlues6/shell.png)
 
 ## Privilege Escalation
 
@@ -99,7 +99,7 @@ gcc -pthread dirty.c -o dirty -lcrypt
 
 Switch user to `firefart` and use the password `password`.
 
-![img](/assets/images/CTF/Pg-Play/DriftingBlues6/root.png)
+![img](/assets/images/CTF/Proving_Grounds/DriftingBlues6/root.png)
 
 **Root shell obtained**
 

@@ -52,7 +52,7 @@ Anonymous login prohibited.
 
 Nothing, but just an image.
 
-![img](/assets/images/CTF/Pg-Play/Katana/web-8088.png)
+![img](/assets/images/CTF/Proving_Grounds/Katana/web-8088.png)
 
 ## 8088/tcp - open  http - LiteSpeed httpd
 
@@ -70,7 +70,7 @@ http://192.168.197.83:8088/upload.html
 
 File upload
 
-![img](/assets/images/CTF/Pg-Play/Katana/upload.png)
+![img](/assets/images/CTF/Proving_Grounds/Katana/upload.png)
 
 ```text
 Please wait for 1 minute!. Please relax!.

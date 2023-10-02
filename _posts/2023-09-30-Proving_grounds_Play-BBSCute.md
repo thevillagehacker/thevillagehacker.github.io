@@ -54,7 +54,7 @@ Target: http://192.168.151.128/
 
 ## http://192.168.151.128/index.php
 
-![img](/assets/images/CTF/Pg-Play/BBSCute/web.png)
+![img](/assets/images/CTF/Proving_Grounds/BBSCute/web.png)
 
 Register ➡️ login ➡️ Upload Avatar ➡️ upload reverse shell/php code execution code as avatar.
 

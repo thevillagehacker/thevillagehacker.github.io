@@ -41,17 +41,17 @@ PORT     STATE SERVICE  VERSION
 
 ## Web
 
-![img](/assets/images/CTF/Pg-Play/Hub/fugu01.png)
+![img](/assets/images/CTF/Proving_Grounds/Hub/fugu01.png)
 
 Fuguhub is vulnerable to [Remote Code Execution](https://github.com/ojan2021/Fuguhub-8.1-RCE)
 
 **Set administrative account**
 
-![img](/assets/images/CTF/Pg-Play/Hub/admin01.png)
+![img](/assets/images/CTF/Proving_Grounds/Hub/admin01.png)
 
 **Login to the admin account**
 
-![img](/assets/images/CTF/Pg-Play/Hub/admin-login.png)
+![img](/assets/images/CTF/Proving_Grounds/Hub/admin-login.png)
 
 - Direct to the Web file manager.
 - Click upload file and upload below script.
@@ -78,9 +78,9 @@ Fuguhub is vulnerable to [Remote Code Execution](https://github.com/ojan2021/Fug
 - Change the IP address and PORT in the base64 encoded value and save file as `.lsp`. 
 - Upload the file to file server and visit the uploaded file to trigger the reverse shell.
 
-![img](/assets/images/CTF/Pg-Play/Hub/rce-trigger.png)
+![img](/assets/images/CTF/Proving_Grounds/Hub/rce-trigger.png)
 
-![img](/assets/images/CTF/Pg-Play/Hub/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Hub/root.png)
 
 Root Obtained.
 

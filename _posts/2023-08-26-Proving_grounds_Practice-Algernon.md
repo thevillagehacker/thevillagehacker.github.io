@@ -44,19 +44,19 @@ http://192.168.172.65:9998/interface/root#/login
 
 ## PORT: 9998
 
-![img](/assets/images/CTF/Pg-Play/Algernon/9998.png)
+![img](/assets/images/CTF/Proving_Grounds/Algernon/9998.png)
 
 ### Searchsploit
 
-![img](/assets/images/CTF/Pg-Play/Algernon/searchsploit.png)
+![img](/assets/images/CTF/Proving_Grounds/Algernon/searchsploit.png)
 
 Change the IP addressess and PORT in the exploit code and run netcat listener on the PORT specified.
 
-![img](/assets/images/CTF/Pg-Play/Algernon/exploit.png)
+![img](/assets/images/CTF/Proving_Grounds/Algernon/exploit.png)
 
 Run the python exploit.
 
-![img](/assets/images/CTF/Pg-Play/Algernon/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Algernon/shell.png)
 
 **Shell Obtained**
 

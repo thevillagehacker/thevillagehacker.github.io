@@ -50,7 +50,7 @@ Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/FunboxRookie/web.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxRookie/web.png)
 
 ## FTP PORT: 21
 
@@ -85,7 +85,7 @@ Use the above tool to crack the password, an alternative way to crack the passwo
 
 After trying to crack passwords for all the files, the process resulted in failure except for files `tom.zip` and `catherine.zip`.
 
-![img](/assets/images/CTF/Pg-Play/FunboxRookie/crack.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxRookie/crack.png)
 
 Extract the zip files using the passwords and use the `id_rsa` key to login to the remote machine using SSH.
 
@@ -131,7 +131,7 @@ User tom may run the following commands on funbox2:
     (ALL : ALL) ALL
 ```
 
-![img](/assets/images/CTF/Pg-Play/FunboxRookie/root.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxRookie/root.png)
 
 **Root obtained**
 

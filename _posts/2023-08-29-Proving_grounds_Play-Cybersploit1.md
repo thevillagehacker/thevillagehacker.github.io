@@ -34,15 +34,15 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web Port : 80
 
-![img](/assets/images/CTF/Pg-Play/Cybersploit1/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Cybersploit1/web.png)
 
 ## Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/Cybersploit1/files.png)
+![img](/assets/images/CTF/Proving_Grounds/Cybersploit1/files.png)
 
 **SSH Password found on robots.txt file**
 
-![img](/assets/images/CTF/Pg-Play/Cybersploit1/flag1.png)
+![img](/assets/images/CTF/Proving_Grounds/Cybersploit1/flag1.png)
 
 Decode the base64 text to get the SSH password.
 
@@ -50,11 +50,11 @@ Decode the base64 text to get the SSH password.
 
 Since we have the username, password and PORT 22 `SSH` is open, SSH to the attacking machine using the same.
 
-![img](/assets/images/CTF/Pg-Play/Cybersploit1/ssh.png)
+![img](/assets/images/CTF/Proving_Grounds/Cybersploit1/ssh.png)
 
 ## Privilege Escalation
 
-![img](/assets/images/CTF/Pg-Play/Cybersploit1/kernel.png)
+![img](/assets/images/CTF/Proving_Grounds/Cybersploit1/kernel.png)
 
 The linux kernel in the attacking machine is vulnerable to [Linux Kernel 3.13.0 < 3.19 (Ubuntu 12.04/14.04/14.10/15.04) - 'overlayfs' Local Privilege Escalation](https://www.exploit-db.com/exploits/37292) vulnerability.
 
@@ -67,7 +67,7 @@ gcc exploit.c
 ./a.out
 ```
 
-![img](/assets/images/CTF/Pg-Play/Cybersploit1/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Cybersploit1/root.png)
 
 **Root Obtained**
 

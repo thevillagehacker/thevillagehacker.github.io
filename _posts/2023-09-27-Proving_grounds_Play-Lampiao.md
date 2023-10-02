@@ -48,7 +48,7 @@ PORT     STATE SERVICE VERSION
 
 ## Web PORT: 1898
 
-![img](/assets/images/CTF/Pg-Play/Lampiao/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Lampiao/web.png)
 
 ```html
 <meta name="Generator" content="Drupal 7 (http://drupal.org)" />

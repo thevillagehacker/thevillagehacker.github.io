@@ -43,7 +43,7 @@ PORT      STATE SERVICE            VERSION
 
 HP Power Manager 4.2 (Build 7)
 
-![img](/assets/images/CTF/Pg-Play/Kevin/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Kevin/web.png)
 
 HP Power Manager 4.2 (Build 7) is vulnerable to [Buffer Overflow Attack](https://www.exploit-db.com/exploits/10099).
 
@@ -123,7 +123,7 @@ Run netcat listerner on the PORT which was used in the above payload.
 
 Run the exploit using `python2` and the reverse connetion will be obtained in few seconds.
 
-![img](/assets/images/CTF/Pg-Play/Kevin/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Kevin/shell.png)
 
 Thanks for reading!
 

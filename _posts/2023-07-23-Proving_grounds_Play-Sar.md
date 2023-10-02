@@ -41,7 +41,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 **Sar v3.21**
 
-![img](/assets/images/CTF/Pg-Play/Sar/sar.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/sar.png)
 
 ## Searchsploit
 

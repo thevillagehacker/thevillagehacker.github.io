@@ -48,7 +48,7 @@ PORT: 25 => Sendmail 8.13.4/8.13.4/Debian-3sarge3
 
 ## SNMP Check
 
-![img](/assets/images/CTF/Pg-Play/ClamAV/snmp-check.png)
+![img](/assets/images/CTF/Proving_Grounds/ClamAV/snmp-check.png)
 
 The service is running with `black-hole-mode` enabled which is vulnerable to remote code execution.
 
@@ -71,11 +71,11 @@ Sendmail with clamav-milter < 0.91.2 - Remote Command Execution                 
 Run the perl script to obtain the remode code execution.
 Add the following `#!/bin/perl` to the perl script before running it.
 
-![img](/assets/images/CTF/Pg-Play/ClamAV/snmp-attack.png)
+![img](/assets/images/CTF/Proving_Grounds/ClamAV/snmp-attack.png)
 
 As shown above connect to the port mentioned using `nc` to obtain reverse shell.
 
-![img](/assets/images/CTF/Pg-Play/ClamAV/root.png)
+![img](/assets/images/CTF/Proving_Grounds/ClamAV/root.png)
 
 Root obtained.
 

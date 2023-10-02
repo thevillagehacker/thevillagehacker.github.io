@@ -34,7 +34,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/web.png)
 
 ## Directory Fuzzing
 
@@ -42,15 +42,15 @@ Upon fuzzing for directories the robots.txt file revealed a directory named `/fi
 
 There is a hidden base64 text present in the index file.
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/hidden.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/hidden.png)
 
 Upon decoding the text twice in base64 format using cyberchef revealed that the decoded data is a image. 
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/decode.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/decode.png)
 
 Download the image and check for informations in it's meta data. After checking the file it was found to be a QR code image, use the online decoders to extract information.
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/qrdecode.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/qrdecode.png)
 
 It has password but we don't have a username to login. More directory fuzzing...
 
@@ -58,7 +58,7 @@ After doing more fuzzing the directory `/bulma/` has been discovered and it cont
 
 Use the online morse code decoder as in audio format and the extracted information is the username and password for the SSH login.
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/morse.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/morse.png)
 
 Login to the attacking machine using the credentials `trunks:u$3r`
 
@@ -68,7 +68,7 @@ Login to the attacking machine using the credentials `trunks:u$3r`
 
 Check the `bash_history` file, the history shows the user added a new user `Tom` to the system, which means the user has write permission on `/etc/passwd` file.
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/history.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/history.png)
 
 check the `/etc/password` file to ensure the user has write permissions.
 
@@ -81,7 +81,7 @@ After checking the /etc/passwd file there are no entries for the user `Tom`. So 
 
 Switch to user `Tom` using password `Password`.
 
-![img](/assets/images/CTF/Pg-Play/Vegeta1/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Vegeta1/root.png)
 
 **Root Obtained**
 

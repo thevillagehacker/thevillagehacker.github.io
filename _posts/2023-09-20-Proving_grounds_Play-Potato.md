@@ -38,17 +38,17 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/Potato/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/web.png)
 
 ## Directory Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/Potato/dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/dir.png)
 
 Directory fuzzing revealed the admin directory presence and upon surfing the same prompted with login form.
 
 ## PORT 2112: FTP
 
-![img](/assets/images/CTF/Pg-Play/Potato/ftp.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/ftp.png)
 
 
 PORT 2112 has the FTP service running and which allows anaonymous login. Login to FTP server and download the index.php.bak file.
@@ -96,17 +96,17 @@ After doing some research, the code is vulnerable to php type juggling vulnerabi
 
 By sending the password variable as array `password[]=""` will result in authentication bypass.
 
-![img](/assets/images/CTF/Pg-Play/Potato/bypass.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/bypass.png)
 
 Direct to the dashboard and check the logs option.
 
-![img](/assets/images/CTF/Pg-Play/Potato/logs.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/logs.png)
 
 Select the log and click Get the log button. Intercept the request in the Burp suite and send it to repeater for further inspection. Change the file name of the log file to `../../../../../../etc/passwd`.
 
 The application is vulnerable to LFI vulnerability. Now copy the webadmin user hash locally and crack the password using john.
 
-![img](/assets/images/CTF/Pg-Play/Potato/john.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/john.png)
 
 Now SSH to user `webadmin` using the password `dragon`.
 
@@ -126,7 +126,7 @@ webadmin@serv:~$
 
 The user has permission to run the binary `/bin/nice` on directory `/notes/*`. The `/notes/*` essentially means all the files and subdirectories that are contained within the "notes" directory. This is often used in commands to perform operations on multiple files or directories within a specific directory.
 
-![img](/assets/images/CTF/Pg-Play/Potato/ls.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/ls.png)
 
 The user webadmin does not have any permission to add or edit existing files in the notes directory. So create a bash script with content as `"/bin/bash"` and save it in the webadmin home directory.
 
@@ -134,7 +134,7 @@ Apply `chmod +x` to the script to make it executable file.
 
 Run the below command to obtain root shell.
 
-![img](/assets/images/CTF/Pg-Play/Potato/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Potato/root.png)
 
 **Root Obtained**
 

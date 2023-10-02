@@ -34,7 +34,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## 80/tcp - open  http - Apache httpd 2.4.29 ((Ubuntu))
 
-![img](/assets/images/CTF/Pg-Play/Ha-natraj/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Ha-natraj/web.png)
 
 ## Directory Fuzzing
 
@@ -42,15 +42,15 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 http://192.168.151.80/console/
 http://192.168.151.80/console/file.php
 ```
-![img](/assets/images/CTF/Pg-Play/Ha-natraj/dir.png)
+![img](/assets/images/CTF/Proving_Grounds/Ha-natraj/dir.png)
 
 ## LFI Vulnerability
 
-![img](/assets/images/CTF/Pg-Play/Ha-natraj/lfi.png)
+![img](/assets/images/CTF/Proving_Grounds/Ha-natraj/lfi.png)
 
 ## LFI to SSH Log Poisoning
 
-![img](/assets/images/CTF/Pg-Play/Ha-natraj/ssh-log1.png)
+![img](/assets/images/CTF/Proving_Grounds/Ha-natraj/ssh-log1.png)
 
 **Log Poisoning**
 
@@ -74,7 +74,7 @@ Sep 30 00:08:01 ubuntu CRON[24169]: pam_unix(cron:session): session closed for u
 
 ## Initial Foothold
 
-![img](/assets/images/CTF/Pg-Play/Ha-natraj/rce.png)
+![img](/assets/images/CTF/Proving_Grounds/Ha-natraj/rce.png)
 
 ## Privilege Escalation
 

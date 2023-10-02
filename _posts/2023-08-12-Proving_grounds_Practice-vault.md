@@ -16,7 +16,7 @@ description: "Offsec proving grounds practice windows machine writeup"
 ---
 
 # Walkthrough on Youtube
-[![youtube](/assets/images/CTF/Pg-Play/Vault/youtube.png)](https://youtu.be/JocbrhLXuss)
+[![youtube](/assets/images/CTF/Proving_Grounds/Vault/youtube.png)](https://youtu.be/JocbrhLXuss)
 
 ## NMAP
 ```sh
@@ -59,7 +59,7 @@ Domain name: `vault.offsec`
 
 ## Writing files to DocumentsShare
 
-![smb doc share](/assets/images/CTF/Pg-Play/Vault/smb-doc-share.png)
+![smb doc share](/assets/images/CTF/Proving_Grounds/Vault/smb-doc-share.png)
 
 ## Obtain NTLM Hash via uploading URL file
 
@@ -75,19 +75,19 @@ IconIndex=1
 
 IP address should be `responder IP`.
 
-![Obtain NTLM](/assets/images/CTF/Pg-Play/Vault/NTLM.png)
+![Obtain NTLM](/assets/images/CTF/Proving_Grounds/Vault/NTLM.png)
 
 **Crack the hash using john**
 
-![crack the hash](/assets/images/CTF/Pg-Play/Vault/john-pass-crack.png)
+![crack the hash](/assets/images/CTF/Proving_Grounds/Vault/john-pass-crack.png)
 
 **Connect to attacking machine using extracted credentials**
 
-![Machine connect](/assets/images/CTF/Pg-Play/Vault/evil-rm-connect.png)
+![Machine connect](/assets/images/CTF/Proving_Grounds/Vault/evil-rm-connect.png)
 
 ## Enumerate system user privileges
 
-![User Privilege](/assets/images/CTF/Pg-Play/Vault/windows_priv.png)
+![User Privilege](/assets/images/CTF/Proving_Grounds/Vault/windows_priv.png)
 
 ## Privilege Escalation
 
@@ -139,7 +139,7 @@ Download precompiled binary from [here](https://github.com/byronkg/SharpGPOAbuse
 PS C:\tmp> ./SharpGPOAbuse.exe --AddLocalAdmin --UserAccount anirudh --GPOName "Default Domain Policy"
 ```
 
-![GitHub](/assets/images/CTF/Pg-Play/Vault/gpo-abuse1.png)
+![GitHub](/assets/images/CTF/Proving_Grounds/Vault/gpo-abuse1.png)
 
 Force update group policy `gpupdate /force`
 
@@ -164,7 +164,7 @@ Usage:-
 python3 psexec.py domain_name/username:password@IP
 ```
 
-![GitHub](/assets/images/CTF/Pg-Play/Vault/psexec1.png)
+![GitHub](/assets/images/CTF/Proving_Grounds/Vault/psexec1.png)
 
 `proof.txt` obtained.
 

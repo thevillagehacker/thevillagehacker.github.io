@@ -16,7 +16,7 @@ description: "Offsec proving grounds play linux machine writeup"
 ---
 # Walkthrough on Youtube
 
-[![youtube](/assets/images/CTF/Pg-Play/Election1/youtube.png)](https://youtu.be/4ls30YSlfAM)
+[![youtube](/assets/images/CTF/Proving_Grounds/Election1/youtube.png)](https://youtu.be/4ls30YSlfAM)
 
 ## NMAP
 
@@ -41,23 +41,23 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 http://192.168.176.211/FUZZ/
 
-![web_fuzz](/assets/images/CTF/Pg-Play/Election1/dir_wfuzz.png)
+![web_fuzz](/assets/images/CTF/Proving_Grounds/Election1/dir_wfuzz.png)
 
 Landing webpage
 
-![web_fuzz](/assets/images/CTF/Pg-Play/Election1/webpage_home.png)
+![web_fuzz](/assets/images/CTF/Proving_Grounds/Election1/webpage_home.png)
 
 http://192.168.176.211/election/FUZZ/
 
-![web_fuzz](/assets/images/CTF/Pg-Play/Election1/dir_wfuzz2.png)
+![web_fuzz](/assets/images/CTF/Proving_Grounds/Election1/dir_wfuzz2.png)
 
 More directory fuzzing...🏃
 
-![web_fuzz](/assets/images/CTF/Pg-Play/Election1/dir_wfuzz3.png)
+![web_fuzz](/assets/images/CTF/Proving_Grounds/Election1/dir_wfuzz3.png)
 
 Found a log file at `http://192.168.176.211/election/admin/logs/`
 
-![log](/assets/images/CTF/Pg-Play/Election1/log_file.png)
+![log](/assets/images/CTF/Proving_Grounds/Election1/log_file.png)
 
 #### Contents of the log file
 ```log
@@ -73,15 +73,15 @@ love: P@$$w0rd@123
 
 ## SSH Login using extracted credentials
 
-![ssh](/assets/images/CTF/Pg-Play/Election1/ssh01.png)
+![ssh](/assets/images/CTF/Proving_Grounds/Election1/ssh01.png)
 
-![local](/assets/images/CTF/Pg-Play/Election1/local.png)
+![local](/assets/images/CTF/Proving_Grounds/Election1/local.png)
 
 ## Privilege Escalation
 
 ### SUIDs
 
-![SUI](/assets/images/CTF/Pg-Play/Election1/SUID.png)
+![SUI](/assets/images/CTF/Proving_Grounds/Election1/SUID.png)
 
 **Searchsploit search**
 
@@ -105,7 +105,7 @@ Serv-U FTP Server < 15.1.7 - Local Privilege Escalation (2)       | multiple/loc
 
 **Root user access and proof.txt obtained**
 
-![root](/assets/images/CTF/Pg-Play/Election1/root.png)
+![root](/assets/images/CTF/Proving_Grounds/Election1/root.png)
 
 Thanks for reading!
 

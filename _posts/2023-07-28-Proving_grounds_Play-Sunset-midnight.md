@@ -55,23 +55,23 @@ ID           Response   Lines    Word       Chars       Payload
 
 ## Brute Forcing Mysql Credentials
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/hydra.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/hydra.png)
 
 ## Logging into Mysql DB
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/db1.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/db1.png)
 
 Get user credentials
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/db2.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/db2.png)
 
 Generate new password MD5  hash
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/md51.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/md51.png)
 
 Update user password
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/db3.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/db3.png)
 
 Sucessfuly logged into wordpress admin portal.
 
@@ -79,7 +79,7 @@ Sucessfuly logged into wordpress admin portal.
 
 Uploading revershell in the themes resulted in failure.
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/rev_upload_failed.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/rev_upload_failed.png)
 
 ### Generate Malicious wordpress plugin
 
@@ -87,37 +87,37 @@ Uploading revershell in the themes resulted in failure.
 
 The python code allows to create malicious reverse shell payload and write it to the zip file.
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/malicious_plugin_gen.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/malicious_plugin_gen.png)
 
 Upload and install the malicious plugin
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/upload_plugin.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/upload_plugin.png)
 
 ### Trigger reverse shell
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/shell_trigger.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/shell_trigger.png)
 
 Shell obtained
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/stable_shell0.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/stable_shell0.png)
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/stable_shell.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/stable_shell.png)
 
 Post obtaining shell, hardcoded user credentials were found in the wordpress config files.
 
 Found credentials for user `jose`
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/wp-config.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/wp-config.png)
 
 **SSH to user jose**
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/jose.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/jose.png)
 
 ## Privilege Escalation
 
 ### SUIDs
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/SUID.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/SUID.png)
 
 The status binary in the SUID runs services.
 
@@ -131,7 +131,7 @@ The status binary in the SUID runs services.
 /bin/sh
 ```
 
-![img](/assets/images/CTF/Pg-Play/Sunset-midnight/root.png)
+![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/root.png)
 
 Root shell obtained.
 

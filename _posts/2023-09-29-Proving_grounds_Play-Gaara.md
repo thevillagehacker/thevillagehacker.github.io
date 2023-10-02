@@ -34,7 +34,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## 80/tcp - open  http - Apache httpd 2.4.38 ((Debian))
 
-![img](/assets/images/CTF/Pg-Play/Gaara/web.png)
+![img](/assets/images/CTF/Proving_Grounds/Gaara/web.png)
 
 ### Directory Fuzzing
 
@@ -48,11 +48,11 @@ http://192.168.198.142/Cryoserver
 
 The directory `/iamGaara` has a base58 encoded secret in one of the paragraph.
 
-![img](/assets/images/CTF/Pg-Play/Gaara/secret.png)
+![img](/assets/images/CTF/Proving_Grounds/Gaara/secret.png)
 
 ### Decoding secret
 
-![img](/assets/images/CTF/Pg-Play/Gaara/decode.png)
+![img](/assets/images/CTF/Proving_Grounds/Gaara/decode.png)
 
 **SSH Credentials**: `gaara:ismyname`
 
