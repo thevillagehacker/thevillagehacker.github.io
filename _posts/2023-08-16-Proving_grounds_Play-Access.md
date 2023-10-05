@@ -8,7 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Windows
-- Pg-PLay
+- Pg-Play
 writeups: true
 hidden: true
 author: Naveen

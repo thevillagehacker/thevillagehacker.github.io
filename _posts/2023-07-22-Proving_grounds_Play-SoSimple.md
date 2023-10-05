@@ -8,7 +8,9 @@ tag:
 - OSCP
 - Writeup
 - Linux
-- Pg-PLay
+- Pg-Play
+- RFI
+- Wordpress
 writeups: true
 hidden: true
 author: Naveen

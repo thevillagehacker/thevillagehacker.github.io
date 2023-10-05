@@ -7,7 +7,7 @@ tag:
 - Offsec labs
 - OSCP
 - Writeup
-- Linux- PG-Play
+- Linux- Pg-Play
 writeups: true
 hidden: true
 author: Naveen

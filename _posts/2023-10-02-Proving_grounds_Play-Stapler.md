@@ -8,7 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Linux
-- PG-Play
+- Pg-Play
 - Wordpress
 - LFI
 writeups: true

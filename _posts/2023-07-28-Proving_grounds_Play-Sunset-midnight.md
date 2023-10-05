@@ -7,7 +7,7 @@ tag:
 - Offsec labs
 - OSCP
 - Writeup
-- Pg-PLay
+- Pg-Play
 - Linux
 writeups: true
 hidden: true

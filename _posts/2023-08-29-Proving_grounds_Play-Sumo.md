@@ -8,7 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Linux
-- Pg-PLay
+- Pg-Play
 - Dirtyc0w
 writeups: true
 hidden: true

