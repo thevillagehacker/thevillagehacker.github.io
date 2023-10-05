@@ -61,15 +61,15 @@ ID           Response   Lines    Word       Chars       Payload
 
 ![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/db1.png)
 
-Get user credentials
+Get user credentials.
 
 ![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/db2.png)
 
-Generate new password MD5  hash
+Generate new password MD5  hash.
 
 ![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/md51.png)
 
-Update user password
+Update user password.
 
 ![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/db3.png)
 
@@ -133,7 +133,7 @@ The status binary in the SUID runs services.
 
 ![img](/assets/images/CTF/Proving_Grounds/Sunset-midnight/root.png)
 
-Root shell obtained.
+**Root obtained**
 
 Thanks for reading!
 

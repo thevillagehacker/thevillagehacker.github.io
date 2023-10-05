@@ -34,7 +34,7 @@ PORT      STATE SERVICE VERSION
 ## Fuzzing
 ### Files: PORT : 80
 
-No interesting files found
+No interesting files found.
 
 ### Files: PORT : 5000
 
@@ -48,7 +48,7 @@ Based on the nmap scan results the port 5000 is running with template engine, Se
 |_http-server-header: Werkzeug/1.0.1 Python/3.6.9
 ```
 
-In order to create tickets in the system the user has to connect to port `31337/tcp`
+In order to create tickets in the system the user has to connect to port `31337/tcp`.
 
 ## Connecting to PORT 31337/tcp as guest
 
@@ -222,11 +222,11 @@ Copy the json file to `/tmp` folder in the attacking machine and wait for the sy
 
 ![img](/assets/images/CTF/Proving_Grounds/Djinn3/authz_key.png)
 
-successfully logged into user `saint`.
+Successfully logged into user `saint`.
 
 ![img](/assets/images/CTF/Proving_Grounds/Djinn3/saint.png)
 
-user `saint` has the ability to add an user as super user. As shown in the below screenshot the root user already exists in the system, so we are adding a new user to the root user group.
+User `saint` has the ability to add an user as super user. As shown in the below screenshot the root user already exists in the system, so we are adding a new user to the root user group.
 
 ![img](/assets/images/CTF/Proving_Grounds/Djinn3/adduser.png)
 
