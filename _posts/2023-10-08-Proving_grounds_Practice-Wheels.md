@@ -138,6 +138,7 @@ john
 Iamrockinginmyroom1212
 iamarabbitholeand7875
 johnloveseverontr8932
+lokieismyfav!@#12
 alreadydead$%^234
 lasagama90809!@
 ```
@@ -240,6 +241,7 @@ root@wheels:~#
 ## References
 
 - [https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XPATH%20Injection/README.md#exploitation](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XPATH%20Injection/README.md#exploitation)
+- [https://book.hacktricks.xyz/pentesting-web/xpath-injection#string-extraction](https://book.hacktricks.xyz/pentesting-web/xpath-injection#string-extraction)
 
 Thanks for reading!
 
