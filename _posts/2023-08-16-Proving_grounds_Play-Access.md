@@ -14,7 +14,7 @@ hidden: true
 author: Naveen
 description: "Offsec proving grounds play windows machine writeup"
 ---
-# Walkthough on Youtube
+## Walkthough on Youtube
 
 [![youtube](/assets/images/CTF/Proving_Grounds/Access/yt.png)](https://youtu.be/h1Br5umYxwc)
 

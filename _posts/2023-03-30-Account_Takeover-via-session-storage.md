@@ -13,7 +13,7 @@ author: Naveen
 description: This blog explores the method of account takeover by manipulating the local session storage in a financial web application.
 ---
 
-# Target Background
+## Target Background
 The target of this analysis is a web application designed for financial purposes. It provides a comprehensive suite of features for generating, tracking, and reconciling invoices. Users can effectively manage payments and perform various financial activities within the application.
 
 ## Overview

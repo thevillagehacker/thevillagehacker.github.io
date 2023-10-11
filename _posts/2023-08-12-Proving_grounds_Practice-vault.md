@@ -15,7 +15,7 @@ author: Naveen
 description: "Offsec proving grounds practice windows machine writeup"
 ---
 
-# Walkthrough on Youtube
+## Walkthrough on Youtube
 [![youtube](/assets/images/CTF/Proving_Grounds/Vault/youtube.png)](https://youtu.be/JocbrhLXuss)
 
 ## NMAP

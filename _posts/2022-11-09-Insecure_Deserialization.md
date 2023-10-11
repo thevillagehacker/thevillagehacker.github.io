@@ -12,7 +12,7 @@ description: A pentester’s guide to insecure deserialization.
 
 ![img](/assets/images/blogs/Insecure_desrialization/1.webp)
 
-# Introduction
+## Introduction
 Insecure Deserialization is a vulnerability that occurs when untrusted data is used to abuse the logic of an application, inflict a denial of service (DoS) attack, or even execute arbitrary code upon it being deserialized. It also occupies the #8 spot in the [OWASP Top 10 2017](https://www.acunetix.com/blog/articles/owasp-top-10-2017/) list.
 
 To understand what insecure deserialization is, we first must understand what serialization and deserialization are. We’ll then cover some examples of insecure deserialization and how it can be used to execute code as well as discuss some possible mitigations for this class of vulnerability.

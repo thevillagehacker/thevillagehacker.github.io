@@ -11,7 +11,7 @@ author: Naveen
 description: An in-depth analysis of reverse engineering client-side encryption in a web application.
 ---
 
-### Target Background
+## Target Background
 
 The target is a web application accessible through both web browsers and mobile applications on Android and iOS platforms. The application utilizes a centralized CDN (Content Delivery Network) system, indicating that there are multiple applications with similar features and shared resources. Through subdomain enumeration, it was discovered that the target has more than 15 applications sharing the same technology and all served by Amazon CDN.
 

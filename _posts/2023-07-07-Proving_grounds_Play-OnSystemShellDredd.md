@@ -12,10 +12,11 @@ hidden: true
 author: Naveen
 description: "Offsec proving grounds play linux machine writeup"
 ---
-# Walkthrough on Youtube
+
+## Walkthrough on Youtube
 [![youtube](/assets/images/CTF/Proving_Grounds/OnSystemShellDredd/youtube.png)](https://youtu.be/UPYHCc7PdGQ)
 
-# NMAP
+## NMAP
 ```bash
 naveenj@hackerspace|01:02 AM|~/Pg-Play$ nmap -p- --open -sV -sT -sC 192.168.191.130 -v -oN nmap                                                                                           
 Starting Nmap 7.93 ( https://nmap.org ) at 2023-07-08 01:02 EDT                                                

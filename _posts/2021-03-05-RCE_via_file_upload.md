@@ -10,7 +10,7 @@ author: Naveen
 description: This blog post recounts a scenario of remote code execution (RCE) that occurred due to unrestricted file upload functionality.
 ---
 
-# Remote Code Execution
+## Remote Code Execution
 Remote code execution (RCE) refers to the ability of a cyber attacker to access and manipulate a computer or server without authorization, regardless of its geographic location. By exploiting RCE vulnerabilities, attackers can run arbitrary malicious software on the target system.
 
 During my bug hunting endeavors, I discovered a target with a responsible disclosure program using Google Dorks. For the purpose of this blog post, let's refer to the target website as abc.com. One of the functionalities of this website allowed users to upload profile pictures. The developer had configured the application to only accept whitelisted extensions, such as `*.gif`, `*.jpeg`, and `*.png`.

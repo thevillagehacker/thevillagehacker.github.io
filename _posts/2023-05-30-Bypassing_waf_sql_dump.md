@@ -11,7 +11,7 @@ author: Naveen
 description: This blog delves into the techniques used to bypass a Web Application Firewall (WAF) and exploit SQL injection vulnerabilities in a financial management web application.
 ---
 
-# Target Background
+## Target Background
 
 The target of this analysis is a web application developed for financial management purposes. It offers a range of features, including bulk payment management, invoicing, and sending promotional messages to customers regarding card offers.
 

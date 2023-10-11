@@ -11,7 +11,7 @@ author: Naveen
 description: This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company.
 ---
 
-# Target Background
+## Target Background
 The target of this analysis is a web application functioning as an e-commerce platform. It facilitates online purchases of various products and services by users.
 
 ## Overview

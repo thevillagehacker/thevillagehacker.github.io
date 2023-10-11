@@ -10,10 +10,12 @@ author: Naveen
 description: This blog post describes the discovery and analysis of a reflected XSS vulnerability in a public program.
 ---
 
-# Target
+## Target
+
 The target of this analysis is https://lootdog.io/, a website hosted on HackerOne's platform with a large scope. During the reconnaissance phase, an unintended behavior was identified in the Oauth request, leading to further investigation.
 
 ## Technical Analysis
+
 The login request from https://lootdog.io/ was intercepted and analyzed using a repeater tool to observe the Oauth workflow. It was discovered that the website utilizes https://account.my.games as an Oauth service. Upon clicking the login button, users are redirected to https://account.my.games, where they can log in if they possess a valid account. To assess the security of the Oauth implementation, a search was conducted for potential vulnerabilities such as Reflected XSS or Open Redirect issues that could be exploited to obtain the Oauth token and compromise user accounts.
 
 An additional parameter was added to the end of the request's keyed value as follows:
