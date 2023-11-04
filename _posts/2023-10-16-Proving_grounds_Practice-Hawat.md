@@ -63,7 +63,7 @@ Next cloud login page, use credentials `admin:admin` to login.
 
 Download and extract the `issuetracker.zip` file in the local machine. Open the extracted file in a text editor to review the code.
 
-Upon reviewwing the code, found that the application is vulnerable to sql injection vulnerability.
+Upon reviewing the code, found that the application is vulnerable to sql injection vulnerability.
 
 ```java
 	@GetMapping("/issue/checkByPriority")

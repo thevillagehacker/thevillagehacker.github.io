@@ -1,5 +1,5 @@
 ---
-title: Unveiling the Hotel Booking Hack - Leveraging Business Logic Flaws for Free Subscriptions and 12% Discounts
+title: "Unveiling the Hotel Booking Hack: Leveraging Business Logic Flaws for Free Subscriptions and 12% Discounts"
 layout: post
 date: 2023-10-31 12:00
 tag:
@@ -7,7 +7,7 @@ tag:
 - Reverse Engineering
 - Insecure Direct Object Reference
 category: blog
-author: naveen
+author: Naveen
 description: Business Logic Error leads to pay 0 amount for subscription and obtain 12% discount on the booking.
 ---
 
