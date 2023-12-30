@@ -8,7 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Linux
-- PG-Practice
+- PG-Play
 - RCE
 - Redis
 writeups: true
