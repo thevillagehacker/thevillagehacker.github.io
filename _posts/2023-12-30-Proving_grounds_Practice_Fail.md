@@ -9,6 +9,7 @@ tag:
 - Writeup
 - Linux
 - PG-Practice
+- Rsync
 writeups: true
 hidden: true
 author: Naveen
