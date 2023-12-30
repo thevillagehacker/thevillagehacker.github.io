@@ -1,5 +1,5 @@
 ---
-title: "Proving grounds Play: Wombo"
+title: "Proving grounds Practice: Wombo"
 layout: post
 date: 2023-10-21 02:00
 tag: 
@@ -8,7 +8,7 @@ tag:
 - OSCP
 - Writeup
 - Linux
-- PG-Play
+- PG-Practice
 - RCE
 - Redis
 writeups: true
