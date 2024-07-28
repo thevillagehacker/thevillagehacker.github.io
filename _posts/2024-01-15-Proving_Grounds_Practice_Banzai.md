@@ -9,7 +9,7 @@ tag:
 - Writeup
 - Linux
 - PG-Practice
-- 
+- MySQL
 writeups: true
 hidden: true
 author: Naveen
