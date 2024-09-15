@@ -50,10 +50,10 @@ plainwhite:
 #header_pages:
 # - about.md
 
-remote_theme: samarsault/plainwhite-jekyll
+#remote_theme: samarsault/plainwhite-jekyll
 
 # Build settings
-theme: plainwhite
+#theme: plainwhite
 
 plugins:
   - jekyll-seo-tag
