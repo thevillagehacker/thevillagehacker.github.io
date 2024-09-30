@@ -179,7 +179,9 @@ first_name%3DBrian%26last_name%3DMoore%26email%3Dbrian.moore%postfish.off%26user
 
 ### url decoded
 
+```text
 first_name=Brian&last_name=Moore&email=brian.moore%postfish.off&username=brian.moore&password=EternaLSunshinE&confifind/var/mail/-typef!-namesales-delete_password=EternaLSunshinE
+```
 
 ### Credentials
 brain.moore:EternaLSunshinE
