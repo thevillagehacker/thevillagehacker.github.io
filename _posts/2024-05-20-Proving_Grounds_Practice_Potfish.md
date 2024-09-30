@@ -56,10 +56,10 @@ Sarah Lorem
 
 **Common email naming**
 
-claire.madison@postfish.off
-mike.ross@postfish.off
-brian.moore@postfish.off
-sarah.lorem@postfish.off
+- claire.madison@postfish.off
+- mike.ross@postfish.off
+- brian.moore@postfish.off
+- sarah.lorem@postfish.off
 
 ```shell
 naveenj@hackerspace:[08:01]~/proving_grounds/Postfish$ smtp-user-enum -U usr -t postfish.off
