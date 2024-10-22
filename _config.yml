@@ -22,7 +22,7 @@ plainwhite:
     #- home
     - page
     - post
-  # generate social links in footer
+  # generate social links in footer.
   social_links:
     twitter: thevillagehackr
     github:  thevillagehacker
