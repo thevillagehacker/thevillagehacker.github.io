@@ -63,4 +63,4 @@ Upon recon it was found that the user patrick can run ALL, run `sudo su` to obta
 
 Thanks for reading!
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

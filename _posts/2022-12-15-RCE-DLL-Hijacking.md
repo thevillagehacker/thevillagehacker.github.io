@@ -130,4 +130,4 @@ The application is nto validating the dll files, once the application is started
 
 Thanks for reading.
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

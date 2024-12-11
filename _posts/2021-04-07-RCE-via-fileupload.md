@@ -68,4 +68,4 @@ As a result, a successful reverse shell connection was established.
 ## Conclusion
 In this article, I demonstrated how an unrestricted file upload vulnerability on a PHP-based website could lead to Remote Code Execution (RCE). By exploiting the website's lax file extension validation, I successfully uploaded a PHP webshell and obtained a reverse shell, ultimately gaining unauthorized access to the system. Thank you for reading.
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

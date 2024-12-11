@@ -106,4 +106,4 @@ Password: mypass
 
 - https://www.hackingarticles.in/linux-for-pentester-cp-privilege-escalation/
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

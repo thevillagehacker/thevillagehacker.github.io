@@ -95,11 +95,11 @@ MAILTO=""
   *  *  *  *  * root       /usr/bin/log-sweeper
 ```
 
-Abuse LD_LIBRARY_PATH
+**Abuse LD_LIBRARY_PATH**
 
-https://atom.hackstreetboys.ph/linux-privilege-escalation-environment-variables/
+- https://atom.hackstreetboys.ph/linux-privilege-escalation-environment-variables/
 
-Exploit
+### Exploit
 
 ```c
 #include <stdio.h>
@@ -129,4 +129,4 @@ Note after running the exploit the `SUID` bit has been set to the binry `find`.
 
 **Root Obtained**
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

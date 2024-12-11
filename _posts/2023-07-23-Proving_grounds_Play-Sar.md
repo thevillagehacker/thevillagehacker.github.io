@@ -109,4 +109,4 @@ Added python revershell to the `write.sh` file, so when the cronjob runs the wri
 
 Thanks for reading!
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

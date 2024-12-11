@@ -137,4 +137,4 @@ connect to [192.168.45.232] from (UNKNOWN) [192.168.201.64] 35774
 
 **Root Obtained**
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

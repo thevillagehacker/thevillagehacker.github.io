@@ -198,4 +198,4 @@ uid=0(root) gid=33(www-data) groups=33(www-data) #root obtained
 
 Thanks for reading!
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).

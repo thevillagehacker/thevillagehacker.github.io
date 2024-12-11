@@ -45,4 +45,4 @@ I uploaded the p0wny shell using the same method as before and obtained the file
 
 Thank you for reading.
 
-For more insights and updates, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
+For more updates and insights, follow me on Twitter: [@thevillagehacker](https://twitter.com/thevillagehackr).
