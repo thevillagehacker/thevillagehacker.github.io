@@ -57,7 +57,6 @@ Pragma: no-cache
 {
 	"success": false
 }
-
 ```
 
 To validate the attack vector, various OOB techniques such as ping, curl, and wget were employed. Payloads using the ping command revealed variations in response times, confirming the vulnerability.
