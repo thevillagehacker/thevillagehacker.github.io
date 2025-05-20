@@ -2,7 +2,7 @@
 title: "Proving grounds Play: Payday"
 layout: post
 date: 2023-10-19 02:00
-categories: writeu
+categories: writeup
 ---
 
 Proving grounds Practice - Payday CTF writeup.
