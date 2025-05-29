@@ -73,18 +73,20 @@ None
 ```
 
 ### Users
-rjackson
-jsanchez
-dademola
-jwinters
-jvargas
+- rjackson
+- jsanchez
+- dademola
+- jwinters
+- jvargas
 
 ### Passwords
+```text
 yYJcgYqszv4aGQ
 d52cQ1BzyNQycg
 ExplainSlowQuest110
 KTuGcSW6Zxwd0Q
 OuQ96hcgiM5o9w
+```
 
 ## Brute force credentials for SSH
 
