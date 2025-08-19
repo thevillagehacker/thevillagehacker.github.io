@@ -8,7 +8,7 @@ permalink: /about
 
 ![Profile Image](https://pbs.twimg.com/profile_images/1908380290961063936/LpL3Nlvr_400x400.jpg)
 
-I'm Naveen Jagadeesan, known online as [TheVillageHacker](https://x.com/thevillagehackr). I'm a passionate Security Analyst, CRTP-certified Red Teamer, and cybersecurity researcher with over six years of experience in application and network security.
+I'm Naveen Jagadeesan, known online as [TheVillageHacker](https://x.com/thevillagehackr). I'm a passionate Security Analyst, CRTP-certified Red Teamer, and cybersecurity researcher with over 6+ years of experience in application and network security.
 
 My journey into hacking began with a curiosity for how things break—and more importantly, how to secure them. From humble beginnings as an IoT developer, I’ve worked my way through pentesting roles at leading security firms and financial institutions, performing over 300+ penetration tests and 50+ secure code reviews across Web, API, Mobile, and Thick Client platforms.
 
