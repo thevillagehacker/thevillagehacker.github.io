@@ -16,4 +16,4 @@ My professional experience spans across organizations like Societe Generale and 
 
 When I’m not breaking into applications (ethically, of course), I contribute to the community by reporting vulnerabilities, mentoring aspiring hackers, and sharing practical insights from the field. You can often find me tinkering with scripts, publishing writeups, and building tools to make hacking more efficient and impactful.
 
-Whether it's red teaming, code auditing, or network pentesting, I’m always up for a challenge—and always hacking to learn.
+Whether it's red teaming, code auditing, or network pentesting, I’m always up for a challenge—and always hacking to learn. 
