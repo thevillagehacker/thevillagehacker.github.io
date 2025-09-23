@@ -17,7 +17,13 @@
 	.post p {
 		color: #ddd;
 	}
-
+	h2 {
+  	margin: 0.7em 0;
+ 	@media screen and (max-width: $mobileW) {
+    margin: 0.3em 0;
+    color: #5badf0;
+  }
+	}
 	.social [class^="icon-"] {
 		color: $dark_text_color
 	}
