@@ -31,7 +31,7 @@ video {
 }
 
 a {
-  color: #000;
+  color: #5badf0;
   transition: color 0.3s;
   &:hover {
     color: $linkColor;
@@ -42,7 +42,6 @@ h2 {
   margin: 0.7em 0;
   @media screen and (max-width: $mobileW) {
     margin: 0.3em 0;
-    color: #5badf0;
   }
 }
 main {
