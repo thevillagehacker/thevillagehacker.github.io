@@ -67,11 +67,11 @@ The program executed successfully. The objects we gave as input to the program a
 
 Let's view the serialized data and see if we can figure out anything from it
 
-**Serialized data in normal view**
+## erialized data in normal view
 
 ![img](/assets/images/blogs/Insecure_desrialization/9.webp)
 
-**Serialized data in Hex format**
+## Serialized data in Hex format
 
 ![img](/assets/images/blogs/Insecure_desrialization/10.webp)
 
@@ -97,7 +97,7 @@ The above is the serialized and deserialized data using the marshal python modul
 
 The following is an example of insecure deserialization in Python. Python’s native module for binary serialization and deserialization is called pickle. This example will serialize an exploit to run the **whoami and date** command, and deserialize it with pickle.loads().
 
-**Example code to perform RCE**
+## Example code to perform RCE
 
 ![img](/assets/images/blogs/Insecure_desrialization/13.webp)
 
@@ -105,7 +105,7 @@ The dumps() function gets input, serializes it, and piped to the deserialization
 
 ## Let’s Run:-
 
-**Remote Code Execution**
+## Remote Code Execution
 
 ![img](/assets/images/blogs/Insecure_desrialization/14.webp)
 

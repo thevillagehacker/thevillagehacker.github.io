@@ -8,6 +8,7 @@ categories: blog
 An in-depth analysis of the DLL hijacking vulnerability leading to remote code execution in one of the leading business automation products.
 
 ## DLL Hijacking
+
 DLL hijacking is a method of injecting malicious code into an application by exploiting the way some Windows applications search and load Dynamic Link Libraries (DLL).
 
 Only Microsoft operating systems are susceptible to DLL hijacks.
@@ -21,6 +22,7 @@ If applications that are automatically loaded upon startup are compromised with 
 DLL hijacking is not an innovative cyberattack method. It has been in circulation among cybercriminals since Windows 2000 launched.
 
 ## What are DLL Files?
+
 DLL files, or Dynamic Link Library files, contain the resources an application needs to run successfully. These could include images and a library of executable functions.
 
 DLL files cannot be opened by end-users, they can only be opened by their associated application, which usually happens when the application starts up.
@@ -32,6 +34,7 @@ DLL files usually end with a .dll extension, but some could end in .drv, .drov a
 A single DLL file could run multiple programs, so multiple programs could potentially be comprised in a DLL hijacking attack.
 
 ## How Does DLL Hijacking Work?
+
 For a DLL hijacking attack to be successful, a Windows application needs to be tricked into loading an infected DLL file instead of the legitimate DLL.
 
 By exploiting the publicized DLL search order of Microsoft applications, this trickery is relatively simple to execute.
@@ -73,6 +76,7 @@ If a cybercriminal deposits an infected DLL file in this location, the applicati
 This technique is also known as DLL search order hijacking.
 
 ## Exploitation
+
 ## Enumerate the process
 
 Enumerating the process and it's dll files using the process monitor tool.
@@ -93,16 +97,20 @@ Generating the payload using metasploit to open calculator to check whether the 
 The genetrated payload is placed in the respective application directory based on the process monitor information.
 
 ## RCE (Calculator Pop up)
-### Process Monitor
+
+## Process Monitor
+
 ![proc_mon](/assets/images/blogs/dll-injection/4.dll_accessed.png)
 
 Once the application starts running the dll file has been accessed by the application and the calculator application is opened.
 
-### Calculator
+## Calculator
+
 ![calc_popup](/assets/images/blogs/dll-injection/5.rce.png)
 
 ## Reverse Shell
-### Generating payload for Reverse shell
+
+## Generating payload for Reverse shell
 
 Since we had the successful exploitation of RCE via opening the calculator application, let's escalate this to get the remote shell to the targeted machine.
 
@@ -110,15 +118,18 @@ Since we had the successful exploitation of RCE via opening the calculator appli
 
 The reverse shell has been generated with the help of metasploit framework and the malicious dll has been placed in the respective application directoty for exploitation.
 
-### Process monitor
+## Process monitor
+
 Checkinf whether the application validates the dll file or not.
 ![proc_mon](/assets/images/blogs/dll-injection/6.2.rce.png)
 
-### Windows reverse shell via meterpreter
+## Windows reverse shell via meterpreter
+
 ![reverse_tcp_shell](/assets/images/blogs/dll-injection/6.3.rce.png)
 The application is nto validating the dll files, once the application is started then the metepreter shell connection is received from the targeted windows machine.
 
 ## How to Prevent DLL Hijacking
+
 - The first line of defense needs to be established by software developers. Developers need to follow secure coding practices and specify the exact location of all associated DLL files to prevent Windows from defaulting to its DLL search path protocol.
 - The application should not load the untruested dll files.
 - Adherence to secure coding practices can never be guaranteed, so organizations should implement the following additional defenses:

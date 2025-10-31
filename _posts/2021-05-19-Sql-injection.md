@@ -12,9 +12,11 @@ Dumping the database by leveraging time-based SQL Injection.
 Hello all!. I hope Everyone is fine and I am here sharing my new recent vulnerability I found on an Android Application. The Android Application is an asset tracking application and I am not allowed to disclose the Application name, so I am sorry about that. Let’s get started…
 
 ## What is SQL Injection?
+
 SQL injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. It generally allows an attacker to view data that they are not normally able to retrieve. This might include data belonging to other users, or any other data that the application itself is able to access. In many cases, an attacker can modify or delete this data, causing persistent changes to the application’s content or behavior.
 
 ## Get started…
+
 So I was testing an asset tracking application for finding vulnerabilities and it’s an android application. I quickly installed the app and reverse-engineered it to check for hardcoded secrets luckily I founded nothing.
 
 Then I used objection to bypass the SSL Certificate Pinning and then noticed that the Application is using Content-Type: application/json; charset=UTF-8 as the content type which exactly means the application using JSON request body to perform the actions.
@@ -51,6 +53,7 @@ So then I quickly tried to retrieve the database by using sqlmap as below,
 The sqlmap automated the entire process and provided me the whole database.
 
 ## References
+
 - [https://portswigger.net/web-security/sql-injection](https://portswigger.net/web-security/sql-injection)
 - [https://github.com/thevillagehacker/Bug-Hunting/tree/main/SQL-Payloads](https://github.com/thevillagehacker/Bug-Hunting/tree/main/SQL-Payloads)
 - [https://owasp.org/www-community/attacks/SQL_Injection](https://owasp.org/www-community/attacks/SQL_Injection)

@@ -230,7 +230,7 @@ Valid request body = Encrypted payload + `---` + base64 encoded IV
 }
 ```
 
-**Newly constructed request**
+## Newly constructed request
 
 ![img](/assets/images/blogs/RE/reqandresp2.png)<br>
 

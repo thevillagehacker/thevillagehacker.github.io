@@ -8,6 +8,7 @@ categories: blog
 Obtain remote code execution through file upload feature.
 
 ## Remote Code Execution
+
 Remote code execution (RCE) refers to the ability of a cyber attacker to access and manipulate a computer or server without authorization, regardless of its geographic location. By exploiting RCE vulnerabilities, attackers can run arbitrary malicious software on the target system.
 
 During my bug hunting endeavors, I discovered a target with a responsible disclosure program using Google Dorks. For the purpose of this blog post, let's refer to the target website as abc.com. One of the functionalities of this website allowed users to upload profile pictures. The developer had configured the application to only accept whitelisted extensions, such as `*.gif`, `*.jpeg`, and `*.png`.
@@ -39,6 +40,7 @@ I uploaded the p0wny shell using the same method as before and obtained the file
 ![img](/assets/images/blogs/RCE2/7.webp)
 
 ## Key Takeaways
+
 - Experiment with changing the content type while uploading restricted files.
 - Explore all the whitelisted file types that can be uploaded.
 - If the server is configured to restrict outbound TCP connections, consider uploading a p0wny shell and triggering it, which will create a web-based reverse shell inside the webserver.

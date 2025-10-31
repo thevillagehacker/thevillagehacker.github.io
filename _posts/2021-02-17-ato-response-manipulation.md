@@ -12,6 +12,7 @@ Takeover targetted users account via response manipulation.
 Greetings, everyone! I hope you're all doing well. In this write-up, I will discuss an account takeover vulnerability that I discovered by manipulating the login response.
 
 ## Technical Information
+
 As part of my bug testing efforts in responsible disclosure programs, I came across a program that caught my interest. After thoroughly reading their rules of engagement, I decided to assess their security. For the purpose of this write-up, let's refer to the target website as target.com, an online platform that facilitates payments and food ordering. I signed up with the necessary information for Account 1 (abc@gmail.com), as shown below.
 
 ![img](/assets/images/blogs/ATO/response_manipulation/1.webp)

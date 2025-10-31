@@ -8,11 +8,13 @@ categories: blog
 Remote Code Execution through Unrestricted File Upload
 
 ## Remote Code Execution
+
 Remote code execution (RCE) refers to the ability of a cyber attacker to access and manipulate a computer or server without authorization, regardless of its geographic location. By exploiting RCE vulnerabilities, attackers can run arbitrary malicious software on the target system.
 
 During my bug hunting endeavors, I discovered a target with a responsible disclosure program using Google Dorks. For the purposes of this blog post, let's refer to the target website as abc.com. The primary functionality of this website was to allow users to upload their CVs (resumes) to the company.
 
 ## Find more Google Dorks
+
 [GitHub Repo](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Dorks/Google_dorks.md)
 
 ![img](/assets/images/blogs/RCE3/1.webp)

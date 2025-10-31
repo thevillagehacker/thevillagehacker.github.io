@@ -14,12 +14,14 @@ Hello everyone! In this blog post, I will share my experience and provide a guid
 So I am hereby sharing what are the difficulties that I faced while doing iOS Jailbreaking, setting up the environment, and their solutions.
 
 ## Hardware Information
+
 Device Model: iPhone 6
 Software version: 12.5.1
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/2.webp)
 
 ## Preface
+
 1. Disclaimer
 2. Jailbreaking iPhone 6
 3. Installing Tools and Components
@@ -28,9 +30,11 @@ Software version: 12.5.1
 6. Installing Burp suite Certificates
 
 ## Disclaimer
+
 Before proceeding, I want to emphasize that this blog post is for educational purposes and security research only.
 
 ## Jailbreaking
+
 To Jailbreak iPhone there are plenty of tools present on planet earth but all of them are not going to work when you do but here I will share the difficulties I faced during my Jailbreaking process.
 
 I mostly use [checkra1n](https://checkra.in/) to do the jailbreaking at first I had used iOS 11.4.8 on my iPhone and I used checkra1n to jailbreak, it worked as I expected. But when my device is completely turned off the jailbreaking is reversed and I used checkra1n to do the jailbreaking again but this time it didn’t work the device kept entering into recovery mode but never entered into DFU mode.
@@ -38,11 +42,13 @@ I mostly use [checkra1n](https://checkra.in/) to do the jailbreaking at first I 
 So I quickly did some google stuff and came up with the Idea to install [unc0ver](https://unc0ver.dev/) on iPhone through Safari browser and run jailbreaking through that.
 
 ## Install unc0ver in iPhone
+
 Download unc0ver in iPhone by directing to https://ipa-apps.me in Safari browser and select unc0ver v6.1.1 which will support iOS 11.0–14.3 devices.
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/3.webp)
 
 ## Run unc0ver
+
 After the installation is completed click unc0ver and click jailbreak
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/4.webp)
@@ -58,11 +64,13 @@ Run Jailbreak again and again if the error is resolved it take you to the bootst
 Cydia app is the first un-official iPhone AppStore that contains jailbreak apps, mods, and other exclusive content, not available on Apple Store.
 
 ## Installing Tools and Components
+
 After Jailbreaking unc0ver will automatically install Cydia. Run Cydia now.
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/6.webp)
 
 ## Install Appsync
+
 ### What is Appsync?
 
 AppSync Unified patches installed allowing you to install unsigned IPA files on iOS. AppSync can be used to clone installed apps, download fake signed IPAs, and also assist in the development of iOS apps using Xcode.
@@ -86,6 +94,7 @@ After the installation is complete, restart SpringBoard as prompted. Open Cydia 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/9.webp)
 
 ## Install AFC2 Patch
+
 ### What is AFC2?
 
 AFC stands for “Apple File Conduit” and is how computer applications such as iTunes and iPhoto can read and write files from your device over USB.
@@ -106,22 +115,30 @@ After the installation is complete, restart SpringBoard. In the “Installed” 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/11.webp)
 
 ## For more info:
+
 - [https://iphonewired.com/news/13472/](https://iphonewired.com/news/13472/)
 
 ## Install Frida
+
 ### What is Frida, exactly?
+
 It’s [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) for native apps, or, put in more technical terms, it’s a dynamic code instrumentation toolkit. It lets you inject snippets of JavaScript or your own library into native apps on Windows, macOS, GNU/Linux, iOS, Android, and QNX. [Frida](https://frida.re/docs/home/) also provides you with some simple tools built on top of the Frida API. These can be used as-is, tweaked to your needs, or serve as examples of how to use the API.
 
 ## Installation
+
 Frida supports two modes of operation, depending on whether your iOS device is jailbroken or not.
 - Direct to https://frida.re/docs/ios/
 - Follow the steps in the document
 - Select Frida for Pre-A12 devices and run frida-ps -U in your machine
+
 ### More info: https://frida.re/docs/ios/
 
 ## Installing .ipa Files in iPhone
+
 To install unsigned .ipa files in the iPhone use 3utools.
+
 ### Installation
+
 Check the device is jailbroken and the AFC2 patch is installed or not as below, id the AFC2 is not installed it will show you like install afc2
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/12.webp)
@@ -131,6 +148,7 @@ Select Apps in the left pane and select import & install IPA to select your IPA 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/13.webp)
 
 ## Installing Burp suite Certificates
+
 Now we need to install burp suite certificates to intercept the iPhone Application traffics.
 - Connect to wifi connection both the iOS and your Laptop devices should be in same wifi connection.
 - Fire-up the Burp suite and configure the proxy settings as your need and set proxy listener into all interfaces
@@ -155,6 +173,7 @@ After you verified the device will the green checkmark as verified
 Now we are able to intercept the iPhone traffic in the Burp Suite.
 
 ## Connect to iPhone via OpenSSH
+
 Once the Jailbreaking is done the Openssh will automatically be installed in the device. We can connect to the device through an SSH connection.
 ```sh
 ssh root@<device IP>
@@ -163,9 +182,11 @@ ssh root@<device IP>
 The default password for the device is alpine.
 
 ## Permanent Jailbreaking
+
 To do permanent jailbreaking the process we already did was untethered jailbreaking which is a temporary one once the device is restarted or powered off due to no power in the battery all the jailbroken core files will be deleted. To prevent this kind of problem we should install a tweak named SafeShutdown from Cydia.
 
 ## Install SafeShutdown
+
 Open Cydia after the jailbreaking is successful and add sources as http://apt.cydiakk.com the source repository will be updated.
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/19.webp)
@@ -174,11 +195,12 @@ Once the update is completed now click the repo from the sources tab and search 
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/20.webp)
 
-**Install the tweak**
+## Install the tweak
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/21.webp)
 
 ## Configure SafeShutdown
+
 Once the SafeShutdoen tweak is installed the springboard will be restarted and you can see that the tweak in settings.
 
 ![img](/assets/images/blogs/iOS-pentest/dynamic_lab-setup/22.webp)
@@ -198,6 +220,7 @@ Then go back to SafeShutdown settings and open Power Down Menu and Turn off all 
 Now go back and enable the Tweak Enabled which is we turned off earlier and click Respring it will update the setting to your device. Now you can turn off the iPhone with SafeShutdown settings the Jaiblroken files will not be deleted.
 
 ## For More on iOS Application Penetration Testing
+
 - [https://medium.com/inbughunters/basic-ios-apps-security-testing-lab-1-2bf37c2a7d15](https://medium.com/inbughunters/basic-ios-apps-security-testing-lab-1-2bf37c2a7d15)
 - [https://web.securityinnovation.com/hubfs/iOS%20Hacking%20Guide.pdf](https://web.securityinnovation.com/hubfs/iOS%20Hacking%20Guide.pdf)
 - [https://www.udemy.com/course/hacking-and-pentesting-ios-applications/](https://www.udemy.com/course/hacking-and-pentesting-ios-applications/)
