@@ -21,11 +21,11 @@ It is imperative to recognize that the primary differentiating factor among thes
 - REST API
 
 ## Exploitation
-### Application Traffic Encryption
+## Application Traffic Encryption
 
 The application's data traffic is secured through a symmetric encryption-decryption process. Specifically, the application employs a symmetric algorithm, which utilizes the same key for both encryption and decryption operations.
 
-### Analysis of JavaScript Files
+## Analysis of JavaScript Files
 
 Upon an in-depth examination of the JavaScript files within the application, it became apparent that the cryptographic processes occur within a centralized content delivery network. It's noteworthy that this practice extends beyond the boundaries of the current application. The organization employs a uniform approach to cryptographic and other related operations across all its applications through the centralized content delivery network.
 
@@ -99,7 +99,7 @@ abc.factory('EncryptDecrypt', [
 
 The `main.js` in the application calls the `web.js` in the CDN for the cyrptographic operations.
 
-### Reversing the Encryption
+## Reversing the Encryption
 
 Used the [https://www.devglan.com/online-tools/aes-encryption-decryption](https://www.devglan.com/online-tools/aes-encryption-decryption) online tool to encrypt and decrypt the request and response payloads.
 
@@ -107,7 +107,7 @@ Used the [https://www.devglan.com/online-tools/aes-encryption-decryption](https:
 
 After clearly inspecting the requests and response it was found that the tier subscription was newly added to the application and the feature has new payment method. Since this is a new feature the application is using multiple payment methods using the parameter `payment_method` value as a identifier to identify.
 
-## Add Membership Request
+### Add Membership Request
 
 ```http
 PUT /api/v18/add_membership/?desktop_rewamp=true&app_type=web&device_type=web HTTP/2
@@ -137,7 +137,7 @@ Upon carefully inspecting the payment request payload it was found that by chang
 
 > Example: Changing the value from 26 to 21. 
 
-## Payment Request
+### Payment Request
 
 ```http
 POST /api/v16/purchase_add_ons/?desktop_rewamp=true&app_type=web&device_type=web HTTP/2

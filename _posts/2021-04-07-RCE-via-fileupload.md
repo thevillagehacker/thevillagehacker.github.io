@@ -21,30 +21,30 @@ To begin, I conducted a directory brute-forcing operation using the dirsearch to
 
 ![Directory Brute-Forcing](/assets/images/blogs/RCE1/1.webp)
 
-### Discovering Uploaded Files
+## Discovering Uploaded Files
 During my investigation, I came across an "uploads" folder that contained all the documents uploaded by individuals applying for jobs through the career page.
 
 ![Index of Uploaded Files](/assets/images/blogs/RCE1/2.webp)
 
-### Exploiting the CV Upload Functionality
+## Exploiting the CV Upload Functionality
 I proceeded to the career page URL (https://www.abc.com/careers.php) to examine the CV upload functionality. However, I found that the application only performed file extension validation at the front end, leaving room for potential exploitation.
 
 ![Frontend File Extension Validation](/assets/images/blogs/RCE1/3.webp)
 
-### Uploading the PHP Webshell
+## Uploading the PHP Webshell
 Taking advantage of the lax file extension validation, I downloaded a PHP webshell and successfully uploaded it.
 
 ![PHP Webshell Upload](/assets/images/blogs/RCE1/4.webp)
 
-### Activating the Webshell
+## Activating the Webshell
 To trigger the PHP webshell, I accessed the location where the shell was uploaded.
 
 ![Webshell Activation](/assets/images/blogs/RCE1/6.webp)
 
-### Expanding Control with Reverse Shell
+## Expanding Control with Reverse Shell
 At this point, the webshell was functioning correctly. To establish a reverse shell, I either uploaded a reverse shell or used the following command in the web shell console to access the system via port forwarding using ngrok services.
 
-### PHP Webshell Repository
+## PHP Webshell Repository
 For reference, you can find the PHP webshell I used in this demonstration on my GitHub repository: [GitHub Repo](https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_web_shell.php)
 
 ## Obtaining a Reverse Shell

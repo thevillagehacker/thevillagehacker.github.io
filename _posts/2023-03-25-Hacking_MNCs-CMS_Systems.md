@@ -13,18 +13,18 @@ The target of this analysis is a prominent Multinational Company (MNC) with a si
 ## Overview
 The CMS application lacks a sign-up page, and only the application administrator has the privilege to create user accounts and assign roles. The home page exclusively presents a login form, with no sign-up buttons. 
 
-### Reconnaissance
+## Reconnaissance
 During the reconnaissance phase, the following technologies and components were identified:
 
 - ReactJS
 - Amazon CDN (Content Delivery Network)
 - REST APIs
 
-### Analysis of Loaded Source Files
+## Analysis of Loaded Source Files
 After thoroughly analyzing the loaded source files, it became evident that legitimate user credentials are required to access the application. No REST API endpoints were explicitly mentioned in the JavaScript files. To proceed further, a URL fuzzing technique was employed, leading to the discovery of the signup endpoint: **https://abc.com/abc/xyz/signup.html**.
 
 ## Misconfiguration - 1
-### Sign-up Process
+## Sign-up Process
 Due to the application's design, the sign-up functionality is not accessible from the home page. It appears that the developer might have intentionally kept it separate, possibly for internal use or as a legacy feature that was not removed.
 
 By signing up for an account, it was observed that no additional confirmation steps, such as email verification, were required. The account creation process was successful without any validation of the provided information.
@@ -60,7 +60,7 @@ To understand the flow and identify potential missing elements, a detailed analy
 
 The decoded JWT revealed that the user did not possess any assigned roles to access the application pages.
 
-### Fuzzing the JWT
+## Fuzzing the JWT
 In an attempt to identify the correct "Cognito groups," the JWT payload was fuzzed by adding random role permission keywords. However, encoding and sending the modified JWT in the request did not yield any successful results.
 
 Nevertheless, utilizing the obtained token, the page source was downloaded using curl and the "authorization header." A personal one-liner script was then utilized to extract embedded URL locations from the application. Alternatively, the tool [URLScrapy](https://github.com/thevillagehacker/urlscrapy) could also be employed to achieve this.
@@ -84,7 +84,7 @@ Having gained access to the application, it was determined that the application 
 
 Therefore, the only requirement to access the REST APIs was a legitimate authentication token, as authorization was not properly implemented.
 
-### Privilege Escalation
+## Privilege Escalation
 Privilege escalation was achieved by modifying the "user_role" local storage variable to "publisher." Upon refreshing the page, access to publisher content pages was obtained, enabling the approval or rejection of contents created by editor users in the application.
 
 It should be noted that due to non-disclosure agreements, only limited information could be shared in this blog post.

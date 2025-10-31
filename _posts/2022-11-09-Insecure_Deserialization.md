@@ -103,7 +103,7 @@ The following is an example of insecure deserialization in Python. Python’s na
 
 The dumps() function gets input, serializes it, and piped to the deserialization function. The serialized data is directly piped to the loads() function to perform the deserialization process without any validation.
 
-### Let’s Run:-
+## Let’s Run:-
 
 **Remote Code Execution**
 
@@ -113,7 +113,7 @@ The above image shows the serialized data of the remote code execution command w
 
 The loads() function accepts the user-controlled serialized data without any verification in place which results in arbitrary code execution on the target.
 
-### Example Codes Repository:-
+## Example Codes Repository:-
 
 [GitHub Repo](https://github.com/thevillagehacker/My-Presentation-Slides)
 

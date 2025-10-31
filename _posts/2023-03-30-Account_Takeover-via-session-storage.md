@@ -113,7 +113,7 @@ Te: trailers
 
 I copied the required payload from the JSON response and modified the session value of the **login** key. Upon refreshing the page, I successfully logged into the **User2** account.
 
-### Notes:
+## Notes:
 - User1 = nj@tvhsecurity.com
 - User2 = nj+1@tvhsecurity.com
 
@@ -124,7 +124,7 @@ Therefore, I decided to try the theory with a live account. To do so, I needed t
 ## OSINT
 I conducted OSINT reconnaissance on the target, searching for email IDs. While browsing through the organization's contact pages, I discovered some email IDs belonging to the company's business personnel. Unfortunately, none of them proved to be successful.
 
-### GitHub Recon
+## GitHub Recon
 Next, I performed reconnaissance on GitHub using specific search queries and found a few email IDs in the issues section. Individuals from the organization had commented on issues related to their product/service repositories.
 
 ![img](/assets/images/blogs/ATO/github.png)
@@ -197,7 +197,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 - We have a valid user email
 - Obtained the required details for session value manipulation
 
-### Extracted New Session Value
+## Extracted New Session Value
 
 ```json
 {

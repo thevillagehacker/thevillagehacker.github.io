@@ -27,7 +27,7 @@ During my analysis of the JavaScript files, I identified the encryption key, the
 ## Playing with fire🔥
 I attempted to modify the price parameter in the request, but the application's validation mechanism prevented any successful manipulation. The amount to be paid was validated against a salted hash that was associated with the purchase order.
 
-### Actual Request and Response
+## Actual Request and Response
 
 ### Request
 
@@ -86,7 +86,7 @@ The above request represents a checkout request sent to the server to facilitate
 ## Bypass
 During my exploration of the application flow and requests, I decided to conduct a deeper investigation of the `checkout` request. I noticed a parameter called `quantity`, which was responsible for creating orders based on the desired quantity specified by customers. I attempted to modify this value to a negative number.
 
-### Manipulated Request
+## Manipulated Request
 
 ```http
 POST /api/v1/checkout HTTP/2
