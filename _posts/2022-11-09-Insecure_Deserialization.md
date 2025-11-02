@@ -71,7 +71,7 @@ The program executed successfully. The objects we gave as input to the program a
 
 Let's view the serialized data and see if we can figure out anything from it
 
-## erialized data in normal view
+## Serialized data in normal view
 
 ![img](/assets/images/blogs/Insecure_desrialization/9.webp)
 

@@ -141,12 +141,14 @@ abc.factory('EncryptDecrypt', [
 By reading the above code we clearly have an idea of what are the tools are required to break down this API encryption wall.
 
 ## Handy tools to break the wall
+
 - Encryption key = UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=
 - IV = jm8lgqa3j1d0ajus
 - Encryption Mode = CBC
 - Encryption Algorithm = AES
 
 ## Let's break
+
 I used the online AES decryption application you can find it [here](https://www.devglan.com/online-tools/aes-encryption-decryption).
 Before start decrypting the json body let's go through the code first. The below line in the code shows that the final payload is created by adding the encrypted payload and `---` dashes and then follwed by the base64 encoded IV.
 
@@ -172,6 +174,7 @@ In the last line in the final payload there are 3 `---` dashes and followed by b
 Alright! let decrypt the request payload and let's see how can we create an actual impact.
 
 ## Decrypting the request data
+
 ```json
 {
     "textToEncrypt": null,
@@ -215,7 +218,7 @@ return CryptoJS.AES.encrypt(r, CryptoJS.enc.Utf8.parse(e), {
 
 Valid request body = Encrypted payload + `---` + base64 encoded IV
 
-**Encrypted Payload**
+## Encrypted Payload
 
 ```json
 {
@@ -247,6 +250,7 @@ The application is using google reCAPTCHA.
 I have observed there was a strange behaviour in the reCAPTCHA system which is everytime you click the checkbox it sends two requests such as 1 to get the CAPTCHA response and other is to verify the CAPTCHA response in the next upcoming request.
 
 ## Bypass
+
 We cannot send the same CAPTCHA response code more than once, if we do that the server will respond as below,
 
 ```http
