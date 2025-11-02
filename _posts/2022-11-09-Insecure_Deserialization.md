@@ -10,11 +10,13 @@ A pentester’s guide to insecure deserialization.
 ![img](/assets/images/blogs/Insecure_desrialization/1.webp)
 
 ## Introduction
+
 Insecure Deserialization is a vulnerability that occurs when untrusted data is used to abuse the logic of an application, inflict a denial of service (DoS) attack, or even execute arbitrary code upon it being deserialized. It also occupies the #8 spot in the [OWASP Top 10 2017](https://www.acunetix.com/blog/articles/owasp-top-10-2017/) list.
 
 To understand what insecure deserialization is, we first must understand what serialization and deserialization are. We’ll then cover some examples of insecure deserialization and how it can be used to execute code as well as discuss some possible mitigations for this class of vulnerability.
 
 ## Serialization vs deserialization
+
 Serialization is the process of turning some object into a data format that can be restored later. People often serialize those objects to save them to storage or send them as part of communications.
 
 ![img](/assets/images/blogs/Insecure_desrialization/2.webp)
@@ -22,9 +24,11 @@ Serialization is the process of turning some object into a data format that can 
 **Deserialization** is the reverse of that process, taking data structured from some format, and rebuilding it into an object. Today, the most popular data format for serializing data is JSON. Before that, it was XML.
 
 ## What is insecure deserialization?
+
 Let’s first understand the whole picture here. When you learn a programming language, the first thing you learn is how to define variables, classes, and data structures that best suit your needs. Then, you learn how to manipulate them to achieve your needs. So far, they reside in memory, but sometimes, you need to store their states or share them with other systems. That’s where serialization and deserialization come into play.
 
 ## What can go wrong here?
+
 When a software deserializes the user-controlled data without verification, we call it insecure deserialization. For example, an attacker might store a serialized file representing a malicious payload. The developer doesn’t perform a verification before deserializing the serialized data, then insecure deserialization will occur.
 
 Most programming languages offer the ability to customize deserialization processes. Unfortunately, it’s frequently possible for an attacker to abuse these deserialization features when the application is deserializing untrusted data that the attacker controls.
