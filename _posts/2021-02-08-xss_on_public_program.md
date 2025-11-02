@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: "Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program"
 date: 2021-02-08 12:00
 categories: blog
