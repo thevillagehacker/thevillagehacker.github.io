@@ -73,7 +73,7 @@ main {
     @media screen and (min-width: $mobileW + 1) {
       max-width: calc(100% - #{$leftWidth});
       margin-left: $leftWidth;
-      width: 100%;
+      width: 90%;
     }
   }
   .about {
@@ -106,7 +106,7 @@ main {
       text-align: center;
       font-size: 18px;
       margin-top: 0px;
-      color: #000;
+      color: #444242;
       white-space: pre-wrap;
       line-height: normal;
     }
@@ -203,7 +203,7 @@ main {
 .post-date {
   margin-right: 10px;
   color: #555;
-  min-width: 150px;
+  min-width: 100px;
 }
 .post-meta {
   display: flex;
@@ -247,7 +247,7 @@ main {
   font-family: "Poppins",sans-serif;
   font-weight: 300;
   font-size: 18px;
-  color: #222;
+  color: #444242;
   text-align: justify;
   line-height: 1.6em;
   p {
@@ -269,6 +269,7 @@ main {
   h6 {
     font-family: "Poppins",sans-serif;
     font-size: 20px;
+    color: #000000;
   }
 }
 .posts-labelgroup {
