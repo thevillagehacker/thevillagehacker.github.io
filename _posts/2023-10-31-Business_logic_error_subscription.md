@@ -163,7 +163,7 @@ Te: trailers
 
 Since the subscription related data are passed in the application request, the application accepts the data and does a successfull booking. 
 
-### Membership Data in the request**
+### Membership Data in the request
 
 ```json
  {
