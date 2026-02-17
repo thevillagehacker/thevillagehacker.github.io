@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>API Security Misconfiguration Leads to tons of PII data Leakage — thevillagehacker</title>
+  <meta name="description" content="API Security Misconfiguration Leads to tons of PII data Leakage"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>API Security Misconfiguration Leads to tons of PII data Leakage
+    </div>
+    <h1 class="post-title">API Security Misconfiguration Leads to tons of PII data Leakage</h1>
+    <div class="post-meta">
+      <span>2021-07-01</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>API Security Misconfiguration Leads to tons of PII data Leakage.</p>
+<p><img src="../assets/images/blogs/PII_leak/misconfig.webp" alt="img" /></p>
+<h2>What is API Misconfiguration?</h2>
+<h2>API7:2019 Security Misconfiguration</h2>
+<p>Security misconfiguration is commonly a result of insecure default configurations, incomplete or ad-hoc configurations, open cloud storage, misconfigured HTTP headers, unnecessary HTTP methods, permissive Cross-Origin resource sharing (CORS), and verbose error messages containing sensitive information.</p>
+<h2>Target Information</h2>
+<p>The target application is similar to uber, ola, and any other transport tracking application. The passengers can track their respective vehicles' GPS locations to get the route information like ola, uber, and other taxi services.</p>
+<h2>Recon</h2>
+<p>I downloaded and installed the application in the emulator and performed static analysis and reverse engineering using MOBSF, APKtool, jadx -&gt; No luck. The Application having two types of users are users=passengers, administrators.</p>
+<h2>Playing with proxy</h2>
+<p>Started the proxy program (Burp Suite) and clicking all the buttons to find other vulnerabilities in the API. After playing with the proxy I got knowledge about the API that the application is using to access information.</p>
+<h2>API Misconfiguration in the target</h2>
+<p>The Application is using a REST API. The API generates an API key and authorization token at the time of user login actions. I logged in and logged out from the application to observe how the API authorization token works. It seems the API key is default and it will not change and the authorization token changes sometimes and sometimes not. I figured out that the application needs three things to access all the information including administrator access.</p>
+<h3>Things that API requires</h3>
+<ul>
+<li>API Key</li>
+<li>Authorization Token</li>
+</ul>
+<h3>API Key</h3>
+<p>We can get the API key at the time of log in the API key never changes from its default value</p>
+<h2>Auth Token</h2>
+<p>The API does not properly validate the auth token what it validates is that the token is legit or not like in the format the developer created, so all we need is an API-generated token which we can get at the time of login it does not matter whether your credentials are right or wrong.</p>
+<h2>Administrator Username</h2>
+<ul>
+<li>Username Enumeration</li>
+<li>Response Manipulation -&gt; change to admin Privileges</li>
+</ul>
+<h2>Response Manipulation</h2>
+<p>Here comes the fun part I created two accounts and tried to take over those accounts using the response manipulation technique. I observe the server responses when I log in as user=passenger and noticed that the JSON body having an object named role and the value is base64 encoded.</p>
+<p><img src="../assets/images/blogs/PII_leak/base64_encode.webp" alt="img" /></p>
+<p>I quickly changed the role value from user to admin in base64 encoded format and boom I logged in as administrator. There are so many different endpoints present for the administrator account.</p>
+<h2>PII Data Leak</h2>
+<p>As I stated above to access all those endpoints we need an API key, Auth token, and Administrator username.</p>
+<p><img src="../assets/images/blogs/PII_leak/leak1.webp" alt="img" /></p>
+<p>Now we have all the three things that the API requires by using all those I accessed all the user=passengers PII data and vehicle information in plain Text in JSON body.</p>
+<h2>Taking Over other Administrator Accounts</h2>
+<p>Since the API is misconfigured we can use the above-shown endpoint to enumerate the administrator usernames.</p>
+<p><img src="../assets/images/blogs/PII_leak/leak2.webp" alt="img" /></p>
+<p>The endpoint only provides those outputs if the logged-in user is an administrator, the other normal users can’t access that information. So I prepared a bunch of username wordlists and brute-forced them and found more than 4 valid administrator usernames.</p>
+<p>Then I started sending the requests with that valid username and found different PII data for each of them it seems the separate administrators have different data.</p>
+<p>After some time I discovered that the API is very poorly configured which means you don’t have to be logged in to the application to access the administrator information. All we have to do to collect and craft a request with API Key, Auth token which we can get at the time of login, and valid username with all of these I can access all of the administrator information.</p>
+<h2>Take-Aways:-</h2>
+<ul>
+<li>Check for API documentation and collect the authentication and authorization inputs that are required to access data from the API endpoints.</li>
+<li>Check for API misconfigurations like does the Auth token, API key, and other auth mechanisms are validated properly.</li>
+<li>Check for Response manipulation attacks.</li>
+<li>Check for Rate Limiting vulnerability to enumerate Usernames.</li>
+</ul>
+<p>Thank you for reading.</p>
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-05-19-Sql-injection.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Time-Based SQL Injection to Dumping the Database</div></a>
+    <a href="2022-10-10-IDOR.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Remote Code Execution through Unrestricted File Upload — thevillagehacker</title>
+  <meta name="description" content="Remote Code Execution through Unrestricted File Upload"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Remote Code Execution through Unrestricted File Upload
+    </div>
+    <h1 class="post-title">Remote Code Execution through Unrestricted File Upload</h1>
+    <div class="post-meta">
+      <span>2021-03-05</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Obtain remote code execution through file upload feature.</p>
+<h2>Remote Code Execution</h2>
+<p>Remote code execution (RCE) refers to the ability of a cyber attacker to access and manipulate a computer or server without authorization, regardless of its geographic location. By exploiting RCE vulnerabilities, attackers can run arbitrary malicious software on the target system.</p>
+<p>During my bug hunting endeavors, I discovered a target with a responsible disclosure program using Google Dorks. For the purpose of this blog post, let's refer to the target website as abc.com. One of the functionalities of this website allowed users to upload profile pictures. The developer had configured the application to only accept whitelisted extensions, such as <code>*.gif</code>, <code>*.jpeg</code>, and <code>*.png</code>.</p>
+<p><img src="../assets/images/blogs/RCE2/1.webp" alt="img" /></p>
+<p>Curious to test how the application handled file uploads for extensions other than the whitelisted ones, I attempted to upload a PHP file. However, the application prevented the upload due to client-side validation.</p>
+<p><img src="../assets/images/blogs/RCE2/2.webp" alt="img" /></p>
+<p>A few minutes later, I decided to modify the <code>Content-Type</code> header in an attempt to bypass the client-side validation. I changed the <code>Content-Type</code> from <code>application/octet-stream</code> to <code>image/png</code>, <code>image/jpg</code>, and <code>image/jpeg</code>, but none of them worked. Then, I had an idea to change the <code>Content-Type</code> to <code>image/gif</code> and observe how the application parsed the file.</p>
+<p>To my surprise, the file was successfully uploaded. It appeared that the developer had not configured proper validation for the content type and content of the uploaded files.</p>
+<p><img src="../assets/images/blogs/RCE2/4.webp" alt="img" /></p>
+<p>I forwarded the file upload request and examined the subsequent request, which contained the location of the uploaded file. Now that we had successfully uploaded the file and obtained its location, all we had to do was trigger the reverse shell.</p>
+<p><img src="../assets/images/blogs/RCE2/5.webp" alt="img" /></p>
+<p>I navigated to the location of the <code>reverse_shell.php</code> file to trigger the reverse shell. Although all the processes seemed correct, I did not receive a reverse shell. Upon investigation, I discovered that the server was configured to block outbound TCP connections.</p>
+<p>I brainstormed a way to bypass this restriction and came up with an idea: What if I created a shell inside the server and viewed it internally? I utilized the <a href="https://github.com/flozz/p0wny-shell/blob/master/shell.php">p0wny shell</a> to achieve remote code execution.</p>
+<p><img src="../assets/images/blogs/RCE2/6.webp" alt="img" /></p>
+<p>I uploaded the p0wny shell using the same method as before and obtained the file location in the subsequent request. I navigated to the file location and the remote code execution was finally triggered.</p>
+<p><img src="../assets/images/blogs/RCE2/7.webp" alt="img" /></p>
+<h2>Key Takeaways</h2>
+<ul>
+<li>Experiment with changing the content type while uploading restricted files.</li>
+<li>Explore all the whitelisted file types that can be uploaded.</li>
+<li>If the server is configured to restrict outbound TCP connections, consider uploading a p0wny shell and triggering it, which will create a web-based reverse shell inside the webserver.</li>
+</ul>
+<p>Thank you for reading.</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-02-17-ato-response-manipulation.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Account Takeover through Response Manipulation</div></a>
+    <a href="2021-03-10-iOS-dynamic-lab-setup.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Jailbreaking iPhone and Setting Up Dynamic Analysis Lab</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Remote Code Execution through Unrestricted File Upload — thevillagehacker</title>
+  <meta name="description" content="Remote Code Execution through Unrestricted File Upload"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Remote Code Execution through Unrestricted File Upload
+    </div>
+    <h1 class="post-title">Remote Code Execution through Unrestricted File Upload</h1>
+    <div class="post-meta">
+      <span>2021-02-14</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Remote Code Execution through Unrestricted File Upload</p>
+<h2>Remote Code Execution</h2>
+<p>Remote code execution (RCE) refers to the ability of a cyber attacker to access and manipulate a computer or server without authorization, regardless of its geographic location. By exploiting RCE vulnerabilities, attackers can run arbitrary malicious software on the target system.</p>
+<p>During my bug hunting endeavors, I discovered a target with a responsible disclosure program using Google Dorks. For the purposes of this blog post, let's refer to the target website as abc.com. The primary functionality of this website was to allow users to upload their CVs (resumes) to the company.</p>
+<h2>Find more Google Dorks</h2>
+<p><a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Dorks/Google_dorks.md">GitHub Repo</a></p>
+<p><img src="../assets/images/blogs/RCE3/1.webp" alt="img" /></p>
+<p>I proceeded to fill out the necessary details and attached a <a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_rev_shell.php">PHP reverse shell</a> as the CV file and uploaded it.</p>
+<p><img src="../assets/images/blogs/RCE3/2.webp" alt="img" /></p>
+<p>I intercepted the request and checked whether the file upload functionality allowed PHP files. To my surprise, it did not have any validations for file content types or file contents.</p>
+<p><img src="../assets/images/blogs/RCE3/3.webp" alt="img" /></p>
+<p>I utilized ngrok for port forwarding in order to establish a reverse shell. After updating the IP address and port with the details from ngrok, I successfully uploaded the reverse shell.</p>
+<p>The website displayed the location of the uploaded files in the response. I quickly navigated to the location of the PHP file and triggered the reverse shell, thus achieving the objective of remote code execution.</p>
+<p><img src="../assets/images/blogs/RCE3/4.webp" alt="img" /></p>
+<p>I promptly reported the issue to the relevant company, and they acknowledged the report, reproduced the issue, and rewarded me with $500 for responsibly disclosing the vulnerability.</p>
+<p>Thank you for reading.</p>
+<p>Follow me on Twitter: <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-02-11-ato-rate-limiting.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Account Takeover Due to Lack of Rate Limiting Protection</div></a>
+    <a href="2021-02-17-ato-response-manipulation.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Account Takeover through Response Manipulation</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

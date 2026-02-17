@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Takeover Due to Lack of Rate Limiting Protection — thevillagehacker</title>
+  <meta name="description" content="Account Takeover Due to Lack of Rate Limiting Protection"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Account Takeover Due to Lack of Rate Limiting Protection
+    </div>
+    <h1 class="post-title">Account Takeover Due to Lack of Rate Limiting Protection</h1>
+    <div class="post-meta">
+      <span>2021-02-11</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Take over user accounts by abusing improper rate limitation.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/1.webp" alt="img" /></p>
+<p>Ever since I embarked on my hacking journey, my primary objective has been to enhance internet security. A while ago, I conducted some Google Dorks search and stumbled upon a responsible disclosure program, which became my target for the week. I wasted no time and began my hacking efforts on it.</p>
+<h2>For Google Dorks</h2>
+<ul>
+<li><a href="https://github.com/thevillagehacker/Bug-Hunting/blob/main/Dorks/Google_dorks.md">GitHub Repo</a></li>
+</ul>
+<p>Let's consider the target as target.com, an online e-commerce store similar to Amazon and Flipkart. I initiated my exploration by employing one of my favorite tools, <a href="https://github.com/projectdiscovery/subfinder">Subfinder</a>, to discover subdomains. I discovered a subdomain, <strong>shop.target.com</strong>, which appeared to be an online shopping platform.</p>
+<p>I promptly visited the URL, registered an account, and proceeded to explore the sign-in features provided by the application. The application offered two options for signing in:</p>
+<ol>
+<li>Signing in with a mobile number, where a 4-digit OTP is sent for verification.</li>
+<li>Signing in with an email and password.</li>
+</ol>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/2.webp" alt="img" /></p>
+<p>To assess the presence of rate limiting implementation or the possibility of brute-forcing OTP codes, I opted to sign in with a mobile number. Since the application utilized a 4-digit OTP for verification, I anticipated that brute-forcing the codes would be relatively straightforward.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/3.webp" alt="img" /></p>
+<p>I requested an OTP for my registered mobile number and entered random codes into the OTP input field. I intercepted the request using the Burp Suite proxy tool.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/4.webp" alt="img" /></p>
+<p>I redirected the intercepted OTP verification request to the Intruder tool in Burp Suite.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/5.webp" alt="img" /></p>
+<p>I configured the Intruder payload and threads for the brute-force attack.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/6.webp" alt="img" /></p>
+<p>For the payload options, I selected &quot;Number&quot; and set the range to start from 1111. This choice was based on my observation that the application did not send OTP codes starting with zeroes. By starting from ones, I could minimize the time required for brute-forcing.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/7.webp" alt="img" /></p>
+<p>I set the number of threads to 100 and initiated the attack.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/8.webp" alt="img" /></p>
+<p>Since every response was configured to result in a 200 OK response code, I decided to check the length of the response. Some responses had a length of 1424, which indicated success.</p>
+<p>I entered the OTP in the intercepted request, sent it, and the codes still worked. It became evident that the application lacked rate limiting functionality, and each time an OTP was requested, the same OTP could be used until it was validated. As a result, I was able to take over users' accounts.</p>
+<p>However, brute-forcing OTP codes to take over user accounts is not a viable method all the time. I devised a plan to fully compromise victim accounts. I accessed my own account, changed the victim's mobile number to my own, and saved the changes.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/9.webp" alt="img" /></p>
+<p>Interestingly, there was no verification step when updating the mobile or email ID associated with an account. This meant that I could simply brute-force the OTP and log in to the victim's account, subsequently changing the mobile number or email ID to one I controlled.</p>
+<p>I swiftly logged out and attempted to log in using my own mobile number to verify if the changes I made earlier were successful.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/10.webp" alt="img" /></p>
+<p>To my surprise, I received a 4-digit OTP from the application, which I entered to log in to the victim's account without any additional verifications.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/11.webp" alt="img" /></p>
+<p>Thank you for reading.</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-02-08-xss_on_public_program.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program</div></a>
+    <a href="2021-02-14-RCE_via_file_upload.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Remote Code Execution through Unrestricted File Upload</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

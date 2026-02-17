@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System — thevillagehacker</title>
+  <meta name="description" content="Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System
+    </div>
+    <h1 class="post-title">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System</h1>
+    <div class="post-meta">
+      <span>2023-03-25</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>This blog discusses the exploitation of misconfigurations and authorization vulnerabilities in a Multinational Company's Content Management System (CMS) application</p>
+<h2>Target Background</h2>
+<p>The target of this analysis is a prominent Multinational Company (MNC) with a significant market value and stock presence. The company utilizes a Content Management System (CMS) application built with ReactJS to create, edit, and update the content for their products and services. Once the content is published, it is pushed to the live website associated with the corresponding product or service.</p>
+<h2>Overview</h2>
+<p>The CMS application lacks a sign-up page, and only the application administrator has the privilege to create user accounts and assign roles. The home page exclusively presents a login form, with no sign-up buttons.</p>
+<h2>Reconnaissance</h2>
+<p>During the reconnaissance phase, the following technologies and components were identified:</p>
+<ul>
+<li>ReactJS</li>
+<li>Amazon CDN (Content Delivery Network)</li>
+<li>REST APIs</li>
+</ul>
+<h2>Analysis of Loaded Source Files</h2>
+<p>After thoroughly analyzing the loaded source files, it became evident that legitimate user credentials are required to access the application. No REST API endpoints were explicitly mentioned in the JavaScript files. To proceed further, a URL fuzzing technique was employed, leading to the discovery of the signup endpoint: <strong>https://abc.com/abc/xyz/signup.html</strong>.</p>
+<h2>Misconfiguration - 1</h2>
+<h2>Sign-up Process</h2>
+<p>Due to the application's design, the sign-up functionality is not accessible from the home page. It appears that the developer might have intentionally kept it separate, possibly for internal use or as a legacy feature that was not removed.</p>
+<p>By signing up for an account, it was observed that no additional confirmation steps, such as email verification, were required. The account creation process was successful without any validation of the provided information.</p>
+<p>However, upon attempting to log in with the newly created account, it was redirected back to the login page. Since the account lacked proper authorization and assigned roles, the application denied access to its contents. Nonetheless, by examining the page, embedded REST API locations were identified, indicating that successful authentication was achieved. The only issue pertained to incorrect permissions preventing access to application pages.</p>
+<p>To understand the flow and identify potential missing elements, a detailed analysis of the login request was conducted. Upon successful login, the application provided an authorization token (JWT) in the Location header. Decoding the JWT revealed that it did not contain any values for Cognito permissions, thereby explaining the unavailability of application contents.</p>
+<pre><code class="language-json">{
+  &quot;at_hash&quot;: &quot;ry3UaTl8rD1IPBffLSyQ7w&quot;,
+  &quot;sub&quot;: &quot;e03f561e-9392-437d-abf7-48715fde4a4e&quot;,
+  &quot;cognito:groups&quot;: [
+    &quot;&quot;
+  ],
+  &quot;iss&quot;: &quot;https://cognito-idp.abc.com&quot;,
+  &quot;cognito:username&quot;: &quot;test&quot;,
+  &quot;origin_jti&quot;: &quot;&quot;,
+  &quot;cognito:roles&quot;: [
+    &quot;&quot;
+  ],
+  &quot;aud&quot;: &quot;2kp93i4kj1ump55lid961qm7bv&quot;,
+  &quot;event_id&quot;: &quot;65f7336b-1b89-45e6-b9f9-be466f24207b&quot;,
+  &quot;token_use&quot;: &quot;id&quot;,
+  &quot;auth_time&quot;: &quot;&quot;,
+  &quot;phone_number&quot;: &quot;&quot;,
+  &quot;exp&quot;: &quot;&quot;,
+  &quot;iat&quot;: &quot;&quot;,
+  &quot;jti&quot;: &quot;66d3189d-e26e-454f-9b8d-7863ac4de102&quot;,
+  &quot;email&quot;: &quot;nj@tvhsecurity.com&quot;
+}
+</code></pre>
+<p>The decoded JWT revealed that the user did not possess any assigned roles to access the application pages.</p>
+<h2>Fuzzing the JWT</h2>
+<p>In an attempt to identify the correct &quot;Cognito groups,&quot; the JWT payload was fuzzed by adding random role permission keywords. However, encoding and sending the modified JWT in the request did not yield any successful results.</p>
+<p>Nevertheless, utilizing the obtained token, the page source was downloaded using curl and the &quot;authorization header.&quot; A personal one-liner script was then utilized to extract embedded URL locations from the application. Alternatively, the tool <a href="https://github.com/thevillagehacker/urlscrapy">URLScrapy</a> could also be employed to achieve this.</p>
+<h2>HTTP Response Codes</h2>
+<p>All extracted URLs were compiled into a text file, and the tool <strong><a href="https://github.com/projectdiscovery/httpx">HTTPX</a></strong> was utilized to check the status codes and content lengths. Fortunately, one of the pages returned a different content length. Upon visiting the page, static content related to user roles within the application was revealed.</p>
+<p>This reconnaissance effort revealed the presence of two user roles: &quot;editor&quot; and &quot;publisher.&quot; Editors possess the ability to edit contents, while publishers can approve new content submissions made by editors.</p>
+<h2>Checkpoint</h2>
+<p>At this stage, the following elements are available for accessing the application contents:</p>
+<ul>
+<li>A newly signed-up account without any assigned roles</li>
+<li>Knowledge of user roles within the application</li>
+<li>A functioning JWT token (Authorization)</li>
+</ul>
+<p>With these resources in hand, the next step is to find a way to assign user roles to the token and gain access to the application contents. Through experimentation with the browser's developer tools, it was discovered that a local storage variable, &quot;user_role,&quot; was present but had no value assigned for our user account. By setting its value to &quot;editor&quot; and refreshing the page, the application started utilizing the local storage variables to determine content access. As a result, the ability to add and edit application contents was obtained.</p>
+<h2>Misconfiguration - 2</h2>
+<p>Having gained access to the application, it was determined that the application exclusively employs AWS Cognito groups for authentication, without utilizing them for authorization. This was evident from the fact that by merely adding the value &quot;editor&quot; to the local storage variable &quot;user_role,&quot; one could assume the role of an editor within the application.</p>
+<p>Therefore, the only requirement to access the REST APIs was a legitimate authentication token, as authorization was not properly implemented.</p>
+<h2>Privilege Escalation</h2>
+<p>Privilege escalation was achieved by modifying the &quot;user_role&quot; local storage variable to &quot;publisher.&quot; Upon refreshing the page, access to publisher content pages was obtained, enabling the approval or rejection of contents created by editor users in the application.</p>
+<p>It should be noted that due to non-disclosure agreements, only limited information could be shared in this blog post.</p>
+<p>Thank you for reading!</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2023-02-15-reversing-client-side-encryption.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Analysis of Client-Side Encryption Reverse Engineering</div></a>
+    <a href="2023-03-30-Account_Takeover-via-session-storage.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Account Takeover Through Manipulation of Session Storage</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

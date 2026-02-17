@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uncovering the Extensive Subdomain Takeover Vulnerability — thevillagehacker</title>
+  <meta name="description" content="Uncovering the Extensive Subdomain Takeover Vulnerability"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Uncovering the Extensive Subdomain Takeover Vulnerability
+    </div>
+    <h1 class="post-title">Uncovering the Extensive Subdomain Takeover Vulnerability</h1>
+    <div class="post-meta">
+      <span>2021-05-08</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Massive Subdomains Take Over using subzy.</p>
+<p>Hello everyone,</p>
+<p>I hope you are all doing well amidst the ongoing pandemic. Today, I would like to share an interesting discovery I made recently.</p>
+<p>As part of my efforts in responsible disclosure, I often assist companies that cannot afford professional penetration testing services. In this writeup, I will discuss a recent incident I encountered.</p>
+<p>Let's begin with the responsible disclosure program, focusing on the target company &quot;abc.com&quot;. To initiate my reconnaissance process, I conducted an extensive investigation. It was fascinating to find that the target had over 2000 subdomains, which indicated a significant challenge ahead.</p>
+<p>To start my subdomain reconnaissance, I employed the &quot;dnsx&quot; tool by <a href="https://github.com/projectdiscovery/dnsx">projectdiscovery</a> to gather CNAME records for all subdomains. To my surprise, I discovered that more than 20 subdomains were utilizing <a href="https://www.heroku.com/">Heroku</a> cloud services.</p>
+<p>To proceed with the subdomain takeover, I referred to an informative article titled <a href="https://0xpatrik.com/subdomain-takeover-providers/">Subdomain Takeover: Identifying Providers</a>. To expedite the process, I used the &quot;grep&quot; command to filter the results and extract the subdomains associated with Heroku.</p>
+<p>Below are the dnsx results:</p>
+<p><img src="../assets/images/blogs/Massive_subdomain_takeover/1.webp" alt="dnsx results" /></p>
+<p>To filter the results and extract the Heroku subdomains, I utilized a bash command:</p>
+<pre><code class="language-sh">cat vuln-subs.txt | awk ‘{print $2}’
+</code></pre>
+<p>The command successfully extracted the relevant subdomains:</p>
+<p><img src="../assets/images/blogs/Massive_subdomain_takeover/2.webp" alt="Filtered subdomains" /></p>
+<p>Next, I needed to remove the opening and closing brackets at the start and end of each line. The following command accomplished this:</p>
+<pre><code class="language-sh">cat vuln-subs.txt | awk ‘{print $2}’ | awk ‘{print substr($0,2,length()-2);}’
+</code></pre>
+<p>The result was a clean list of subdomains:</p>
+<p><img src="../assets/images/blogs/Massive_subdomain_takeover/3.webp" alt="Clean subdomain list" /></p>
+<p>With this information at hand, I was ready to automate the process. Using <a href="https://github.com/LukaSikic/subzy">subzy</a>, I ran all the subdomains for further analysis.</p>
+<p><img src="../assets/images/blogs/Massive_subdomain_takeover/4.webp" alt="Subdomain analysis with subzy" /></p>
+<p>It is important to note that not all subdomains were vulnerable to takeover. Only those subdomains without any deployed applications were susceptible.</p>
+<p><img src="../assets/images/blogs/Massive_subdomain_takeover/5.webp" alt="Vulnerable subdomains" /></p>
+<p>To confirm if any apps were deployed on the potentially vulnerable subdomains, I used the curl command to check their response:</p>
+<pre><code class="language-sh">for i in `cat vuln-heroku-subs.txt`; do echo $i; curl — head $i; done;
+</code></pre>
+<p>Based on my reconnaissance, subdomains with a 404 response were deemed vulnerable to takeover. I cross-verified these results with the output from subzy to arrive at this conclusion.</p>
+<p>To conclude, I promptly created a comprehensive proof of concept and reported the findings to the respective company.</p>
+<p>Thank you for reading.</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-04-07-RCE-via-fileupload.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Remote Code Execution via File Upload</div></a>
+    <a href="2021-05-19-Sql-injection.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Time-Based SQL Injection to Dumping the Database</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

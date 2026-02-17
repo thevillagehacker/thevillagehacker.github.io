@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Time-Based SQL Injection to Dumping the Database — thevillagehacker</title>
+  <meta name="description" content="Time-Based SQL Injection to Dumping the Database"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Time-Based SQL Injection to Dumping the Database
+    </div>
+    <h1 class="post-title">Time-Based SQL Injection to Dumping the Database</h1>
+    <div class="post-meta">
+      <span>2021-05-19</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Dumping the database by leveraging time-based SQL Injection.</p>
+<p><img src="../assets/images/blogs/sqli1/1.webp" alt="img" /></p>
+<p>Hello all!. I hope Everyone is fine and I am here sharing my new recent vulnerability I found on an Android Application. The Android Application is an asset tracking application and I am not allowed to disclose the Application name, so I am sorry about that. Let’s get started…</p>
+<h2>What is SQL Injection?</h2>
+<p>SQL injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. It generally allows an attacker to view data that they are not normally able to retrieve. This might include data belonging to other users, or any other data that the application itself is able to access. In many cases, an attacker can modify or delete this data, causing persistent changes to the application’s content or behavior.</p>
+<h2>Get started…</h2>
+<p>So I was testing an asset tracking application for finding vulnerabilities and it’s an android application. I quickly installed the app and reverse-engineered it to check for hardcoded secrets luckily I founded nothing.</p>
+<p>Then I used objection to bypass the SSL Certificate Pinning and then noticed that the Application is using Content-Type: application/json; charset=UTF-8 as the content type which exactly means the application using JSON request body to perform the actions.</p>
+<p>So I quickly thought that if we could trigger an activity without any authorization then there is gonna be a huge impact on the Application. So I gathered all the activities from <a href="https://github.com/MobSF/Mobile-Security-Framework-MobSF">MOBSF</a>. One of the activity caught my attention that is there are 2 dashboard activities are present in that application.</p>
+<p>I used to trigger the first activity,</p>
+<pre><code>com.abc.xyz.view.activity.DashboardActivity =&gt; activity 1
+com.abc.xyz.view.activity.DashboardActivitySecond =&gt; activity 2
+</code></pre>
+<p>The dashboard of the application is opened and the default pages are present. Then I looked dor another activity to see if I can get anything and the activity called <strong>com.abc.xyz.view.activity.SearchActivity</strong> is present and it is triggered successfully.</p>
+<p>There is a lot of information is required to search the exact information we are looking for and I entered all of them. The JSON body in that request took my attention, so I decided to check for injection vulnerabilities.</p>
+<p><img src="../assets/images/blogs/sqli1/2.webp" alt="img" /></p>
+<p>That <strong>abc_serial_no</strong> object took my attention so I just added ‘to that object and see what happens and the server resulted in <strong>500 INTERNAL SERVER ERROR</strong>. So this Object is vulnerable to perform SQL Injection.</p>
+<p>I quickly copied the POST request to the file and passed it into the <a href="https://sqlmap.org/">sqlmap</a> to automate the process so I can find the backend database.</p>
+<p><img src="../assets/images/blogs/sqli1/3.webp" alt="img" /></p>
+<p>And the Backend Database is PostgreSQL. At the first time when I tried to get the database banner sqlmap shown me that the JSON object <strong>abc_serial_no</strong> is vulnerable to time-based SQL injection. So I applied the payload and observed that the response from the server response is 5,044ms delayed which is working as expected the payload I injected is <code>abc_serial_no”:”1' AND 9520=(SELECT 9520 FROM PG_SLEEP(5)) AND ‘GRTs’=’GRTs”</code></p>
+<p><img src="../assets/images/blogs/sqli1/4.webp" alt="img" /></p>
+<p>So then I quickly tried to retrieve the database by using sqlmap as below,</p>
+<p><img src="../assets/images/blogs/sqli1/5.webp" alt="img" /></p>
+<p>The sqlmap automated the entire process and provided me the whole database.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://portswigger.net/web-security/sql-injection">https://portswigger.net/web-security/sql-injection</a></li>
+<li><a href="https://github.com/thevillagehacker/Bug-Hunting/tree/main/SQL-Payloads">https://github.com/thevillagehacker/Bug-Hunting/tree/main/SQL-Payloads</a></li>
+<li><a href="https://owasp.org/www-community/attacks/SQL_Injection">https://owasp.org/www-community/attacks/SQL_Injection</a></li>
+<li><a href="https://www.w3schools.com/sql/sql_injection.asp">https://www.w3schools.com/sql/sql_injection.asp</a></li>
+</ul>
+<p>Thank you for reading.</p>
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-05-08-massive_subdomain-takeover.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Uncovering the Extensive Subdomain Takeover Vulnerability</div></a>
+    <a href="2021-07-01-PII-Leak.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">API Security Misconfiguration Leads to tons of PII data Leakage</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

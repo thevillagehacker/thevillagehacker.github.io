@@ -1,0 +1,378 @@
+/* ── thevillagehacker — terminal blog stylesheet ────────────────────────── */
+
+/* ── Variables ──────────────────────────────────────────────────────────── */
+:root {
+  --bg:         #080a08;
+  --surface:    #111611;
+  --border:     #1e2a1e;
+  --green:      #39ff6e;
+  --green-dim:  #1a7a36;
+  --green-glow: rgba(57, 255, 110, .18);
+  --white:      #e8f0e8;
+  --muted:      #4a614a;
+  --muted2:     #2e3e2e;
+  --red:        #ff4444;
+  --amber:      #ffb830;
+  --blue:       #5bf0ff;
+}
+
+/* ── Reset ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+body {
+  font-family: 'Poppins', monospace;
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, .07) 2px,
+    rgba(0, 0, 0, .07) 4px
+  );
+}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Navigation ──────────────────────────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: .08em;
+  color: var(--green);
+  text-decoration: none;
+  text-shadow: 0 0 18px var(--green-glow);
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.nav-links a:hover {
+  color: var(--green);
+}
+
+/* ── Post Header ─────────────────────────────────────────────────────────── */
+.post-header {
+  padding: 52px 0 36px;
+  border-bottom: 1px solid var(--border);
+}
+
+.breadcrumb {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.breadcrumb a {
+  color: var(--green-dim);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--green);
+}
+
+.breadcrumb span {
+  margin: 0 8px;
+  color: var(--muted2);
+}
+
+h1.post-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(24px, 4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: .03em;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.post-meta {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ── Article Body ────────────────────────────────────────────────────────── */
+article {
+  margin-top: 44px;
+  max-width: 720px;
+}
+
+article h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: .06em;
+  color: var(--white);
+  margin: 40px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+article h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: 28px 0 10px;
+}
+
+article h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--amber);
+  letter-spacing: .04em;
+  margin: 20px 0 8px;
+}
+
+article p {
+  font-family: poppins, monospace;
+  font-size: 13px;
+  color: #a8b8a8;
+  line-height: 1.9;
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+article p strong { color: var(--white); font-weight: 500; }
+article p em     { color: #c0ccc0; font-style: italic; }
+
+article a {
+  color: var(--green-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+article a:hover { color: var(--green); }
+
+article ul,
+article ol {
+  margin: 0 0 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+article li {
+  font-size: 13px;
+  color: #a8b8a8;
+  line-height: 1.8;
+}
+
+article li strong { color: var(--white); }
+article li a      { color: var(--green-dim); }
+article li a:hover { color: var(--green); }
+
+/* Code blocks */
+article pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green-dim);
+  border-radius: 0 6px 6px 0;
+  padding: 18px 20px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+article code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 12px;
+  line-height: 1.75;
+  color: #c8dcc8;
+}
+
+/* Inline code */
+article p code,
+article li code,
+article td code {
+  background: rgba(57, 255, 110, .06);
+  border: 1px solid rgba(57, 255, 110, .12);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--green);
+}
+
+article img {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin: 24px 0;
+  display: block;
+}
+
+article blockquote {
+  border-left: 3px solid var(--amber);
+  padding: 12px 18px;
+  margin: 20px 0;
+  background: rgba(255, 184, 48, .04);
+  border-radius: 0 4px 4px 0;
+}
+
+article blockquote p {
+  color: #c8a060;
+  margin: 0;
+}
+
+article hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+/* Tables */
+article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 12px;
+}
+
+article th {
+  background: var(--surface);
+  color: var(--green);
+  font-weight: 600;
+  padding: 10px 14px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+
+article td {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  color: #a8b8a8;
+}
+
+article tr:nth-child(even) td {
+  background: rgba(255, 255, 255, .02);
+}
+
+/* ── Post Navigation ─────────────────────────────────────────────────────── */
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 500px) {
+  .post-nav { grid-template-columns: 1fr; }
+}
+
+.post-nav-link {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-decoration: none;
+  transition: border-color .2s;
+  display: block;
+}
+
+.post-nav-link:hover {
+  border-color: rgba(57, 255, 110, .3);
+}
+
+.post-nav-dir {
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.post-nav-title {
+  font-size: 12px;
+  color: var(--white);
+  line-height: 1.4;
+}
+
+.post-nav-link.next {
+  text-align: right;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.footer-text {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.footer-text a {
+  color: var(--green-dim);
+  text-decoration: none;
+}
+
+/* Blinking cursor */
+.blink {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  background: var(--green);
+  margin-left: 3px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}

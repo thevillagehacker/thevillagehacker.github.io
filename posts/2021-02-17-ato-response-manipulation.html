@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Takeover through Response Manipulation — thevillagehacker</title>
+  <meta name="description" content="Account Takeover through Response Manipulation"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Account Takeover through Response Manipulation
+    </div>
+    <h1 class="post-title">Account Takeover through Response Manipulation</h1>
+    <div class="post-meta">
+      <span>2021-02-17</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Takeover targetted users account via response manipulation.</p>
+<p><img src="../assets/images/blogs/ATO/no_rate-limit/1.webp" alt="img" /></p>
+<p>Greetings, everyone! I hope you're all doing well. In this write-up, I will discuss an account takeover vulnerability that I discovered by manipulating the login response.</p>
+<h2>Technical Information</h2>
+<p>As part of my bug testing efforts in responsible disclosure programs, I came across a program that caught my interest. After thoroughly reading their rules of engagement, I decided to assess their security. For the purpose of this write-up, let's refer to the target website as target.com, an online platform that facilitates payments and food ordering. I signed up with the necessary information for Account 1 (abc@gmail.com), as shown below.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/1.webp" alt="img" /></p>
+<p>After signing up, the application sent a confirmation link to the provided email, which I verified. Upon verification, I was directed to the account settings page. To better understand how the application handled login requests, I decided to log out and log in again.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/2.webp" alt="img" /></p>
+<p>I noticed that the application utilized an API to authenticate users. Intrigued, I intercepted the login request to observe how the API processed the login process.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/3.webp" alt="img" /></p>
+<p>I observed that the signup and login responses were similar, but with some differences. This led me to the idea of manipulating the login response with the signup response. To proceed, I logged out and created another account, capturing the signup response for Account 2 (xyz@gmail.com).</p>
+<p>It's go time...</p>
+<p>Once again, I logged in with Account 1 (abc@gmail.com), using the same email ID but a different password.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/4.webp" alt="img" /></p>
+<p>I intercepted the login request as shown below.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/5.webp" alt="img" /></p>
+<p>Using Burp Suite's proxy, I applied &quot;Do -&gt; Intercept This Request -&gt; Response&quot; and changed the response status of the login request from 401 Unauthorized to the signup response of Account 2 (xyz@gmail.com), which returned a 200 OK status.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/6.webp" alt="img" /></p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/7.webp" alt="img" /></p>
+<p>I also modified the email parameter in the response to reflect Account 1's email (abc@gmail.com), and then forwarded all the requests.</p>
+<p><img src="../assets/images/blogs/ATO/response_manipulation/8.webp" alt="img" /></p>
+<p>As a result, I was immediately directed to Account 1's settings page, successfully logging in without requiring a password by manipulating the login response with the signup response.</p>
+<p>Thank you for reading.</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2021-02-14-RCE_via_file_upload.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Remote Code Execution through Unrestricted File Upload</div></a>
+    <a href="2021-03-05-RCE_via_file_upload.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Account Takeover through Response Manipulation</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blog — thevillagehacker</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#080a08;--bg2:#0d110d;--surface:#111611;--border:#1e2a1e;--green:#39ff6e;--green-dim:#1a7a36;--green-glow:rgba(57,255,110,.18);--white:#e8f0e8;--muted:#4a614a;--muted2:#2e3e2e;--red:#ff4444;--amber:#ffb830;--blue:#5bf0ff}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;cursor:crosshair}
+  body::before{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px)}
+  .page{max-width:860px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0 20px;border-bottom:1px solid var(--border);animation:fadeIn .5s ease both}
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.08em;color:var(--green);text-decoration:none;text-shadow:0 0 18px var(--green-glow)}
+  .nav-links{display:flex;gap:28px;list-style:none}
+  .nav-links a{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+  .nav-links a:hover,.nav-links a.active{color:var(--green)}
+
+  .page-header{padding:56px 0 40px;border-bottom:1px solid var(--border);animation:fadeIn .6s .05s ease both}
+  .page-label{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:16px}
+  .page-label::before{content:'';width:22px;height:1px;background:var(--green)}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,8vw,80px);line-height:.92;letter-spacing:.04em;margin-bottom:16px}
+  h1 .accent{color:var(--green);text-shadow:0 0 28px var(--green-glow)}
+  .page-sub{font-size:12px;color:var(--muted);line-height:1.8;max-width:480px}
+
+  /* FILTER */
+  .filter-bar{display:flex;gap:8px;flex-wrap:wrap;padding:28px 0 0;animation:fadeIn .5s .1s ease both}
+  .filter-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+  .filter-btn:hover{border-color:var(--green-dim);color:var(--white)}
+  .filter-btn.active{background:var(--green);color:var(--bg);border-color:var(--green);font-weight:600}
+
+  /* POSTS */
+  .posts-wrap{margin-top:40px}
+  .year-group{margin-bottom:48px;animation:fadeUp .5s ease both}
+  .year-label-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .year-txt{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.2em;color:var(--muted)}
+  .year-line{flex:1;height:1px;background:var(--border)}
+
+  .post-row{display:grid;grid-template-columns:90px 1fr;gap:0 24px;padding:20px 0;border-bottom:1px solid var(--border);text-decoration:none;position:relative;transition:background .15s}
+  .post-row::before{content:'';position:absolute;left:89px;top:0;bottom:0;width:1px;background:var(--border)}
+  .post-row:hover{background:rgba(57,255,110,.015)}
+  .post-row:hover .post-row-title{color:var(--green)}
+
+  .post-row-date{padding-top:3px}
+  .date-d{font-size:11px;color:var(--muted);display:block}
+  .date-m{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.08em}
+
+  .post-row-body{padding-left:24px;position:relative}
+  .post-row-body::before{content:'';position:absolute;left:-5px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--muted2);transition:border-color .15s,box-shadow .15s}
+  .post-row:hover .post-row-body::before{border-color:var(--green);box-shadow:0 0 10px var(--green-glow)}
+
+  .post-row-meta{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+  .tag{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
+  .tag-vuln{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.2)}
+  .tag-report{background:rgba(91,240,255,.08);color:var(--blue);border:1px solid rgba(91,240,255,.18)}
+  .tag-tool{background:rgba(255,184,48,.08);color:var(--amber);border:1px solid rgba(255,184,48,.18)}
+  .sev{font-size:9px;letter-spacing:.08em;color:var(--muted)}
+
+  .post-row-title{font-size:14px;font-weight:500;color:var(--white);line-height:1.4;margin-bottom:6px;transition:color .15s}
+  .post-row-desc{font-size:11px;color:var(--muted);line-height:1.7;max-width:520px}
+
+  .post-row.hidden{display:none}
+
+  footer{border-top:1px solid var(--border);padding:28px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .footer-text{font-size:11px;color:var(--muted)}
+  .footer-text a{color:var(--green-dim);text-decoration:none}
+  .blink{display:inline-block;width:7px;height:13px;background:var(--green);margin-left:3px;vertical-align:middle;animation:blink 1s step-end infinite}
+
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .year-group:nth-child(1){animation-delay:.05s}
+  .year-group:nth-child(2){animation-delay:.1s}
+  .year-group:nth-child(3){animation-delay:.15s}
+  .year-group:nth-child(4){animation-delay:.2s}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav>
+    <a class="nav-logo" href="index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="about.html">Whoami</a></li>
+      <li><a href="changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-label">all posts</div>
+    <h1>SECURITY<br><span class="accent">WRITEUPS</span></h1>
+    <p class="page-sub">21 writeups across web app pentesting, API security, mobile, and vulnerability research — real bugs, real targets, responsible disclosure.</p>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All (21)</button>
+    <button class="filter-btn" data-filter="vuln">Vulnerability</button>
+    <button class="filter-btn" data-filter="report">Writeup</button>
+    <button class="filter-btn" data-filter="tool">Tool / Lab</button>
+  </div>
+
+  <div class="posts-wrap" id="posts">
+
+    <!-- 2024 -->
+    <div class="year-group" id="y2024">
+      <div class="year-label-row"><span class="year-txt">2024</span><div class="year-line"></div></div>
+
+      <a href="/posts/2024-12-10-Remote_Code_Execution.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">10</span><span class="date-m">Dec</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">Vulnerability</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">OS Command Injection → Remote Code Execution</div>
+          <div class="post-row-desc">Exploited OS command injection in an asset management login form using OOB techniques and PowerShell reverse shell for full server takeover.</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- 2023 -->
+    <div class="year-group" id="y2023">
+      <div class="year-label-row"><span class="year-txt">2023</span><div class="year-line"></div></div>
+
+      <a href="/posts/2023-10-31-Business_logic_error_subscription.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">31</span><span class="date-m">Oct</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">Business Logic</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">Hotel Booking Hack: Free Diamond Subscriptions &amp; 12% Discounts</div>
+          <div class="post-row-desc">Chained AES encryption reverse engineering with a payment_method parameter swap to obtain diamond membership and 12% discount without payment.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2023-07-13-Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">13</span><span class="date-m">Jul</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">Mass Assignment</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">Database Dump via Mass Assignment Vulnerability</div>
+          <div class="post-row-desc">Bypassed email update restrictions by passing email as an array, then triggered SQLi through the same vector to dump the entire MySQL database.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2023-05-30-Bypassing_waf_sql_dump.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">30</span><span class="date-m">May</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">SQLi</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">WAF Bypass → SQL Injection Database Dump</div>
+          <div class="post-row-desc">Used X-Forwarded-For header spoofing against an internal endpoint to bypass WAF rules and automate boolean-based SQLi with sqlmap.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2023-04-12-Business_logic_error.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">12</span><span class="date-m">Apr</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">Business Logic</span><span class="tag tag-report">Writeup</span><span class="sev">// medium</span></div>
+          <div class="post-row-title">Business Logic Error: Price Manipulation via Negative Quantity</div>
+          <div class="post-row-desc">Bypassed salted hash price validation by submitting negative quantity values, causing the backend to calculate a reduced payment amount.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2023-03-30-Account_Takeover-via-session-storage.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">30</span><span class="date-m">Mar</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">ATO</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">Account Takeover via Session Storage Manipulation</div>
+          <div class="post-row-desc">Hijacked financial application accounts by injecting target user details into session storage, bypassing cookie-based auth entirely.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2023-03-25-Hacking_MNCs-CMS_Systems.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">25</span><span class="date-m">Mar</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">Misconfiguration</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">MNC CMS: Authorization Bypass via Local Storage Role Manipulation</div>
+          <div class="post-row-desc">Discovered hidden signup endpoint, obtained JWT, then escalated from viewer to publisher by setting local storage role variables.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2023-02-15-reversing-client-side-encryption.html" class="post-row" data-tags="report">
+        <div class="post-row-date"><span class="date-d">15</span><span class="date-m">Feb</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-report">Writeup</span></div>
+          <div class="post-row-title">Reversing Client-Side AES Encryption to Exploit APIs</div>
+          <div class="post-row-desc">Extracted hardcoded AES-CBC keys and IVs from CDN JS, decrypted API traffic, and chained with CAPTCHA bypass for mass account creation.</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- 2022 -->
+    <div class="year-group" id="y2022">
+      <div class="year-label-row"><span class="year-txt">2022</span><div class="year-line"></div></div>
+
+      <a href="/posts/2022-12-15-RCE-DLL-Hijacking.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">15</span><span class="date-m">Dec</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">RCE</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">DLL Hijacking → Remote Code Execution (Business Automation App)</div>
+          <div class="post-row-desc">Identified DLL search order hijacking in a prominent Windows business automation product. Payload delivered via Metasploit for persistent RCE.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2022-11-09-Insecure_Deserialization.html" class="post-row" data-tags="report">
+        <div class="post-row-date"><span class="date-d">09</span><span class="date-m">Nov</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-report">Deep Dive</span></div>
+          <div class="post-row-title">Pentester's Guide to Insecure Deserialization</div>
+          <div class="post-row-desc">In-depth reference covering Java and Python deserialization attacks, pickle RCE, tooling (ysoserial, Burp Scanner), and prevention strategies.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2022-10-10-IDOR.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">10</span><span class="date-m">Oct</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">IDOR</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">IDOR → Unauthorized Access to Linked Bank Accounts</div>
+          <div class="post-row-desc">Brute-forced bankid parameter in a fintech app to rename and link other users' bank accounts, gaining access to balances and transaction history.</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- 2021 -->
+    <div class="year-group" id="y2021">
+      <div class="year-label-row"><span class="year-txt">2021</span><div class="year-line"></div></div>
+
+      <a href="/posts/2021-07-01-PII-Leak.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">01</span><span class="date-m">Jul</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">API</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">API Misconfiguration → Mass PII Data Leakage</div>
+          <div class="post-row-desc">Combined response manipulation for admin privilege escalation with API key reuse to enumerate thousands of passenger PII records from a transport app.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-05-19-Sql-injection.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">19</span><span class="date-m">May</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">SQLi</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">Time-Based SQL Injection → Full Database Dump (Android App)</div>
+          <div class="post-row-desc">Bypassed SSL pinning on an asset tracking app, found time-based blind SQLi in a JSON parameter, and automated full PostgreSQL database dump with sqlmap.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-05-08-massive_subdomain-takeover.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">08</span><span class="date-m">May</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">Subdomain</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">Massive Subdomain Takeover via Heroku — 20+ Subdomains</div>
+          <div class="post-row-desc">Used dnsx + subzy to enumerate 2000+ subdomains, identified 20+ unclaimed Heroku CNAME records, and confirmed takeover via curl response analysis.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-04-07-RCE-via-fileupload.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">07</span><span class="date-m">Apr</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">RCE</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">File Upload → RCE via PHP Webshell (Career Page)</div>
+          <div class="post-row-desc">Discovered uploads directory via dirsearch, bypassed frontend file validation to upload PHP webshell, and established reverse shell via ngrok.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-03-10-iOS-dynamic-lab-setup.html" class="post-row" data-tags="tool">
+        <div class="post-row-date"><span class="date-d">10</span><span class="date-m">Mar</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-tool">Tool / Lab</span></div>
+          <div class="post-row-title">iOS Pentesting: Jailbreaking iPhone &amp; Dynamic Analysis Lab Setup</div>
+          <div class="post-row-desc">Step-by-step guide: checkra1n/unc0ver jailbreak, Cydia, Frida, AppSync, Burp Suite certificate installation, and SSH via OpenSSH on iPhone 6.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-03-05-RCE_via_file_upload.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">05</span><span class="date-m">Mar</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">RCE</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">RCE via File Upload: Content-Type Bypass with p0wny Shell</div>
+          <div class="post-row-desc">Bypassed extension whitelist by changing Content-Type to image/gif, uploaded PHP reverse shell, then pivoted to p0wny shell when outbound TCP was blocked.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-02-17-ato-response-manipulation.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">17</span><span class="date-m">Feb</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">ATO</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">Account Takeover via Login Response Manipulation</div>
+          <div class="post-row-desc">Replaced a 401 login response with a 200 signup response using Burp Suite's intercept, logging in to any account without valid credentials.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-02-14-RCE_via_file_upload.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">14</span><span class="date-m">Feb</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">RCE</span><span class="tag tag-report">Writeup</span><span class="sev">// critical</span></div>
+          <div class="post-row-title">RCE via Unrestricted File Upload (CV Upload — $500 Bounty)</div>
+          <div class="post-row-desc">Uploaded PHP reverse shell as a CV file with no content type validation. Triggered via direct URL, earned $500 responsible disclosure reward.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-02-11-ato-rate-limiting.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">08</span><span class="date-m">Feb</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">ATO</span><span class="tag tag-report">Writeup</span><span class="sev">// high</span></div>
+          <div class="post-row-title">Account Takeover via OTP Brute Force (No Rate Limiting)</div>
+          <div class="post-row-desc">Brute-forced a 4-digit OTP using Burp Intruder at 100 threads, then chained with profile update to permanently take over victim accounts.</div>
+        </div>
+      </a>
+
+      <a href="/posts/2021-02-08-xss_on_public_program.html" class="post-row" data-tags="vuln report">
+        <div class="post-row-date"><span class="date-d">08</span><span class="date-m">Feb</span></div>
+        <div class="post-row-body">
+          <div class="post-row-meta"><span class="tag tag-vuln">XSS</span><span class="tag tag-report">Writeup</span><span class="sev">// medium</span></div>
+          <div class="post-row-title">Reflected XSS via OAuth Parameter Injection (lootdog.io — HoF)</div>
+          <div class="post-row-desc">Injected script payload into a Set-Cookie parameter in an OAuth login flow on account.my.games, confirmed reflection, earned Hall of Fame on HackerOne.</div>
+        </div>
+      </a>
+    </div>
+
+  </div><!-- /posts -->
+
+  <footer>
+    <span class="footer-text">© 2025 <a href="index.html">thevillagehacker</a></span>
+    <span class="footer-text">status: active<span class="blink"></span></span>
+  </footer>
+</div>
+
+<script>
+  const btns = document.querySelectorAll('.filter-btn');
+  const rows = document.querySelectorAll('.post-row');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      rows.forEach(r => {
+        const tags = r.dataset.tags || '';
+        r.classList.toggle('hidden', f !== 'all' && !tags.includes(f));
+      });
+      document.querySelectorAll('.year-group').forEach(g => {
+        const vis = g.querySelectorAll('.post-row:not(.hidden)');
+        g.style.display = vis.length === 0 ? 'none' : '';
+      });
+    });
+  });
+</script>
+</body>
+</html>

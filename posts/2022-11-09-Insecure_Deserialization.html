@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insecure Deserialization — thevillagehacker</title>
+  <meta name="description" content="Insecure Deserialization"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Insecure Deserialization
+    </div>
+    <h1 class="post-title">Insecure Deserialization</h1>
+    <div class="post-meta">
+      <span>2022-11-09</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>A pentester’s guide to insecure deserialization.</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/1.webp" alt="img" /></p>
+<h2>Introduction</h2>
+<p>Insecure Deserialization is a vulnerability that occurs when untrusted data is used to abuse the logic of an application, inflict a denial of service (DoS) attack, or even execute arbitrary code upon it being deserialized. It also occupies the #8 spot in the <a href="https://www.acunetix.com/blog/articles/owasp-top-10-2017/">OWASP Top 10 2017</a> list.</p>
+<p>To understand what insecure deserialization is, we first must understand what serialization and deserialization are. We’ll then cover some examples of insecure deserialization and how it can be used to execute code as well as discuss some possible mitigations for this class of vulnerability.</p>
+<h2>Serialization vs deserialization</h2>
+<p>Serialization is the process of turning some object into a data format that can be restored later. People often serialize those objects to save them to storage or send them as part of communications.</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/2.webp" alt="img" /></p>
+<p><strong>Deserialization</strong> is the reverse of that process, taking data structured from some format, and rebuilding it into an object. Today, the most popular data format for serializing data is JSON. Before that, it was XML.</p>
+<h2>What is insecure deserialization?</h2>
+<p>Let’s first understand the whole picture here. When you learn a programming language, the first thing you learn is how to define variables, classes, and data structures that best suit your needs. Then, you learn how to manipulate them to achieve your needs. So far, they reside in memory, but sometimes, you need to store their states or share them with other systems. That’s where serialization and deserialization come into play.</p>
+<h2>What can go wrong here?</h2>
+<p>When a software deserializes the user-controlled data without verification, we call it insecure deserialization. For example, an attacker might store a serialized file representing a malicious payload. The developer doesn’t perform a verification before deserializing the serialized data, then insecure deserialization will occur.</p>
+<p>Most programming languages offer the ability to customize deserialization processes. Unfortunately, it’s frequently possible for an attacker to abuse these deserialization features when the application is deserializing untrusted data that the attacker controls.</p>
+<h2>Java serialization and deserialization example:-</h2>
+<p>The following is an example of the serialization and deserialization process in java.</p>
+<p>This is a simple java class file in which the variables are declared</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/3.webp" alt="img" /></p>
+<p>The following below code will perform the basic serialization and deserialization process with the same objects created in the above code.</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/4.webp" alt="img" /></p>
+<h2>Serializing the objects:-</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/5.webp" alt="img" /></p>
+<p>The above code performs the serialization of the objects which are provided in the code.</p>
+<h2>Deserializing the data:-</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/6.webp" alt="img" /></p>
+<p>The above code performs the deserialization of the data which was serialized before.</p>
+<h3>Let’s Run:-</h3>
+<p>Let’s run the program to see how java serializes the data. Once the program is compiled without error the java class files will be created as below:</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/7.webp" alt="img" /></p>
+<p>Now we can run the basic program,</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/8.webp" alt="img" /></p>
+<p>The program executed successfully. The objects we gave as input to the program are age, name, and nickname of a human being is serialized and stored in the file as humandata.ser.</p>
+<p>Let's view the serialized data and see if we can figure out anything from it</p>
+<h2>Serialized data in normal view</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/9.webp" alt="img" /></p>
+<h2>Serialized data in Hex format</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/10.webp" alt="img" /></p>
+<p>The above example is a serialized data and this is the same date that has been piped directly into the deserialization process without any verification. This is where the insecure deserialization vulnerability occurs.</p>
+<h2>Python serialization and deserialization example:-</h2>
+<p>The following is an example of serialization and deserialization in Python by using the python module for binary serialization and deserialization.</p>
+<p><img src="../assets/images/blogs/Insecure_desrialization/11.webp" alt="img" /></p>
+<p><strong>dumps()</strong> − returns a byte like an object by marshaling a Python object. Only objects of standard data types are supported for marshaling. Unsupported types raise the ValueError exception.</p>
+<p><strong>loads()</strong> − This function converts the byte-like object to the corresponding Python object. If the conversion doesn’t result in a valid Python object, ValueError or TypeError may be raised.</p>
+<h2>Serialized and Deserialized data:-</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/12.webp" alt="img" /></p>
+<p>The above is the serialized and deserialized data using the marshal python module. The marshal module uses dumps() function to serialize the data and uses loads() function to deserialize them.</p>
+<h2>Insecure Deserialization to Remote Code Execution:-</h2>
+<p>The following is an example of insecure deserialization in Python. Python’s native module for binary serialization and deserialization is called pickle. This example will serialize an exploit to run the <strong>whoami and date</strong> command, and deserialize it with pickle.loads().</p>
+<h2>Example code to perform RCE</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/13.webp" alt="img" /></p>
+<p>The dumps() function gets input, serializes it, and piped to the deserialization function. The serialized data is directly piped to the loads() function to perform the deserialization process without any validation.</p>
+<h2>Let’s Run:-</h2>
+<h2>Remote Code Execution</h2>
+<p><img src="../assets/images/blogs/Insecure_desrialization/14.webp" alt="img" /></p>
+<p>The above image shows the serialized data of the remote code execution command whoami and date.</p>
+<p>The loads() function accepts the user-controlled serialized data without any verification in place which results in arbitrary code execution on the target.</p>
+<h2>Example Codes Repository:-</h2>
+<p><a href="https://github.com/thevillagehacker/My-Presentation-Slides">GitHub Repo</a></p>
+<h2>What is the impact of insecure deserialization?</h2>
+<p>The impact of insecure deserialization can be very severe because it provides an entry point to a massively increased attack surface. It allows an attacker to reuse existing application code in harmful ways, resulting in numerous other vulnerabilities, often <a href="https://portswigger.net/web-security/os-command-injection">remote code execution</a>.</p>
+<p>Even in cases where remote code execution is not possible, insecure deserialization can lead to privilege escalation, arbitrary file access, and denial-of-service attacks.</p>
+<h2>Insecure deserialization tools.</h2>
+<p>There are many tools that can assist you when you are hunting for insecure deserialization vulnerabilities. In the case of Java, you can use the <a href="https://github.com/portswigger/java-deserialization-scanner">Java Deserialization Scanner</a> Burp Suite extension. It allows you to test for different libraries using predefined POP gadget chains. Then, you can use <a href="https://github.com/frohoff/ysoserial">Ysoserial</a> to generate the appropriate payload. Therefore, I think that the most valuable tool for this vulnerability would be a good deal of white-box testing, patience, and analysis skills.</p>
+<h2>How to prevent insecure deserialization vulnerabilities?</h2>
+<ul>
+<li>Deserialization of user input should be avoided unless absolutely necessary.</li>
+<li>If you do need to deserialize data from untrusted sources, incorporate robust measures to make sure that the data has not been tampered with.</li>
+<li>If possible, you should avoid using generic deserialization features altogether.</li>
+<li>The method of serialization should be encrypted not encoded.</li>
+<li>Maintain integrity checks to prevent data tampering with the serialized objects.</li>
+<li>Run Deserialization code in a low privilege environment.</li>
+<li>Implementing integrity checks such as digital signatures on any serialized objects to prevent hostile object creation or data tampering.</li>
+<li>Log deserialization exceptions and failures, such as where the incoming type is not the expected type, or the deserialization throws exceptions.</li>
+</ul>
+<h2>Insecure deserialization Hackerone reports</h2>
+<ul>
+<li><a href="https://hackerone.com/reports/562335">https://hackerone.com/reports/562335</a></li>
+<li><a href="https://hackerone.com/reports/153026">https://hackerone.com/reports/153026</a></li>
+<li><a href="https://hackerone.com/reports/415682">https://hackerone.com/reports/415682</a></li>
+<li><a href="https://hackerone.com/reports/350401">https://hackerone.com/reports/350401</a></li>
+<li><a href="https://hackerone.com/reports/350418">https://hackerone.com/reports/350418</a></li>
+</ul>
+<h2>References:-</h2>
+<ul>
+<li><a href="https://thehackerish.com/insecure-deserialization-explained-with-examples/">https://thehackerish.com/insecure-deserialization-explained-with-examples/</a></li>
+<li><a href="https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization">https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html</a></li>
+<li><a href="https://portswigger.net/web-security/deserialization">https://portswigger.net/web-security/deserialization</a></li>
+</ul>
+<p>Thank you for reading.</p>
+<p>Follow me on Twitter : <a href="https://twitter.com/thevillagehackr">thevillagehacker</a></p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2022-10-10-IDOR.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Insecure Direct Object References (IDOR) Exploit Enables Unauthorized Access to Linked Bank Accounts</div></a>
+    <a href="2022-12-15-RCE-DLL-Hijacking.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Remote Code Execution via DLL Hijacking on a Prominent Business Automation Application</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

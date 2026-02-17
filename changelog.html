@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Changelog — thevillagehacker</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:       #080a08;
+    --bg2:      #0d110d;
+    --surface:  #111611;
+    --border:   #1e2a1e;
+    --green:    #39ff6e;
+    --green-dim:#1a7a36;
+    --green-glow: rgba(57,255,110,0.18);
+    --white:    #e8f0e8;
+    --muted:    #4a614a;
+    --muted2:   #2e3e2e;
+    --red:      #ff4444;
+    --amber:    #ffb830;
+    --blue:     #5bf0ff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--bg);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ── SCANLINE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 999; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.07) 2px,
+      rgba(0,0,0,0.07) 4px
+    );
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 998; pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 100px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--green);
+    text-decoration: none;
+    text-shadow: 0 0 18px var(--green-glow);
+  }
+
+  .nav-links {
+    display: flex; gap: 28px; list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.6s 0.05s ease both;
+  }
+
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 22px;
+  }
+
+  .hero-label::before {
+    content: '';
+    width: 22px; height: 1px;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 10vw, 96px);
+    line-height: 0.92;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  h1 .accent { color: var(--green); text-shadow: 0 0 30px var(--green-glow); }
+
+  .hero-sub {
+    font-size: 12px;
+    color: var(--muted);
+    max-width: 460px;
+    line-height: 1.8;
+  }
+
+  .hero-sub span { color: var(--white); }
+
+  /* ── STATS BAR ── */
+  .stats {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 40px 0 0;
+    animation: fadeIn 0.5s 0.1s ease both;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    transition: background 0.2s;
+  }
+
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: var(--bg2); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--green);
+    line-height: 1;
+    text-shadow: 0 0 14px var(--green-glow);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 28px 0 0;
+    animation: fadeIn 0.5s 0.15s ease both;
+  }
+
+  .filter-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover { border-color: var(--green-dim); color: var(--white); }
+
+  .filter-btn.active {
+    background: var(--green);
+    color: var(--bg);
+    border-color: var(--green);
+    font-weight: 600;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline-wrap {
+    margin-top: 48px;
+  }
+
+  .year-group {
+    margin-bottom: 56px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .year-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .year-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  .year-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── LOG ENTRY ── */
+  .entry {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0 28px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .entry::before {
+    content: '';
+    position: absolute;
+    left: 109px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .entry:hover { background: rgba(57,255,110,0.015); }
+
+  .entry:hover .entry-title { color: var(--green); }
+
+  .entry-date {
+    padding-top: 2px;
+  }
+
+  .date-day {
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    line-height: 1.5;
+  }
+
+  .date-month {
+    font-size: 10px;
+    color: var(--muted2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .entry-content {
+    padding-left: 28px;
+    position: relative;
+  }
+
+  /* dot on the timeline */
+  .entry-content::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 8px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--muted2);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .entry:hover .entry-content::before {
+    border-color: var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+  }
+
+  .entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+
+  .tag-vuln   { background: rgba(255,68,68,0.12);  color: var(--red);   border: 1px solid rgba(255,68,68,0.25); }
+  .tag-report { background: rgba(91,240,255,0.10); color: var(--blue);  border: 1px solid rgba(91,240,255,0.2); }
+  .tag-tool   { background: rgba(255,184,48,0.10); color: var(--amber); border: 1px solid rgba(255,184,48,0.2); }
+  .tag-site   { background: rgba(57,255,110,0.08); color: var(--green); border: 1px solid rgba(57,255,110,0.2); }
+  .tag-ctf    { background: rgba(180,130,255,0.10); color: #c490ff;     border: 1px solid rgba(180,130,255,0.2); }
+
+  .entry-severity {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .entry-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .entry-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .entry-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .entry-link:hover { color: var(--green); }
+  .entry-link::after { content: '→'; }
+
+  /* ── HIDDEN ENTRIES (for filter) ── */
+  .entry.hidden { display: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .footer-text {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .footer-text a { color: var(--green-dim); text-decoration: none; }
+  .footer-text a:hover { color: var(--green); }
+
+  .blink {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--green);
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeUp  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes blink   { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .year-group:nth-child(1) { animation-delay: 0.1s; }
+  .year-group:nth-child(2) { animation-delay: 0.2s; }
+  .year-group:nth-child(3) { animation-delay: 0.3s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .entry { grid-template-columns: 1fr; }
+    .entry::before { display: none; }
+    .entry-content { padding-left: 0; }
+    .entry-content::before { display: none; }
+    .stats { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html">Whoami</a></li>
+      <li><a href="#" style="color:var(--green);">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">public log</div>
+    <h1>CHANGE<br><span class="accent">LOG</span></h1>
+    <p class="hero-sub">
+      A running record of <span>research findings</span>, site updates,
+      new writeups, and tool releases by
+      <span>Naveen Jagadeesan</span> — Security Analyst &amp; Researcher.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">21</div>
+        <div class="stat-label">Writeups</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Years Active</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0</div>
+        <div class="stat-label">CVE / Bugs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Curiosity</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="vuln">Vulnerability</button>
+    <button class="filter-btn" data-filter="report">Writeup</button>
+    <button class="filter-btn" data-filter="tool">Tool / Lab</button>
+    <button class="filter-btn" data-filter="site">Site Update</button>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline-wrap" id="timeline">
+
+    <!-- 2024 -->
+    <div class="year-group">
+      <div class="year-header">
+        <span class="year-label">2024</span>
+        <div class="year-line"></div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">10</span>
+          <span class="date-month">Dec</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: critical</span>
+          </div>
+          <a class="entry-title" href="/posts/2024-12-10-Remote_Code_Execution.html">
+            OS Command Injection → Remote Code Execution
+          </a>
+          <p class="entry-desc">Chained OS command injection with privilege escalation to achieve full remote code execution on a production target. Includes payload crafting and post-exploitation notes.</p>
+          <a class="entry-link" href="/posts/2024-12-10-Remote_Code_Execution.html">Read writeup</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2023 -->
+    <div class="year-group">
+      <div class="year-header">
+        <span class="year-label">2023</span>
+        <div class="year-line"></div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">31</span>
+          <span class="date-month">Oct</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: high</span>
+          </div>
+          <a class="entry-title" href="/posts/2023-10-31-Business_logic_error_subscription.html">
+            Business Logic Flaw → Free Subscriptions &amp; 12% Discount
+          </a>
+          <p class="entry-desc">Abused flawed hotel booking logic to obtain subscriptions at $0 and trigger unauthorized discounts across booking flows.</p>
+          <a class="entry-link" href="/posts/2023-10-31-Business_logic_error_subscription.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">13</span>
+          <span class="date-month">Jul</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: critical</span>
+          </div>
+          <a class="entry-title" href="/posts/2023-07-13-Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html">
+            Mass Assignment Vulnerability → Full Database Dump
+          </a>
+          <p class="entry-desc">Leveraged mass assignment flaw to escalate privileges and exfiltrate the entire production database via crafted API payloads.</p>
+          <a class="entry-link" href="/posts/2023-07-13-Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">30</span>
+          <span class="date-month">May</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: high</span>
+          </div>
+          <a class="entry-title" href="/posts/2023-05-30-Bypassing_waf_sql_dump.html">
+            WAF Bypass → SQL Injection Database Dump
+          </a>
+          <p class="entry-desc">Bypassed multiple WAF rules in a financial app to exploit SQLi and exfiltrate the database. Includes bypass techniques and enumeration approach.</p>
+          <a class="entry-link" href="/posts/2023-05-30-Bypassing_waf_sql_dump.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">12</span>
+          <span class="date-month">Apr</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: medium</span>
+          </div>
+          <a class="entry-title" href="/posts/2023-04-12-Business_logic_error.html">
+            Business Logic Error → Price Manipulation
+          </a>
+          <p class="entry-desc">Exploited price parameter tampering to purchase products and services below listed cost, bypassing server-side validation.</p>
+          <a class="entry-link" href="/posts/2023-04-12-Business_logic_error.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">30</span>
+          <span class="date-month">Mar</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: critical</span>
+          </div>
+          <a class="entry-title" href="/posts/2023-03-30-Account_Takeover-via-session-storage.html">
+            Account Takeover via Session Storage Manipulation
+          </a>
+          <p class="entry-desc">Demonstrated full account takeover in a financial web app by exploiting weak session storage implementation and token reuse.</p>
+          <a class="entry-link" href="/posts/2023-03-30-Account_Takeover-via-session-storage.html">Read writeup</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2022 -->
+    <div class="year-group">
+      <div class="year-header">
+        <span class="year-label">2022</span>
+        <div class="year-line"></div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">15</span>
+          <span class="date-month">Dec</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: critical</span>
+          </div>
+          <a class="entry-title" href="/posts/2022-12-15-RCE-DLL-Hijacking.html">
+            DLL Hijacking → Remote Code Execution (Business Automation App)
+          </a>
+          <p class="entry-desc">Discovered and exploited DLL hijacking in a widely-used business automation product, leading to persistent RCE on Windows targets.</p>
+          <a class="entry-link" href="/posts/2022-12-15-RCE-DLL-Hijacking.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="report">
+        <div class="entry-date">
+          <span class="date-day">09</span>
+          <span class="date-month">Nov</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-report">Writeup</span>
+          </div>
+          <a class="entry-title" href="/posts/2022-11-09-Insecure_Deserialization.html">
+            Pentester's Guide to Insecure Deserialization
+          </a>
+          <p class="entry-desc">Deep-dive reference guide covering insecure deserialization concepts, identification techniques, and exploitation across multiple frameworks.</p>
+          <a class="entry-link" href="/posts/2022-11-09-Insecure_Deserialization.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">10</span>
+          <span class="date-month">Oct</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: high</span>
+          </div>
+          <a class="entry-title" href="/posts/2022-10-10-IDOR.html">
+            IDOR → Unauthorized Access to Linked Bank Accounts
+          </a>
+          <p class="entry-desc">Exploited IDOR to access and enumerate other users' linked bank accounts in a fintech application with no authorization checks on object references.</p>
+          <a class="entry-link" href="/posts/2022-10-10-IDOR.html">Read writeup</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2021 -->
+    <div class="year-group">
+      <div class="year-header">
+        <span class="year-label">2021</span>
+        <div class="year-line"></div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">01</span>
+          <span class="date-month">Jul</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: critical</span>
+          </div>
+          <a class="entry-title" href="/posts/2021-07-01-PII-Leak.html">
+            API Misconfiguration → Mass PII Data Leakage
+          </a>
+          <p class="entry-desc">Identified API security misconfiguration leading to exposure of thousands of PII records with no authentication required on sensitive endpoints.</p>
+          <a class="entry-link" href="/posts/2021-07-01-PII-Leak.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">19</span>
+          <span class="date-month">May</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: high</span>
+          </div>
+          <a class="entry-title" href="/posts/2021-05-19-Sql-injection.html">
+            Time-Based SQL Injection → Database Dump
+          </a>
+          <p class="entry-desc">Exploited time-based blind SQLi to enumerate and exfiltrate the full database. Covers detection, manual exploitation, and automation with sqlmap.</p>
+          <a class="entry-link" href="/posts/2021-05-19-Sql-injection.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">08</span>
+          <span class="date-month">May</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: high</span>
+          </div>
+          <a class="entry-title" href="/posts/2021-05-08-massive_subdomain-takeover.html">
+            Massive Subdomain Takeover via Subzy
+          </a>
+          <p class="entry-desc">Uncovered and responsibly disclosed a large-scale subdomain takeover vulnerability using automated enumeration with subzy across a large target's external attack surface.</p>
+          <a class="entry-link" href="/posts/2021-05-08-massive_subdomain-takeover.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="tool">
+        <div class="entry-date">
+          <span class="date-day">10</span>
+          <span class="date-month">Mar</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-tool">Tool / Lab</span>
+          </div>
+          <a class="entry-title" href="https://thevillagehacker.com/blog/2021/03/10/iOS-dynamic-lab-setup.html">
+            iOS Pentesting Dynamic Analysis Lab Setup
+          </a>
+          <p class="entry-desc">Step-by-step guide to jailbreaking iPhone and configuring a full dynamic analysis environment for iOS application security testing.</p>
+          <a class="entry-link" href="https://thevillagehacker.com/blog/2021/03/10/iOS-dynamic-lab-setup.html">Read guide</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">17</span>
+          <span class="date-month">Feb</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: high</span>
+          </div>
+          <a class="entry-title" href="https://thevillagehacker.com/blog/2021/02/17/ato-response-manipulation.html">
+            Account Takeover via Response Manipulation
+          </a>
+          <p class="entry-desc">Intercepted and manipulated server responses to bypass authentication logic and take over targeted user accounts.</p>
+          <a class="entry-link" href="https://thevillagehacker.com/blog/2021/02/17/ato-response-manipulation.html">Read writeup</a>
+        </div>
+      </div>
+
+      <div class="entry" data-tags="vuln report">
+        <div class="entry-date">
+          <span class="date-day">08</span>
+          <span class="date-month">Feb</span>
+        </div>
+        <div class="entry-content">
+          <div class="entry-meta">
+            <span class="tag tag-vuln">Vulnerability</span>
+            <span class="tag tag-report">Writeup</span>
+            <span class="entry-severity">// severity: medium</span>
+          </div>
+          <a class="entry-title" href="https://thevillagehacker.com/blog/2021/02/08/xss_on_public_program.html">
+            Reflected XSS on Public Bug Bounty Program
+          </a>
+          <p class="entry-desc">Discovered reflected cross-site scripting vulnerability in a public program, bypassing client-side filters via payload encoding.</p>
+          <a class="entry-link" href="https://thevillagehacker.com/blog/2021/02/08/xss_on_public_program.html">Read writeup</a>
+        </div>
+      </div>
+
+    </div><!-- /2021 -->
+  </div><!-- /timeline -->
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-text">
+      © 2025 <a href="https://thevillagehacker.com/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+      status: active<span class="blink"></span>
+    </span>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+  // ── FILTER LOGIC ──
+  const btns = document.querySelectorAll('.filter-btn');
+  const entries = document.querySelectorAll('.entry');
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+
+      entries.forEach(entry => {
+        if (filter === 'all') {
+          entry.classList.remove('hidden');
+        } else {
+          const tags = entry.dataset.tags || '';
+          if (tags.includes(filter)) {
+            entry.classList.remove('hidden');
+          } else {
+            entry.classList.add('hidden');
+          }
+        }
+      });
+
+      // Hide year headers if all entries in group are hidden
+      document.querySelectorAll('.year-group').forEach(group => {
+        const visible = group.querySelectorAll('.entry:not(.hidden)');
+        group.style.display = visible.length === 0 ? 'none' : '';
+      });
+    });
+  });
+
+  // ── TYPEWRITER on hero subtitle ──
+  const sub = document.querySelector('.hero-sub');
+  if (sub) {
+    const original = sub.innerHTML;
+    sub.style.opacity = '1';
+  }
+</script>
+</body>
+</html>

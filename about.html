@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Whoami — thevillagehacker</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#080a08;--bg2:#0d110d;--surface:#111611;--border:#1e2a1e;--green:#39ff6e;--green-dim:#1a7a36;--green-glow:rgba(57,255,110,.18);--white:#e8f0e8;--muted:#4a614a;--muted2:#2e3e2e;--red:#ff4444;--amber:#ffb830;--blue:#5bf0ff}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;cursor:crosshair;text-align: justify;}
+  body::before{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px)}
+  .page{max-width:860px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:28px 0 20px;border-bottom:1px solid var(--border);animation:fadeIn .5s ease both}
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.08em;color:var(--green);text-decoration:none;text-shadow:0 0 18px var(--green-glow)}
+  .nav-links{display:flex;gap:28px;list-style:none}
+  .nav-links a{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+  .nav-links a:hover,.nav-links a.active{color:var(--green)}
+
+  /* HERO */
+  .about-hero{display:grid;grid-template-columns:1fr 160px;gap:48px;align-items:start;padding:64px 0 48px;border-bottom:1px solid var(--border);animation:fadeIn .6s .05s ease both}
+  @media(max-width:580px){.about-hero{grid-template-columns:1fr}.about-img{display:none}}
+  .page-label{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:16px}
+  .page-label::before{content:'';width:22px;height:1px;background:var(--green)}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,8vw,80px);line-height:.92;letter-spacing:.04em;margin-bottom:24px}
+  h1 .accent{color:var(--green);text-shadow:0 0 28px var(--green-glow)}
+  .about-img img{width:160px;height:160px;border-radius:6px;border:2px solid var(--border);filter:grayscale(20%);object-fit:cover;box-shadow:0 0 30px rgba(57,255,110,.06)}
+
+  /* BADGES */
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+  .badge{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:2px}
+  .badge-green{background:rgba(57,255,110,.08);color:var(--green);border:1px solid rgba(57,255,110,.2)}
+  .badge-blue{background:rgba(91,240,255,.08);color:var(--blue);border:1px solid rgba(91,240,255,.2)}
+  .badge-amber{background:rgba(255,184,48,.08);color:var(--amber);border:1px solid rgba(255,184,48,.2)}
+  .badge-red{background:rgba(255,68,68,.08);color:var(--red);border:1px solid rgba(255,68,68,.2)}
+
+  /* CONTENT */
+  .content-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;animation:fadeUp .5s .1s ease both}
+  @media(max-width:620px){.content-grid{grid-template-columns:1fr}}
+
+  .prose{font-size:12.5px;color:#a8b8a8;line-height:1.9;margin-top:32px;max-width:600px;animation:fadeUp .5s .08s ease both}
+  .prose p{margin-bottom:16px}
+  .prose p:last-child{margin-bottom:0}
+  .prose strong{color:var(--white);font-weight:500}
+  .prose a{color:var(--green-dim);text-decoration:none;transition:color .2s}
+  .prose a:hover{color:var(--green)}
+
+  .section-header{display:flex;align-items:center;gap:12px;margin:40px 0 20px;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+  .section-header::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* INFO CARDS */
+  .info-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;animation:fadeUp .5s ease both}
+  .info-card-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:14px;font-weight:600}
+  .info-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .info-list li{font-size:12px;color:var(--muted);line-height:1.5;display:flex;gap:8px;align-items:flex-start}
+  .info-list li::before{content:'→';color:var(--green-dim);flex-shrink:0;margin-top:1px}
+  .info-list li strong{color:var(--white);font-weight:500}
+
+  /* SKILLS */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;animation:fadeUp .5s .1s ease both}
+  @media(max-width:500px){.skills-grid{grid-template-columns:repeat(2,1fr)}}
+  .skill-chip{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-size:10px;color:var(--muted);letter-spacing:.06em;text-align:center;transition:all .15s}
+  .skill-chip:hover{border-color:var(--green-dim);color:var(--white)}
+
+  /* TIMELINE */
+  .timeline{display:flex;flex-direction:column;gap:0;animation:fadeUp .5s .15s ease both}
+  .tl-item{display:grid;grid-template-columns:110px 1fr;gap:0 20px;padding:16px 0;border-bottom:1px solid var(--border);position:relative}
+  .tl-item::before{content:'';position:absolute;left:109px;top:0;bottom:0;width:1px;background:var(--border)}
+  .tl-date{font-size:10px;color:var(--muted);padding-top:3px;letter-spacing:.06em}
+  .tl-body{padding-left:20px;position:relative}
+  .tl-body::before{content:'';position:absolute;left:-5px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--muted2)}
+  .tl-company{font-size:13px;font-weight:500;color:var(--white);margin-bottom:3px}
+  .tl-role{font-size:11px;color:var(--green);margin-bottom:4px}
+  .tl-desc{font-size:11px;color:var(--muted);line-height:1.6}
+
+  /* SOCIAL */
+  .social-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;animation:fadeIn .5s .2s ease both}
+  .social-link{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.08em;color:var(--muted);text-decoration:none;padding:8px 16px;border:1px solid var(--border);border-radius:4px;transition:all .2s}
+  .social-link:hover{border-color:var(--green-dim);color:var(--green)}
+  .social-link svg{width:14px;height:14px;fill:currentColor}
+
+  footer{border-top:1px solid var(--border);padding:28px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:24px}
+  .footer-text{font-size:11px;color:var(--muted)}
+  .footer-text a{color:var(--green-dim);text-decoration:none}
+  .blink{display:inline-block;width:7px;height:13px;background:var(--green);margin-left:3px;vertical-align:middle;animation:blink 1s step-end infinite}
+
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav>
+    <a class="nav-logo" href="index.html">thevillagehacker</a>
+    <ul class="nav-links">
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html" class="active">Whoami</a></li>
+      <li><a href="changelog.html">Changelog</a></li>
+    </ul>
+  </nav>
+
+  <div class="about-hero">
+    <div>
+      <div class="page-label">whoami</div>
+      <h1>NAVEEN<br><span class="accent">JAGADEESAN</span></h1>
+      <div class="badges">
+        <span class="badge badge-green">Security Analyst</span>
+        <span class="badge badge-blue">CRTP Certified</span>
+        <span class="badge badge-amber">Red Teamer</span>
+        <span class="badge badge-red">Bug Bounty Hunter</span>
+      </div>
+    </div>
+    <div class="about-img">
+      <img src="https://pbs.twimg.com/profile_images/1908380290961063936/LpL3Nlvr_400x400.jpg" alt="Naveen Jagadeesan"/>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>I'm <strong>Naveen Jagadeesan</strong>, known online as <a href="https://x.com/thevillagehackr" target="_blank">TheVillageHacker</a>. I'm a passionate Security Analyst, CRTP-certified Red Teamer, and cybersecurity researcher with over <strong>6+ years of experience</strong> in application and network security.</p>
+    <p>My journey into hacking began with a curiosity for how things break — and more importantly, how to secure them. From humble beginnings as an IoT developer, I've worked through pentesting roles at leading security firms and financial institutions, performing over <strong>300+ penetration tests</strong> and <strong>50+ secure code reviews</strong> across Web, API, Mobile, and Thick Client platforms.</p>
+    <p>My professional experience spans organizations like <strong>Societe Generale</strong> and <strong>SISA Information Security</strong>, where I've led critical security assessments, mentored junior analysts, and developed automation tools to improve testing efficiency.</p>
+    <p>When I'm not breaking into applications ethically, I contribute to the community by reporting vulnerabilities, mentoring aspiring hackers, and sharing practical insights from the field.</p>
+  </div>
+
+  <div class="section-header">Experience</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">2024 –<br>Present</div>
+      <div class="tl-body">
+        <div class="tl-company">Societe Generale Global Solution Center, Bangalore</div>
+        <div class="tl-role">Senior Cyber Security Analyst</div>
+        <div class="tl-desc">Application security assessments, and security tooling development for a global financial institution.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2021 –<br>2024</div>
+      <div class="tl-body">
+        <div class="tl-company">SISA Information Security, Bangalore</div>
+        <div class="tl-role">Senior Specialist</div>
+        <div class="tl-desc">Performed 300+ penetration tests and 50+ code reviews. Mentored junior analysts and built automation tooling for testing efficiency.</div>
+      </div>
+    </div>
+        <div class="tl-item">
+      <div class="tl-date">2019 –<br>2021</div>
+      <div class="tl-body">
+        <div class="tl-company">KGiSL - GSS, Coimbatore</div>
+        <div class="tl-role">Information Security Engineer</div>
+        <div class="tl-desc">Conducted penetration testing for Web, Mobile, and Thick Client
+applications, ensuring compliance and vulnerability mitigation.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2019 –<br>2019</div>
+      <div class="tl-body">
+        <div class="tl-company">MGK Enterprise Systems, Coimbatore</div>
+        <div class="tl-role">IoT Developer → Security Researcher</div>
+        <div class="tl-desc">Started as an IoT developer. Security curiosity led to a full career pivot into offensive security and bug bounty research.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">Expertise</div>
+  <div class="content-grid">
+    <div class="info-card">
+      <div class="info-card-title">Offensive Security</div>
+      <ul class="info-list">
+        <li><span>Web Application Pentesting</span></li>
+        <li><span>API Security Assessment</span></li>
+        <li><span>Mobile Pentesting (iOS &amp; Android)</span></li>
+        <li><span>Thick Client / Desktop Apps</span></li>
+        <li><span>Red Team Operations</span></li>
+        <li><span>Network Penetration Testing</span></li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">Research Focus</div>
+      <ul class="info-list">
+        <li><span>Business Logic Vulnerabilities</span></li>
+        <li><span>Authentication &amp; ATO chains</span></li>
+        <li><span>Encryption Reverse Engineering</span></li>
+        <li><span>Injection Attacks (SQLi, CMDi, XSS)</span></li>
+        <li><span>Secure Code Review</span></li>
+        <li><span>OSINT &amp; Reconnaissance</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-header">Tools &amp; Tech</div>
+  <div class="skills-grid">
+    <div class="skill-chip">Burp Suite</div>
+    <div class="skill-chip">sqlmap</div>
+    <div class="skill-chip">Frida</div>
+    <div class="skill-chip">Metasploit</div>
+    <div class="skill-chip">subfinder</div>
+    <div class="skill-chip">dnsx</div>
+    <div class="skill-chip">subzy</div>
+    <div class="skill-chip">MOBSF</div>
+    <div class="skill-chip">objection</div>
+    <div class="skill-chip">dirsearch</div>
+    <div class="skill-chip">httpx</div>
+    <div class="skill-chip">Python</div>
+  </div>
+
+  <div class="section-header">Connect</div>
+  <div class="social-row">
+    <a href="https://github.com/thevillagehacker" target="_blank" class="social-link">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="https://www.linkedin.com/in/thevillagehacker" target="_blank" class="social-link">
+      <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://x.com/thevillagehackr" target="_blank" class="social-link">
+      <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.213 5.567 5.95-5.567zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Twitter / X
+    </a>
+  </div>
+
+  <footer>
+    <span class="footer-text">© 2025 <a href="index.html">thevillagehacker</a></span>
+    <span class="footer-text">status: active<span class="blink"></span></span>
+  </footer>
+</div>
+</body>
+</html>
