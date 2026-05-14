@@ -173,10 +173,12 @@ article h4 {
 }
 
 article p {
+  font-family: poppins, monospace;
   font-size: 13px;
   color: #a8b8a8;
   line-height: 1.9;
   margin-bottom: 16px;
+  text-align: justify;
 }
 
 article p strong { color: var(--white); font-weight: 500; }
