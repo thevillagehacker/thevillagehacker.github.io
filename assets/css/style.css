@@ -173,12 +173,10 @@ article h4 {
 }
 
 article p {
-  font-family: poppins, monospace;
   font-size: 13px;
   color: #a8b8a8;
   line-height: 1.9;
   margin-bottom: 16px;
-  text-align: justify;
 }
 
 article p strong { color: var(--white); font-weight: 500; }
@@ -219,6 +217,7 @@ article pre {
   padding: 18px 20px;
   margin: 20px 0;
   overflow-x: auto;
+
 }
 
 article code {
@@ -375,4 +374,59 @@ footer {
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
+}
+
+/* ── Syntax Highlighting (Pygments — terminal theme) ─────────────────────── */
+.highlight { background: var(--surface); }
+.highlight pre { border: none; padding: 0; margin: 0; background: transparent; }
+
+/* Pygments token colours — tuned for the dark terminal palette */
+.highlight .c,  .highlight .c1, .highlight .cm,
+.highlight .cs, .highlight .cp  { color: #4a7a4a; font-style: italic; }  /* comments */
+.highlight .k,  .highlight .kd, .highlight .kn,
+.highlight .kp, .highlight .kr, .highlight .kt  { color: #5bf0ff; font-weight: 600; } /* keywords */
+.highlight .n                                    { color: #c8dcc8; }                   /* names */
+.highlight .na                                   { color: #39ff6e; }                   /* attr names */
+.highlight .nb                                   { color: #5bf0ff; }                   /* builtins */
+.highlight .nc, .highlight .nn                   { color: #ffb830; font-weight: 600; } /* class / namespace */
+.highlight .nd                                   { color: #ffb830; }                   /* decorator */
+.highlight .nf, .highlight .fm                   { color: #39ff6e; }                   /* function */
+.highlight .ni, .highlight .nl, .highlight .nv,
+.highlight .vc, .highlight .vg, .highlight .vi   { color: #c8dcc8; }                   /* variables */
+.highlight .s,  .highlight .s1, .highlight .s2,
+.highlight .sb, .highlight .sc, .highlight .sd,
+.highlight .se, .highlight .sh, .highlight .si,
+.highlight .sx, .highlight .sr, .highlight .ss   { color: #ffb830; }                   /* strings */
+.highlight .m,  .highlight .mb, .highlight .mf,
+.highlight .mh, .highlight .mi, .highlight .mo   { color: #ff7b72; }                   /* numbers */
+.highlight .o,  .highlight .ow                   { color: #5bf0ff; }                   /* operators */
+.highlight .p,  .highlight .pi                   { color: #e8f0e8; }                   /* punctuation */
+.highlight .gu                                   { color: var(--muted); }              /* diff headings */
+.highlight .gd                                   { color: #ff4444; background: rgba(255,68,68,.08); } /* diff del */
+.highlight .gi                                   { color: #39ff6e; background: rgba(57,255,110,.08); } /* diff add */
+.highlight .gh                                   { color: var(--green); font-weight: 600; }
+
+/* Code block wrapper written by Pygments */
+div.highlight {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green-dim);
+  border-radius: 0 6px 6px 0;
+  padding: 18px 20px;
+  margin: 20px 0;
+  overflow-x: auto;
+  position: relative;
+}
+
+/* Language badge shown in top-right corner */
+div.highlight::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
 }
