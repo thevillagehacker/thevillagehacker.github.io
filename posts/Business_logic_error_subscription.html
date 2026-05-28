@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+Hotel Subscription Exploitation through Business Logic Errors — thevillagehacker
+</title>
+
+<meta name="description"
+content="Business Logic Exploitation leading to free subscription upgrades and booking discounts."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:22px !important;
+
+    font-family:'JetBrains Mono', monospace !important;
+    font-size:13px !important;
+    line-height:1.65 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#82aaff !important;}
+.hljs-comment{color:#5c6773 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#89ddff !important;}
+.hljs-attr{color:#ffcb6b !important;}
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="blog-nav">
+
+    <div class="blog-nav-inner">
+
+        <a href="../index.html" class="nav-logo">
+            TheVillageHacker
+        </a>
+
+        <div class="nav-links">
+
+            <a href="../blog.html">
+                Blog
+            </a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups">
+                Writeups
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="advisory-banner">
+    BUSINESS LOGIC ERROR // PAYMENT BYPASS // SUBSCRIPTION ABUSE
+</div>
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        Hotel Subscription Exploitation through Business Logic Errors
+    </h1>
+
+    <p class="subtitle">
+        PAYMENT LOGIC BYPASS // ENCRYPTED API ANALYSIS // MEMBERSHIP ABUSE
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-10-31</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Hotel Booking Platform</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+Business Logic Error leading to free subscription upgrades
+and 12% discounts on hotel bookings.
+</p>
+
+<h2>Target Application Overview</h2>
+
+<p>
+The target was a B2B hotel reservation platform providing
+hotel bookings and premium subscription services.
+</p>
+
+<p>
+The application implemented four subscription tiers:
+</p>
+
+<ul>
+
+<li>Diamond</li>
+
+<li>Platinum</li>
+
+<li>Gold</li>
+
+<li>Silver</li>
+
+</ul>
+
+<p>
+Each tier provided loyalty point multipliers and booking
+discount benefits.
+</p>
+
+<p>
+Diamond subscriptions offered:
+</p>
+
+<ul>
+
+<li>12% booking discount</li>
+
+<li>3x loyalty points</li>
+
+<li>Premium membership benefits</li>
+
+</ul>
+
+<h2>Technology Stack</h2>
+
+<ul>
+
+<li>Amazon Infrastructure</li>
+
+<li>Cloudflare WAF</li>
+
+<li>ReactJS</li>
+
+<li>REST APIs</li>
+
+</ul>
+
+<h2>Encrypted Application Traffic</h2>
+
+<p>
+Application requests and responses were encrypted using
+symmetric cryptography.
+</p>
+
+<p>
+Both client-side and server-side logic relied on the same
+shared encryption key.
+</p>
+
+<p>
+This required reversing the cryptographic implementation
+before manipulating requests.
+</p>
+
+<h2>JavaScript Analysis</h2>
+
+<p>
+Analysis of the application's JavaScript bundles revealed
+that cryptographic operations were centralized through a
+shared CDN architecture.
+</p>
+
+<p>
+The same cryptographic framework was reused across multiple
+applications operated by the organization.
+</p>
+
+<h2>Extracted CDN Configuration</h2>
+
+<pre><code class="language-js">
+91622: function (e, t) {
+      'use strict';
+      t.Z = {
+        apiDomain: 'https://api.target.com',
+        adminDomain: 'https://admin.target.com',
+        searchApiDomain: 'https://search.target.com',
+        searchApiDomain: 'https://search.target.com',
+        preprodApiDomain: 'https://preprod.target.com',
+        bookingApiDomain: 'https://bookings.target.com',
+        blogsApiDomain: 'https://secure.target.com',
+        analyticsDomain: 'https://analytics.target.com',
+        cdnPath: 'https://cdn.target.com',       
+        s3accessKeyId: 'test-############',
+        s3secretKey: 'test-############',
+        s3Region: 'west',
+        dataHasKey: '###################=',
+        dataIVKey: 'jm8lgqa3j1d0ajus',
+        zendesk: '###########################',
+        giftCardUrl: 'https://join.target.com/gift-card/',
+        ASSET_CDN_PATH: 'https://assets.target.com',
+        consoleEnv: 'production',
+        recaptchaV2Key: '###################-kAQFKNGH-',
+        SHOPBACK_URL_DYNAMIC: 'https://shopback.target.org/aff_l',
+        SHOPBACK_MERCHANT_ID: '#########',
+        encryptionKeys: '["##_analytics_detail||VWlRMVRtTnllWEJVSVRCdUo=","club_membership_detail||RFZEVW1WMEtFQlJKSDA9"]'
+      }
+    }
+</code></pre>
+
+<p>
+The JavaScript bundles exposed:
+</p>
+
+<ul>
+
+<li>Encryption keys</li>
+
+<li>Initialization vectors</li>
+
+<li>API endpoints</li>
+
+<li>Cryptographic modes</li>
+
+</ul>
+
+<h2>Extracted Encryption Logic</h2>
+
+<pre><code class="language-js">
+abc.factory('EncryptDecrypt', [
+  'AppSettings',
+  function () {
+    return {
+      encryptKEY: 'UiQ1TmNyeXBUITBudgwtbynjybJDVDUmV0KEBRJH0=',
+      setkey: function (t) {
+        this.encryptKEY = t
+      },
+      encrypt: function (t) {
+        var e = this.encryptKEY,
+        n = 'jm8lgqa3j1d0ajus',
+        r = JSON.stringify(t);
+        return CryptoJS.AES.encrypt(r, CryptoJS.enc.Utf8.parse(e), {
+          iv: CryptoJS.enc.Utf8.parse(n),
+          padding: CryptoJS.pad.Pkcs7,
+          mode: CryptoJS.mode.CBC
+        }).toString() + '---' + window.btoa(n)
+      },
+      decrypt: function (t) {
+        var e = t.split('---'),
+        n = browserCrypto.Buffer.from(e[1], 'base64'),
+        r = browserCrypto.Buffer.from(e[0], 'base64'),
+        a = browserCrypto.Buffer.from(this.encryptKEY),
+        o = browserCrypto.createDecipheriv('aes256', a, n),
+        i = o._update(r),
+        s = o.final(),
+        l = (i = browserCrypto.Buffer.concat([i,
+        s])).toString();
+        return JSON.parse(l)
+      }
+    }
+  }
+])
+</code></pre>
+
+<p>
+The application used:
+</p>
+
+<ul>
+
+<li>AES CBC mode</li>
+
+<li>Static IV</li>
+
+<li>Hardcoded encryption keys</li>
+
+<li>Client-side encryption</li>
+
+</ul>
+
+<h2>Reversing the Encryption</h2>
+
+<p>
+Once the encryption parameters were extracted, encrypted
+payloads could be decrypted and modified externally.
+</p>
+
+<p>
+This enabled inspection of internal API workflows and
+business logic parameters.
+</p>
+
+<h2>Membership Subscription Flow</h2>
+
+<p>
+The application introduced a newly developed subscription
+feature with multiple payment workflows.
+</p>
+
+<p>
+A parameter named:
+</p>
+
+<pre><code class="language-json">
+"payment_method"
+</code></pre>
+
+<p>
+was used internally to identify payment handling logic.
+</p>
+
+<h2>Add Membership Request</h2>
+
+<pre><code class="language-text">
+PUT /api/v18/add_membership HTTP/2
+Host: api.target.com
+
+{
+  "data":
+  "EncryptedPayload---Base64IV"
+}
+</code></pre>
+
+<p>
+The above request initiated a Diamond membership purchase
+during hotel booking.
+</p>
+
+<p>
+The intended workflow granted:
+</p>
+
+<ul>
+
+<li>12% booking discounts</li>
+
+<li>2 months of Diamond membership</li>
+
+<li>Enhanced loyalty point multipliers</li>
+
+</ul>
+
+<h2>Business Logic Flaw</h2>
+
+<p>
+During analysis it was discovered that modifying the
+<code>payment_method</code> value altered the backend
+payment processing behavior.
+</p>
+
+<p>
+Changing: 26 to 21.
+
+<p>
+Removed the additional payment amount associated with
+the Diamond membership subscription.
+</p>
+
+<h2>Payment Request</h2>
+
+<pre><code class="language-text">
+POST /api/v16/purchase_add_ons HTTP/2
+Host: api.target.com
+
+{
+  "data":
+  "EncryptedPayload---Base64IV"
+}
+</code></pre>
+
+<p>
+Despite the manipulated payment flow, the request still
+contained membership activation parameters.
+</p>
+
+<h2>Membership Parameters</h2>
+
+<pre><code class="language-json">
+{
+  "user_club_membership_id": 123456,
+  "diamond_club": true
+}
+</code></pre>
+
+<p>
+The backend trusted the membership-related values supplied
+inside the encrypted request payload.
+</p>
+
+<p>
+As a result:
+</p>
+
+<ul>
+
+<li>Diamond membership activated successfully</li>
+
+<li>No additional payment was required</li>
+
+<li>Booking discounts were applied</li>
+
+<li>Loyalty multipliers became active</li>
+
+</ul>
+
+<blockquote>
+The backend validated booking completion but failed to
+verify whether membership payment was actually processed.
+</blockquote>
+
+<h2>Impact</h2>
+
+<ul>
+
+<li>Free premium subscriptions</li>
+
+<li>Unauthorized 12% booking discounts</li>
+
+<li>Loyalty reward abuse</li>
+
+<li>Payment workflow manipulation</li>
+
+<li>Revenue loss</li>
+
+<li>Business logic exploitation</li>
+
+</ul>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Improper payment validation</li>
+
+<li>Trusting client-controlled parameters</li>
+
+<li>Weak business workflow enforcement</li>
+
+<li>Hardcoded client-side cryptography</li>
+
+<li>Improper subscription activation logic</li>
+
+</ul>
+
+<h2>Mitigation</h2>
+
+<ul>
+
+<li>Validate payment completion server-side</li>
+
+<li>Remove client-side trust assumptions</li>
+
+<li>Separate payment and membership workflows</li>
+
+<li>Use secure cryptographic key management</li>
+
+<li>Implement transaction integrity checks</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+Business logic vulnerabilities frequently emerge when new
+features are integrated into existing transactional systems
+without holistic workflow validation.
+</p>
+
+<p>
+In this case, manipulating payment workflow identifiers
+allowed premium membership activation without successful
+payment processing.
+</p>
+
+<p>
+Applications handling subscriptions and financial logic
+must validate transactional integrity server-side rather
+than relying on client-controlled workflow parameters.
+</p>
+
+<p>
+Thank you for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+        — Naveen Jagadeesan
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+</body>
+</html>

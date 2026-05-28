@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+Exploiting Business Logic Error: Price Manipulation — thevillagehacker
+</title>
+
+<meta name="description"
+content="Business Logic Error leading to price manipulation and payment bypass."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:22px !important;
+
+    font-family:'JetBrains Mono', monospace !important;
+    font-size:13px !important;
+    line-height:1.65 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#82aaff !important;}
+.hljs-comment{color:#5c6773 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#89ddff !important;}
+.hljs-attr{color:#ffcb6b !important;}
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="blog-nav">
+
+    <div class="blog-nav-inner">
+
+        <a href="../index.html" class="nav-logo">
+            TheVillageHacker
+        </a>
+
+        <div class="nav-links">
+
+            <a href="../blog.html">
+                Blog
+            </a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups">
+                Writeups
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="advisory-banner">
+    BUSINESS LOGIC ERROR // PRICE MANIPULATION // CHECKOUT BYPASS
+</div>
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        Exploiting Business Logic Error: Price Manipulation
+    </h1>
+
+    <p class="subtitle">
+        CHECKOUT MANIPULATION // NEGATIVE QUANTITY // PAYMENT BYPASS
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-04-12</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">E-Commerce Web Application</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+This article discusses the exploitation of a business logic
+error that allowed users to manipulate prices and reduce the
+payment amount for products and services.
+</p>
+
+<h2>Target Background</h2>
+
+<p>
+The target application functioned as an e-commerce platform
+supporting online purchases of products and services.
+</p>
+
+<p>
+The application provided checkout workflows, payment handling,
+and order management functionality.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+The organization had previously disclosed an issue where
+attackers manipulated payment amounts during the checkout
+process.
+</p>
+
+<p>
+The objective of this research was to analyze the application's
+updated validation mechanisms and determine whether alternative
+bypass techniques still existed.
+</p>
+
+<h2>Reconnaissance</h2>
+
+<ul>
+
+<li>Hosted on AWS</li>
+
+<li>ReactJS frontend</li>
+
+<li>Mobile application available</li>
+
+<li>Encrypted application traffic</li>
+
+</ul>
+
+<h2>Finding the Encryption Key</h2>
+
+<p>
+Inspection of application traffic revealed that both requests
+and responses were encrypted before transmission.
+</p>
+
+<p>
+To manipulate the checkout payloads, it was necessary to
+identify:
+</p>
+
+<ul>
+
+<li>Encryption algorithm</li>
+
+<li>Encryption key</li>
+
+<li>Initialization vector</li>
+
+<li>Encryption mode</li>
+
+</ul>
+
+<p>
+JavaScript bundle analysis exposed the required cryptographic
+implementation details.
+</p>
+
+<p>
+Using the extracted parameters, encrypted requests could be
+recreated and modified externally.
+</p>
+
+<h2>Initial Manipulation Attempt</h2>
+
+<p>
+The initial approach attempted direct modification of the
+<code>price</code> parameter.
+</p>
+
+<p>
+However the application validated the amount against a
+server-generated salted hash associated with the order.
+</p>
+
+<p>
+This validation prevented direct price tampering.
+</p>
+
+<h2>Actual Checkout Request</h2>
+
+<h2>Request</h2>
+
+<pre><code class="language-text">
+POST /api/v1/checkout HTTP/2
+Host: www.target.com
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "10",
+  "address": "ABC city",
+  "zipcode": "123456"
+}
+</code></pre>
+
+<h2>Response</h2>
+
+<pre><code class="language-json">
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "10",
+  "amount_to_be_paid": "100",
+  "address": "ABC city",
+  "zipcode": "123456"
+}
+</code></pre>
+
+<p>
+The developer introduced the <code>saltedhash</code> parameter
+to mitigate previous payment manipulation attacks.
+</p>
+
+<h2>Exploring Alternative Inputs</h2>
+
+<p>
+Further analysis focused on additional checkout parameters
+used during server-side calculations.
+</p>
+
+<p>
+One particularly interesting parameter was:
+</p>
+
+<pre><code class="language-json">
+"quantity"
+</code></pre>
+
+<p>
+The parameter controlled the number of products added to
+the purchase order.
+</p>
+
+<h2>Bypass</h2>
+
+<p>
+Instead of modifying the product price directly, the
+<code>quantity</code> parameter was manipulated using
+negative integer values.
+</p>
+
+<p>
+The backend failed to validate whether quantities were
+positive numbers.
+</p>
+
+<h2>Manipulated Request</h2>
+
+<pre><code class="language-text">
+POST /api/v1/checkout HTTP/2
+Host: www.target.com
+
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "-5",
+  "address": "ABC city",
+  "zipcode": "123456"
+}
+</code></pre>
+
+<h2>Manipulated Response</h2>
+
+<pre><code class="language-json">
+{
+  "saltedhash": "hashcode",
+  "product_id": "121212",
+  "price": "10",
+  "quantity": "-5",
+  "amount_to_be_paid": "6",
+  "address": "ABC city",
+  "zipcode": "123456"
+}
+</code></pre>
+
+<p>
+The backend calculation logic trusted the supplied quantity
+value and recalculated the payable amount using the negative
+integer.
+</p>
+
+<p>
+As a result, the final payable amount became significantly
+lower than the legitimate order value.
+</p>
+
+<blockquote>
+The server validated price integrity but failed to validate
+business constraints around product quantity values.
+</blockquote>
+
+<h2>Impact</h2>
+
+<ul>
+
+<li>Price manipulation</li>
+
+<li>Reduced payment amounts</li>
+
+<li>Checkout abuse</li>
+
+<li>Business logic exploitation</li>
+
+<li>Potential financial loss</li>
+
+<li>Order calculation tampering</li>
+
+</ul>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Missing quantity validation</li>
+
+<li>Improper business logic enforcement</li>
+
+<li>Trusting client-controlled numeric values</li>
+
+<li>Incomplete server-side validation</li>
+
+<li>Validation focused only on price integrity</li>
+
+</ul>
+
+<h2>Mitigation</h2>
+
+<ul>
+
+<li>Enforce positive integer validation</li>
+
+<li>Implement strict business constraints</li>
+
+<li>Validate all monetary calculations server-side</li>
+
+<li>Reject negative quantities</li>
+
+<li>Use centralized order validation workflows</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+Business logic vulnerabilities often survive traditional
+security fixes because the focus remains on individual
+parameters rather than complete transactional workflows.
+</p>
+
+<p>
+Although the application introduced salted hash validation
+to protect pricing integrity, the absence of quantity
+validation enabled an alternate payment manipulation vector.
+</p>
+
+<p>
+Thank you for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+        — Naveen Jagadeesan
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+</body>
+</html>

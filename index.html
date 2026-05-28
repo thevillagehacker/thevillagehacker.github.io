@@ -230,10 +230,112 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* NAVIGATION */
+
+.top-nav {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+
+background: rgba(15, 19, 24, 0.92);
+backdrop-filter: blur(10px);
+
+border-bottom: 1px solid var(--border);
+
+z-index: 1000;
+
+}
+
+.nav-inner {
+max-width: 780px;
+margin: 0 auto;
+
+padding: 18px 30px;
+
+display: flex;
+justify-content: flex-end;
+align-items: center;
+gap: 28px;
+
+}
+
+.nav-link {
+position: relative;
+
+font-family: var(--font-mono);
+font-size: 13px;
+font-weight: 600;
+
+color: var(--text-secondary);
+text-decoration: none;
+
+transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+
+}
+
+.nav-link {
+color: var(--accent);
+}
+
+.nav-link::after {
+content: '';
+
+position: absolute;
+left: 0;
+bottom: -6px;
+
+width: 0%;
+height: 1px;
+
+background: var(--accent);
+
+transition: width 0.2s ease;
+
+}
+
+.nav-link:hover::after {
+width: 100%;
+}
+
+/* Prevent nav overlap */
+
+.container {
+padding-top: 140px;
+}
+
+@media (max-width: 600px) {
+
+.nav-inner {
+    padding: 16px 18px;
+    gap: 18px;
+}
+
+.container {
+    padding-top: 120px;
+}
+
+}
     </style>
 </head>
 
 <body>
+    <!-- NAVIGATION -->
+<nav class="top-nav">
+<div class="nav-inner">
+
+<a href="/blog.html" class="nav-link">
+        Blogs
+    </a>
+
+    <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link">
+        Writeups
+    </a>
+
+</div>
+</nav>
 
 <div class="container">
 

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — The Village Hacker</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg-primary:#0f1318;
+    --bg-secondary:#141a21;
+    --bg-tertiary:#1c2530;
+    --accent:#6bb8d4;
+    --accent-dim:#4a8fa8;
+    --green:#5cdb7e;
+    --green-dim:#3a9e58;
+    --red:#e05565;
+    --yellow:#d4a054;
+    --text-primary:#d4dae0;
+    --text-secondary:#8e99a4;
+    --text-dim:#556270;
+    --border:#2a3440;
+
+    --font-mono:'JetBrains Mono', monospace;
+    --font-body:'Inter', sans-serif;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--bg-primary);
+    color:var(--text-primary);
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.7;
+    min-height:100vh;
+}
+
+body::after{
+    content:'';
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:-1;
+
+    background-image:
+        linear-gradient(rgba(107,184,212,0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(107,184,212,0.012) 1px, transparent 1px);
+
+    background-size:60px 60px;
+    opacity:0.5;
+}
+
+.container{
+    max-width:860px;
+    margin:0 auto;
+    padding:60px 24px 100px;
+}
+
+/* NAV */
+
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:70px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--border);
+}
+
+.nav-logo{
+    font-family:var(--font-mono);
+    font-size:18px;
+    font-weight:800;
+    color:var(--text-primary);
+    text-decoration:none;
+}
+
+.nav-links{
+    display:flex;
+    gap:22px;
+}
+
+.nav-links a{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-secondary);
+    text-decoration:none;
+    transition:color .2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+    color:var(--accent);
+}
+
+/* HERO */
+
+.hero{
+    margin-bottom:60px;
+}
+
+.hero-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:18px;
+}
+
+.hero-title{
+    font-family:var(--font-mono);
+    font-size:clamp(38px,7vw,72px);
+    font-weight:800;
+    line-height:1;
+    margin-bottom:18px;
+}
+
+.hero-title span{
+    color:var(--accent);
+}
+
+.hero-sub{
+    max-width:680px;
+    color:var(--text-secondary);
+    font-size:15px;
+    line-height:1.9;
+}
+
+/* FILTER */
+
+.filter-bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:45px;
+}
+
+.filter-btn{
+    border:1px solid var(--border);
+    background:var(--bg-secondary);
+    color:var(--text-secondary);
+
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.5px;
+
+    padding:8px 14px;
+    cursor:pointer;
+
+    transition:all .2s;
+}
+
+.filter-btn:hover{
+    border-color:var(--accent-dim);
+    color:var(--text-primary);
+}
+
+.filter-btn.active{
+    background:var(--accent);
+    color:var(--bg-primary);
+    border-color:var(--accent);
+}
+
+/* SECTION */
+
+.section-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:700;
+    color:var(--accent);
+
+    letter-spacing:2px;
+    text-transform:uppercase;
+
+    margin-bottom:24px;
+    padding-bottom:12px;
+
+    border-bottom:1px solid var(--border);
+}
+
+/* YEAR GROUP */
+
+.vendor-group{
+    margin-bottom:34px;
+}
+
+.vendor-label{
+    font-family:var(--font-mono);
+    font-size:12px;
+    font-weight:700;
+
+    color:var(--yellow);
+
+    padding:8px 0;
+    margin-bottom:10px;
+
+    border-bottom:1px dashed var(--border);
+}
+
+/* POST CARD */
+
+.research-item{
+    border:1px solid var(--border);
+    background:var(--bg-secondary);
+
+    padding:20px;
+    margin-bottom:12px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+
+    text-decoration:none;
+
+    transition:
+        border-color .2s,
+        transform .15s;
+}
+
+.research-item:hover{
+    border-color:var(--accent-dim);
+    transform:translateY(-1px);
+}
+
+.research-info{
+    flex:1;
+}
+
+.research-cve{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:700;
+
+    color:var(--green);
+
+    margin-bottom:6px;
+}
+
+.research-title{
+    font-size:15px;
+    font-weight:600;
+
+    color:var(--text-primary);
+
+    margin-bottom:8px;
+    line-height:1.5;
+}
+
+.research-target{
+    font-family:var(--font-mono);
+    font-size:11px;
+
+    color:var(--text-dim);
+}
+
+.research-tag{
+    font-family:var(--font-mono);
+    font-size:10px;
+    font-weight:700;
+
+    color:var(--bg-primary);
+
+    padding:4px 8px;
+
+    letter-spacing:.5px;
+    white-space:nowrap;
+    flex-shrink:0;
+}
+
+.tag-critical{
+    background:var(--red);
+}
+
+.tag-high{
+    background:var(--yellow);
+}
+
+.tag-medium{
+    background:var(--accent);
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:70px;
+    padding-top:24px;
+
+    border-top:1px solid var(--border);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.footer-left{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--text-dim);
+}
+
+.footer-links{
+    display:flex;
+    gap:16px;
+}
+
+.footer-links a{
+    font-family:var(--font-mono);
+    font-size:11px;
+
+    color:var(--text-secondary);
+    text-decoration:none;
+
+    transition:color .2s;
+}
+
+.footer-links a:hover{
+    color:var(--accent);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+
+    .nav{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:18px;
+    }
+
+    .research-item{
+        flex-direction:column;
+    }
+
+    .footer{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- NAV -->
+
+    <div class="nav">
+        <a href="index.html" class="nav-logo">TheVillageHacker</a>
+
+        <div class="nav-links">
+            <a href="blog.html" class="active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups">Writeups</a>
+        </div>
+    </div>
+
+    <!-- HERO -->
+
+    <div class="hero">
+
+<div class="section-label">
+    Published Research &mdash; Writeups Archive
+</div>
+
+<!-- 2026 -->
+
+<div class="vendor-group">
+
+    <div class="vendor-label">
+        2026
+    </div>
+
+    <a href="/posts/CVE-2026-21858.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                CVE-2026-21858
+            </div>
+
+            <div class="research-title">
+                CVE-2026-21858 — Exploit Walkthrough
+            </div>
+
+            <div class="research-target">
+                WINDOWS KERNEL // LOCAL PRIV ESC // SYSTEM
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+
+</div>
+
+<!-- 2024 -->
+
+<div class="vendor-group">
+
+    <div class="vendor-label">
+        2024
+    </div>
+
+    <a href="/posts/Remote_Code_Execution.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                OS COMMAND INJECTION
+            </div>
+
+            <div class="research-title">
+                OS Command Injection to Remote Code Execution
+            </div>
+
+            <div class="research-target">
+                WINDOWS COMMAND INJECTION // OOB VALIDATION // POWERSHELL RCE
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+
+</div>
+
+<!-- 2023 -->
+
+<div class="vendor-group">
+
+    <div class="vendor-label">
+        2023
+    </div>
+     <a href="/posts/Business_logic_error_subscription.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                BUSINESS LOGIC ERROR
+            </div>
+
+            <div class="research-title">
+                Exploiting Business Logic Error: Subscription Manipulation
+            </div>
+
+            <div class="research-target">
+                SUBSCRIPTION MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+     <a href="/posts/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                MASS ASSIGNMENT
+            </div>
+
+            <div class="research-title">
+                Database Dump Exploitation through Mass Assignment Vulnerability
+            </div>
+
+            <div class="research-target">
+                MASS ASSIGNMENT // DATABASE DUMP // SENSITIVE DATA EXPOSURE
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+        <a href="/posts/Business_logic_error.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                BUSINESS LOGIC ERROR
+            </div>
+
+            <div class="research-title">
+                Exploiting Business Logic Error: Price Manipulation
+            </div>
+
+            <div class="research-target">
+                PRICE MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+    <a href="/posts/Account_Takeover-via-session-storage.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                AUTHORIZATION BYPASS
+            </div>
+
+            <div class="research-title">
+                Account Takeover Through Manipulation of Session Storage
+            </div>
+
+            <div class="research-target">
+                SESSION STORAGE // USER ENUMERATION // COOKIE AUTHENTICATION
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-high">
+            HIGH
+        </div>
+
+    </a>
+
+    <a href="/posts/Hacking_MNCs-CMS_Systems.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                AUTHORIZATION BYPASS
+            </div>
+
+            <div class="research-title">
+                Exploiting Misconfigurations and Authorization Vulnerabilities
+            </div>
+
+            <div class="research-target">
+                JWT ANALYSIS // AWS COGNITO // LOCAL STORAGE AUTHORIZATION BYPASS
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+         <a href="/posts/reversing-client-side-encryption.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                CRYPTOGRAPHY
+            </div>
+
+            <div class="research-title">
+                Reversing Client-Side Encryption: Exploiting Weak Crypto Implementations
+            </div>
+
+            <div class="research-target">
+                CRYPTOGRAPHY // ENCRYPTION REVERSING // WEAK CRYPTO
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+
+</div>
+
+<!-- 2022 -->
+
+<div class="vendor-group">
+
+    <div class="vendor-label">
+        2022
+    </div>
+
+    <a href="/posts/RCE-DLL-Hijacking.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                DLL HIJACKING
+            </div>
+
+            <div class="research-title">
+                Remote Code Execution via DLL Hijacking
+            </div>
+
+            <div class="research-target">
+                WINDOWS APPLICATION SECURITY // DLL SEARCH ORDER HIJACKING // WINDOWS PAYLOADS // METERPRETER
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-critical">
+            CRITICAL
+        </div>
+
+    </a>
+
+</div>
+
+<!-- 2021 -->
+
+<div class="vendor-group">
+
+    <div class="vendor-label">
+        2021
+    </div>
+    <a href="/posts/massive_subdomain-takeover.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                SUBDOMAIN
+            </div>
+
+            <div class="research-title">
+                Massive Subdomain Takeover via Heroku — 20+ Subdomains
+            </div>
+
+            <div class="research-target">
+                HEROKU // DNS MISCONFIGURATION // TAKEOVER
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-high">
+            HIGH
+        </div>
+
+    </a>
+    <a href="/posts/iOS-dynamic-lab-setup.html" class="research-item">
+
+        <div class="research-info">
+
+            <div class="research-cve">
+                TOOL / LAB
+            </div>
+
+            <div class="research-title">
+                iOS Pentesting: Jailbreaking iPhone & Dynamic Analysis Lab Setup
+            </div>
+
+            <div class="research-target">
+                FRIDA // OBJECTION // BURP SUITE // IOS
+            </div>
+
+        </div>
+
+        <div class="research-tag tag-medium">
+            LAB
+        </div>
+    </a>
+</div>
+
+</div>
+
+</body>
+</html>
