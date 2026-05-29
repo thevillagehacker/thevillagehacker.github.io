@@ -247,6 +247,18 @@ article img{
     border-radius:6px;
 }
 
+article a {
+    color: #6bb8d4;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(107, 184, 212, 0.4);
+    transition: color 0.2s, text-decoration-color 0.2s;
+}
+article a:hover {
+    color: #a8d8ea;
+    text-decoration-color: rgba(168, 216, 234, 0.7);
+}
+
 blockquote{
     margin:20px 0;
 
