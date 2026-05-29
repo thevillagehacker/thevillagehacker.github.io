@@ -322,6 +322,9 @@ pre code{
 
     white-space:pre;
     tab-size:4;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-x: auto;
 }
 
 :not(pre) > code{
