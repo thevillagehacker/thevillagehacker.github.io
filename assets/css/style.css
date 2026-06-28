@@ -41,6 +41,7 @@ body{
     font-family:var(--font-body);
     line-height:1.8;
     overflow-x:hidden;
+	text-align: justify
 }
 
 body::after{
@@ -296,6 +297,7 @@ pre{
     padding:0;
 
     overflow:auto;
+	overflow-wrap: break-word;
 
     background:#070b12;
 
@@ -307,12 +309,13 @@ pre{
         0 0 0 1px rgba(0,0,0,.25);
 
     line-height:1.75;
+	
 }
 
 pre::before{
     content:'';
     display:block;
-
+	overflow-wrap: break-word;
     height:38px;
 
     border-bottom:1px solid #1e2a38;
@@ -326,12 +329,13 @@ pre::before{
 
 pre code{
     display:block;
-
+    font-size:14px;
     padding:22px 26px;
 
     color:#d6deeb;
 
     font-family:'JetBrains Mono', monospace;
+	overflow-wrap: break-word;
 }
 
 /* INDEX PAGE STYLES */
