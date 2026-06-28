@@ -124,7 +124,7 @@ body::after{
 /* CONTAINER */
 
 .container{
-    max-width:920px;
+    max-width:1060px;
     margin:0 auto;
     padding:60px 24px 120px;
 }
@@ -597,7 +597,7 @@ pre code{
 /* INDEX PAGE CONTAINER OVERRIDE */
 
 .container {
-    max-width: 780px;
+    max-width: 1060px;
     margin: 0 auto;
     padding: 80px 30px;
     padding-top: 140px;
@@ -622,7 +622,7 @@ pre code{
 /* BLOG PAGE STYLES */
 
 .blog-container {
-    max-width: 860px;
+    max-width: 980px;
     margin: 0 auto;
     padding: 60px 24px 100px;
 }
