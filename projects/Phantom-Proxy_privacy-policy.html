@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PhantomProxy — Privacy Policy</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
     :root {
       --bg:        #080c10;
@@ -19,8 +19,9 @@
       --text-mid:  #7a9ab5;
       --text-dim:  #3d5a73;
       --border:    rgba(0, 229, 255, 0.1);
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-ui:   'Rajdhani', system-ui, sans-serif;
+      --font-body: "Helvetica Neue", Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --font-ui:   var(--font-body);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +29,7 @@
     html {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--font-mono);
+      font-family: var(--font-body);
       font-size: 14px;
       line-height: 1.8;
       scroll-behavior: smooth;
@@ -288,7 +289,7 @@
     }
   </style>
 </head>
-<body>
+<body class="has-site-fx">
 
   <!-- ── Header ── -->
   <header>
@@ -493,5 +494,6 @@
     <span>EFFECTIVE JUNE 2026</span>
   </footer>
 
+  <script src="../assets/js/site.js" defer></script>
 </body>
 </html>

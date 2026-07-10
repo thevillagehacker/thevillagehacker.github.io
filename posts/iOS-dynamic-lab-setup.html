@@ -16,7 +16,7 @@ content="iOS penetration testing dynamic analysis lab setup."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
 rel="stylesheet">
 
 <link rel="stylesheet"
@@ -32,8 +32,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-d
 
     padding:26px !important;
 
-    font-family:'JetBrains Mono', monospace !important;
-    font-size:13px !important;
+    font-family:var(--font-mono) !important;
+    font-size:14.5px !important;
     line-height:1.8 !important;
 
     border-radius:0 0 8px 8px;
@@ -66,31 +66,23 @@ pre::before{
 
 </head>
 
-<body>
+<body class="has-site-fx post-page">
 
-<div class="blog-nav">
-
-    <div class="blog-nav-inner">
-
-        <a href="../index.html" class="nav-logo">
-            TheVillageHacker
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
         </a>
-
-        <div class="nav-links">
-
-            <a href="../blog.html">
-                Blog
-            </a>
-
-            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups">
-                Writeups
-            </a>
-
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
         </div>
-
     </div>
+</nav>
 
-</div>
 
 <div class="advisory-banner">
     IOS PENTESTING // JAILBREAK // DYNAMIC ANALYSIS LAB
@@ -523,5 +515,6 @@ Thank you for reading.
 hljs.highlightAll();
 </script>
 
+    <script src="../assets/js/site.js" defer></script>
 </body>
 </html>

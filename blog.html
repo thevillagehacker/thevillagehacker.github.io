@@ -4,375 +4,338 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog — The Village Hacker</title>
+<meta name="description" content="Published security research, vulnerability writeups, and lab notes by thevillagehacker.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
-<body>
+<body class="landing-page blog-archive">
 
-<div class="blog-container">
+    <div class="landing-atmosphere" aria-hidden="true">
+        <div class="landing-grid"></div>
+        <div class="landing-scanline"></div>
+        <canvas id="hex-rain" class="hex-rain"></canvas>
+    </div>
 
     <!-- NAV -->
-
-    <div class="nav">
-        <a href="index.html" class="nav-logo">TheVillageHacker</a>
-
-        <div class="nav-links">
-            <a href="blog.html" class="active">Blog</a>
-            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups">Writeups</a>
+    <nav class="top-nav landing-nav">
+        <div class="nav-inner landing-nav-inner">
+            <a href="/" class="nav-brand">
+                <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/blog</span>
+                <span class="status-dot" title="archive mounted"></span>
+            </a>
+            <div class="nav-right">
+                <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+                <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+            </div>
         </div>
+    </nav>
+
+    <div class="blog-container landing-container archive-container">
+
+        <!-- ARCHIVE HERO -->
+        <section class="archive-hero">
+            <div class="archive-identity">
+                <div class="session-badge">
+                    <span class="pulse-ring"></span>
+                    RESEARCH ARCHIVE · READ-ONLY
+                </div>
+
+                <h1 class="archive-title">
+                    <span class="label-prompt">//</span> Published Research
+                </h1>
+                <p class="archive-sub">
+                    Vulnerability writeups, exploit chains, tooling notes, and lab setups.
+                    Browse the feed below — or drive the archive from the terminal.
+                </p>
+
+                <div class="archive-search-wrap">
+                    <label class="archive-search-label" for="archive-search">
+                        <span class="ps1-user">grep</span><span class="ps1-at">@</span><span class="ps1-host">archive</span>:
+                    </label>
+                    <input
+                        id="archive-search"
+                        class="archive-search"
+                        type="search"
+                        placeholder="filter by CVE, tech, title…"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <span class="archive-match-count" id="match-count"></span>
+                </div>
+
+                <div class="filter-bar archive-filters" id="archive-filters" role="group" aria-label="Filter by severity">
+                    <button type="button" class="filter-btn active" data-filter="all">ALL</button>
+                    <button type="button" class="filter-btn" data-filter="critical">CRITICAL</button>
+                    <button type="button" class="filter-btn" data-filter="high">HIGH</button>
+                    <button type="button" class="filter-btn" data-filter="lab">LAB</button>
+                </div>
+            </div>
+
+            <div class="term-window archive-term" id="term-window">
+                <div class="term-chrome">
+                    <div class="term-dots" aria-hidden="true">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="term-title">archive@lab — researchdb — 80×24</div>
+                    <div class="term-actions" aria-hidden="true">●</div>
+                </div>
+                <div class="term-body" id="term-body" tabindex="0" role="log" aria-label="Archive terminal">
+                    <div id="term-output" class="term-output"></div>
+                    <div class="term-input-line">
+                        <span class="term-ps1"><span class="ps1-user">archive</span><span class="ps1-at">@</span><span class="ps1-host">lab</span>:<span class="ps1-path">~/research</span>$</span>
+                        <input id="term-input" class="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="Archive command" placeholder="type help">
+                    </div>
+                </div>
+                <div class="term-hint">try: <code>ls</code> · <code>open 1</code> · <code>search rce</code> · <code>stats</code> · <code>help</code></div>
+            </div>
+        </section>
+
+        <!-- ARCHIVE HUD -->
+        <section class="ops-hud archive-hud" aria-label="Archive statistics">
+            <div class="ops-card">
+                <div class="ops-label">ENTRIES INDEXED</div>
+                <div class="ops-value ops-value-lg"><span id="stat-total">0</span></div>
+                <div class="ops-meta" id="stat-visible">showing all</div>
+            </div>
+            <div class="ops-card">
+                <div class="ops-label">SEVERITY MAP</div>
+                <div class="ops-findings" id="stat-severity">
+                    <span class="sev crit">0 CRITICAL</span>
+                    <span class="sev high">0 HIGH</span>
+                    <span class="sev med">0 LAB</span>
+                </div>
+            </div>
+            <div class="ops-card">
+                <div class="ops-label">TIMELINE</div>
+                <div class="ops-value ops-value-lg" id="stat-years">—</div>
+                <div class="ops-meta">years covered</div>
+            </div>
+            <div class="ops-card ops-feed-card">
+                <div class="ops-label">INDEXER FEED</div>
+                <div class="ops-feed" id="ops-feed" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- ARCHIVE LIST -->
+        <section class="archive-list" id="archive-list">
+
+            <div class="section-label archive-section-label">
+                <span class="label-prompt">//</span> Writeups Archive
+                <span class="archive-section-hint" id="empty-state" hidden>no matches — try another query</span>
+            </div>
+
+            <!-- 2026 -->
+            <div class="vendor-group" data-year="2026">
+                <div class="vendor-label">2026</div>
+
+                <a href="/posts/Phantom-Proxy.html" class="research-item"
+                   data-id="1"
+                   data-year="2026"
+                   data-severity="lab"
+                   data-tags="phantomproxy extension proxy http web lab tool research">
+                    <div class="research-info">
+                        <div class="research-cve">RESEARCH LAB / TOOL</div>
+                        <div class="research-title">PHANTOMPROXY - Web Extension</div>
+                        <div class="research-target">WEB // HTTP REQUEST // PROXY // EXTENSION</div>
+                    </div>
+                    <div class="research-tag tag-medium">LAB</div>
+                </a>
+
+                <a href="/posts/nginx-rift.html" class="research-item"
+                   data-id="2"
+                   data-year="2026"
+                   data-severity="critical"
+                   data-tags="nginx cve-2026-42945 rce http parsing remote code execution">
+                    <div class="research-info">
+                        <div class="research-cve">CVE-2026-42945</div>
+                        <div class="research-title">NGINX Rift: An 18-Year-Old Bug That Can Hand Attackers Your Server</div>
+                        <div class="research-target">NGINX // HTTP REQUEST PARSING // REMOTE CODE EXECUTION</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+
+                <a href="/posts/Ni8mare  -  Unauthenticated Remote Code Execution in n8n.html" class="research-item"
+                   data-id="3"
+                   data-year="2026"
+                   data-severity="critical"
+                   data-tags="n8n cve-2026-21858 rce unauthenticated node.js ni8mare">
+                    <div class="research-info">
+                        <div class="research-cve">CVE-2026-21858</div>
+                        <div class="research-title">Ni8mare: Unauthenticated Remote Code Execution in n8n</div>
+                        <div class="research-target">N8N // NODE.JS // UNAUTHENTICATED RCE</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+            </div>
+
+            <!-- 2024 -->
+            <div class="vendor-group" data-year="2024">
+                <div class="vendor-label">2024</div>
+
+                <a href="/posts/Remote_Code_Execution.html" class="research-item"
+                   data-id="4"
+                   data-year="2024"
+                   data-severity="critical"
+                   data-tags="rce command injection windows powershell oob">
+                    <div class="research-info">
+                        <div class="research-cve">OS COMMAND INJECTION</div>
+                        <div class="research-title">OS Command Injection to Remote Code Execution</div>
+                        <div class="research-target">WINDOWS COMMAND INJECTION // OOB VALIDATION // POWERSHELL RCE</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+            </div>
+
+            <!-- 2023 -->
+            <div class="vendor-group" data-year="2023">
+                <div class="vendor-label">2023</div>
+
+                <a href="/posts/Business_logic_error_subscription.html" class="research-item"
+                   data-id="5"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-tags="business logic subscription manipulation encrypted payload checkout">
+                    <div class="research-info">
+                        <div class="research-cve">BUSINESS LOGIC ERROR</div>
+                        <div class="research-title">Exploiting Business Logic Error: Subscription Manipulation</div>
+                        <div class="research-target">SUBSCRIPTION MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+
+                <a href="/posts/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html" class="research-item"
+                   data-id="6"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-tags="mass assignment database dump sensitive data exposure">
+                    <div class="research-info">
+                        <div class="research-cve">MASS ASSIGNMENT</div>
+                        <div class="research-title">Database Dump Exploitation through Mass Assignment Vulnerability</div>
+                        <div class="research-target">MASS ASSIGNMENT // DATABASE DUMP // SENSITIVE DATA EXPOSURE</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+
+                <a href="/posts/Business_logic_error.html" class="research-item"
+                   data-id="7"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-tags="business logic price manipulation encrypted payload checkout">
+                    <div class="research-info">
+                        <div class="research-cve">BUSINESS LOGIC ERROR</div>
+                        <div class="research-title">Exploiting Business Logic Error: Price Manipulation</div>
+                        <div class="research-target">PRICE MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+
+                <a href="/posts/Account_Takeover-via-session-storage.html" class="research-item"
+                   data-id="8"
+                   data-year="2023"
+                   data-severity="high"
+                   data-tags="account takeover session storage authorization bypass cookie enumeration ato">
+                    <div class="research-info">
+                        <div class="research-cve">AUTHORIZATION BYPASS</div>
+                        <div class="research-title">Account Takeover Through Manipulation of Session Storage</div>
+                        <div class="research-target">SESSION STORAGE // USER ENUMERATION // COOKIE AUTHENTICATION</div>
+                    </div>
+                    <div class="research-tag tag-high">HIGH</div>
+                </a>
+
+                <a href="/posts/Hacking_MNCs-CMS_Systems.html" class="research-item"
+                   data-id="9"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-tags="jwt aws cognito local storage authorization bypass cms">
+                    <div class="research-info">
+                        <div class="research-cve">AUTHORIZATION BYPASS</div>
+                        <div class="research-title">Exploiting Misconfigurations and Authorization Vulnerabilities</div>
+                        <div class="research-target">JWT ANALYSIS // AWS COGNITO // LOCAL STORAGE AUTHORIZATION BYPASS</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+
+                <a href="/posts/reversing-client-side-encryption.html" class="research-item"
+                   data-id="10"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-tags="cryptography encryption reversing weak crypto client-side">
+                    <div class="research-info">
+                        <div class="research-cve">CRYPTOGRAPHY</div>
+                        <div class="research-title">Reversing Client-Side Encryption: Exploiting Weak Crypto Implementations</div>
+                        <div class="research-target">CRYPTOGRAPHY // ENCRYPTION REVERSING // WEAK CRYPTO</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+            </div>
+
+            <!-- 2022 -->
+            <div class="vendor-group" data-year="2022">
+                <div class="vendor-label">2022</div>
+
+                <a href="/posts/RCE-DLL-Hijacking.html" class="research-item"
+                   data-id="11"
+                   data-year="2022"
+                   data-severity="critical"
+                   data-tags="dll hijacking rce windows meterpreter payload">
+                    <div class="research-info">
+                        <div class="research-cve">DLL HIJACKING</div>
+                        <div class="research-title">Remote Code Execution via DLL Hijacking</div>
+                        <div class="research-target">WINDOWS APPLICATION SECURITY // DLL SEARCH ORDER HIJACKING // WINDOWS PAYLOADS // METERPRETER</div>
+                    </div>
+                    <div class="research-tag tag-critical">CRITICAL</div>
+                </a>
+            </div>
+
+            <!-- 2021 -->
+            <div class="vendor-group" data-year="2021">
+                <div class="vendor-label">2021</div>
+
+                <a href="/posts/massive_subdomain-takeover.html" class="research-item"
+                   data-id="12"
+                   data-year="2021"
+                   data-severity="high"
+                   data-tags="subdomain takeover heroku dns misconfiguration">
+                    <div class="research-info">
+                        <div class="research-cve">SUBDOMAIN TAKEOVER</div>
+                        <div class="research-title">Massive Subdomain Takeover via Heroku — 20+ Subdomains</div>
+                        <div class="research-target">HEROKU // DNS MISCONFIGURATION // TAKEOVER</div>
+                    </div>
+                    <div class="research-tag tag-high">HIGH</div>
+                </a>
+
+                <a href="/posts/iOS-dynamic-lab-setup.html" class="research-item"
+                   data-id="13"
+                   data-year="2021"
+                   data-severity="lab"
+                   data-tags="ios pentest jailbreak frida objection burp lab mobile">
+                    <div class="research-info">
+                        <div class="research-cve">RESEARCH LAB / iOS PENTEST / SETUP</div>
+                        <div class="research-title">iOS Pentesting: Jailbreaking iPhone &amp; Dynamic Analysis Lab Setup</div>
+                        <div class="research-target">FRIDA // OBJECTION // BURP SUITE // IOS</div>
+                    </div>
+                    <div class="research-tag tag-medium">LAB</div>
+                </a>
+            </div>
+
+        </section>
+
+        <footer class="landing-footer archive-footer">
+            <span class="footer-left">© <span id="year"></span> thevillagehacker · research archive</span>
+            <span class="footer-right" id="uptime">index: ready</span>
+        </footer>
     </div>
 
-    <!-- HERO -->
-
-    <div class="hero">
-
-<div class="section-label">
-    Published Research &mdash; Writeups Archive
-</div>
-
-<!-- 2026 -->
-
-<div class="vendor-group">
-
-    <div class="vendor-label">
-        2026
-    </div>
-	<a href="/posts/Phantom-Proxy.html" class="research-item">
-        <div class="research-info">
-            <div class="research-cve">
-                RESEARCH LAB / TOOL
-            </div>
-            <div class="research-title">
-                PHANTOMPROXY - Web Extension
-            </div>
-            <div class="research-target">
-                WEB // HTTP REQUEST // PROXY // EXTENSION
-            </div>
-        </div>
-        <div class="research-tag tag-medium">
-            LAB
-        </div>
-    </a>
-    <a href="/posts/nginx-rift.html" class="research-item">
-        <div class="research-info">
-            <div class="research-cve">
-                CVE-2026-42945
-            </div>
-            <div class="research-title">
-                NGINX Rift: An 18-Year-Old Bug That Can Hand Attackers Your Server
-            </div>
-            <div class="research-target">
-                NGINX // HTTP REQUEST PARSING // REMOTE CODE EXECUTION
-            </div>
-        </div>
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-    </a>
-
-    <a href="/posts/Ni8mare  -  Unauthenticated Remote Code Execution in n8n.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                CVE-2026-21858
-            </div>
-
-            <div class="research-title">
-                Ni8mare: Unauthenticated Remote Code Execution in n8n
-            </div>
-
-            <div class="research-target">
-                N8N // NODE.JS // UNAUTHENTICATED RCE
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-
-</div>
-
-<!-- 2024 -->
-
-<div class="vendor-group">
-
-    <div class="vendor-label">
-        2024
-    </div>
-
-    <a href="/posts/Remote_Code_Execution.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                OS COMMAND INJECTION
-            </div>
-
-            <div class="research-title">
-                OS Command Injection to Remote Code Execution
-            </div>
-
-            <div class="research-target">
-                WINDOWS COMMAND INJECTION // OOB VALIDATION // POWERSHELL RCE
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-
-</div>
-
-<!-- 2023 -->
-
-<div class="vendor-group">
-
-    <div class="vendor-label">
-        2023
-    </div>
-     <a href="/posts/Business_logic_error_subscription.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                BUSINESS LOGIC ERROR
-            </div>
-
-            <div class="research-title">
-                Exploiting Business Logic Error: Subscription Manipulation
-            </div>
-
-            <div class="research-target">
-                SUBSCRIPTION MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-     <a href="/posts/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                MASS ASSIGNMENT
-            </div>
-
-            <div class="research-title">
-                Database Dump Exploitation through Mass Assignment Vulnerability
-            </div>
-
-            <div class="research-target">
-                MASS ASSIGNMENT // DATABASE DUMP // SENSITIVE DATA EXPOSURE
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-        <a href="/posts/Business_logic_error.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                BUSINESS LOGIC ERROR
-            </div>
-
-            <div class="research-title">
-                Exploiting Business Logic Error: Price Manipulation
-            </div>
-
-            <div class="research-target">
-                PRICE MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-    <a href="/posts/Account_Takeover-via-session-storage.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                AUTHORIZATION BYPASS
-            </div>
-
-            <div class="research-title">
-                Account Takeover Through Manipulation of Session Storage
-            </div>
-
-            <div class="research-target">
-                SESSION STORAGE // USER ENUMERATION // COOKIE AUTHENTICATION
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-high">
-            HIGH
-        </div>
-
-    </a>
-
-    <a href="/posts/Hacking_MNCs-CMS_Systems.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                AUTHORIZATION BYPASS
-            </div>
-
-            <div class="research-title">
-                Exploiting Misconfigurations and Authorization Vulnerabilities
-            </div>
-
-            <div class="research-target">
-                JWT ANALYSIS // AWS COGNITO // LOCAL STORAGE AUTHORIZATION BYPASS
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-         <a href="/posts/reversing-client-side-encryption.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                CRYPTOGRAPHY
-            </div>
-
-            <div class="research-title">
-                Reversing Client-Side Encryption: Exploiting Weak Crypto Implementations
-            </div>
-
-            <div class="research-target">
-                CRYPTOGRAPHY // ENCRYPTION REVERSING // WEAK CRYPTO
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-
-</div>
-
-<!-- 2022 -->
-
-<div class="vendor-group">
-
-    <div class="vendor-label">
-        2022
-    </div>
-
-    <a href="/posts/RCE-DLL-Hijacking.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                DLL HIJACKING
-            </div>
-
-            <div class="research-title">
-                Remote Code Execution via DLL Hijacking
-            </div>
-
-            <div class="research-target">
-                WINDOWS APPLICATION SECURITY // DLL SEARCH ORDER HIJACKING // WINDOWS PAYLOADS // METERPRETER
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-critical">
-            CRITICAL
-        </div>
-
-    </a>
-
-</div>
-
-<!-- 2021 -->
-
-<div class="vendor-group">
-
-    <div class="vendor-label">
-        2021
-    </div>
-    <a href="/posts/massive_subdomain-takeover.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                SUBDOMAIN TAKEOVER
-            </div>
-
-            <div class="research-title">
-                Massive Subdomain Takeover via Heroku — 20+ Subdomains
-            </div>
-
-            <div class="research-target">
-                HEROKU // DNS MISCONFIGURATION // TAKEOVER
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-high">
-            HIGH
-        </div>
-
-    </a>
-    <a href="/posts/iOS-dynamic-lab-setup.html" class="research-item">
-
-        <div class="research-info">
-
-            <div class="research-cve">
-                RESEARCH LAB / iOS PENTEST / SETUP
-            </div>
-
-            <div class="research-title">
-                iOS Pentesting: Jailbreaking iPhone & Dynamic Analysis Lab Setup
-            </div>
-
-            <div class="research-target">
-                FRIDA // OBJECTION // BURP SUITE // IOS
-            </div>
-
-        </div>
-
-        <div class="research-tag tag-medium">
-            LAB
-        </div>
-    </a>
-</div>
-
-</div>
-
+    <script src="/assets/js/site.js" defer></script>
+    <script src="/assets/js/blog.js" defer></script>
 </body>
 </html>

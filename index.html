@@ -3,176 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Naveen Jagadeesan // Security Researcher</title>
+    <meta name="description" content="Security researcher focused on vulnerability research, offensive security, and application security.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
-<body>
+<body class="landing-page">
+
+    <!-- Subtle scanline / grid atmosphere -->
+    <div class="landing-atmosphere" aria-hidden="true">
+        <div class="landing-grid"></div>
+        <div class="landing-scanline"></div>
+        <canvas id="hex-rain" class="hex-rain"></canvas>
+    </div>
+
+    <!-- Boot sequence overlay -->
+    <div id="boot-overlay" class="boot-overlay" aria-hidden="true">
+        <pre id="boot-log" class="boot-log"></pre>
+    </div>
+
     <!-- NAVIGATION -->
-<nav class="top-nav">
-<div class="nav-inner">
-
-<a href="/blog.html" class="nav-link">
-        Blog
-    </a>
-
-    <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link">
-        Writeups
-    </a>
-</div>
-</nav>
-
-<div class="container">
-
-    <!-- HERO -->
-
-    <div class="hero">
-
-        <div class="hero-name">
-            Naveen Jagadeesan
-        </div>
-
-        <div class="hero-title">
-            Security Researcher
-        </div>
-
-        <p class="hero-bio">
-            I'm a security researcher interested in
-            <strong>vulnerability research</strong>.
-        </p>
-
-        <div class="hero-social">
-            <a href="https://linkedin.com/in/thevillagehacker" target="_blank" class="social-link">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-                LinkedIn
+    <nav class="top-nav landing-nav">
+        <div class="nav-inner landing-nav-inner">
+            <a href="/" class="nav-brand">
+                <span class="nav-prompt">~/</span>thevillagehacker
+                <span class="status-dot" title="online"></span>
             </a>
-            <a href="https://github.com/thevillagehacker" target="_blank" class="social-link">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-                </svg>
-                GitHub
-            </a>
+            <div class="nav-right">
+                <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+                <a href="/blog.html" class="nav-link">Blog</a>
+                <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+            </div>
         </div>
+    </nav>
 
+    <div class="container landing-container">
+
+        <!-- HERO: identity + terminal -->
+        <section class="landing-hero">
+            <div class="landing-identity">
+                <div class="session-badge">
+                    <span class="pulse-ring"></span>
+                    SESSION ACTIVE · RESEARCH NODE
+                </div>
+
+                <h1 class="hero-name">
+                    <span class="glitch" data-text="Naveen Jagadeesan">Naveen Jagadeesan</span>
+                </h1>
+
+                <div class="hero-title landing-role">
+                    <span class="role-prefix">$</span>
+                    <span id="role-typewriter" class="role-typewriter"></span>
+                    <span class="cursor-blink" aria-hidden="true">█</span>
+                </div>
+
+                <p class="hero-bio">
+                    I break things so they can be fixed. Security researcher focused on
+                    <strong>vulnerability research</strong>, exploit analysis, and offensive
+                    security workflows — from web RCE chains to mobile lab setups.
+                </p>
+
+                <div class="hero-tags" aria-label="Focus areas">
+                    <span class="htag">RCE</span>
+                    <span class="htag">IDOR</span>
+                    <span class="htag">XSS</span>
+                    <span class="htag">SQLi</span>
+                    <span class="htag">ATO</span>
+                    <span class="htag">Deserialization</span>
+                    <span class="htag">Mobile</span>
+                </div>
+
+                <div class="hero-social">
+                    <a href="https://linkedin.com/in/thevillagehacker" target="_blank" rel="noopener" class="social-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                        LinkedIn
+                    </a>
+                    <a href="https://github.com/thevillagehacker" target="_blank" rel="noopener" class="social-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        </svg>
+                        GitHub
+                    </a>
+                    <a href="https://x.com/thevillagehackr" target="_blank" rel="noopener" class="social-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                        X
+                    </a>
+                </div>
+            </div>
+
+            <!-- Interactive terminal -->
+            <div class="term-window" id="term-window">
+                <div class="term-chrome">
+                    <div class="term-dots" aria-hidden="true">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="term-title">naveen@lab — zsh — 80×24</div>
+                    <div class="term-actions" aria-hidden="true">●</div>
+                </div>
+                <div class="term-body" id="term-body" tabindex="0" role="log" aria-label="Interactive terminal">
+                    <div id="term-output" class="term-output"></div>
+                    <div class="term-input-line">
+                        <span class="term-ps1"><span class="ps1-user">naveen</span><span class="ps1-at">@</span><span class="ps1-host">lab</span>:<span class="ps1-path">~</span>$</span>
+                        <input id="term-input" class="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command" placeholder="type help">
+                    </div>
+                </div>
+                <div class="term-hint">try: <code>help</code> · <code>whoami</code> · <code>recon</code> · <code>blog</code> · <code>clear</code></div>
+            </div>
+        </section>
+
+        <!-- Live ops HUD -->
+        <section class="ops-hud" aria-label="Simulated research telemetry">
+            <div class="ops-card">
+                <div class="ops-label">ATTACK SURFACE</div>
+                <div class="ops-meter">
+                    <div class="ops-bar" id="meter-surface"></div>
+                </div>
+                <div class="ops-value"><span id="val-surface">0</span>% mapped</div>
+            </div>
+            <div class="ops-card">
+                <div class="ops-label">PAYLOAD ENTROPY</div>
+                <div class="ops-meter">
+                    <div class="ops-bar accent" id="meter-entropy"></div>
+                </div>
+                <div class="ops-value"><span id="val-entropy">0.00</span> bits</div>
+            </div>
+            <div class="ops-card">
+                <div class="ops-label">FINDINGS (SIM)</div>
+                <div class="ops-findings" id="ops-findings">
+                    <span class="sev crit">0 CRITICAL</span>
+                    <span class="sev high">0 HIGH</span>
+                    <span class="sev med">0 MED</span>
+                </div>
+            </div>
+            <div class="ops-card ops-feed-card">
+                <div class="ops-label">LIVE RECON FEED</div>
+                <div class="ops-feed" id="ops-feed" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- WHAT I DO -->
+        <section class="section landing-section">
+            <div class="section-label">
+                <span class="label-prompt">//</span> What I Do
+            </div>
+
+            <div class="services-grid">
+                <article class="service-card landing-card">
+                    <div class="service-icon">[01] ./vuln-research</div>
+                    <div class="service-name">Vulnerability Research</div>
+                    <div class="service-desc">
+                        Researching application and product vulnerabilities, identifying attack surfaces,
+                        developing proof-of-concepts, and analyzing modern exploitation techniques.
+                    </div>
+                    <div class="card-footer-cmd">exit_code: 0 · severity: variable</div>
+                </article>
+
+                <article class="service-card landing-card">
+                    <div class="service-icon">[02] ./consult-rd</div>
+                    <div class="service-name">Security Consultancy — R&amp;D</div>
+                    <div class="service-desc">
+                        Helping organizations solve difficult security engineering and research challenges
+                        including application security, exploit analysis, offensive security workflows,
+                        and security tooling.
+                    </div>
+                    <div class="card-footer-cmd">scope: appsec · exploit · tooling</div>
+                </article>
+
+                <article class="service-card landing-card">
+                    <div class="service-icon">[03] ./analyst</div>
+                    <div class="service-name">Security Analyst</div>
+                    <div class="service-desc">
+                        Working as a security analyst at Societe Generale, I focus on analyzing and mitigating
+                        security threats, conducting vulnerability assessments, and developing strategies
+                        to enhance overall security posture.
+                    </div>
+                    <div class="card-footer-cmd">org: Societe Generale · status: active</div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section class="section landing-section">
+            <div class="contact-section landing-contact">
+                <div class="contact-heading">
+                    <span class="label-prompt">$</span> Need help securing your assets?
+                </div>
+                <p class="contact-text">
+                    Whether it's vulnerability research or consultancy — reach out via X direct messages.
+                    Sensitive topics welcome; encrypted channels preferred.
+                </p>
+                <a href="https://x.com/thevillagehackr" target="_blank" rel="noopener" class="contact-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    Message @thevillagehackr
+                </a>
+                <div class="contact-note">
+                    gpg / encrypted communication preferred for sensitive inquiries
+                </div>
+            </div>
+        </section>
+
+        <footer class="landing-footer">
+            <span class="footer-left">© <span id="year"></span> thevillagehacker · built with curiosity &amp; caffeine</span>
+            <span class="footer-right" id="uptime">uptime: --</span>
+        </footer>
     </div>
 
-    <!-- WHAT I DO -->
-
-    <div class="section">
-
-        <div class="section-label">
-            What I Do
-        </div>
-
-        <div class="services-grid">
-
-            <div class="service-card">
-
-                <div class="service-icon">
-                    [01]
-                </div>
-
-                <div class="service-name">
-                    Vulnerability Research
-                </div>
-
-                <div class="service-desc">
-                    Researching application and product vulnerabilities, identifying attack surfaces, developing proof-of-concepts,
-                    and analyzing modern exploitation techniques.
-                </div>
-
-            </div>
-
-            <div class="service-card">
-
-                <div class="service-icon">
-                    [02]
-                </div>
-
-                <div class="service-name">
-                    Security Consultancy — R&D Problems
-                </div>
-
-                <div class="service-desc">
-                    Helping organizations solve difficult security engineering
-                    and research challenges including application security,
-                    exploit analysis, offensive security workflows,
-                    and security tooling.
-                </div>
-
-            </div>
-            <div class="service-card">
-
-                <div class="service-icon">
-                    [03]
-                </div>
-
-                <div class="service-name">
-                    Security Analyst
-                </div>
-
-                <div class="service-desc">
-                    Working as a security analyst at Societe Generale, I focus on analyzing and mitigating security threats, conducting vulnerability assessments, and developing strategies to enhance overall security posture.
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- CONTACT -->
-
-    <div class="section">
-
-        <div class="contact-section">
-
-            <div class="contact-heading">
-                Need help with securing your assets?
-            </div>
-
-            <p class="contact-text">
-                Whether it's vulnerability research,
-                consultancy — reach out via
-                X direct messages.
-            </p>
-
-            <a
-                href="https://x.com/thevillagehackr"
-                target="_blank"
-                class="contact-link"
-            >
-
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26
-                    8.502 11.24H16.17l-5.214-6.817L4.99
-                    21.75H1.68l7.73-8.835L1.254
-                    2.25H8.08l4.713 6.231zm-1.161
-                    17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-
-                Message @thevillagehackr
-
-            </a>
-
-            <div class="contact-note">
-                Encrypted communication preferred for sensitive inquiries
-            </div>
-
-        </div>
-
-    </div>
-</div>
-</div>
-
+    <script src="/assets/js/site.js" defer></script>
+    <script src="/assets/js/landing.js" defer></script>
 </body>
 </html>
