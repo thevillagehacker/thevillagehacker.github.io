@@ -8,7 +8,7 @@
 
 <title>Introducing PhantomProxy: A Browser-Native HTTP Proxy &amp; Repeater for Security Researchers — thevillagehacker</title>
 
-<meta name="description" content="Meet PhantomProxy, a lightweight Chrome and Edge DevTools extension for inspecting, replaying, and analyzing HTTP traffic in real time. Built for penetration testers, bug bounty hunters, and developers—without proxies, Java, or complicated setup."/>
+<meta name="description" content="PhantomProxy v2.3.0 — a Manifest V3 Chrome and Edge DevTools extension with intercept, history, repeater, intruder, and a full tools suite for security researchers. No system proxy, no Java."/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,7 +95,7 @@ tr:nth-child(even) td{
 
 
 <div class="advisory-banner">
-    INTRODUCING PHANTOMPROXY: A BROWSER-NATIVE HTTP PROXY &amp; REPEATER FOR SECURITY RESEARCHERS
+    PHANTOMPROXY V2.3.0 — INTERCEPT · REPEATER · INTRUDER · FULL TOOLS SUITE
 </div>
 
 <div class="container">
@@ -106,7 +106,7 @@ tr:nth-child(even) td{
 
     <h1>⬡ PhantomProxy</h1>
 
-    <p class="subtitle">HTTP PROXY // WEB SECURITY</p>
+    <p class="subtitle">HTTP PROXY // INTERCEPT // INTRUDER // WEB SECURITY</p>
 
     <div class="meta">
         <div class="meta-item">
@@ -118,6 +118,10 @@ tr:nth-child(even) td{
             <div class="value">2026-06-28</div>
         </div>
         <div class="meta-item">
+            <div class="label">updated</div>
+            <div class="value">2026-07-11 · v2.3.0</div>
+        </div>
+        <div class="meta-item">
             <div class="label">platform</div>
             <div class="value">Tools</div>
         </div>
@@ -127,12 +131,28 @@ tr:nth-child(even) td{
 
 <article>
 
+<p>A cyberpunk-themed HTTP traffic inspector, repeater, intruder, and intercept tool — browser DevTools extension for Microsoft Edge and Chrome. Built for developers, security researchers, and bug bounty hunters.</p>
 
-<p>A cyberpunk-themed HTTP traffic inspector and request repeater — browser DevTools extension for Microsoft Edge and Chrome. Built for developers, security researchers, and bug bounty hunters.</p>
+<p><strong>Current version: v2.3.0</strong> — first complete public toolkit release. Source and docs live on <a href="https://github.com/thevillagehacker/Phantom-Proxy" target="_blank" rel="noopener">GitHub</a>.</p>
 
 <h2>What is PhantomProxy?</h2>
 
-<p>PhantomProxy is a lightweight in-browser security testing tool inspired by Burp Suite's proxy and repeater workflow. It captures all HTTP/HTTPS traffic from your browser tab in real time, lets you inspect every request and response in detail, replay and modify requests, decode tokens, manage your test scope, and bookmark interesting findings — all without setting up a system proxy, installing Java, or leaving your browser.</p>
+<p>PhantomProxy is a lightweight in-browser security testing tool inspired by Burp Suite's proxy, repeater, and intruder workflow. It captures HTTP/HTTPS traffic in real time, supports live request intercept (forward/drop), multi-position fuzzing, scope control, compare, cookie jar, and more — without a system proxy, Java, or leaving the browser.</p>
+
+<table>
+<thead>
+<tr><th>Area</th><th>Capabilities</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Scope</strong></td><td>Domains, wildcards, path patterns, regex, DIM/HIDE</td></tr>
+<tr><td><strong>Intercept</strong></td><td>Hold/edit/forward/drop; debugger + page-hook; POST-safe forward</td></tr>
+<tr><td><strong>History</strong></td><td>Live capture, filters, bookmarks, notes, HAR, flags</td></tr>
+<tr><td><strong>Repeater</strong></td><td>Multi-session, cookies, cURL import, send to Intruder</td></tr>
+<tr><td><strong>Intruder</strong></td><td>§ positions, sniper/pitchfork/cluster, wordlists, grep</td></tr>
+<tr><td><strong>Tools</strong></td><td>Sitemap, search, compare, match/replace, params, cookies, issues, WS, JWT, project</td></tr>
+<tr><td><strong>Decoder</strong></td><td>Base64/URL/HTML/Hex/JSON/JWT/SHA-256</td></tr>
+</tbody>
+</table>
 
 <h2>Installation</h2>
 
@@ -140,37 +160,122 @@ tr:nth-child(even) td{
 
 <p>Search for <strong>PhantomProxy</strong> on the <a href="https://microsoftedge.microsoft.com/addons/detail/phantomproxy/dockgobhnoplnnkomikopijndbfihbci">Microsoft Edge Add-ons</a> store and click Install.</p>
 
-<h3>Manual Installation from GitHub</h3>
-
-<p>Clone the repository from <a href="https://github.com/thevillagehacker/Phantom-Proxy">GitHub</a> and follow the installation instructions.</p>
-
 <h3>Load Unpacked (Developer Mode)</h3>
 
 <ol>
-<li>Download and extract the <code>phantom-proxy.zip</code></li>
+<li>Download and extract the <code>phantom-proxy.zip</code> (or clone the <a href="https://github.com/thevillagehacker/Phantom-Proxy" target="_blank" rel="noopener">repository</a>)</li>
 <li>Open <code>edge://extensions/</code> (or <code>chrome://extensions/</code>)</li>
 <li>Enable <strong>Developer Mode</strong> (top-right toggle)</li>
-<li>Click <strong>Load unpacked</strong> and select the <code>phantom-proxy</code> folder</li>
+<li>Click <strong>Load unpacked</strong> and select the project root (folder containing <code>manifest.json</code>)</li>
 <li>Open any page → press <strong>F12</strong> → click the <strong>PhantomProxy</strong> tab in DevTools</li>
 </ol>
 
 <h3>Standalone Window</h3>
 
-<p>Click the PhantomProxy icon in your toolbar → click <strong>◈ EXECUTE</strong> to open PhantomProxy as a full dedicated window. Ideal for a second monitor or a focused testing session.</p>
+<p>Click the PhantomProxy icon in your toolbar → click <strong>◈ EXECUTE</strong> to open PhantomProxy as a full dedicated window. Ideal for a second monitor or a focused testing session. Use <strong>TARGET TAB</strong> to choose which browser tab to monitor (or All Tabs).</p>
 
-<h2>Features</h2>
+<p>Standalone is recommended for <strong>Intercept (debugger mode)</strong> and multi-monitor workflows.</p>
+
+<h2>Top Bar &amp; Global Controls</h2>
+
+<table>
+<thead>
+<tr><th>Control</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>CAPTURING / PAUSED</strong></td><td>Pause stops adding new rows (history kept)</td></tr>
+<tr><td><strong>SCOPE badge</strong></td><td>Shows scope on/off and domain count</td></tr>
+<tr><td><strong>⬇ HAR / ⬆ HAR</strong></td><td>Export or import HAR 1.2</td></tr>
+<tr><td><strong>⬇ PROJECT / ⬆ PROJECT</strong></td><td>Full project JSON (history, scope, notes, rules)</td></tr>
+<tr><td><strong>⌫ CLEAR</strong></td><td>Clear captured history</td></tr>
+<tr><td><strong>⏸ PAUSE</strong></td><td>Toggle capture</td></tr>
+<tr><td><strong>◎ INTERCEPT</strong></td><td>Toggle intercept on/off (same as Intercept tab)</td></tr>
+</tbody>
+</table>
+
+<h2>Features (v2.3.0)</h2>
 
 <h3>◎ Scope Tab</h3>
 
-<p>Define exactly which targets you care about before you start testing.</p>
+<p>Define exactly which targets you care about before you start testing. Scope filters by host/URL; Target Tab (standalone) filters by browser tab.</p>
+
+<table>
+<thead>
+<tr><th>Input</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>example.com</code></td><td>That host + subdomains</td></tr>
+<tr><td><code>*.example.com</code></td><td>Wildcard host (includes apex)</td></tr>
+<tr><td><code>api-*.cdn.com</code></td><td>Mid-string wildcards</td></tr>
+<tr><td><code>example.com/api/*</code></td><td>Host + path pattern</td></tr>
+<tr><td><code>/regex/i</code></td><td>Full JS regex (validated, length-capped)</td></tr>
+</tbody>
+</table>
 
 <ul>
 <li>Add domains manually, paste a full URL (hostname is auto-extracted), or click <strong>ADD ALL FROM HISTORY</strong> to pull every domain from your current capture into scope in one shot</li>
-<li>Wildcard support — <code>*.example.com</code> matches the root domain and all subdomains</li>
 <li>Two display modes: <strong>DIM</strong> (out-of-scope requests stay visible but greyed out) or <strong>HIDE</strong> (removed entirely)</li>
-<li>Scope state persists across sessions via browser storage — your targets are remembered when you reopen DevTools</li>
+<li>Scope state persists across sessions via browser storage</li>
 <li>Scope badge in the topbar always shows current state at a glance</li>
+<li>History <strong>IN SCOPE ONLY</strong> chip works even if global SCOPE is OFF, as long as domains are listed</li>
 </ul>
+
+<h3>◎ Intercept Tab</h3>
+
+<p>Hold live requests so you can <strong>edit → forward</strong> or <strong>drop</strong>, Burp-style. Sits between Scope and History.</p>
+
+<table>
+<thead>
+<tr><th>Mode</th><th>When</th><th>What is held</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Debugger</strong></td><td>Standalone + specific Target Tab (default)</td><td>Nearly all HTTP; browser may show a “debugging this browser” banner</td></tr>
+<tr><td><strong>Page hook</strong></td><td>DevTools panel (default), or Prefer page hook</td><td><code>fetch()</code> and <code>XMLHttpRequest</code> only</td></tr>
+</tbody>
+</table>
+
+<p>DevTools already uses the debugger on the inspected page, so PhantomProxy automatically prefers <strong>page hook</strong> there.</p>
+
+<p><strong>Setup</strong></p>
+
+<ol>
+<li><strong>Standalone:</strong> Target Tab = a real <code>https://…</code> tab (not “All Tabs”) → <strong>INTERCEPT ON</strong></li>
+<li><strong>DevTools:</strong> <strong>INTERCEPT ON</strong> → <strong>reload the page</strong> so hooks attach early</li>
+<li>Browse / trigger API calls</li>
+<li>Select a queue item, edit method/URL/headers/body if needed</li>
+<li><strong>▶ FORWARD</strong> or <strong>✕ DROP</strong></li>
+</ol>
+
+<table>
+<thead>
+<tr><th>Option</th><th>Effect</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>In-scope only</strong></td><td>Only hold URLs matching Scope domains</td></tr>
+<tr><td><strong>+ Responses</strong></td><td>Also pause at response stage (debugger mode)</td></tr>
+<tr><td><strong>Prefer page hook</strong></td><td>Force fetch/XHR hook even in Standalone</td></tr>
+</tbody>
+</table>
+
+<p><strong>POST / body handling</strong></p>
+
+<ul>
+<li><strong>Unedited Forward</strong> re-issues the request without rewriting the body so original POST/PUT/PATCH payloads (including multipart/FormData) stay intact</li>
+<li>Edited body/headers are applied carefully; <code>Content-Length</code> is recalculated when the body is overridden</li>
+<li>GET/HEAD never send a body on forward</li>
+</ul>
+
+<table>
+<thead>
+<tr><th>Button / Key</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td>FORWARD / <strong>F</strong></td><td>Send selected (with edits if any)</td></tr>
+<tr><td>FORWARD ALL</td><td>Release entire queue</td></tr>
+<tr><td>DROP / <strong>D</strong></td><td>Block selected</td></tr>
+<tr><td>DROP ALL</td><td>Block entire queue</td></tr>
+</tbody>
+</table>
 
 <h3>◈ History Tab</h3>
 
@@ -211,11 +316,12 @@ tr:nth-child(even) td{
 <li>Three-dot hover indicator on every row — right-click to bookmark</li>
 </ul>
 
-<p><strong>Auto-highlight FLAGS</strong> PhantomProxy automatically detects and badges interesting requests:</p>
+<p><strong>Auto-highlight FLAGS</strong> — PhantomProxy automatically detects and badges interesting requests:</p>
 
 <table>
 <thead><tr><th>Badge</th><th>What it detects</th></tr></thead>
-<tbody><tr><td>JWT</td><td>JWT token in any request header</td></tr>
+<tbody>
+<tr><td>JWT</td><td>JWT token in any request header</td></tr>
 <tr><td>API KEY</td><td><code>x-api-key</code>, <code>api_key=</code> parameter</td></tr>
 <tr><td>AUTH</td><td>Bearer / Basic auth headers</td></tr>
 <tr><td>ADMIN</td><td><code>/admin</code>, <code>/dashboard</code>, <code>/console</code>, <code>/manage</code> paths</td></tr>
@@ -225,10 +331,11 @@ tr:nth-child(even) td{
 <tr><td>5xx</td><td>Server errors</td></tr>
 <tr><td>SQL?</td><td>SQL patterns in request bodies</td></tr>
 <tr><td>GraphQL</td><td><code>/graphql</code> endpoint or mutation/query body</td></tr>
-<tr><td>WS</td><td>WebSocket connections</td></tr></tbody>
+<tr><td>WS</td><td>WebSocket connections</td></tr>
+</tbody>
 </table>
 
-<p><strong>Request Detail Pane</strong> Click any row to open the full detail view:</p>
+<p><strong>Request Detail Pane</strong> — click any row to open the full detail view:</p>
 
 <ul>
 <li>REQ HEADERS — all request headers in a clean key/value table</li>
@@ -236,11 +343,14 @@ tr:nth-child(even) td{
 <li>RES HEADERS — response headers</li>
 <li>RES PRETTY — re-fetches the request and renders the response with full syntax highlighting (JSON keys, strings, numbers, booleans, null each in a distinct color; XML formatted and indented)</li>
 <li>RAW — full raw HTTP request reconstruction</li>
+<li>Notes + tags bar (persisted)</li>
 <li><strong>⟳ SEND TO REPEATER</strong> — sends the request to a new Repeater session</li>
+<li><strong>⚡ FUZZ</strong> — open Intruder with this request</li>
+<li><strong>CMP A / CMP B</strong> — set Compare sides</li>
 <li><strong>⎘ COPY AS CURL</strong> — copies a shell-ready cURL command to clipboard</li>
 </ul>
 
-<p><strong>Bookmark / Highlight System</strong> Right-click any request row to open the highlight menu:</p>
+<p><strong>Bookmark / Highlight System</strong> — right-click any request row to open the highlight menu:</p>
 
 <ul>
 <li>8 color swatches: Red, Orange, Green, Cyan, Blue, Purple, Yellow, Pink</li>
@@ -275,11 +385,26 @@ tr:nth-child(even) td{
 <ul>
 <li>Method dropdown + URL bar + <strong>▶ SEND</strong> button (<code>Ctrl+Enter</code> to send)</li>
 <li><strong>HEADERS</strong> tab — key/value row editor, add/remove individual headers</li>
+<li><strong>COOKIES</strong> tab — name/value pairs; <strong>LOAD BROWSER COOKIES</strong></li>
 <li><strong>BODY</strong> tab — body textarea with Content-Type selector (JSON, Form URL Encoded, Multipart, Plain Text, XML) and <strong>⌥ FORMAT</strong> to auto-indent JSON</li>
 <li><strong>RAW HTTP</strong> tab — edit the full request as raw text</li>
 </ul>
 
-<p><strong>cURL Import</strong> Click <strong>⬆ IMPORT CURL</strong> to paste a cURL command directly into the Repeater. Supports:</p>
+<p><strong>Actions</strong></p>
+
+<table>
+<thead>
+<tr><th>Button</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>▶ SEND</strong></td><td>Fire via background worker (SSRF-guarded)</td></tr>
+<tr><td><strong>⚡ FUZZ</strong></td><td>Send current editor state to Intruder</td></tr>
+<tr><td><strong>⬆ IMPORT CURL</strong></td><td>Parse cURL into a new session</td></tr>
+<tr><td><strong>CMP A / CMP B</strong></td><td>Store last response for Compare (on response bar)</td></tr>
+</tbody>
+</table>
+
+<p><strong>cURL Import</strong> — click <strong>⬆ IMPORT CURL</strong> to paste a cURL command directly into the Repeater. Supports:</p>
 
 <ul>
 <li><code>-X</code> method, multiple <code>-H</code> headers, <code>-d</code> / <code>--data</code> / <code>--data-raw</code> body</li>
@@ -292,16 +417,60 @@ tr:nth-child(even) td{
 
 <ul>
 <li>Status code, response time, response size in meta pills</li>
-<li><strong>BODY</strong> tab with RAW / PRETTY toggle</li>
-</ul>
-
-<p>  - PRETTY renders JSON with full syntax highlighting and XML with indentation   - PRETTY button is disabled and dimmed when the response is not a prettifiable format</p>
-
-<ul>
+<li><strong>BODY</strong> tab with RAW / PRETTY toggle — PRETTY renders JSON with full syntax highlighting and XML with indentation; disabled when the response is not prettifiable</li>
 <li><strong>HEADERS</strong> tab — response headers in key/value table</li>
 <li><strong>⎘ COPY</strong> — copy raw response body to clipboard</li>
 <li><strong>⇌ WRAP</strong> — toggle word wrap for long minified responses</li>
 </ul>
+
+<p>Enabled rules from Tools → Match/Replace are applied on every Repeater send.</p>
+
+<h3>⚡ Intruder</h3>
+
+<p>Positions + payload sets + attack engine (under Tools → Intruder, or jump in via <strong>⚡ FUZZ</strong> from History/Repeater).</p>
+
+<p><strong>Positions</strong> — place <code>§…§</code> markers in URL, headers (one <code>Name: value</code> per line), or body. <strong>INSERT § §</strong> wraps the selection in the focused field.</p>
+
+<table>
+<thead>
+<tr><th>Mode</th><th>Behavior</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Sniper</strong></td><td>Each payload applied to all markers</td></tr>
+<tr><td><strong>Pitchfork</strong></td><td>Payload set 1 → 1st marker, set 2 → 2nd, set 3 → 3rd (by index)</td></tr>
+<tr><td><strong>Cluster bomb</strong></td><td>Cartesian product of sets (capped)</td></tr>
+</tbody>
+</table>
+
+<p><strong>Payload types:</strong> simple list (sets 1–3 for multi-position), numbers (from / to / step / base / pad), wordlist file (local, max 2MB, capped lines), brute / charset, null payloads, dates, runtime file.</p>
+
+<p><strong>Processors:</strong> URL-encode, Base64, double URL-encode, prefix, suffix.</p>
+
+<p><strong>Results:</strong> table with #, payload, status, length, time; click a row for full request / response / res headers; grep filter; send to Repeater or copy req/res. Max <strong>500</strong> payloads per attack; delay 50–5000 ms.</p>
+
+<h3>🧰 Tools Suite</h3>
+
+<p>The Tools tab exposes a left sub-nav with the full research toolkit:</p>
+
+<table>
+<thead>
+<tr><th>Tool</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Sitemap</strong></td><td>Host → path tree of captured traffic; click path → History; right-click → Intruder</td></tr>
+<tr><td><strong>Search</strong></td><td>Global search across URL, request headers, body, response headers; literal or safe regex</td></tr>
+<tr><td><strong>Compare</strong></td><td>Single comparer — set A/B from History or Repeater detail bars; CLEAR and re-run. Diffs URL/status, request headers/body, response headers/body when present</td></tr>
+<tr><td><strong>Match / Replace</strong></td><td>Rewrite body, headers, URL, or cookies on Repeater/Intruder send; literal or regex; max 50 rules; persisted</td></tr>
+<tr><td><strong>Intruder</strong></td><td>Positions, payload sets, attack modes (see above)</td></tr>
+<tr><td><strong>Parameter miner</strong></td><td>Extract query/body/JSON/cookie parameter names and samples; → Repeater or Intruder wordlist</td></tr>
+<tr><td><strong>Cookie jar</strong></td><td>Load browser cookies for a URL; view name/domain/path/value; pair with Repeater COOKIES tab</td></tr>
+<tr><td><strong>Issue board</strong></td><td>Persistent passive findings from history (HSTS, CORS, 401/403, 5xx, sensitive paths)</td></tr>
+<tr><td><strong>WebSocket client</strong></td><td>Connect to <code>ws://</code> / <code>wss://</code> (SSRF-blocked private hosts); send/receive log; fill from history handshakes</td></tr>
+<tr><td><strong>JWT editor</strong></td><td>Load JWT → edit header/payload JSON; rebuild unsigned (<code>alg:none</code>) or HS256 re-sign with secret</td></tr>
+<tr><td><strong>Passive checks</strong></td><td>One-shot heuristics (same family as Issue board). Local only — not an active scanner</td></tr>
+<tr><td><strong>Project save / load</strong></td><td>JSON export/import of history (up to 500), scope, notes, bookmarks, match/replace rules. Size-capped (~15MB); nothing uploaded</td></tr>
+</tbody>
+</table>
 
 <h3>⌥ Decoder Tab</h3>
 
@@ -309,13 +478,15 @@ tr:nth-child(even) td{
 
 <table>
 <thead><tr><th>Operation</th><th>Description</th></tr></thead>
-<tbody><tr><td>Base64 Decode / Encode</td><td>Standard Base64</td></tr>
+<tbody>
+<tr><td>Base64 Decode / Encode</td><td>Standard Base64</td></tr>
 <tr><td>URL Decode / Encode</td><td><code>%xx</code> percent encoding</td></tr>
 <tr><td>HTML Decode / Encode</td><td>HTML entity encoding</td></tr>
 <tr><td>Hex Encode / Decode</td><td>Hexadecimal byte encoding</td></tr>
 <tr><td>JSON Format</td><td>Pretty-print and validate JSON</td></tr>
 <tr><td>JWT Decode</td><td>Splits header, payload, signature — flags <code>alg: none</code> and <code>HS256</code> with a warning banner</td></tr>
-<tr><td>SHA-256 Hash</td><td>Via Web Crypto API</td></tr></tbody>
+<tr><td>SHA-256 Hash</td><td>Via Web Crypto API</td></tr>
+</tbody>
 </table>
 
 <p><strong>Chain mode</strong> — ⇄ button pipes the output back into the input for multi-step transforms (e.g. Base64 decode → URL decode in two clicks).</p>
@@ -323,16 +494,47 @@ tr:nth-child(even) td{
 <h3>Keyboard Shortcuts</h3>
 
 <table>
-<thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
-<tbody><tr><td><code>Ctrl + Enter</code></td><td>Send request (when focused in Repeater URL/body/raw)</td></tr>
-<tr><td><code>Ctrl + L</code></td><td>Clear history</td></tr>
-<tr><td><code>Ctrl + F</code></td><td>Focus the URL filter input</td></tr></tbody>
+<thead><tr><th>Shortcut</th><th>Context</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><code>Ctrl + Enter</code></td><td>Repeater fields</td><td>Send</td></tr>
+<tr><td><code>Ctrl + Enter</code></td><td>Intercept fields</td><td>Forward</td></tr>
+<tr><td><code>F</code> / <code>D</code></td><td>Intercept (not typing)</td><td>Forward / Drop</td></tr>
+<tr><td><code>Ctrl + L</code></td><td>Global</td><td>Clear history</td></tr>
+<tr><td><code>Ctrl + F</code></td><td>Global</td><td>Focus History filter</td></tr>
+</tbody>
 </table>
+
+<h2>Quick Workflows</h2>
+
+<h3>Bug bounty API test</h3>
+
+<ol>
+<li>Scope → add <code>target.com</code> → SCOPE ON</li>
+<li>Browse app with History open</li>
+<li>Interesting request → <strong>SEND TO REPEATER</strong> → tweak → SEND</li>
+<li><strong>⚡ FUZZ</strong> → mark param with <code>§…§</code> → wordlist → attack</li>
+</ol>
+
+<h3>Live tamper</h3>
+
+<ol>
+<li>Standalone → Target Tab → Intercept ON</li>
+<li>Trigger action in the page</li>
+<li>Edit POST body in queue → Forward</li>
+</ol>
+
+<h3>Diff two responses</h3>
+
+<ol>
+<li>Repeater SEND → <strong>CMP A</strong></li>
+<li>Change payload → SEND → <strong>CMP B</strong></li>
+<li>Tools → Compare → COMPARE</li>
+</ol>
 
 <h2>Architecture</h2>
 
 <pre><code class="language-text">phantom-proxy/
-├── manifest.json            # Manifest V3 — no &quot;type: module&quot; (required for webRequest)
+├── manifest.json            # Manifest V3 — no "type: module" (required for webRequest)
 ├── background/
 │   └── worker.js            # Classic service worker: traffic capture, repeater fetch, keepalive
 ├── devtools/
@@ -353,7 +555,7 @@ tr:nth-child(even) td{
 
 <h3>How traffic capture works</h3>
 
-<p>PhantomProxy uses the browser's <code>webRequest</code> API — a passive observation API that fires events for every HTTP request without intercepting or blocking traffic.</p>
+<p>PhantomProxy uses the browser's <code>webRequest</code> API — a passive observation API that fires events for every HTTP request without intercepting or blocking traffic by default. Live hold/edit is handled separately by the Intercept tab (debugger or page-hook).</p>
 
 <pre><code class="language-text">Page makes request
       ↓
@@ -368,78 +570,70 @@ Panel renders row in History tab</code></pre>
 
 <p>The background service worker stores up to 500 requests in memory and broadcasts each completed request to all connected panels (both DevTools and standalone) via <code>chrome.runtime.connect</code> ports.</p>
 
-<p>Repeater requests are fired from the background worker using <code>fetch()</code> — this bypasses CORS restrictions that would block requests from the panel page context.</p>
+<p>Repeater and Intruder requests are fired from the background worker using <code>fetch()</code> — this bypasses CORS restrictions that would block requests from the panel page context.</p>
 
 <h3>Security design</h3>
 
 <ul>
 <li><strong>No data leaves the browser</strong> — all captured traffic stays in local memory, never sent to any server</li>
-<li><strong>SSRF protection</strong> — Repeater blocks <code>file://</code>, <code>javascript:</code>, and all private IP ranges (127.x, 10.x, 172.16–31.x, 192.168.x, 169.254.x, ::1, fc00::, fe80::)</li>
+<li><strong>SSRF protection</strong> — Repeater/Intruder/WS block <code>file://</code>, <code>javascript:</code>, private/metadata hosts (incl. decimal IP forms), and private IP ranges (127.x, 10.x, 172.16–31.x, 192.168.x, 169.254.x, ::1, fc00::, fe80::)</li>
 <li><strong>CRLF injection prevention</strong> — all header names and values strip <code>\r</code>, <code>\n</code>, and <code>\0</code> before use</li>
 <li><strong>XSS prevention</strong> — all server-controlled values (URLs, headers, response bodies, status text) are rendered via <code>textContent</code> or DOM construction, never <code>innerHTML</code></li>
+<li><strong>ReDoS-resistant regex</strong> — inputs are length-capped and reject nested quantifiers</li>
 <li><strong>Prototype pollution guards</strong> — all header objects use <code>hasOwnProperty</code> checks; sensitive objects use <code>Object.create(null)</code></li>
 <li><strong>HTTP method whitelist</strong> — only known HTTP verbs accepted in Repeater</li>
-<li><strong>Body size caps</strong> — captured bodies truncated at 64 KB, repeater responses capped at 2 MB</li>
+<li><strong>Body size / import caps</strong> — captured bodies truncated at 64 KB, repeater responses capped at 2 MB; HAR/project import size and shape guards</li>
+<li><strong>Intruder safety</strong> — max 500 payloads per attack; hard caps on combinatorial products</li>
 </ul>
 
 <h2>Permissions</h2>
 
 <table>
 <thead><tr><th>Permission</th><th>Why it's needed</th></tr></thead>
-<tbody><tr><td><code>webRequest</code></td><td>To observe HTTP traffic — the core function of the tool</td></tr>
+<tbody>
+<tr><td><code>webRequest</code></td><td>To observe HTTP traffic — the core function of the tool</td></tr>
 <tr><td><code>tabs</code></td><td>To associate requests with the correct tab and populate the standalone tab selector</td></tr>
-<tr><td><code>storage</code></td><td>To persist scope definitions and bookmarks across sessions</td></tr>
-<tr><td><code>scripting</code></td><td>For DevTools panel integration</td></tr>
+<tr><td><code>storage</code></td><td>To persist scope, notes, bookmarks, match/replace rules, and issues across sessions</td></tr>
+<tr><td><code>cookies</code></td><td>Cookie jar + Repeater cookie load</td></tr>
+<tr><td><code>debugger</code></td><td>Full intercept (optional path — Standalone + specific Target Tab)</td></tr>
+<tr><td><code>scripting</code></td><td>DevTools panel integration and page-hook intercept fallback</td></tr>
 <tr><td><code>webNavigation</code></td><td>To detect page navigation and handle request lifecycle correctly</td></tr>
 <tr><td><code>windows</code></td><td>To open PhantomProxy as a standalone window via the Execute button</td></tr>
-<tr><td><code>&lt;all_urls&gt;</code></td><td>To observe requests to any domain — required since security testing targets vary</td></tr></tbody>
+<tr><td><code>&lt;all_urls&gt;</code></td><td>To observe requests to any domain — required since security testing targets vary</td></tr>
+</tbody>
 </table>
 
-<h2>Notes</h2>
+<h2>Notes &amp; Limitations</h2>
 
 <ul>
 <li>Requires Microsoft Edge 88+ or Chrome 88+ (Manifest V3 + <code>webRequest</code>)</li>
-<li>Response bodies are <strong>not</strong> captured passively in the History tab — this is a browser platform restriction of the <code>webRequest</code> API. Use the <strong>RES PRETTY</strong> tab or Repeater to re-send and read the response body</li>
-<li>The extension does <strong>not</strong> intercept, block, or modify live traffic — it is purely passive observation + active replay</li>
+<li>Response bodies are <strong>not</strong> captured passively in the History tab — this is a browser platform restriction of the <code>webRequest</code> API. Use the <strong>RES PRETTY</strong> tab, Repeater, or Intercept to read response bodies</li>
+<li>History capture is passive by default; live hold/edit is opt-in via the <strong>Intercept</strong> tab</li>
+<li>Page-hook intercept covers <strong>fetch/XHR</strong>, not every navigation/subresource — use debugger mode for broader coverage</li>
+<li>Only one debugger per tab — DevTools and debugger-intercept cannot both attach to the same tab</li>
 <li>Works on <code>http://</code> and <code>https://</code> pages only</li>
 <li>Extension pages (<code>chrome://</code>, <code>edge://</code>, <code>devtools://</code>, <code>file://</code>) are excluded from capture</li>
+<li>Not a system-wide MITM proxy and does not install CA certificates</li>
 </ul>
+
+<h2>Upgrade notes (v2.3.0)</h2>
+
+<ol>
+<li>Reload the extension at <code>chrome://extensions</code> / <code>edge://extensions</code></li>
+<li>Accept <strong>debugger</strong> permission if you want full HTTP intercept</li>
+<li><strong>DevTools intercept:</strong> turn on Intercept → <strong>reload the target page</strong></li>
+<li><strong>Standalone intercept:</strong> pick a <strong>specific Target Tab</strong> (not All Tabs)</li>
+</ol>
 
 <h2>Privacy</h2>
 
-<p>PhantomProxy collects no data. All captured traffic is processed entirely within your local browser and is never transmitted to any server. No analytics, no telemetry, no tracking.</p>
+<p>PhantomProxy collects no data. All captured traffic is processed entirely within your local browser and is never transmitted to any server. No analytics, no telemetry, no tracking. Intercept queues and wordlists never leave the browser.</p>
 
 <p>Full privacy policy: <a href="https://thevillagehacker.com/projects/Phantom-Proxy_privacy-policy.html">thevillagehacker.com/projects/Phantom-Proxy_privacy-policy.html</a></p>
 
-<h2>Screenshots</h2>
+<p>Thank you for reading! If you give PhantomProxy a try, I'd greatly appreciate your feedback, suggestions, or feature requests. Every bit of input helps improve the tool and shape future releases.</p>
 
-<h3>Scope Tab</h3>
-
-<figure>
-    <img src="../assets/images/projects/phantom-proxy/scope.png" alt="PhantomProxy Scope Tab">
-</figure>
-
-<h3>History Tab</h3>
-
-<figure>
-    <img src="../assets/images/projects/phantom-proxy/history.png" alt="PhantomProxy History Tab">
-</figure>
-
-<h3>Repeater Tab</h3>
-
-<figure>
-    <img src="../assets/images/projects/phantom-proxy/repeater.png" alt="PhantomProxy Repeater Tab">
-</figure>
-
-<h3>Decoder Tab — JWT Decode</h3>
-
-<figure>
-    <img src="../assets/images/projects/phantom-proxy/decoder.png" alt="PhantomProxy Decoder - JWT Decode">
-</figure>
-
-<p>Thank you for reading! If you give PhantomProxy a try, I'd greatly appreciate your feedback, suggestions, or feature requests. Every bit of input helps improve the tool and shape future releases.
-
-Happy hacking!</p>
+<p>Happy hacking!</p>
 
 </article>
 
