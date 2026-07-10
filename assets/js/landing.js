@@ -37,13 +37,23 @@
   }
 
   /* ── boot overlay ────────────────────────────────────── */
+  function finishBoot(overlay) {
+    if (!overlay) return;
+    overlay.classList.remove("boot-visible");
+    overlay.classList.add("boot-done");
+    overlay.setAttribute("aria-hidden", "true");
+    // Clear log so a re-show never reflows leftover content
+    const log = $("#boot-log");
+    if (log) log.textContent = "";
+  }
+
   async function runBoot() {
     const overlay = $("#boot-overlay");
     const log = $("#boot-log");
     if (!overlay || !log) return;
 
     if (sessionStorage.getItem("tvh_booted") || prefersReducedMotion) {
-      overlay.classList.add("boot-done");
+      finishBoot(overlay);
       return;
     }
 
@@ -60,7 +70,9 @@
       { t: "Handshake complete. Welcome, operator.", c: "accent" },
     ];
 
+    overlay.classList.remove("boot-done");
     overlay.classList.add("boot-visible");
+    overlay.setAttribute("aria-hidden", "false");
     for (const line of lines) {
       const span = document.createElement("div");
       span.className = "boot-line " + (line.c || "");
@@ -69,7 +81,7 @@
       await sleep(120 + Math.random() * 80);
     }
     await sleep(450);
-    overlay.classList.add("boot-done");
+    finishBoot(overlay);
     sessionStorage.setItem("tvh_booted", "1");
   }
 

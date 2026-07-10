@@ -834,7 +834,8 @@ body.blog-archive {
 }
 
 /* Content stacks above fixed atmosphere.
-   Do NOT force position:relative on .top-nav — it must stay position:fixed. */
+   Do NOT force position:relative on .top-nav or .boot-overlay —
+   those must stay position:fixed (overlay was causing a huge homepage gap). */
 body.has-site-fx > .blog-nav,
 body.has-site-fx > .container,
 body.has-site-fx > .blog-container,
@@ -843,7 +844,6 @@ body.has-site-fx > .advisory-banner,
 body.has-site-fx > article,
 body.has-site-fx > footer,
 body.has-site-fx > .footer,
-body.has-site-fx > .boot-overlay,
 .has-site-fx .blog-nav,
 .has-site-fx .container,
 .has-site-fx .blog-container,
@@ -920,30 +920,40 @@ body.has-site-fx .blog-nav {
     opacity: 0.55;
 }
 
-/* Boot overlay */
+/* Boot overlay — always fixed + out of document flow.
+   Never use position:relative here or visibility:hidden alone (both left a tall gap). */
 .boot-overlay {
     position: fixed;
     inset: 0;
     z-index: 2000;
     background: #0a0e14;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 24px;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
+    overflow: hidden;
     transition: opacity 0.45s ease, visibility 0.45s ease;
 }
 
 .boot-overlay.boot-visible {
+    display: flex;
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
 }
 
 .boot-overlay.boot-done {
+    display: none !important;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+    height: 0;
+    width: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 .boot-log {
