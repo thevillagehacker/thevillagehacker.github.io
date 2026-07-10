@@ -1,499 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PhantomProxy — Privacy Policy</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>PhantomProxy — Privacy Policy — thevillagehacker</title>
+  <meta name="description" content="Privacy policy for PhantomProxy, a browser-native HTTP proxy and repeater DevTools extension. No telemetry, no tracking, no data leaves your browser."/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
-
-    :root {
-      --bg:        #080c10;
-      --bg-panel:  #0e1620;
-      --bg-card:   #121c28;
-      --cyan:      #00e5ff;
-      --cyan-dim:  #0097b2;
-      --cyan-glow: rgba(0, 229, 255, 0.12);
-      --green:     #00ff9d;
-      --text:      #d4e8f5;
-      --text-mid:  #7a9ab5;
-      --text-dim:  #3d5a73;
-      --border:    rgba(0, 229, 255, 0.1);
-      --font-body: "Helvetica Neue", Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      --font-ui:   var(--font-body);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 14px;
-      line-height: 1.8;
-      scroll-behavior: smooth;
-    }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 2px; }
-
-    /* ── Layout ── */
-    body {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 60px 24px 100px;
-    }
-
-    /* ── Header ── */
-    header {
-      margin-bottom: 60px;
-      padding-bottom: 32px;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-
-    header::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, var(--cyan), transparent);
-      opacity: 0.5;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .brand-hex {
-      font-size: 28px;
-      color: var(--cyan);
-      filter: drop-shadow(0 0 10px var(--cyan));
-    }
-
-    .brand-name {
-      font-family: var(--font-ui);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      color: var(--text);
-    }
-
-    .brand-name span { color: var(--cyan); }
-
-    h1 {
-      font-family: var(--font-ui);
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: var(--text);
-      margin-bottom: 10px;
-    }
-
-    .meta {
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      font-family: var(--font-ui);
-    }
-
-    /* ── TL;DR Banner ── */
-    .tldr {
-      background: rgba(0, 255, 157, 0.05);
-      border: 1px solid rgba(0, 255, 157, 0.2);
-      border-radius: 4px;
-      padding: 20px 24px;
-      margin-bottom: 48px;
+    /* Policy-only accents — uses shared design tokens from style.css */
+    .policy-tldr {
       display: flex;
       gap: 16px;
       align-items: flex-start;
+      margin: 8px 0 36px;
+      padding: 20px 22px;
+      border: 1px solid rgba(92, 219, 126, 0.22);
+      border-radius: 6px;
+      background: rgba(92, 219, 126, 0.06);
     }
 
-    .tldr-icon {
-      font-size: 20px;
-      color: var(--green);
-      margin-top: 2px;
+    .policy-tldr-icon {
       flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--green);
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
     }
 
-    .tldr-body {
-      flex: 1;
-    }
-
-    .tldr-label {
-      font-family: var(--font-ui);
+    .policy-tldr-label {
+      margin-bottom: 6px;
+      color: var(--green);
+      font-family: var(--font-body);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--green);
-      margin-bottom: 6px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
-    .tldr p {
-      font-size: 13px;
-      color: var(--text);
+    .policy-tldr p {
+      margin: 0;
+      color: var(--text-primary);
+      font-size: 16px;
       line-height: 1.7;
-    }
-
-    /* ── Sections ── */
-    section {
-      margin-bottom: 44px;
     }
 
     .section-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
+      margin: 42px 0 16px;
+    }
+
+    .section-header h2 {
+      margin: 0;
     }
 
     .section-num {
-      font-family: var(--font-ui);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--cyan-dim);
+      flex-shrink: 0;
+      padding: 3px 8px;
       border: 1px solid var(--border);
-      padding: 2px 7px;
-      border-radius: 2px;
-      white-space: nowrap;
-    }
-
-    h2 {
-      font-family: var(--font-ui);
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: var(--cyan);
-    }
-
-    p {
-      color: var(--text-mid);
-      font-size: 14px;
-      line-height: 1.85;
-      margin-bottom: 12px;
-    }
-
-    p:last-child { margin-bottom: 0; }
-
-    /* ── Fact Table ── */
-    .fact-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      font-size: 12px;
-    }
-
-    .fact-table tr {
-      border-bottom: 1px solid rgba(0,229,255,0.05);
-    }
-
-    .fact-table tr:last-child { border-bottom: none; }
-
-    .fact-table td {
-      padding: 10px 12px;
-      vertical-align: top;
-    }
-
-    .fact-table td:first-child {
+      border-radius: 3px;
       color: var(--cyan-dim);
-      font-family: var(--font-ui);
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      width: 220px;
-      white-space: nowrap;
-    }
-
-    .fact-table td:last-child {
-      color: var(--text-mid);
-    }
-
-    .fact-table tr:nth-child(odd) td {
-      background: rgba(0, 229, 255, 0.02);
-    }
-
-    /* ── Highlight pills ── */
-    .pill {
-      display: inline-block;
-      padding: 1px 8px;
-      border-radius: 2px;
-      font-family: var(--font-ui);
-      font-size: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 1px;
     }
 
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      vertical-align: middle;
+    }
+
     .pill-green {
-      background: rgba(0,255,157,0.1);
+      border: 1px solid rgba(92, 219, 126, 0.25);
+      background: rgba(92, 219, 126, 0.1);
       color: var(--green);
-      border: 1px solid rgba(0,255,157,0.2);
     }
 
     .pill-red {
-      background: rgba(255,56,96,0.08);
-      color: #ff3860;
-      border: 1px solid rgba(255,56,96,0.2);
+      border: 1px solid rgba(224, 85, 101, 0.28);
+      background: rgba(224, 85, 101, 0.1);
+      color: var(--red);
     }
 
-    /* ── Divider ── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, var(--border), transparent);
-      margin: 40px 0;
-    }
-
-    /* ── Contact block ── */
     .contact-block {
-      background: var(--bg-card);
+      margin-top: 8px;
+      padding: 22px 24px;
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 24px;
+      border-radius: 6px;
+      background: var(--bg-secondary);
     }
 
     .contact-block p {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
-    a {
+    .contact-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--cyan);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .contact-block a {
       color: var(--cyan);
       text-decoration: none;
     }
 
-    a:hover {
+    .contact-block a:hover {
       text-decoration: underline;
     }
 
-    /* ── Footer ── */
-    footer {
-      margin-top: 64px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+    .policy-divider {
+      height: 1px;
+      margin: 40px 0 8px;
+      background: linear-gradient(90deg, var(--border), transparent);
     }
 
-    footer span {
-      font-family: var(--font-ui);
+    article table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 8px;
+      font-size: 15px;
+    }
+
+    article th {
+      background: var(--bg-tertiary);
+      color: var(--cyan);
+      font-family: var(--font-body);
       font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+    }
+
+    article td {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    article td:first-child {
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      white-space: nowrap;
+      width: 240px;
+    }
+
+    article tr:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    @media (max-width: 720px) {
+      article td:first-child {
+        white-space: normal;
+        width: auto;
+      }
+
+      .policy-tldr {
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   </style>
 </head>
-<body class="has-site-fx">
 
-  <!-- ── Header ── -->
-  <header>
-    <div class="brand">
-      <span class="brand-hex">⬡</span>
-      <span class="brand-name">PHANTOM<span>PROXY</span></span>
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+  <div class="nav-inner landing-nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/projects</span>
+      <span class="status-dot" title="privacy policy"></span>
+    </a>
+    <div class="nav-right">
+      <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/blog.html" class="nav-link">Blog</a>
+      <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
     </div>
-    <h1>Privacy Policy</h1>
-    <p class="meta">EFFECTIVE DATE: JUNE 2026 &nbsp;·&nbsp; VERSION 1.0</p>
-  </header>
+  </div>
+</nav>
 
-  <!-- ── TL;DR ── -->
-  <div class="tldr">
-    <div class="tldr-icon">✓</div>
-    <div class="tldr-body">
-      <div class="tldr-label">THE SHORT VERSION</div>
+<div class="advisory-banner">
+  PHANTOMPROXY PRIVACY POLICY — NO TELEMETRY · NO TRACKING · LOCAL ONLY
+</div>
+
+<div class="container">
+
+<header class="header">
+  <span class="cve-tag">Privacy Policy · v1.0</span>
+
+  <h1>⬡ PhantomProxy</h1>
+
+  <p class="subtitle">PRIVACY POLICY // BROWSER EXTENSION</p>
+
+  <div class="meta">
+    <div class="meta-item">
+      <div class="label">product</div>
+      <div class="value">PhantomProxy</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">effective</div>
+      <div class="value">June 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">version</div>
+      <div class="value">1.0</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">status</div>
+      <div class="value">Local-only · zero collection</div>
+    </div>
+  </div>
+</header>
+
+<article>
+
+  <div class="policy-tldr">
+    <div class="policy-tldr-icon" aria-hidden="true">✓</div>
+    <div>
+      <div class="policy-tldr-label">The short version</div>
       <p>PhantomProxy collects nothing. It does not transmit, store, or share any data about you or your browsing activity with anyone — including the developer. Everything stays inside your browser.</p>
     </div>
   </div>
 
-  <!-- ── 1. Overview ── -->
-  <section>
+  <section id="overview">
     <div class="section-header">
       <span class="section-num">01</span>
-      <h2>OVERVIEW</h2>
+      <h2>Overview</h2>
     </div>
     <p>PhantomProxy is a browser DevTools extension for Microsoft Edge that allows developers and security researchers to inspect, filter, and replay HTTP requests made by the browser. This policy describes what data the extension accesses, how it is handled, and what it does not do.</p>
     <p>This policy applies to the PhantomProxy extension distributed via the Microsoft Edge Add-ons store.</p>
   </section>
 
-  <!-- ── 2. Data Access ── -->
-  <section>
+  <section id="data-access">
     <div class="section-header">
       <span class="section-num">02</span>
-      <h2>DATA THE EXTENSION ACCESSES</h2>
+      <h2>Data the Extension Accesses</h2>
     </div>
     <p>To function, PhantomProxy observes HTTP traffic within your browser tab via the browser's built-in <code>webRequest</code> API. This means the extension can see:</p>
 
-    <table class="fact-table">
-      <tr>
-        <td>Request URLs</td>
-        <td>The full URL of each HTTP request made by the browser tab</td>
-      </tr>
-      <tr>
-        <td>HTTP Methods</td>
-        <td>GET, POST, PUT, DELETE, etc.</td>
-      </tr>
-      <tr>
-        <td>Request Headers</td>
-        <td>Headers sent with each request (e.g. Authorization, Content-Type, Cookie)</td>
-      </tr>
-      <tr>
-        <td>Request Bodies</td>
-        <td>POST/PUT body content, capped at 64 KB per request</td>
-      </tr>
-      <tr>
-        <td>Response Status</td>
-        <td>HTTP status codes and response headers</td>
-      </tr>
-      <tr>
-        <td>Timing</td>
-        <td>Request duration in milliseconds</td>
-      </tr>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Request URLs</td>
+          <td>The full URL of each HTTP request made by the browser tab</td>
+        </tr>
+        <tr>
+          <td>HTTP Methods</td>
+          <td>GET, POST, PUT, DELETE, etc.</td>
+        </tr>
+        <tr>
+          <td>Request Headers</td>
+          <td>Headers sent with each request (e.g. Authorization, Content-Type, Cookie)</td>
+        </tr>
+        <tr>
+          <td>Request Bodies</td>
+          <td>POST/PUT body content, capped at 64 KB per request</td>
+        </tr>
+        <tr>
+          <td>Response Status</td>
+          <td>HTTP status codes and response headers</td>
+        </tr>
+        <tr>
+          <td>Timing</td>
+          <td>Request duration in milliseconds</td>
+        </tr>
+      </tbody>
     </table>
   </section>
 
-  <!-- ── 3. How Data Is Handled ── -->
-  <section>
+  <section id="handling">
     <div class="section-header">
       <span class="section-num">03</span>
-      <h2>HOW THIS DATA IS HANDLED</h2>
+      <h2>How This Data Is Handled</h2>
     </div>
 
-    <table class="fact-table">
-      <tr>
-        <td>Storage location</td>
-        <td>In-memory only, inside your local browser process</td>
-      </tr>
-      <tr>
-        <td>Persistence</td>
-        <td>Data is cleared when you close the DevTools panel or navigate away. Nothing is written to disk by the extension</td>
-      </tr>
-      <tr>
-        <td>Transmission</td>
-        <td><span class="pill pill-red">NEVER</span> &nbsp; No data is sent to any server, API, or third party</td>
-      </tr>
-      <tr>
-        <td>Sharing</td>
-        <td><span class="pill pill-red">NEVER</span> &nbsp; No data is shared with the developer or any other party</td>
-      </tr>
-      <tr>
-        <td>Analytics / telemetry</td>
-        <td><span class="pill pill-red">NONE</span> &nbsp; The extension contains no analytics, telemetry, or crash reporting</td>
-      </tr>
-      <tr>
-        <td>Advertising</td>
-        <td><span class="pill pill-red">NONE</span> &nbsp; No advertising SDKs or tracking pixels are included</td>
-      </tr>
-      <tr>
-        <td>Maximum stored requests</td>
-        <td>500 requests at a time (oldest entry dropped when limit is reached)</td>
-      </tr>
+    <table>
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Practice</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Storage location</td>
+          <td>In-memory only, inside your local browser process</td>
+        </tr>
+        <tr>
+          <td>Persistence</td>
+          <td>Data is cleared when you close the DevTools panel or navigate away. Nothing is written to disk by the extension</td>
+        </tr>
+        <tr>
+          <td>Transmission</td>
+          <td><span class="pill pill-red">NEVER</span> &nbsp; No data is sent to any server, API, or third party</td>
+        </tr>
+        <tr>
+          <td>Sharing</td>
+          <td><span class="pill pill-red">NEVER</span> &nbsp; No data is shared with the developer or any other party</td>
+        </tr>
+        <tr>
+          <td>Analytics / telemetry</td>
+          <td><span class="pill pill-red">NONE</span> &nbsp; The extension contains no analytics, telemetry, or crash reporting</td>
+        </tr>
+        <tr>
+          <td>Advertising</td>
+          <td><span class="pill pill-red">NONE</span> &nbsp; No advertising SDKs or tracking pixels are included</td>
+        </tr>
+        <tr>
+          <td>Maximum stored requests</td>
+          <td>500 requests at a time (oldest entry dropped when limit is reached)</td>
+        </tr>
+      </tbody>
     </table>
   </section>
 
-  <!-- ── 4. Repeater Tab ── -->
-  <section>
+  <section id="repeater">
     <div class="section-header">
       <span class="section-num">04</span>
-      <h2>REPEATER TAB — USER-INITIATED REQUESTS</h2>
+      <h2>Repeater Tab — User-Initiated Requests</h2>
     </div>
     <p>The Repeater tab allows you to manually edit and re-send HTTP requests to a target URL of your choosing. These requests are sent directly from your browser to the target server — they do not pass through any server operated by PhantomProxy or its developer.</p>
     <p>You are solely responsible for the requests you choose to send using the Repeater. Use this feature only against systems you own or have explicit permission to test.</p>
   </section>
 
-  <!-- ── 5. Permissions ── -->
-  <section>
+  <section id="permissions">
     <div class="section-header">
       <span class="section-num">05</span>
-      <h2>PERMISSIONS USED AND WHY</h2>
+      <h2>Permissions Used and Why</h2>
     </div>
-    <table class="fact-table">
-      <tr>
-        <td>webRequest</td>
-        <td>To observe HTTP traffic in the browser tab — the core function of the extension</td>
-      </tr>
-      <tr>
-        <td>tabs</td>
-        <td>To identify which tab's traffic to display in the DevTools panel</td>
-      </tr>
-      <tr>
-        <td>storage</td>
-        <td>To persist user preferences (such as filter settings) across DevTools sessions</td>
-      </tr>
-      <tr>
-        <td>scripting</td>
-        <td>To support DevTools panel integration with the inspected page context</td>
-      </tr>
-      <tr>
-        <td>webNavigation</td>
-        <td>To detect page navigation and correctly handle request lifecycle boundaries</td>
-      </tr>
-      <tr>
-        <td>&lt;all_urls&gt;</td>
-        <td>To observe requests to any domain — necessary because users test against arbitrary endpoints</td>
-      </tr>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th>Why it's needed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>webRequest</td>
+          <td>To observe HTTP traffic in the browser tab — the core function of the extension</td>
+        </tr>
+        <tr>
+          <td>tabs</td>
+          <td>To identify which tab's traffic to display in the DevTools panel</td>
+        </tr>
+        <tr>
+          <td>storage</td>
+          <td>To persist user preferences (such as filter settings) across DevTools sessions</td>
+        </tr>
+        <tr>
+          <td>scripting</td>
+          <td>To support DevTools panel integration with the inspected page context</td>
+        </tr>
+        <tr>
+          <td>webNavigation</td>
+          <td>To detect page navigation and correctly handle request lifecycle boundaries</td>
+        </tr>
+        <tr>
+          <td>&lt;all_urls&gt;</td>
+          <td>To observe requests to any domain — necessary because users test against arbitrary endpoints</td>
+        </tr>
+      </tbody>
     </table>
   </section>
 
-  <!-- ── 6. Third Parties ── -->
-  <section>
+  <section id="third-parties">
     <div class="section-header">
       <span class="section-num">06</span>
-      <h2>THIRD-PARTY SERVICES</h2>
+      <h2>Third-Party Services</h2>
     </div>
     <p>PhantomProxy does not integrate with, communicate with, or share data with any third-party service. There are no embedded SDKs, no external fonts loaded at runtime, and no outbound connections made by the extension itself.</p>
   </section>
 
-  <!-- ── 7. Children ── -->
-  <section>
+  <section id="children">
     <div class="section-header">
       <span class="section-num">07</span>
-      <h2>CHILDREN'S PRIVACY</h2>
+      <h2>Children's Privacy</h2>
     </div>
     <p>PhantomProxy is a developer tool intended for adults. It is not directed at children under the age of 13. Since no personal data is collected, no special provisions for children's data apply — but the extension is not designed or marketed for use by minors.</p>
   </section>
 
-  <!-- ── 8. Changes ── -->
-  <section>
+  <section id="changes">
     <div class="section-header">
       <span class="section-num">08</span>
-      <h2>CHANGES TO THIS POLICY</h2>
+      <h2>Changes to This Policy</h2>
     </div>
     <p>If this policy changes in a future version of the extension, the updated policy will be published at this URL and the effective date above will be updated. Continued use of the extension after a policy update constitutes acceptance of the revised policy.</p>
     <p>Since the extension collects no data, any future changes are expected to be minimal and will only reflect new features or permission changes, not new data collection practices.</p>
   </section>
 
-  <div class="divider"></div>
+  <div class="policy-divider"></div>
 
-  <!-- ── Contact ── -->
-  <section>
+  <section id="contact">
     <div class="section-header">
       <span class="section-num">09</span>
-      <h2>CONTACT</h2>
+      <h2>Contact</h2>
     </div>
     <div class="contact-block">
       <p>If you have questions about this privacy policy or the extension's data practices, you can reach the developer at:</p>
-      <p style="margin-top: 12px;">
-        <span style="color: var(--cyan-dim); font-family: var(--font-ui); font-size: 11px; letter-spacing: 1px;">EMAIL</span><br>
+      <p style="margin-top: 16px;">
+        <span class="contact-label">Email</span>
         <a href="mailto:naveen.jagadeesan@outlook.com">naveen.jagadeesan@outlook.com</a>
       </p>
-      <p style="margin-top: 12px;">
-        <span style="color: var(--cyan-dim); font-family: var(--font-ui); font-size: 11px; letter-spacing: 1px;">GITHUB</span><br>
+      <p style="margin-top: 14px; margin-bottom: 0;">
+        <span class="contact-label">GitHub</span>
         <a href="https://github.com/thevillagehacker/phantom-proxy" target="_blank" rel="noopener">github.com/thevillagehacker/phantom-proxy</a>
       </p>
     </div>
   </section>
 
-  <!-- ── Footer ── -->
-  <footer>
-    <span>⬡ PHANTOMPROXY &nbsp;·&nbsp; PRIVACY POLICY v1.0</span>
-    <span>EFFECTIVE JUNE 2026</span>
-  </footer>
+</article>
 
-  <script src="../assets/js/site.js" defer></script>
+<footer>
+  <span class="footer-text">
+    © 2026 <a href="../index.html">thevillagehacker</a> — PhantomProxy Privacy Policy v1.0
+  </span>
+  <span class="footer-text">
+    status: active<span class="blink"></span>
+  </span>
+</footer>
+
+</div>
+
+<script src="../assets/js/site.js" defer></script>
 </body>
 </html>
