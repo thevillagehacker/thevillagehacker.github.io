@@ -368,7 +368,7 @@
   }
 
   /* ── init ────────────────────────────────────────────── */
-  /* Atmosphere / hex rain: assets/js/site.js (global) */
+  /* Atmosphere / cyber mesh: assets/js/site.js (global) */
   document.addEventListener("DOMContentLoaded", () => {
     const year = $("#year");
     if (year) year.textContent = String(new Date().getFullYear());

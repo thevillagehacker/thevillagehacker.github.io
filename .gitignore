@@ -1,2 +1,14 @@
-# Local-only authoring tools (Markdown converter) — keep private
-tools/
+# Python bytecode / local caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

@@ -1,5 +1,6 @@
 /**
- * Landing page simulations — boot sequence, terminal, recon HUD, hex rain.
+ * Landing page simulations — boot sequence, terminal, recon HUD.
+ * Atmosphere / cyber mesh: assets/js/site.js (global).
  * Purely cosmetic; no real scanning or network activity.
  */
 (function () {
@@ -121,6 +122,10 @@
   }
 
   /* ── interactive terminal ────────────────────────────── */
+  function meshApi() {
+    return (window.TVH && window.TVH.mesh) || null;
+  }
+
   function initTerminal() {
     const output = $("#term-output");
     const input = $("#term-input");
@@ -136,8 +141,9 @@
     };
 
     const banner = () => {
-      print(`<span class="t-dim">thevillagehacker lab shell v1.3.37</span>`);
+      print(`<span class="t-dim">thevillagehacker lab shell v1.4.0</span>`);
       print(`<span class="t-dim">type <span class="t-accent">help</span> for available commands</span>`);
+      print(`<span class="t-dim">mesh live — try <span class="t-accent">recon</span> · <span class="t-accent">breach</span> · click a node</span>`);
       print("");
     };
 
@@ -147,13 +153,14 @@
         print(`  <span class="t-ok">whoami</span>     — operator identity`);
         print(`  <span class="t-ok">id</span>         — research profile`);
         print(`  <span class="t-ok">ls</span>         — list research paths`);
-        print(`  <span class="t-ok">recon</span>      — simulated surface scan`);
+        print(`  <span class="t-ok">recon</span>      — surface scan + mesh pulse`);
+        print(`  <span class="t-ok">breach</span>     — hostile mesh mode (~8s)`);
         print(`  <span class="t-ok">skills</span>     — focus areas`);
         print(`  <span class="t-ok">blog</span>       — open research archive`);
         print(`  <span class="t-ok">writeups</span>   — CTF / writeup notes`);
         print(`  <span class="t-ok">contact</span>    — reach the operator`);
         print(`  <span class="t-ok">neofetch</span>   — system card`);
-        print(`  <span class="t-ok">clear</span>      — clear terminal`);
+        print(`  <span class="t-ok">clear</span>      — clear terminal + calm mesh`);
         print(`  <span class="t-ok">sudo</span>       — you know what this does`);
       },
       whoami() {
@@ -173,10 +180,13 @@
         print(`drwxr-xr-x  posts/`);
         print(`-rw-r--r--  identity.txt`);
         print(`-rwxr-xr-x  recon.sh`);
+        print(`-rwxr-xr-x  breach.sh`);
         print(`-rw-------  secrets.enc  <span class="t-dim"># redacted</span>`);
       },
       async recon() {
         print(`<span class="t-dim">[*] starting passive recon simulation...</span>`);
+        const mesh = meshApi();
+        if (mesh) mesh.recon();
         const steps = [
           "enumerating subdomains",
           "fingerprinting stack",
@@ -188,7 +198,17 @@
           await sleep(280);
           print(`<span class="t-ok">[+]</span> ${s} <span class="t-dim">0x${randomHex(6)}</span>`);
         }
-        print(`<span class="t-accent">[✓]</span> surface map updated · see HUD below`);
+        print(`<span class="t-accent">[✓]</span> surface map updated · mesh + HUD refreshed`);
+      },
+      async breach() {
+        print(`<span class="t-err">[!] injecting hostile traffic into attack-surface map...</span>`);
+        const mesh = meshApi();
+        if (mesh) mesh.breach(8000);
+        await sleep(200);
+        print(`<span class="t-warn">[*] session chrome → COMPROMISED</span>`);
+        print(`<span class="t-warn">[*] packet density ↑ · glitch channels open</span>`);
+        await sleep(350);
+        print(`<span class="t-dim">breach window ~8s · type <span class="t-accent">clear</span> to force calm</span>`);
       },
       skills() {
         print(`RCE · IDOR · XSS · SQLi · ATO · deserialization · mobile · proxy tooling`);
@@ -209,15 +229,20 @@
         print(`→ <span class="t-accent">https://x.com/thevillagehackr</span>`);
       },
       neofetch() {
+        const status = meshApi() && meshApi().isBreach && meshApi().isBreach()
+          ? `<span class="t-err">BREACH</span>`
+          : `<span class="t-ok">online</span>`;
         print(`<span class="t-accent">       ___</span>  thevillagehacker`);
         print(`<span class="t-accent">   .─´   \`─.</span>  -------------`);
         print(`<span class="t-accent">  /  lab   \\</span> OS: Research Node`);
         print(`<span class="t-accent"> |  ○   ○  |</span> Shell: zsh + caffeine`);
         print(`<span class="t-accent">  \\   ▽   /</span>  Focus: vuln research`);
-        print(`<span class="t-accent">   \`─────´</span>   Status: <span class="t-ok">online</span>`);
+        print(`<span class="t-accent">   \`─────´</span>   Status: ${status}`);
       },
       clear() {
         output.innerHTML = "";
+        const mesh = meshApi();
+        if (mesh) mesh.calm(2800);
       },
       sudo() {
         print(`<span class="t-warn">[sudo] password for naveen:</span> ********`);
@@ -359,7 +384,7 @@
   }
 
   /* ── init ────────────────────────────────────────────── */
-  /* Atmosphere / hex rain: assets/js/site.js (global) */
+  /* Atmosphere + cyber mesh: assets/js/site.js (global) */
   document.addEventListener("DOMContentLoaded", async () => {
     const year = $("#year");
     if (year) year.textContent = String(new Date().getFullYear());

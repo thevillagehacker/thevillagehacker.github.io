@@ -37,6 +37,8 @@ html{
     scroll-behavior:smooth;
     background:var(--bg-primary);
     color-scheme:dark;
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
 }
 
 body{
@@ -47,6 +49,19 @@ body{
     line-height:1.8;
     overflow-x:hidden;
     text-align:justify;
+    /* Notch / home-indicator safe areas (iOS) */
+    padding-left:env(safe-area-inset-left, 0);
+    padding-right:env(safe-area-inset-right, 0);
+}
+
+/* Never let media blow out the viewport */
+img,
+svg,
+video,
+canvas,
+iframe{
+    max-width:100%;
+    height:auto;
 }
 
 /* Research post pages (md_to_post + hand-written posts) */
@@ -55,6 +70,7 @@ body.post-page{
     color:var(--text-primary);
     font-family:var(--font-body);
     text-align:left;
+    line-height:1.6;
     /* room for shared fixed top-nav */
     padding-top:52px;
 }
@@ -81,34 +97,7 @@ body.post-page .advisory-banner{
     z-index:1;
 }
 
-/* Shared code chrome for posts (used by converter + existing posts) */
-body.post-page .hljs,
-.post-page pre code.hljs{
-    background:#070b12 !important;
-    color:#d6deeb !important;
-    padding:22px !important;
-    font-family:var(--font-mono) !important;
-    font-size:14.5px !important;
-    line-height:1.7 !important;
-    border-radius:0 0 8px 8px;
-}
-
-body.post-page pre{
-    position:relative;
-}
-
-body.post-page pre::before{
-    content:'';
-    display:block;
-    height:38px;
-    border-bottom:1px solid #1e2a38;
-    background:
-        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
-        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
-        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
-        linear-gradient(to bottom,#101722,#0c121c);
-    border-radius:8px 8px 0 0;
-}
+/* Post code blocks share the global terminal-window system below */
 
 body.post-page table{
     width:100%;
@@ -324,24 +313,24 @@ h1{
     color:var(--text-primary);
 }
 
-/* ARTICLE TYPOGRAPHY — sized for comfortable reading */
+/* ARTICLE TYPOGRAPHY — dense enough for long writeups, still readable */
 
 article{
-    font-size:18px;
-    line-height:1.75;
+    font-size:17px;
+    line-height:1.6;
 }
 
 article p{
-    margin-bottom:16px;
+    margin-bottom:12px;
     color:var(--text-secondary);
 }
 
 article h2{
-    margin-top:42px;
-    margin-bottom:16px;
+    margin-top:36px;
+    margin-bottom:12px;
 
     font-family:var(--font-body);
-    font-size:28px;
+    font-size:26px;
 
     line-height:1.3;
 
@@ -349,10 +338,10 @@ article h2{
 }
 
 article h3{
-    margin-top:30px;
-    margin-bottom:12px;
+    margin-top:26px;
+    margin-bottom:10px;
 
-    font-size:21px;
+    font-size:20px;
     line-height:1.35;
 
     color:var(--cyan);
@@ -360,12 +349,12 @@ article h3{
 
 article ul,
 article ol{
-    margin-bottom:18px;
+    margin-bottom:14px;
     padding-left:26px;
 }
 
 article li{
-    margin-bottom:8px;
+    margin-bottom:5px;
     color:var(--text-secondary);
 }
 
@@ -460,71 +449,293 @@ blockquote{
     line-height:1.6;
 }
 
-/* CODE BLOCKS */
+/* ═══════════════════════════════════════════════════════════
+   CODE TERMINAL WINDOW
+   Fixed-width frame · snug height for short snippets ·
+   scroll (x/y) for long/wide code · no forced empty pane
+   ═══════════════════════════════════════════════════════════ */
 
 pre{
-    margin:20px 0;
-}
+    --code-win-max-h: min(22rem, 62vh);
+    --code-pad-y: 12px;
+    --code-pad-x: 16px;
+    --code-chrome-h: 36px;
 
-.hljs{
-    line-height:1.65 !important;
-    padding:22px !important;
-    font-family:var(--font-mono) !important;
-}
-
-/* CODE BLOCKS */
-
-pre{
     position:relative;
+    display:flex;
+    flex-direction:column;
 
-    margin:32px 0;
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+
+    margin:28px 0;
     padding:0;
 
-    overflow:auto;
-	overflow-wrap: break-word;
+    /* Window shell — chrome fixed, body scrolls inside */
+    overflow:hidden;
 
     background:#070b12;
-
     border:1px solid #243041;
-    border-radius:8px;
+    border-radius:10px;
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.02),
-        0 0 0 1px rgba(0,0,0,.25);
+        inset 0 1px 0 rgba(255,255,255,.03),
+        0 0 0 1px rgba(0,0,0,.28),
+        0 12px 32px rgba(0,0,0,.28);
 
-    line-height:1.75;
-	
+    line-height:1.55;
 }
 
+/* Traffic-light title bar (stays put while code scrolls) */
 pre::before{
-    content:'';
+    content:"";
+    flex:0 0 var(--code-chrome-h);
     display:block;
-	overflow-wrap: break-word;
-    height:38px;
+    height:var(--code-chrome-h);
+    min-height:var(--code-chrome-h);
 
     border-bottom:1px solid #1e2a38;
 
     background:
-        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
-        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
-        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
-        linear-gradient(to bottom,#101722,#0c121c);
+        radial-gradient(circle at 18px 18px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 18px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 18px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#121a24,#0c121c);
 }
 
-pre code{
-    display:block;
-    font-size:14.5px;
-    font-weight:500;
-    padding:22px 26px;
-
-    color:#d6deeb;
+/* Filename / language label on the chrome */
+pre::after{
+    content:"code";
+    position:absolute;
+    top:0;
+    left:72px;
+    right:12px;
+    height:var(--code-chrome-h);
+    display:flex;
+    align-items:center;
 
     font-family:var(--font-mono);
-	overflow-wrap: break-word;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.06em;
+    text-transform:lowercase;
+    color:rgba(142,153,164,0.75);
+
+    pointer-events:none;
+    user-select:none;
+}
+
+pre:has(code.language-bash)::after,
+pre:has(code.language-shell)::after,
+pre:has(code.language-sh)::after{ content:"shell"; }
+pre:has(code.language-python)::after,
+pre:has(code.language-py)::after{ content:"python"; }
+pre:has(code.language-javascript)::after,
+pre:has(code.language-js)::after{ content:"javascript"; }
+pre:has(code.language-typescript)::after,
+pre:has(code.language-ts)::after{ content:"typescript"; }
+pre:has(code.language-json)::after{ content:"json"; }
+pre:has(code.language-http)::after{ content:"http"; }
+pre:has(code[data-http-kind="request"])::after{
+    content:"http request";
+    color:rgba(107,184,212,0.85);
+}
+pre:has(code[data-http-kind="response"])::after{
+    content:"http response";
+    color:rgba(92,219,126,0.85);
+}
+pre:has(code.language-nginx)::after{ content:"nginx"; }
+pre:has(code.language-c)::after{ content:"c"; }
+pre:has(code.language-cpp)::after{ content:"c++"; }
+pre:has(code.language-java)::after{ content:"java"; }
+pre:has(code.language-go)::after{ content:"go"; }
+pre:has(code.language-rust)::after{ content:"rust"; }
+pre:has(code.language-php)::after{ content:"php"; }
+pre:has(code.language-ruby)::after{ content:"ruby"; }
+pre:has(code.language-sql)::after{ content:"sql"; }
+pre:has(code.language-yaml)::after,
+pre:has(code.language-yml)::after{ content:"yaml"; }
+pre:has(code.language-xml)::after,
+pre:has(code.language-html)::after{ content:"markup"; }
+pre:has(code.language-css)::after{ content:"css"; }
+pre:has(code.language-diff)::after{ content:"diff"; }
+pre:has(code.language-powershell)::after,
+pre:has(code.language-ps1)::after{ content:"powershell"; }
+pre:has(code.language-plaintext)::after,
+pre:has(code.language-text)::after{ content:"text"; }
+
+pre code,
+pre code.hljs,
+body.post-page .hljs,
+.post-page pre code.hljs{
+    display:block;
+    flex:0 1 auto;
+
+    /* Fixed viewport — short code stays short; long code scrolls */
+    width:100%;
+    max-width:100%;
+    max-height:var(--code-win-max-h);
+    box-sizing:border-box;
+
+    margin:0;
+    padding:var(--code-pad-y) var(--code-pad-x) !important;
+
+    overflow:auto;
+    overflow-x:auto;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+
+    /* Preserve layout; scroll instead of wrapping */
+    white-space:pre !important;
+    word-wrap:normal !important;
+    overflow-wrap:normal !important;
+    word-break:normal !important;
     tab-size:4;
-    white-space: pre-wrap !important;
-    word-wrap: break-word !important;
-    overflow-x: auto;
+
+    font-family:var(--font-mono) !important;
+    font-size:13.5px !important;
+    font-weight:500;
+    line-height:1.55 !important;
+
+    color:#d6deeb !important;
+    background:#070b12 !important;
+    border-radius:0 0 10px 10px;
+
+    /* Subtle left gutter so the pane feels intentional, not empty */
+    box-shadow:inset 3px 0 0 rgba(107,184,212,0.18);
+}
+
+/* HTTP request / response panes */
+pre:has(code[data-http-kind="request"]){
+    border-color:rgba(107,184,212,0.32);
+}
+pre:has(code[data-http-kind="response"]){
+    border-color:rgba(92,219,126,0.28);
+}
+pre:has(code[data-http-kind="request"]) code{
+    box-shadow:inset 3px 0 0 rgba(107,184,212,0.55);
+}
+pre:has(code[data-http-kind="response"]) code{
+    box-shadow:inset 3px 0 0 rgba(92,219,126,0.55);
+}
+
+/* Custom HTTP highlighter tokens (site.js) */
+.http-highlighted{
+    color:#c5cdd6 !important;
+}
+.http-highlighted .http-method{
+    color:#c792ea;
+    font-weight:700;
+    letter-spacing:0.02em;
+}
+.http-highlighted .http-path{
+    color:#82aaff;
+}
+.http-highlighted .http-version{
+    color:#6bb8d4;
+    opacity:0.95;
+}
+.http-highlighted .http-status{
+    font-weight:700;
+}
+.http-highlighted .http-status-1xx{ color:#89ddff; }
+.http-highlighted .http-status-2xx{ color:#5cdb7e; }
+.http-highlighted .http-status-3xx{ color:#6bb8d4; }
+.http-highlighted .http-status-4xx{ color:#d4a054; }
+.http-highlighted .http-status-5xx{ color:#e05565; }
+.http-highlighted .http-reason{
+    color:#8e99a4;
+}
+.http-highlighted .http-header-name{
+    color:#ffcb6b;
+}
+.http-highlighted .http-colon{
+    color:#556270;
+}
+.http-highlighted .http-header-value{
+    color:#ecc48d;
+}
+.http-highlighted .http-header-value.http-sensitive{
+    color:#f07178;
+}
+.http-highlighted .http-gap{
+    display:block;
+    height:0.55em;
+}
+.http-highlighted .http-body{
+    display:block;
+    color:#d6deeb;
+}
+.http-highlighted .http-body .hljs-attr{ color:#ffcb6b; }
+.http-highlighted .http-body .hljs-string{ color:#ecc48d; }
+.http-highlighted .http-body .hljs-number{ color:#f78c6c; }
+.http-highlighted .http-body .hljs-literal{ color:#89ddff; }
+.http-highlighted .http-body .hljs-punctuation{ color:#8e99a4; }
+.http-highlighted .http-body .hljs-keyword{ color:#c792ea; }
+.http-highlighted .http-body .hljs-name{ color:#82aaff; }
+.http-highlighted .http-body .hljs-tag{ color:#89ddff; }
+.http-highlighted .http-body .hljs-comment{ color:#5c6773; font-style:italic; }
+
+/* Also style native hljs HTTP language tokens if used directly */
+pre code.language-http .hljs-keyword{ color:#c792ea !important; font-weight:700; }
+pre code.language-http .hljs-string{ color:#82aaff !important; }
+pre code.language-http .hljs-attribute{ color:#ffcb6b !important; }
+pre code.language-http .hljs-number{ color:#5cdb7e !important; font-weight:700; }
+pre code.language-http .hljs-meta{ color:#6bb8d4 !important; }
+pre code.language-http .hljs-punctuation{ color:#556270 !important; }
+
+/* Cyber scrollbars (WebKit) */
+pre code::-webkit-scrollbar{
+    width:9px;
+    height:9px;
+}
+pre code::-webkit-scrollbar-track{
+    background:rgba(15,19,24,0.6);
+    border-radius:0 0 8px 0;
+}
+pre code::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg, rgba(107,184,212,0.45), rgba(74,143,168,0.55));
+    border:2px solid #070b12;
+    border-radius:8px;
+}
+pre code::-webkit-scrollbar-thumb:hover{
+    background:linear-gradient(180deg, rgba(107,184,212,0.7), rgba(92,219,126,0.45));
+}
+pre code::-webkit-scrollbar-corner{
+    background:#070b12;
+}
+
+/* Firefox */
+pre code{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(107,184,212,0.5) rgba(15,19,24,0.6);
+}
+
+/* Soft edge fade hint when content can scroll (visual only) */
+pre:has(code:hover),
+pre:focus-within{
+    border-color:rgba(107,184,212,0.35);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 0 0 1px rgba(107,184,212,0.12),
+        0 14px 36px rgba(0,0,0,.32);
+}
+
+@media (max-width:600px){
+    pre{
+        --code-win-max-h: min(18rem, 55vh);
+        --code-pad-y: 10px;
+        --code-pad-x: 12px;
+        margin:22px 0;
+        border-radius:8px;
+    }
+    pre code,
+    pre code.hljs,
+    body.post-page .hljs,
+    .post-page pre code.hljs{
+        font-size:12.5px !important;
+    }
 }
 
 /* INDEX PAGE STYLES */
@@ -799,16 +1010,16 @@ pre code{
     }
 
     article{
-        font-size:16.5px;
-        line-height:1.7;
+        font-size:16px;
+        line-height:1.55;
     }
 
     article h2{
-        font-size:24px;
+        font-size:22px;
     }
 
     article h3{
-        font-size:19px;
+        font-size:18px;
     }
 
     .services-grid {
@@ -822,7 +1033,7 @@ pre code{
 }
 
 /* ═══════════════════════════════════════════════════════════
-   GLOBAL SITE FX — atmosphere injected by assets/js/site.js
+   GLOBAL SITE FX — atmosphere + cyber mesh (assets/js/site.js)
    Active on any page with .has-site-fx / .landing-atmosphere
    ═══════════════════════════════════════════════════════════ */
 
@@ -918,6 +1129,15 @@ body.has-site-fx .blog-nav {
     width: 100%;
     height: 100%;
     opacity: 0.55;
+}
+
+/* Neural mesh / threat-graph canvas (landing) */
+.cyber-mesh {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
 }
 
 /* Boot overlay — always fixed + out of document flow.
@@ -1064,6 +1284,7 @@ body.has-site-fx .blog-nav {
     background: rgba(92, 219, 126, 0.06);
     padding: 6px 12px;
     margin-bottom: 20px;
+    transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
 }
 
 .pulse-ring {
@@ -1073,12 +1294,39 @@ body.has-site-fx .blog-nav {
     background: var(--green);
     box-shadow: 0 0 0 0 rgba(92, 219, 126, 0.5);
     animation: pulse-ring 1.8s ease-out infinite;
+    transition: background 0.35s ease, box-shadow 0.35s ease;
 }
 
 @keyframes pulse-ring {
     0% { box-shadow: 0 0 0 0 rgba(92, 219, 126, 0.45); }
     70% { box-shadow: 0 0 0 10px rgba(92, 219, 126, 0); }
     100% { box-shadow: 0 0 0 0 rgba(92, 219, 126, 0); }
+}
+
+/* Mesh breach mode — driven by TVH.mesh.breach() */
+body.mesh-breach .session-badge {
+    color: var(--red);
+    border-color: rgba(224, 85, 101, 0.45);
+    background: rgba(224, 85, 101, 0.1);
+    box-shadow: 0 0 18px rgba(224, 85, 101, 0.18);
+}
+
+body.mesh-breach .pulse-ring {
+    background: var(--red);
+    box-shadow: 0 0 0 0 rgba(224, 85, 101, 0.55);
+    animation-name: pulse-ring-breach;
+}
+
+@keyframes pulse-ring-breach {
+    0% { box-shadow: 0 0 0 0 rgba(224, 85, 101, 0.5); }
+    70% { box-shadow: 0 0 0 12px rgba(224, 85, 101, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(224, 85, 101, 0); }
+}
+
+body.mesh-breach .landing-grid {
+    background-image:
+        linear-gradient(rgba(224, 85, 101, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(224, 85, 101, 0.045) 1px, transparent 1px);
 }
 
 .landing-identity .hero-name {
@@ -1519,7 +1767,8 @@ body.has-site-fx .blog-nav {
         transform: none;
     }
 
-    .hex-rain {
+    .hex-rain,
+    .cyber-mesh {
         display: none;
     }
 }
@@ -2125,7 +2374,7 @@ footer{
     }
 
     h1{
-        font-size:34px;
+        font-size:clamp(26px, 7vw, 34px);
     }
 
     .blog-nav-inner{
@@ -2140,5 +2389,371 @@ footer{
 
     pre{
         padding:0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE / SMALL VIEWPORTS
+   Landing · blog archive · research posts
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    body{
+        font-size:16px;
+    }
+
+    /* Fixed top nav: keep usable on narrow screens */
+    .top-nav{
+        padding-left:env(safe-area-inset-left, 0);
+        padding-right:env(safe-area-inset-right, 0);
+    }
+
+    .nav-inner.landing-nav-inner,
+    .landing-nav-inner{
+        padding:12px 14px;
+        gap:10px;
+        flex-wrap:nowrap;
+    }
+
+    .nav-brand{
+        font-size:12px;
+        min-width:0;
+        max-width:52%;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+
+    .nav-path{
+        display:none; /* ~/thevillagehacker only — path drops on small phones */
+    }
+
+    .nav-right{
+        gap:10px 12px;
+        flex-shrink:0;
+    }
+
+    .nav-link{
+        font-size:12px;
+        padding:8px 4px; /* larger touch target */
+    }
+
+    .nav-clock{
+        display:none;
+    }
+
+    /* —— Research posts —— */
+    body.post-page{
+        padding-top:56px;
+        padding-bottom:env(safe-area-inset-bottom, 0);
+    }
+
+    body.post-page .container,
+    body.post-page .post-container{
+        padding:24px 16px 80px;
+        max-width:100%;
+    }
+
+    body.post-page .advisory-banner{
+        font-size:10px;
+        letter-spacing:1px;
+        padding:10px 14px;
+        line-height:1.45;
+        word-break:break-word;
+    }
+
+    body.post-page .header{
+        margin-bottom:36px;
+        padding-bottom:22px;
+    }
+
+    body.post-page .cve-tag{
+        font-size:10px;
+        padding:5px 10px;
+        max-width:100%;
+        white-space:normal;
+        line-height:1.35;
+    }
+
+    body.post-page h1,
+    body.post-page .header h1{
+        font-size:clamp(24px, 6.5vw, 32px);
+        word-wrap:break-word;
+        overflow-wrap:anywhere;
+    }
+
+    body.post-page .subtitle{
+        font-size:15px;
+        margin-bottom:18px;
+    }
+
+    body.post-page .meta{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    body.post-page .meta-item{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+    body.post-page article{
+        font-size:16px;
+        line-height:1.55;
+        overflow-wrap:break-word;
+        word-wrap:break-word;
+    }
+
+    body.post-page article h2{
+        font-size:clamp(20px, 5.5vw, 24px);
+        margin-top:28px;
+    }
+
+    body.post-page article h3{
+        font-size:clamp(17px, 4.5vw, 19px);
+    }
+
+    /* Wide CVE / comparison tables scroll sideways instead of blowing the page */
+    body.post-page table{
+        display:block;
+        width:100%;
+        max-width:100%;
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+        font-size:13px;
+        margin:18px 0;
+    }
+
+    body.post-page th,
+    body.post-page td{
+        padding:8px 10px;
+        white-space:nowrap;
+    }
+
+    body.post-page figure{
+        margin:24px auto;
+    }
+
+    body.post-page figure img,
+    body.post-page article img{
+        border-radius:8px;
+    }
+
+    body.post-page footer,
+    body.post-page .footer{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+        margin-top:48px;
+    }
+
+    :not(pre) > code{
+        word-break:break-word;
+        overflow-wrap:anywhere;
+        white-space:normal;
+    }
+
+    /* —— Landing home —— */
+    .landing-container{
+        padding:64px 16px 56px;
+    }
+
+    .session-badge{
+        font-size:10px;
+        letter-spacing:0.8px;
+        padding:6px 10px;
+        max-width:100%;
+        white-space:normal;
+        line-height:1.4;
+    }
+
+    .hero-name{
+        font-size:clamp(28px, 8vw, 40px);
+    }
+
+    .landing-role{
+        flex-wrap:wrap;
+    }
+
+    .hero-social{
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .social-link{
+        padding:8px 12px;
+    }
+
+    .term-window{
+        min-height:280px;
+        max-width:100%;
+    }
+
+    .term-title{
+        font-size:11px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+
+    .term-body{
+        max-height:min(280px, 48vh);
+    }
+
+    .term-hint{
+        font-size:10px;
+        line-height:1.45;
+        flex-wrap:wrap;
+    }
+
+    .ops-hud{
+        gap:10px;
+    }
+
+    .ops-card{
+        padding:14px;
+    }
+
+    .landing-footer{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+
+    .contact-section,
+    .landing-contact{
+        padding:22px 16px;
+    }
+
+    .contact-link{
+        display:inline-flex;
+        max-width:100%;
+        box-sizing:border-box;
+        text-align:center;
+        justify-content:center;
+    }
+
+    .boot-overlay{
+        padding:16px;
+        padding-bottom:max(16px, env(safe-area-inset-bottom, 0px));
+    }
+
+    .boot-log{
+        font-size:11px;
+        max-width:100%;
+    }
+
+    /* —— Blog archive —— */
+    .blog-archive .blog-container.archive-container,
+    .archive-container{
+        padding:64px 16px 56px;
+    }
+
+    .archive-title{
+        font-size:clamp(24px, 7vw, 32px);
+    }
+
+    .archive-sub{
+        font-size:14px;
+        line-height:1.6;
+    }
+
+    .archive-search-wrap{
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
+        padding:12px;
+    }
+
+    .archive-search{
+        width:100%;
+        min-width:0;
+        font-size:16px; /* prevents iOS zoom-on-focus */
+    }
+
+    .archive-filters,
+    .filter-bar{
+        gap:8px;
+    }
+
+    .filter-btn{
+        padding:8px 12px;
+        font-size:11px;
+        min-height:36px;
+    }
+
+    .archive-term.term-window,
+    .archive-term{
+        min-height:260px;
+    }
+
+    .research-item{
+        flex-direction:column;
+        align-items:flex-start;
+        padding:16px;
+        gap:12px;
+    }
+
+    .research-title{
+        font-size:14px;
+        overflow-wrap:anywhere;
+    }
+
+    .research-target{
+        overflow-wrap:anywhere;
+        word-break:break-word;
+    }
+
+    .research-tag{
+        align-self:flex-start;
+    }
+
+    .archive-footer,
+    .landing-footer.archive-footer{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+    .nav-brand{
+        max-width:46%;
+        font-size:11px;
+    }
+
+    .nav-link{
+        font-size:11px;
+        padding:8px 2px;
+    }
+
+    body.post-page .container,
+    body.post-page .post-container,
+    .landing-container,
+    .archive-container{
+        padding-left:12px;
+        padding-right:12px;
+    }
+
+    .htag{
+        font-size:10px;
+        padding:3px 8px;
+    }
+}
+
+/* Prefer coarser hover disable on touch-primary devices */
+@media (hover: none) and (pointer: coarse) {
+    .landing-card:hover,
+    .research-item:hover,
+    .service-card:hover{
+        transform:none;
+    }
+
+    .nav-link,
+    .filter-btn,
+    .social-link,
+    .contact-link,
+    .research-item{
+        -webkit-tap-highlight-color:rgba(107, 184, 212, 0.15);
     }
 }
