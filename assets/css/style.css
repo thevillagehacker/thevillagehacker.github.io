@@ -594,7 +594,8 @@ body.post-page .hljs,
     tab-size:4;
 
     font-family:var(--font-mono) !important;
-    font-size:13.5px !important;
+    /* Slightly under article body (17px) so blocks don't overpower prose */
+    font-size:13px !important;
     font-weight:500;
     line-height:1.55 !important;
 
@@ -2284,6 +2285,7 @@ body.mesh-breach .landing-grid {
     }
 }
 
+/* Inline code — mono metrics read large; keep a step under body text */
 :not(pre) > code{
     background:rgba(107,184,212,.08);
 
@@ -2291,12 +2293,15 @@ body.mesh-breach .landing-grid {
 
     border:1px solid rgba(107,184,212,.15);
 
-    padding:2px 7px;
+    padding:1px 6px;
 
     border-radius:4px;
 
     font-family:var(--font-mono);
-    font-size:.95em;
+    font-size:0.82em;
+    font-weight:500;
+    line-height:1.35;
+    vertical-align:0.05em;
 }
 
 /* TOKEN COLORS */
