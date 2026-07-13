@@ -87,6 +87,22 @@
   }
 
   /* ── role typewriter ─────────────────────────────────── */
+  function reserveRoleHeight(el, roles) {
+    const row = el.closest(".landing-role");
+    if (!row) return;
+
+    // Measure the tallest role at the current width so typing / role swaps
+    // never shift the bio and content below.
+    const previous = el.textContent;
+    let maxH = 0;
+    for (const role of roles) {
+      el.textContent = role;
+      maxH = Math.max(maxH, row.getBoundingClientRect().height);
+    }
+    el.textContent = previous;
+    if (maxH > 0) row.style.minHeight = `${Math.ceil(maxH)}px`;
+  }
+
   async function typeRoles() {
     const el = $("#role-typewriter");
     if (!el) return;
@@ -98,6 +114,14 @@
       "PoC Engineer",
       "Bug Bounty Operator",
     ];
+
+    reserveRoleHeight(el, roles);
+
+    let resizeTimer = 0;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => reserveRoleHeight(el, roles), 120);
+    });
 
     if (prefersReducedMotion) {
       el.textContent = roles[0];
@@ -156,8 +180,7 @@
         print(`  <span class="t-ok">recon</span>      — surface scan + mesh pulse`);
         print(`  <span class="t-ok">breach</span>     — hostile mesh mode (~8s)`);
         print(`  <span class="t-ok">skills</span>     — focus areas`);
-        print(`  <span class="t-ok">blog</span>       — open research archive`);
-        print(`  <span class="t-ok">writeups</span>   — CTF / writeup notes`);
+        print(`  <span class="t-ok">writeups</span>   — CTF writeups (GitBook)`);
         print(`  <span class="t-ok">contact</span>    — reach the operator`);
         print(`  <span class="t-ok">neofetch</span>   — system card`);
         print(`  <span class="t-ok">clear</span>      — clear terminal + calm mesh`);
@@ -175,9 +198,7 @@
         print(`handle:   @thevillagehackr`);
       },
       ls() {
-        print(`drwxr-xr-x  blog/`);
         print(`drwxr-xr-x  writeups/`);
-        print(`drwxr-xr-x  posts/`);
         print(`-rw-r--r--  identity.txt`);
         print(`-rwxr-xr-x  recon.sh`);
         print(`-rwxr-xr-x  breach.sh`);
@@ -198,7 +219,7 @@
           await sleep(280);
           print(`<span class="t-ok">[+]</span> ${s} <span class="t-dim">0x${randomHex(6)}</span>`);
         }
-        print(`<span class="t-accent">[✓]</span> surface map updated · mesh + HUD refreshed`);
+        print(`<span class="t-accent">[✓]</span> surface map updated · mesh refreshed`);
       },
       async breach() {
         print(`<span class="t-err">[!] injecting hostile traffic into attack-surface map...</span>`);
@@ -211,22 +232,18 @@
         print(`<span class="t-dim">breach window ~8s · type <span class="t-accent">clear</span> to force calm</span>`);
       },
       skills() {
-        print(`RCE · IDOR · XSS · SQLi · ATO · deserialization · mobile · proxy tooling`);
-      },
-      blog() {
-        print(`opening <span class="t-accent">/blog.html</span>...`);
-        setTimeout(() => (window.location.href = "/blog.html"), 400);
+        print(`vulnerability research · security analysis · offensive security · consultancy`);
       },
       writeups() {
-        print(`opening writeups archive...`);
+        print(`opening <span class="t-accent">CTF Writeups</span> on GitBook...`);
         setTimeout(
           () => window.open("https://thevillagehacker-security.gitbook.io/ctf-writeups", "_blank"),
           400
         );
       },
       contact() {
-        print(`encrypted channel preferred`);
-        print(`→ <span class="t-accent">https://x.com/thevillagehackr</span>`);
+        print(`LinkedIn  → <span class="t-accent">https://linkedin.com/in/thevillagehacker</span>`);
+        print(`X         → <span class="t-accent">https://x.com/thevillagehackr</span>`);
       },
       neofetch() {
         const status = meshApi() && meshApi().isBreach && meshApi().isBreach()
@@ -310,77 +327,543 @@
       .replace(/"/g, "&quot;");
   }
 
-  /* ── ops HUD meters + feed ───────────────────────────── */
-  function initHud() {
-    const surfaceBar = $("#meter-surface");
-    const entropyBar = $("#meter-entropy");
-    const valSurface = $("#val-surface");
-    const valEntropy = $("#val-entropy");
-    const findings = $("#ops-findings");
-    const feed = $("#ops-feed");
-    if (!feed) return;
+  /* ── live CVE feed (NVD API 2.0, client-side) ─────────── */
+  const CVE_CACHE_KEY = "tvh_nvd_cves_v3";
+  const CVE_CACHE_TTL_MS = 30 * 60 * 1000; // 30 min — be kind to NVD rate limits
+  const CVE_LIMIT = 6;
+  const CVE_FETCH_PAGE = 40; // pull a wider tail; newest rows often lack CVSS yet
 
-    let surface = 12;
-    let entropy = 3.2;
-    let crit = 0,
-      high = 0,
-      med = 0;
+  function nvdTimestamp(date) {
+    // NVD expects ISO-8601 with milliseconds, e.g. 2024-01-01T00:00:00.000
+    return date.toISOString().replace("Z", "");
+  }
 
-    const feedLines = [
-      { sev: "info", msg: "fingerprint: nginx / cloudflare / custom api" },
-      { sev: "ok", msg: "cors misconfig candidate → queueed (false positive)" },
-      { sev: "warn", msg: "auth cookie missing HttpOnly on staging" },
-      { sev: "info", msg: "enum: /api/v2/users/{id} responds 200 for sequential ids" },
-      { sev: "crit", msg: "command injection sink in export endpoint (lab)" },
-      { sev: "ok", msg: "rate-limit present on /login · 20/min" },
-      { sev: "warn", msg: "JWT alg confusion test harness ready" },
-      { sev: "info", msg: "subdomain takeover check: 0 dangling CNAME" },
-      { sev: "high", msg: "IDOR on invoice PDF — access control gap" },
-      { sev: "info", msg: "payload entropy recalculated after mutate()" },
-      { sev: "ok", msg: "ssrf filter blocks link-local · good" },
-      { sev: "warn", msg: "debug endpoint still exposed on preprod" },
+  function readCveCache() {
+    try {
+      const raw = sessionStorage.getItem(CVE_CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.ts || !Array.isArray(parsed.items)) return null;
+      if (Date.now() - parsed.ts > CVE_CACHE_TTL_MS) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeCveCache(items, sourceLabel) {
+    try {
+      sessionStorage.setItem(
+        CVE_CACHE_KEY,
+        JSON.stringify({ ts: Date.now(), items, sourceLabel })
+      );
+    } catch {
+      /* private mode / quota — ignore */
+    }
+  }
+
+  function clearCveCache() {
+    try {
+      sessionStorage.removeItem(CVE_CACHE_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function showCveSkeletons(grid) {
+    if (!grid) return;
+    grid.setAttribute("aria-busy", "true");
+    grid.innerHTML = Array.from({ length: CVE_LIMIT }, () =>
+      `<div class="cve-card cve-skeleton" aria-hidden="true"></div>`
+    ).join("");
+  }
+
+  function asMetricList(value) {
+    if (!value) return [];
+    return Array.isArray(value) ? value : [value];
+  }
+
+  function metricVersionRank(key) {
+    // Prefer v3.1 (common NVD primary), then v3.0, v4.0, v2.
+    if (key === "cvssMetricV31") return 0;
+    if (key === "cvssMetricV30") return 1;
+    if (key === "cvssMetricV40") return 2;
+    if (key === "cvssMetricV2") return 3;
+    return 9;
+  }
+
+  /**
+   * Read CVSS score/severity from NVD metrics.
+   * NVD may attach multiple metric families (v4.0 / v3.1 / …) and Primary/Secondary
+   * sources. Pick the best available entry rather than only the first key found.
+   */
+  function extractCvss(metrics) {
+    if (!metrics || typeof metrics !== "object") return null;
+
+    const keys = [
+      "cvssMetricV31",
+      "cvssMetricV30",
+      "cvssMetricV40",
+      "cvssMetricV2",
     ];
+    const candidates = [];
 
-    let fi = 0;
-    function pushFeed() {
-      const item = feedLines[fi % feedLines.length];
-      fi++;
-      const row = document.createElement("div");
-      row.className = "feed-row " + item.sev;
-      const ts = new Date().toISOString().slice(11, 19);
-      row.innerHTML = `<span class="feed-ts">${ts}</span><span class="feed-msg">${item.msg}</span>`;
-      feed.prepend(row);
-      while (feed.children.length > 6) feed.removeChild(feed.lastChild);
+    for (const key of keys) {
+      for (const metric of asMetricList(metrics[key])) {
+        if (!metric || typeof metric !== "object") continue;
+        const data = metric.cvssData || {};
+        const rawScore =
+          data.baseScore != null
+            ? data.baseScore
+            : metric.baseScore != null
+              ? metric.baseScore
+              : null;
+        const score =
+          typeof rawScore === "number" ? rawScore : parseFloat(rawScore);
+        let severity =
+          data.baseSeverity ||
+          metric.baseSeverity ||
+          data.severity ||
+          metric.severity ||
+          "";
+        if (!severity && Number.isFinite(score)) severity = scoreToSeverity(score);
+        if (!Number.isFinite(score) && !severity) continue;
 
-      if (item.sev === "crit") crit++;
-      else if (item.sev === "high") high++;
-      else if (item.sev === "warn") med++;
+        const type = String(metric.type || "");
+        const source = String(metric.source || "");
+        // Prefer NVD Primary, then any Primary, then everything else.
+        let typeRank = 2;
+        if (type === "Primary" && /nvd\.nist\.gov|nvd@nist\.gov/i.test(source)) {
+          typeRank = 0;
+        } else if (type === "Primary") {
+          typeRank = 1;
+        }
 
-      if (findings) {
-        findings.innerHTML = `
-          <span class="sev crit">${crit} CRITICAL</span>
-          <span class="sev high">${high} HIGH</span>
-          <span class="sev med">${med} MED</span>`;
+        candidates.push({
+          score: Number.isFinite(score) ? score : null,
+          severity: String(severity || "UNKNOWN").toUpperCase(),
+          version: data.version || key.replace("cvssMetric", ""),
+          rank: typeRank * 10 + metricVersionRank(key),
+        });
       }
     }
 
-    function tickMeters() {
-      surface = Math.min(97, surface + Math.random() * 2.4);
-      entropy = Math.min(8.0, Math.max(2.5, entropy + (Math.random() - 0.45) * 0.35));
-      if (surfaceBar) surfaceBar.style.width = surface.toFixed(1) + "%";
-      if (entropyBar) entropyBar.style.width = (entropy / 8) * 100 + "%";
-      if (valSurface) valSurface.textContent = surface.toFixed(0);
-      if (valEntropy) valEntropy.textContent = entropy.toFixed(2);
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => a.rank - b.rank);
+    return candidates[0];
+  }
+
+  function scoreToSeverity(score) {
+    if (score >= 9) return "CRITICAL";
+    if (score >= 7) return "HIGH";
+    if (score >= 4) return "MEDIUM";
+    if (score > 0) return "LOW";
+    return "NONE";
+  }
+
+  function hasScoredSeverity(item) {
+    if (!item) return false;
+    if (item.score != null && Number.isFinite(item.score)) return true;
+    const sev = String(item.severity || "").toUpperCase();
+    return Boolean(sev) && sev !== "UNKNOWN" && sev !== "PENDING" && sev !== "NONE";
+  }
+
+  function severityClass(sev) {
+    const s = (sev || "").toUpperCase();
+    if (s === "CRITICAL") return "crit";
+    if (s === "HIGH") return "high";
+    if (s === "MEDIUM" || s === "MODERATE") return "med";
+    if (s === "LOW") return "low";
+    return "unk";
+  }
+
+  function publishedTime(item) {
+    return Date.parse((item && (item.published || item.modified)) || 0) || 0;
+  }
+
+  /** Newest first; among same-ish recency, scored entries win. */
+  function pickLatestCves(items, limit) {
+    const sorted = items.slice().sort((a, b) => publishedTime(b) - publishedTime(a));
+    const scored = sorted.filter(hasScoredSeverity);
+    const pending = sorted.filter((item) => !hasScoredSeverity(item));
+    // Newest publications often have empty metrics until NVD finishes analysis.
+    // Prefer recent scored CVEs so severity from the response is visible in the UI.
+    const picked = scored.concat(pending).slice(0, limit);
+    return picked;
+  }
+
+  /** Best-effort score/severity from a CVSS vector string (CIRCL/OSV style). */
+  function parseCvssVector(vector) {
+    const raw = String(vector || "").trim();
+    if (!raw) return null;
+    // Rare: numeric score only
+    if (/^\d+(\.\d+)?$/.test(raw)) {
+      const score = parseFloat(raw);
+      return Number.isFinite(score)
+        ? { score, severity: scoreToSeverity(score) }
+        : null;
+    }
+    if (/CRITICAL|HIGH|MEDIUM|LOW/i.test(raw) && !raw.includes("/")) {
+      return {
+        score: null,
+        severity: raw.match(/CRITICAL|HIGH|MEDIUM|LOW/i)[0].toUpperCase(),
+      };
     }
 
-    // seed
-    for (let i = 0; i < 3; i++) pushFeed();
-    tickMeters();
-
-    if (!prefersReducedMotion) {
-      setInterval(pushFeed, 2800);
-      setInterval(tickMeters, 900);
+    // CVSS:3.x impact → rough severity when baseScore is not provided
+    if (/CVSS:3/i.test(raw)) {
+      const parts = {};
+      raw.split("/").forEach((token) => {
+        const [k, v] = token.split(":");
+        if (k && v) parts[k.toUpperCase()] = v.toUpperCase();
+      });
+      // Minimal CVSS 3.1 base-score approximation via official formula subset
+      const score = approximateCvss31(parts);
+      if (score != null) {
+        return { score, severity: scoreToSeverity(score) };
+      }
     }
+
+    // CVSS:4.0 — use impact letters for a coarse band when score absent
+    if (/CVSS:4/i.test(raw)) {
+      const highs = (raw.match(/:[H]\b/g) || []).length;
+      if (highs >= 3) return { score: null, severity: "CRITICAL" };
+      if (highs >= 2) return { score: null, severity: "HIGH" };
+      if (highs >= 1) return { score: null, severity: "MEDIUM" };
+      return { score: null, severity: "LOW" };
+    }
+
+    return null;
+  }
+
+  function approximateCvss31(p) {
+    // Values from CVSS 3.1 spec (rounded). Enough for UI banding.
+    const AV = { N: 0.85, A: 0.62, L: 0.55, P: 0.2 }[p.AV];
+    const AC = { L: 0.77, H: 0.44 }[p.AC];
+    const PR_U = { N: 0.85, L: 0.62, H: 0.27 }[p.PR];
+    const PR_C = { N: 0.85, L: 0.68, H: 0.5 }[p.PR];
+    const UI = { N: 0.85, R: 0.62 }[p.UI];
+    const impact = { N: 0, L: 0.22, H: 0.56 };
+    const C = impact[p.C];
+    const I = impact[p.I];
+    const A = impact[p.A];
+    if ([AV, AC, UI, C, I, A].some((v) => v == null)) return null;
+    const scopeChanged = p.S === "C";
+    const PR = (scopeChanged ? PR_C : PR_U);
+    if (PR == null) return null;
+
+    const iss = 1 - (1 - C) * (1 - I) * (1 - A);
+    let impactScore;
+    if (scopeChanged) {
+      impactScore = 7.52 * (iss - 0.029) - 3.25 * Math.pow(iss - 0.02, 15);
+    } else {
+      impactScore = 6.42 * iss;
+    }
+    if (impactScore <= 0) return 0;
+
+    const exploitability = 8.22 * AV * AC * PR * UI;
+    let base;
+    if (scopeChanged) {
+      base = Math.min(1.08 * (impactScore + exploitability), 10);
+    } else {
+      base = Math.min(impactScore + exploitability, 10);
+    }
+    // CVSS round-up to 1 decimal
+    return Math.ceil(base * 10) / 10;
+  }
+
+  function englishDescription(descriptions) {
+    if (!Array.isArray(descriptions)) return "No description available.";
+    const en = descriptions.find((d) => d.lang === "en") || descriptions[0];
+    return (en && en.value) || "No description available.";
+  }
+
+  function truncate(text, max) {
+    const t = String(text || "").replace(/\s+/g, " ").trim();
+    if (t.length <= max) return t;
+    return t.slice(0, max - 1).trimEnd() + "…";
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso.slice(0, 10);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function normalizeNvdItems(payload) {
+    const vulns = (payload && payload.vulnerabilities) || [];
+    return vulns
+      .map((row) => {
+        const cve = row && row.cve;
+        if (!cve || !cve.id) return null;
+        const cvss = extractCvss(cve.metrics);
+        return {
+          id: cve.id,
+          published: cve.published,
+          modified: cve.lastModified,
+          status: cve.vulnStatus || "",
+          summary: truncate(englishDescription(cve.descriptions), 180),
+          score: cvss ? cvss.score : null,
+          // Brand-new NVD rows often ship before CVSS analysis is attached.
+          severity: cvss ? cvss.severity : "PENDING",
+          url: `https://nvd.nist.gov/vuln/detail/${encodeURIComponent(cve.id)}`,
+        };
+      })
+      .filter(Boolean);
+  }
+
+  async function fetchNvdJson(params) {
+    const url = `https://services.nvd.nist.gov/rest/json/cves/2.0?${params}`;
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error(`NVD HTTP ${res.status}`);
+    return res.json();
+  }
+
+  async function fetchRecentFromNvd() {
+    const end = new Date();
+    // Short window so the tail of the page is truly the latest publications.
+    const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const windowParams = {
+      pubStartDate: nvdTimestamp(start),
+      pubEndDate: nvdTimestamp(end),
+    };
+
+    // NVD returns chronological order oldest-first. Probe total, then read the tail.
+    const probe = await fetchNvdJson(
+      new URLSearchParams({
+        resultsPerPage: "1",
+        startIndex: "0",
+        ...windowParams,
+      })
+    );
+    const total = Number(probe.totalResults) || 0;
+    if (!total) throw new Error("NVD returned no CVEs");
+
+    const pageSize = Math.min(Math.max(CVE_FETCH_PAGE, CVE_LIMIT * 2), 100);
+    const startIndex = Math.max(0, total - pageSize);
+    const page = await fetchNvdJson(
+      new URLSearchParams({
+        resultsPerPage: String(pageSize),
+        startIndex: String(startIndex),
+        ...windowParams,
+      })
+    );
+
+    const items = pickLatestCves(normalizeNvdItems(page), CVE_LIMIT);
+    if (!items.length) throw new Error("NVD returned no CVEs");
+    const scoredCount = items.filter(hasScoredSeverity).length;
+    return {
+      items,
+      sourceLabel:
+        scoredCount === items.length
+          ? "NVD · latest with CVSS (7d)"
+          : `NVD · latest (7d) · ${scoredCount}/${items.length} scored`,
+    };
+  }
+
+  /** CIRCL fallback — no key, CORS open; format varies so we normalize carefully. */
+  async function fetchRecentFromCircl() {
+    const res = await fetch("https://cve.circl.lu/api/last/" + Math.max(CVE_LIMIT * 3, 12), {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error(`CIRCL HTTP ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error("CIRCL unexpected payload");
+
+    const items = data
+      .map((row) => {
+        // OSV-style
+        if (row.id || (row.aliases && row.aliases.length)) {
+          const cveId =
+            (row.aliases || []).find((a) => /^CVE-\d{4}-\d+/i.test(a)) ||
+            (/^CVE-\d{4}-\d+/i.test(row.id || "") ? row.id : null);
+          if (!cveId) return null;
+          let severity = "PENDING";
+          let score = null;
+          if (Array.isArray(row.severity) && row.severity.length) {
+            for (const entry of row.severity) {
+              const parsed = parseCvssVector(entry && entry.score);
+              if (parsed) {
+                score = parsed.score;
+                severity = parsed.severity;
+                break;
+              }
+            }
+          }
+          return {
+            id: cveId,
+            published: row.published,
+            modified: row.modified,
+            status: "",
+            summary: truncate(row.details || "No description available.", 180),
+            score,
+            severity,
+            url: `https://nvd.nist.gov/vuln/detail/${encodeURIComponent(cveId)}`,
+          };
+        }
+        // CVE JSON 5.x style
+        if (row.cveMetadata && row.cveMetadata.cveId) {
+          const id = row.cveMetadata.cveId;
+          const cna = (row.containers && row.containers.cna) || {};
+          const desc =
+            (cna.descriptions || []).find((d) => d.lang === "en") ||
+            (cna.descriptions || [])[0];
+          let severity = "PENDING";
+          let score = null;
+          // metrics may include cvssV3_1 / cvssV4_0 style objects
+          const metrics = cna.metrics || [];
+          for (const metric of asMetricList(metrics)) {
+            const block =
+              (metric && (metric.cvssV3_1 || metric.cvssV31 || metric.cvssV3 || metric.cvssV4_0 || metric.cvssV40)) ||
+              metric;
+            if (!block) continue;
+            if (block.baseScore != null || block.baseSeverity) {
+              const s =
+                typeof block.baseScore === "number"
+                  ? block.baseScore
+                  : parseFloat(block.baseScore);
+              score = Number.isFinite(s) ? s : null;
+              severity = String(
+                block.baseSeverity || (score != null ? scoreToSeverity(score) : "PENDING")
+              ).toUpperCase();
+              break;
+            }
+            if (block.vectorString) {
+              const parsed = parseCvssVector(block.vectorString);
+              if (parsed) {
+                score = parsed.score;
+                severity = parsed.severity;
+                break;
+              }
+            }
+          }
+          return {
+            id,
+            published: row.cveMetadata.datePublished,
+            modified: row.cveMetadata.dateUpdated,
+            status: row.cveMetadata.state || "",
+            summary: truncate((desc && desc.value) || "No description available.", 180),
+            score,
+            severity,
+            url: `https://nvd.nist.gov/vuln/detail/${encodeURIComponent(id)}`,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    const picked = pickLatestCves(items, CVE_LIMIT);
+    if (!picked.length) throw new Error("CIRCL returned no usable CVEs");
+    return { items: picked, sourceLabel: "CIRCL · latest updates" };
+  }
+
+  function renderCveCards(grid, items) {
+    grid.innerHTML = items
+      .map((item) => {
+        const sev = item.severity || "PENDING";
+        const scoreLabel =
+          item.score != null && Number.isFinite(item.score)
+            ? `${item.score.toFixed(1)} · ${sev}`
+            : sev;
+        return `
+          <a class="cve-card" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
+            <div class="cve-card-top">
+              <span class="cve-id">${escapeHtml(item.id)}</span>
+              <span class="cve-sev sev-${severityClass(sev)}">${escapeHtml(scoreLabel)}</span>
+            </div>
+            <p class="cve-summary">${escapeHtml(item.summary)}</p>
+            <div class="cve-card-meta">
+              <span>pub ${escapeHtml(formatDate(item.published))}</span>
+              <span>mod ${escapeHtml(formatDate(item.modified))}</span>
+            </div>
+          </a>`;
+      })
+      .join("");
+  }
+
+  function renderCveError(grid, meta, err) {
+    const msg = err && err.message ? err.message : "request failed";
+    if (meta) {
+      meta.textContent = "unavailable";
+      meta.classList.add("is-error");
+    }
+    grid.innerHTML = `
+      <div class="cve-error">
+        <strong>Could not load live CVE data.</strong>
+        <span>${escapeHtml(msg)}</span>
+        <a href="https://nvd.nist.gov/vuln/search" target="_blank" rel="noopener">Open NVD search →</a>
+      </div>`;
+  }
+
+  async function initCveFeed(options = {}) {
+    const force = options.force === true;
+    const grid = $("#cve-grid");
+    const meta = $("#cve-meta");
+    if (!grid) return;
+
+    if (force) {
+      clearCveCache();
+      showCveSkeletons(grid);
+      if (meta) {
+        meta.textContent = "refreshing…";
+        meta.classList.remove("is-error");
+      }
+    } else {
+      const cached = readCveCache();
+      if (cached && cached.items.length) {
+        renderCveCards(grid, cached.items);
+        grid.setAttribute("aria-busy", "false");
+        if (meta) {
+          meta.classList.remove("is-error");
+          const ageMin = Math.max(0, Math.round((Date.now() - cached.ts) / 60000));
+          meta.textContent = `${cached.sourceLabel || "cached"} · ${ageMin}m ago`;
+        }
+        return;
+      }
+    }
+
+    try {
+      let result;
+      try {
+        result = await fetchRecentFromNvd();
+      } catch (nvdErr) {
+        // Fallback if NVD rate-limits or is unreachable
+        result = await fetchRecentFromCircl();
+      }
+      writeCveCache(result.items, result.sourceLabel);
+      renderCveCards(grid, result.items);
+      grid.setAttribute("aria-busy", "false");
+      if (meta) {
+        meta.classList.remove("is-error");
+        meta.textContent = `${result.sourceLabel} · just now`;
+      }
+    } catch (err) {
+      grid.setAttribute("aria-busy", "false");
+      renderCveError(grid, meta, err);
+    }
+  }
+
+  function wireCveRefresh() {
+    const btn = $("#cve-refresh");
+    if (!btn) return;
+
+    let inflight = false;
+    btn.addEventListener("click", async () => {
+      if (inflight) return;
+      inflight = true;
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.textContent = "Refreshing…";
+      try {
+        await initCveFeed({ force: true });
+      } finally {
+        inflight = false;
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+        btn.textContent = "Refresh";
+      }
+    });
   }
 
   /* ── init ────────────────────────────────────────────── */
@@ -394,9 +877,13 @@
     setInterval(tickClock, 1000);
     setInterval(tickUptime, 1000);
 
+    wireCveRefresh();
+    // Start CVE fetch early (parallel with boot animation)
+    const cveReady = initCveFeed();
+
     await runBoot();
     typeRoles();
     initTerminal();
-    initHud();
+    await cveReady;
   });
 })();
