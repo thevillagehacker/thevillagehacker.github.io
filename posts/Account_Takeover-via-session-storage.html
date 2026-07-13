@@ -11,7 +11,7 @@ Account Takeover Through Manipulation of Session Storage — thevillagehacker
 </title>
 
 <meta name="description"
-content="Account Takeover through manipulation of session storage values."/>
+content="How a financial app trusted sessionStorage for identity: user enumeration, OSINT, and full account takeover without touching the auth cookie."/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,7 +109,7 @@ pre::before{
     </h1>
 
     <p class="subtitle">
-        SESSION STORAGE // USER ENUMERATION // COOKIE AUTHENTICATION
+        CLIENT-SIDE IDENTITY // USER ORACLE // FULL ATO
     </p>
 
     <div class="meta">
@@ -136,68 +136,46 @@ pre::before{
 <article>
 
 <p>
-This article explores account takeover through manipulation
-of session storage values in a financial web application.
-</p>
-
-<h2>Target Background</h2>
-
-<p>
-The target application was designed for financial workflows
-including invoice generation, payment tracking, and
-reconciliation operations.
+The app had a real session cookie. Akamai was in front. On paper,
+authentication looked fine. Identity for the SPA, though, lived
+in <code>sessionStorage</code> — a JSON blob the UI treated as
+gospel after login. If you can read another user’s object from an
+API and paste it into that key, you are not “hacking the cookie.”
+You are walking into their invoices as them.
 </p>
 
 <p>
-Users could create organizations, invite members, and assign
-roles for collaborative financial management.
+This is that bug on a multi-tenant finance product: enumeration,
+client-side trust, OSINT for a real corporate admin, full
+account takeover.
 </p>
 
-<h2>Overview</h2>
+<h2>Target</h2>
 
 <p>
-A test account was created to evaluate the application's
-authentication and authorization logic.
+Web app for invoice generation, payment tracking, reconciliation.
+Users create orgs, invite teammates, assign roles. React frontend,
+REST APIs, cookie-based auth, Akamai WAF. After login you are
+pushed through org setup — normal B2B SaaS shape.
 </p>
 
 <p>
-After login, the application required users to create an
-organization and assign team roles.
+I registered a test account and watched the network tab during
+login more carefully than the “secure” branding deserved.
 </p>
 
-<h2>Reconnaissance</h2>
-
-<ul>
-
-<li>ReactJS frontend</li>
-
-<li>Akamai WAF</li>
-
-<li>REST APIs</li>
-
-<li>Cookie-based authentication</li>
-
-</ul>
-
-<h2>User Enumeration</h2>
+<h2>The API that talked too much</h2>
 
 <p>
-During authentication the application performed a user
-verification request based on the supplied email address.
+Early in the auth flow the client asked the backend whether a
+user existed. The answer was not a boolean.
 </p>
 
-<h2>Request</h2>
-
-<pre><code class="language-text">
-GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
+<pre><code class="language-text">GET /api/v1/user?email=nj@tvhsecurity.com HTTP/2
 Host: www.target.com
-Cookie: session=blahblah
-</code></pre>
+Cookie: session=blahblah</code></pre>
 
-<h2>Response</h2>
-
-<pre><code class="language-json">
-{
+<pre><code class="language-json">{
   "status": true,
   "message": "Successfully Retrieved",
   "result": [
@@ -210,131 +188,73 @@ Cookie: session=blahblah
       "IsActive": true
     }
   ]
-}
-</code></pre>
+}</code></pre>
 
 <p>
-The API exposed excessive user metadata during the login
-workflow.
+That is an enumeration oracle and a profile dump in one call:
+stable user id, role, country, approval state. Useful for the
+SPA. Equally useful for an attacker who only needs an email.
 </p>
 
-<h2>Post Login Analysis</h2>
+<h2>Where the SPA kept “who am I?”</h2>
 
 <p>
-Further analysis of browser storage revealed that the
-application stored user information inside session storage.
-</p>
-
-<p>
-The stored values matched the response returned from the
-user verification API endpoint.
+After login, browser storage held a <code>login</code> (or equivalent)
+entry whose JSON matched the user API almost field-for-field.
 </p>
 
 <img src="../assets/images/blogs/ATO/session_storage.png"
-alt="session storage">
-
-<h2>Theory</h2>
+alt="User object mirrored into session storage after login">
 
 <p>
-The application relied on encrypted cookies for authentication,
-however authorization logic appeared dependent on session
-storage values.
+Hypothesis: cookie proves “some authenticated browser session,”
+but the React app decides <em>which</em> user to render and which
+tenant APIs to call from session storage. If subsequent requests
+key off <code>UserId</code> / email from that blob without binding them
+to the server session, client-side swap equals impersonation.
 </p>
 
 <p>
-To validate the theory, a second legitimate user account was
-created for testing.
-</p>
-
-<p>
-The objective was to determine whether replacing session
-storage values would impersonate another user account.
+I created a second legitimate account to test the theory cleanly
+before touching anyone real.
 </p>
 
 <img src="../assets/images/blogs/ATO/Signed_up_user.png"
-alt="signed up user">
+alt="Second test account used for controlled impersonation checks">
 
-<h2>Extracting User Data</h2>
+<pre><code class="language-text">GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
+Host: www.target.com</code></pre>
 
 <p>
-A second verification request was issued using another user's
-email address.
+Response again included the full object. I copied it into the
+first account’s session storage under the same key, refreshed,
+and the UI flipped identity. Same cookie. Different user. That
+is the whole vulnerability class in one demo.
 </p>
 
-<pre><code class="language-text">
-GET /api/v1/user?email=nj+1@tvhsecurity.com HTTP/2
-Host: www.target.com
-</code></pre>
+<h2>Making it real: OSINT → employee admin</h2>
 
 <p>
-The returned JSON response contained the complete user object
-required for impersonation.
-</p>
-
-<h2>Session Storage Manipulation</h2>
-
-<p>
-The extracted JSON payload was copied into the session storage
-value associated with the <code>login</code> key.
-</p>
-
-<p>
-After refreshing the page, the application granted access to
-the second user's account.
-</p>
-
-<h2>OSINT Reconnaissance</h2>
-
-<p>
-To validate the issue against a real-world account,
-OSINT reconnaissance was performed against the target
-organization.
-</p>
-
-<p>
-Corporate email addresses were collected from:
-</p>
-
-<ul>
-
-<li>Public contact pages</li>
-
-<li>GitHub repositories</li>
-
-<li>Issue tracker comments</li>
-
-<li>Developer discussions</li>
-
-</ul>
-
-<h2>GitHub Recon</h2>
-
-<p>
-GitHub issue comments revealed valid employee email addresses
-associated with the organization.
+Demo accounts prove the bug. Reputation-grade reports need a
+realistic victim without crossing lines. I stayed in
+publicly available sources: contact pages, GitHub issues and
+comments, tracker noise — the places engineers accidentally
+leave work emails.
 </p>
 
 <img src="../assets/images/blogs/ATO/github.png"
-alt="github recon">
+alt="Public GitHub activity exposing corporate email patterns">
 
 <p>
-The discovered email addresses were tested using Intruder
-to identify valid accounts through content-length variations.
+Candidate addresses went through the same user API (Intruder /
+content-length diffs work when responses vary for hit vs miss).
+One corporate mailbox resolved to an approved Admin:
 </p>
 
-<h2>Verify User</h2>
+<pre><code class="language-text">GET /api/v1/user?email=baXXXXXX@target.com HTTP/2
+Host: www.target.com</code></pre>
 
-<h2>Request</h2>
-
-<pre><code class="language-text">
-GET /api/v1/user?email=baXXXXXX@target.com HTTP/2
-Host: www.target.com
-</code></pre>
-
-<h2>Response</h2>
-
-<pre><code class="language-json">
-{
+<pre><code class="language-json">{
   "status": true,
   "message": "Successfully Retrieved",
   "result": [
@@ -346,122 +266,106 @@ Host: www.target.com
       "Status": "Approved"
     }
   ]
-}
-</code></pre>
+}</code></pre>
 
-<h2>Checkpoint</h2>
+<p>
+At that point the checklist was closed: valid email, full
+client-side identity object, proven sessionStorage trust,
+authenticated attacker session of my own.
+</p>
 
-<ul>
-
-<li>Valid user email identified</li>
-
-<li>User metadata extracted</li>
-
-<li>Session storage structure understood</li>
-
-<li>Authorization trust assumptions confirmed</li>
-
-</ul>
-
-<h2>Extracted Session Value</h2>
-
-<pre><code class="language-json">
-{
+<pre><code class="language-json">{
   "UserId": 10XXX,
   "EmailId": "baXXXXXX@target.com",
   "RoleName": "Admin",
   "CountryName": "United States",
   "Status": "Approved"
-}
-</code></pre>
+}</code></pre>
 
 <p>
-The above JSON object was inserted into session storage in
-order to impersonate the target user.
-</p>
-
-<h2>Exploitation</h2>
-
-<p>
-After replacing the session storage value and refreshing the
-application, full access to the victim account was obtained.
+Paste → refresh → their workspace.
 </p>
 
 <img src="../assets/images/blogs/ATO/Exploitation.png"
-alt="account takeover">
+alt="Victim admin context after session storage swap">
 
 <p>
-The application exposed:
+Visible impact in-session: invoices, financial records, user
+admin surfaces, the operational data you expect on a finance
+tenant. No password reset. No cookie forge. No XSS required for
+the final step — only an account of my own and a JSON edit.
 </p>
-
-<ul>
-
-<li>Invoices</li>
-
-<li>Financial records</li>
-
-<li>User information</li>
-
-<li>Administrative functionality</li>
-
-</ul>
 
 <h2>Impact</h2>
 
-<ul>
-
-<li>Account Takeover</li>
-
-<li>Privilege escalation</li>
-
-<li>Unauthorized financial access</li>
-
-<li>User impersonation</li>
-
-<li>Exposure of sensitive business data</li>
-
-<li>Potential invoice manipulation</li>
-
-</ul>
-
-<h2>Root Cause</h2>
+<p>
+Any user who can authenticate (or otherwise obtain a session
+that loads the SPA) and query <code>/api/v1/user</code> can:
+</p>
 
 <ul>
-
-<li>Trusting client-side session storage</li>
-
-<li>Broken authorization model</li>
-
-<li>Excessive API data exposure</li>
-
-<li>User enumeration vulnerability</li>
-
-<li>Improper session validation</li>
-
+<li>Enumerate accounts and roles by email</li>
+<li>Build a drop-in identity object for session storage</li>
+<li>Impersonate arbitrary users in the UI and on any API that
+trusts client-supplied user identifiers from that context</li>
 </ul>
 
-<h2>Conclusion</h2>
-
 <p>
-Authorization decisions should never rely on mutable
-client-side storage mechanisms such as sessionStorage
-or localStorage.
+Against finance workflows that means confidentiality of invoices
+and payment state, integrity risk on records, and lateral access
+inside orgs — especially when the victim is Admin.
 </p>
 
 <p>
-Applications must validate user identity and permissions
-server-side using trusted session state and immutable
-authorization checks.
+Severity is high/critical depending on whether backend calls
+re-check session↔user binding. In this assessment, the practical
+result was full account takeover from the user’s perspective.
+</p>
+
+<h2>Root cause</h2>
+
+<ol>
+<li><strong>Client-side identity store</strong> —
+mutable <code>sessionStorage</code> treated as the source of truth for
+who is logged in.</li>
+<li><strong>Session not bound to subject</strong> — auth cookie did not
+force all subsequent authorization decisions to a
+server-side user id.</li>
+<li><strong>Oversharing user API</strong> — login-adjacent endpoint
+returned full role and status metadata to support the SPA,
+and doubled as an oracle.</li>
+<li><strong>Enumeration</strong> — email in, rich object out, with
+observable differences for valid users.</li>
+</ol>
+
+<h2>Fix direction</h2>
+
+<ul>
+<li>Server session (or token <code>sub</code>) is the only identity.
+Client storage may cache display names; it must never be
+authoritative.</li>
+<li>Every sensitive API derives <code>userId</code> from the session,
+never from a body field the SPA copied out of storage.</li>
+<li>User lookup for login should return minimal data
+(exists / not exists is already risky; full role objects are
+worse). Prefer constant-time, uniform responses where product
+allows.</li>
+<li>Drop verbose profile fields from pre-auth or broad-auth
+endpoints; load them only after server-side subject is fixed.</li>
+</ul>
+
+<h2>Notes from the assessment</h2>
+
+<p>
+I still open Application → Storage on every SPA before I trust
+the cookie story. WAFs do not inspect what React believes after
+<code>setItem</code>. Here the chain was almost boring once the
+hypothesis was right: talkative API, client-side user object,
+one refresh.
 </p>
 
 <p>
-Combined with user enumeration and excessive metadata
-exposure, the flawed authorization design enabled full
-account takeover against legitimate users.
-</p>
-
-<p>
-Thank you for reading.
+Boring bugs empty bank-adjacent tables. Report them like it.
 </p>
 
 </article>

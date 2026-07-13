@@ -7,11 +7,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
 <title>
-Exploiting Misconfigurations and Authorization Vulnerabilities — thevillagehacker
+CMS Privilege Escalation via Cognito and localStorage Roles — thevillagehacker
 </title>
 
 <meta name="description"
-content="Exploiting CMS misconfigurations and authorization vulnerabilities."/>
+content="Hidden Cognito signup, empty JWT groups, and localStorage roles that turned a corporate CMS into a self-service publisher seat."/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,11 +105,11 @@ pre::before{
     </span>
 
     <h1>
-        Exploiting Misconfigurations and Authorization Vulnerabilities
+        CMS Privilege Escalation via Cognito and localStorage Roles
     </h1>
 
     <p class="subtitle">
-        JWT ANALYSIS // AWS COGNITO // LOCAL STORAGE AUTHORIZATION BYPASS
+        HIDDEN SIGNUP // EMPTY GROUPS // LOCALSTORAGE RBAC
     </p>
 
     <div class="meta">
@@ -136,127 +136,63 @@ pre::before{
 <article>
 
 <p>
-This article discusses the exploitation of multiple
-misconfigurations and authorization vulnerabilities in a
-multinational company's Content Management System (CMS).
-</p>
-
-<h2>Target Background</h2>
-
-<p>
-The target organization operated a CMS platform used for
-managing product and service content across multiple public
-web properties.
+Corporate CMS, Cognito login only, no “Sign up” in the UI —
+the kind of app where content ships straight to public brand
+sites. Access was supposed to be invite-only. I still got a
+self-registered account, an empty <code>cognito:groups</code> claim,
+and publisher powers by typing a string into
+<code>localStorage</code>.
 </p>
 
 <p>
-The application was built using ReactJS and leveraged AWS
-Cognito for authentication.
+Two misconfigurations, one chain: forgotten registration
+surface, then authorization implemented in the browser.
+</p>
+
+<h2>Target</h2>
+
+<p>
+CMS used by a large org to manage product/service content
+across business-unit websites. React SPA, Amazon CDN, REST
+APIs, AWS Cognito for auth. Publish actions were not academic —
+approved content went live on production properties.
 </p>
 
 <p>
-Published content was automatically pushed to the live
-production websites associated with various business units.
+Marketing page: login form. No registration. That is a claim,
+not a control.
 </p>
 
-<h2>Overview</h2>
+<h2>Misconfig 1 — signup without a door</h2>
 
 <p>
-The application did not expose a public sign-up workflow.
+JS bundles did not hand me a friendly route map, so I fuzzed
+paths. Hit:
 </p>
 
-<p>
-Only administrators were intended to create users and assign
-roles internally.
-</p>
+<pre><code class="language-text">https://abc.com/abc/xyz/signup.html</code></pre>
 
 <p>
-The home page only presented a login form without any visible
-registration capability.
-</p>
-
-<h2>Reconnaissance</h2>
-
-<p>
-Initial reconnaissance identified the following technologies:
-</p>
-
-<ul>
-
-<li>ReactJS</li>
-
-<li>Amazon CDN</li>
-
-<li>REST APIs</li>
-
-<li>AWS Cognito</li>
-
-</ul>
-
-<h2>Source File Analysis</h2>
-
-<p>
-Analysis of the loaded JavaScript bundles did not immediately
-reveal accessible REST API endpoints.
+Legacy or staging-era registration, still live. Account
+creation worked without email verification, admin approval, or
+any invite token I could see. Cognito (or the app’s wrapper)
+happily authenticated the new user.
 </p>
 
 <p>
-To extend reconnaissance, URL fuzzing techniques were used
-against the application paths.
+CMS chrome stayed locked. Expected for a user with no groups —
+annoying if you stop there, useful if you treat it as “I now
+have a valid principal.”
 </p>
+
+<h2>What the JWT actually said</h2>
 
 <p>
-This process revealed a hidden registration endpoint:
+Login returned a JWT. Decoded payload was honest about the
+failure mode:
 </p>
 
-<pre><code class="language-text">
-https://abc.com/abc/xyz/signup.html
-</code></pre>
-
-<h2>Misconfiguration #1 — Hidden Signup Workflow</h2>
-
-<p>
-Although the application did not expose a visible signup
-interface, the backend functionality remained enabled.
-</p>
-
-<p>
-The endpoint allowed arbitrary account creation without:
-</p>
-
-<ul>
-
-<li>Email verification</li>
-
-<li>Administrative approval</li>
-
-<li>Additional validation workflows</li>
-
-</ul>
-
-<p>
-After registration the application authenticated successfully,
-however access to internal CMS pages was denied.
-</p>
-
-<p>
-Further inspection confirmed that authentication succeeded,
-but authorization failed due to missing user roles.
-</p>
-
-<h2>JWT Analysis</h2>
-
-<p>
-Upon successful login the application issued a JWT token
-through the response headers.
-</p>
-
-<p>
-Decoding the JWT revealed empty Cognito permission groups.
-</p>
-
-<pre><code class="language-json">
-{
+<pre><code class="language-json">{
   "sub": "e03f561e-9392-437d-abf7",
   "cognito:groups": [
     ""
@@ -266,239 +202,116 @@ Decoding the JWT revealed empty Cognito permission groups.
     ""
   ],
   "email": "nj@tvhsecurity.com"
-}
-</code></pre>
+}</code></pre>
 
 <p>
-The token proved that authentication was successful while
-authorization roles were absent.
+Authenticated, zero roles. I tried the usual JWT games —
+injecting group names, alg confusion where applicable. Modified
+tokens died on signature/validation. Cognito was doing its job
+on the token. Something else was doing authorization.
 </p>
 
-<h2>JWT Fuzzing</h2>
+<h2>Learning the role vocabulary</h2>
 
 <p>
-Several attempts were made to modify the JWT payload by
-injecting arbitrary Cognito role values.
-</p>
-
-<p>
-However the modified tokens failed validation and did not
-grant additional access.
-</p>
-
-<h2>Extracting Internal URLs</h2>
-
-<p>
-Using the valid authorization token, the frontend source
-files were downloaded and analyzed further.
-</p>
-
-<p>
-Embedded URLs were extracted using custom tooling and
-automated reconnaissance techniques.
-</p>
-
-<p>
-The following tools were used:
+With a valid token I pulled more frontend assets and scraped
+embedded URLs (curl, httpx, a small URL extractor). Response-
+length outliers turned up a static page that documented internal
+CMS roles. Two that mattered:
 </p>
 
 <ul>
-
-<li>curl</li>
-
-<li>HTTPX</li>
-
-<li>URLScrapy</li>
-
-</ul>
-
-<h2>HTTP Response Analysis</h2>
-
-<p>
-Extracted URLs were processed through HTTPX in order to
-identify pages with anomalous response lengths.
-</p>
-
-<p>
-One particular page exposed static role information related
-to internal CMS authorization logic.
-</p>
-
-<p>
-The following roles were identified:
-</p>
-
-<ul>
-
-<li>editor</li>
-
-<li>publisher</li>
-
+<li><strong>editor</strong> — create / modify content</li>
+<li><strong>publisher</strong> — approve and push to production paths</li>
 </ul>
 
 <p>
-Editors could create and modify content while publishers
-could approve deployments.
+So I had: principal, token, and the exact strings the product
+used for privilege. Still no server-side group membership.
 </p>
 
-<h2>Checkpoint</h2>
+<h2>Misconfig 2 — roles in localStorage</h2>
 
 <p>
-At this stage the following components were available:
+DevTools → Application → Local Storage. Key:
+<code>user_role</code>. Empty for my self-registered user.
 </p>
 
-<ul>
-
-<li>Valid authenticated account</li>
-
-<li>JWT authorization token</li>
-
-<li>Knowledge of internal role names</li>
-
-<li>Frontend application source files</li>
-
-</ul>
-
-<h2>Authorization Bypass</h2>
+<pre><code class="language-js">localStorage.setItem("user_role", "editor")</code></pre>
 
 <p>
-During experimentation with browser developer tools a local
-storage variable named <code>user_role</code> was identified.
+Refresh. Editor UI unlocked. APIs that the editor screens called
+accepted the session. No new Cognito group appeared in the JWT —
+the SPA (and, critically, backend handlers that believed the
+client) had moved on without it.
 </p>
 
-<p>
-The variable existed but remained empty for newly created
-accounts.
-</p>
+<pre><code class="language-js">localStorage.setItem("user_role", "publisher")</code></pre>
 
 <p>
-By manually setting:
-</p>
-
-<pre><code class="language-js">
-localStorage.setItem("user_role", "editor")
-</code></pre>
-
-<p>
-and refreshing the page, the application granted editor-level
-access.
+Refresh again. Approve / publish / reject flows available. That
+is production content control from an account nobody invited.
 </p>
 
 <blockquote>
-Authorization decisions were being performed entirely through
-client-side local storage values.
+Cognito answered “who logged in?” The browser answered “what
+may they do?” Only one of those should matter for authorization.
 </blockquote>
-
-<h2>Misconfiguration #2 — Broken Authorization</h2>
-
-<p>
-The application used AWS Cognito groups only for authentication
-validation but failed to enforce them server-side for
-authorization.
-</p>
-
-<p>
-The backend APIs trusted client-side role values supplied by
-the frontend application.
-</p>
-
-<p>
-As long as a valid JWT token existed, arbitrary role escalation
-became possible.
-</p>
-
-<h2>Privilege Escalation</h2>
-
-<p>
-Changing the local storage value from:
-</p>
-
-<pre><code class="language-js">
-editor
-</code></pre>
-
-<p>
-to:
-</p>
-
-<pre><code class="language-js">
-publisher
-</code></pre>
-
-<p>
-granted full publisher-level privileges after page refresh.
-</p>
-
-<p>
-This enabled:
-</p>
-
-<ul>
-
-<li>Approving content</li>
-
-<li>Publishing changes</li>
-
-<li>Rejecting submissions</li>
-
-<li>Accessing privileged CMS workflows</li>
-
-</ul>
 
 <h2>Impact</h2>
 
 <ul>
-
-<li>Unauthorized account creation</li>
-
-<li>Authentication bypass conditions</li>
-
-<li>Privilege escalation</li>
-
-<li>Publisher-level access</li>
-
-<li>Unauthorized content modification</li>
-
-<li>Potential production content compromise</li>
-
+<li>Unauthenticated (or rather, uninvited) account creation on
+an internal CMS</li>
+<li>Privilege escalation from no-role user → editor → publisher</li>
+<li>Ability to alter and publish content destined for public
+properties</li>
+<li>Trust/brand damage scenarios, defacement, malicious content
+injection on official sites</li>
 </ul>
 
-<h2>Root Cause</h2>
+<p>
+For an MNC CMS that is not a theoretical “IDOR on profile.” It
+is a path to the homepage of business units.
+</p>
+
+<h2>Root cause</h2>
+
+<ol>
+<li>Registration endpoint left enabled without product exposure
+or invite gates.</li>
+<li>Authorization decisions driven by <code>localStorage</code>
+(and likely request fields derived from it) instead of
+Cognito groups / server-side RBAC.</li>
+<li>APIs that only checked “valid JWT” rather than “JWT group
+allows this action.”</li>
+<li>Role names discoverable from static assets — not a bug alone,
+but it removes guesswork once client trust exists.</li>
+</ol>
+
+<h2>Remediation</h2>
 
 <ul>
-
-<li>Hidden legacy signup endpoint</li>
-
-<li>Improper authorization enforcement</li>
-
-<li>Client-side trust assumptions</li>
-
-<li>Missing server-side role validation</li>
-
-<li>Reliance on local storage for authorization</li>
-
+<li>Disable or protect signup; require admin invite + verified
+email for CMS tenants.</li>
+<li>Authorize every mutating CMS API from server-side claims
+(Cognito groups, DB roles keyed by <code>sub</code>). Ignore
+client-supplied role headers/body/storage.</li>
+<li>Treat SPA role keys as UI hints only; refetch permissions
+from a server endpoint that cannot be spoofed by
+<code>setItem</code>.</li>
+<li>Regression test: user with empty groups must receive 403 on
+editor/publisher routes even if <code>user_role</code> is forged.</li>
 </ul>
 
-<h2>Conclusion</h2>
+<h2>Closing</h2>
 
 <p>
-Applications should never rely on client-side storage values
-for authorization decisions.
-</p>
-
-<p>
-All authorization logic must be validated server-side using
-trusted identity providers and immutable permission checks.
-</p>
-
-<p>
-Combined with hidden registration functionality, the weak
-authorization implementation enabled full privilege escalation
-inside the CMS environment.
-</p>
-
-<p>
-Thank you for reading.
+I did not break Cognito. I walked around it. Hidden signup gave
+me a badge; localStorage printed the clearance level. If your
+CMS “uses Cognito,” open the storage panel anyway — a lot of
+enterprise React apps still keep a shadow RBAC in the browser
+and forget which one the API believes.
 </p>
 
 </article>

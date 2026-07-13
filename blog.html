@@ -149,32 +149,6 @@
                     </div>
                     <div class="research-tag tag-medium">LAB</div>
                 </a>
-
-                <a href="/posts/nginx-rift.html" class="research-item"
-                   data-id="2"
-                   data-year="2026"
-                   data-severity="critical"
-                   data-tags="nginx cve-2026-42945 rce http parsing remote code execution">
-                    <div class="research-info">
-                        <div class="research-cve">CVE-2026-42945</div>
-                        <div class="research-title">NGINX Rift: An 18-Year-Old Bug That Can Hand Attackers Your Server</div>
-                        <div class="research-target">NGINX // HTTP REQUEST PARSING // REMOTE CODE EXECUTION</div>
-                    </div>
-                    <div class="research-tag tag-critical">CRITICAL</div>
-                </a>
-
-                <a href="/posts/Ni8mare  -  Unauthenticated Remote Code Execution in n8n.html" class="research-item"
-                   data-id="3"
-                   data-year="2026"
-                   data-severity="critical"
-                   data-tags="n8n cve-2026-21858 rce unauthenticated node.js ni8mare">
-                    <div class="research-info">
-                        <div class="research-cve">CVE-2026-21858</div>
-                        <div class="research-title">Ni8mare: Unauthenticated Remote Code Execution in n8n</div>
-                        <div class="research-target">N8N // NODE.JS // UNAUTHENTICATED RCE</div>
-                    </div>
-                    <div class="research-tag tag-critical">CRITICAL</div>
-                </a>
             </div>
 
             <!-- 2024 -->
@@ -182,14 +156,14 @@
                 <div class="vendor-label">2024</div>
 
                 <a href="/posts/Remote_Code_Execution.html" class="research-item"
-                   data-id="4"
+                   data-id="2"
                    data-year="2024"
                    data-severity="critical"
-                   data-tags="rce command injection windows powershell oob">
+                   data-tags="rce command injection windows powershell oob pre-auth">
                     <div class="research-info">
                         <div class="research-cve">OS COMMAND INJECTION</div>
                         <div class="research-title">OS Command Injection to Remote Code Execution</div>
-                        <div class="research-target">WINDOWS COMMAND INJECTION // OOB VALIDATION // POWERSHELL RCE</div>
+                        <div class="research-target">PRE-AUTH SINK // OOB PROOF // ADMIN SHELL</div>
                     </div>
                     <div class="research-tag tag-critical">CRITICAL</div>
                 </a>
@@ -200,130 +174,81 @@
                 <div class="vendor-label">2023</div>
 
                 <a href="/posts/Business_logic_error_subscription.html" class="research-item"
-                   data-id="5"
+                   data-id="3"
                    data-year="2023"
                    data-severity="critical"
-                   data-tags="business logic subscription manipulation encrypted payload checkout">
+                   data-tags="business logic subscription payment method encrypted aes checkout diamond">
                     <div class="research-info">
                         <div class="research-cve">BUSINESS LOGIC ERROR</div>
-                        <div class="research-title">Exploiting Business Logic Error: Subscription Manipulation</div>
-                        <div class="research-target">SUBSCRIPTION MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS</div>
+                        <div class="research-title">Hotel Subscription Exploitation through Business Logic Errors</div>
+                        <div class="research-target">PAYMENT LOGIC BYPASS // ENCRYPTED API ANALYSIS // MEMBERSHIP ABUSE</div>
                     </div>
                     <div class="research-tag tag-critical">CRITICAL</div>
                 </a>
 
                 <a href="/posts/Database_Dump_Exploitation_through_Mass_Assignment_Vulnerability.html" class="research-item"
-                   data-id="6"
+                   data-id="4"
                    data-year="2023"
                    data-severity="critical"
-                   data-tags="mass assignment database dump sensitive data exposure">
+                   data-tags="mass assignment type confusion sql injection mysql database dump">
                     <div class="research-info">
-                        <div class="research-cve">MASS ASSIGNMENT</div>
-                        <div class="research-title">Database Dump Exploitation through Mass Assignment Vulnerability</div>
-                        <div class="research-target">MASS ASSIGNMENT // DATABASE DUMP // SENSITIVE DATA EXPOSURE</div>
+                        <div class="research-cve">MASS ASSIGNMENT → SQLi</div>
+                        <div class="research-title">Database Dump via Mass Assignment and Type Confusion</div>
+                        <div class="research-target">TYPE CONFUSION // ERROR-BASED MYSQL // FULL EXTRACTION</div>
                     </div>
                     <div class="research-tag tag-critical">CRITICAL</div>
                 </a>
 
                 <a href="/posts/Business_logic_error.html" class="research-item"
-                   data-id="7"
+                   data-id="5"
                    data-year="2023"
                    data-severity="critical"
-                   data-tags="business logic price manipulation encrypted payload checkout">
+                   data-tags="business logic price manipulation negative quantity incomplete fix checkout">
                     <div class="research-info">
                         <div class="research-cve">BUSINESS LOGIC ERROR</div>
-                        <div class="research-title">Exploiting Business Logic Error: Price Manipulation</div>
-                        <div class="research-target">PRICE MANIPULATION // ENCRYPTED PAYLOADS // CHECKOUT PROCESS</div>
+                        <div class="research-title">Price Manipulation After a Salted-Hash Fix</div>
+                        <div class="research-target">INCOMPLETE FIX // NEGATIVE QTY // ORDER MATH</div>
                     </div>
                     <div class="research-tag tag-critical">CRITICAL</div>
                 </a>
 
                 <a href="/posts/Account_Takeover-via-session-storage.html" class="research-item"
-                   data-id="8"
+                   data-id="6"
                    data-year="2023"
                    data-severity="high"
-                   data-tags="account takeover session storage authorization bypass cookie enumeration ato">
+                   data-tags="account takeover session storage authorization bypass user enumeration ato">
                     <div class="research-info">
-                        <div class="research-cve">AUTHORIZATION BYPASS</div>
+                        <div class="research-cve">ACCOUNT TAKEOVER</div>
                         <div class="research-title">Account Takeover Through Manipulation of Session Storage</div>
-                        <div class="research-target">SESSION STORAGE // USER ENUMERATION // COOKIE AUTHENTICATION</div>
+                        <div class="research-target">CLIENT-SIDE IDENTITY // USER ORACLE // FULL ATO</div>
                     </div>
                     <div class="research-tag tag-high">HIGH</div>
                 </a>
 
                 <a href="/posts/Hacking_MNCs-CMS_Systems.html" class="research-item"
-                   data-id="9"
+                   data-id="7"
                    data-year="2023"
                    data-severity="critical"
-                   data-tags="jwt aws cognito local storage authorization bypass cms">
+                   data-tags="jwt aws cognito local storage authorization bypass cms hidden signup">
                     <div class="research-info">
                         <div class="research-cve">AUTHORIZATION BYPASS</div>
-                        <div class="research-title">Exploiting Misconfigurations and Authorization Vulnerabilities</div>
-                        <div class="research-target">JWT ANALYSIS // AWS COGNITO // LOCAL STORAGE AUTHORIZATION BYPASS</div>
+                        <div class="research-title">CMS Privilege Escalation via Cognito and localStorage Roles</div>
+                        <div class="research-target">HIDDEN SIGNUP // EMPTY GROUPS // LOCALSTORAGE RBAC</div>
                     </div>
                     <div class="research-tag tag-critical">CRITICAL</div>
                 </a>
 
                 <a href="/posts/reversing-client-side-encryption.html" class="research-item"
-                   data-id="10"
+                   data-id="8"
                    data-year="2023"
                    data-severity="critical"
-                   data-tags="cryptography encryption reversing weak crypto client-side">
+                   data-tags="cryptography encryption reversing aes cbc captcha client-side">
                     <div class="research-info">
                         <div class="research-cve">CRYPTOGRAPHY</div>
-                        <div class="research-title">Reversing Client-Side Encryption: Exploiting Weak Crypto Implementations</div>
-                        <div class="research-target">CRYPTOGRAPHY // ENCRYPTION REVERSING // WEAK CRYPTO</div>
+                        <div class="research-title">Reversing Client-Side Encryption on a Shared CDN Stack</div>
+                        <div class="research-target">CDN KEYS // AES-CBC RE // CAPTCHA AUTOMATION</div>
                     </div>
                     <div class="research-tag tag-critical">CRITICAL</div>
-                </a>
-            </div>
-
-            <!-- 2022 -->
-            <div class="vendor-group" data-year="2022">
-                <div class="vendor-label">2022</div>
-
-                <a href="/posts/RCE-DLL-Hijacking.html" class="research-item"
-                   data-id="11"
-                   data-year="2022"
-                   data-severity="critical"
-                   data-tags="dll hijacking rce windows meterpreter payload">
-                    <div class="research-info">
-                        <div class="research-cve">DLL HIJACKING</div>
-                        <div class="research-title">Remote Code Execution via DLL Hijacking</div>
-                        <div class="research-target">WINDOWS APPLICATION SECURITY // DLL SEARCH ORDER HIJACKING // WINDOWS PAYLOADS // METERPRETER</div>
-                    </div>
-                    <div class="research-tag tag-critical">CRITICAL</div>
-                </a>
-            </div>
-
-            <!-- 2021 -->
-            <div class="vendor-group" data-year="2021">
-                <div class="vendor-label">2021</div>
-
-                <a href="/posts/massive_subdomain-takeover.html" class="research-item"
-                   data-id="12"
-                   data-year="2021"
-                   data-severity="high"
-                   data-tags="subdomain takeover heroku dns misconfiguration">
-                    <div class="research-info">
-                        <div class="research-cve">SUBDOMAIN TAKEOVER</div>
-                        <div class="research-title">Massive Subdomain Takeover via Heroku — 20+ Subdomains</div>
-                        <div class="research-target">HEROKU // DNS MISCONFIGURATION // TAKEOVER</div>
-                    </div>
-                    <div class="research-tag tag-high">HIGH</div>
-                </a>
-
-                <a href="/posts/iOS-dynamic-lab-setup.html" class="research-item"
-                   data-id="13"
-                   data-year="2021"
-                   data-severity="lab"
-                   data-tags="ios pentest jailbreak frida objection burp lab mobile">
-                    <div class="research-info">
-                        <div class="research-cve">RESEARCH LAB / iOS PENTEST / SETUP</div>
-                        <div class="research-title">iOS Pentesting: Jailbreaking iPhone &amp; Dynamic Analysis Lab Setup</div>
-                        <div class="research-target">FRIDA // OBJECTION // BURP SUITE // IOS</div>
-                    </div>
-                    <div class="research-tag tag-medium">LAB</div>
                 </a>
             </div>
 

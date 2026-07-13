@@ -131,13 +131,16 @@ tr:nth-child(even) td{
 
 <article>
 
-<p>A cyberpunk-themed HTTP traffic inspector, repeater, intruder, and intercept tool — browser DevTools extension for Microsoft Edge and Chrome. Built for developers, security researchers, and bug bounty hunters.</p>
+<p>I built PhantomProxy because a full desktop proxy is overkill for half the assessments I do in a browser tab — and underkill is worse: DevTools alone is a poor repeater. v2.3.0 is the first release I am willing to call a complete toolkit: intercept, history, repeater, intruder, and the supporting tools I actually reach for on web jobs.</p>
 
-<p><strong>Current version: v2.3.0</strong> — first complete public toolkit release. Source and docs live on <a href="https://github.com/thevillagehacker/Phantom-Proxy" target="_blank" rel="noopener">GitHub</a>.</p>
+<p>Edge and Chrome, Manifest V3, no system proxy, no Java. Source:
+<a href="https://github.com/thevillagehacker/Phantom-Proxy" target="_blank" rel="noopener">github.com/thevillagehacker/Phantom-Proxy</a>.</p>
 
-<h2>What is PhantomProxy?</h2>
+<h2>What it is (and is not)</h2>
 
-<p>PhantomProxy is a lightweight in-browser security testing tool inspired by Burp Suite's proxy, repeater, and intruder workflow. It captures HTTP/HTTPS traffic in real time, supports live request intercept (forward/drop), multi-position fuzzing, scope control, compare, cookie jar, and more — without a system proxy, Java, or leaving the browser.</p>
+<p>PhantomProxy is an in-browser HTTP workbench aimed at researchers and bounty hunters who live in the SPA. It watches traffic through the extension APIs, holds/edits requests when you ask it to, replays with a proper editor, and fuzzes with position markers — the Burp-shaped loop without installing a CA or fighting corporate proxy policy on a locked laptop.</p>
+
+<p>It is <strong>not</strong> a transparent MITM for non-browser clients, mobile apps, or thick clients. Use Burp/ZAP/mitmproxy when you need that. Use this when the target is the browser and you want zero cert ceremony.</p>
 
 <table>
 <thead>
@@ -531,31 +534,28 @@ tr:nth-child(even) td{
 <li>Tools → Compare → COMPARE</li>
 </ol>
 
-<h2>Architecture</h2>
+<h2>Architecture notes for people who will fork it</h2>
+
+<p>Layout is intentionally boring so the interesting constraints stay visible:</p>
 
 <pre><code class="language-text">phantom-proxy/
 ├── manifest.json            # Manifest V3 — no "type: module" (required for webRequest)
 ├── background/
-│   └── worker.js            # Classic service worker: traffic capture, repeater fetch, keepalive
+│   └── worker.js            # Classic service worker: capture, repeater fetch, keepalive
 ├── devtools/
-│   ├── devtools.html        # Registers the DevTools panel
+│   ├── devtools.html
 │   └── devtools.js          # chrome.devtools.panels.create()
 ├── panel/
-│   ├── panel.html           # Full UI shell
-│   ├── panel.css            # Cyberpunk dark theme
-│   ├── panel.js             # Core UI logic, state management, message handling
-│   └── features.js          # v2 feature module: scope engine, highlight rules, HAR export/import, cURL parser
-├── popup/
-│   ├── popup.html           # Toolbar popup with Execute button
-│   └── popup.js             # Opens standalone window via chrome.windows.create()
-└── icons/
-    ├── icon16.png
-    ├── icon48.png
-    └── icon128.png</code></pre>
+│   ├── panel.html / panel.css / panel.js
+│   └── features.js          # scope, highlights, HAR, cURL
+├── popup/                   # standalone window launcher
+└── icons/</code></pre>
+
+<p>MV3 service workers die. That is not a footnote — it shaped keepalive, port messaging, and how much state lives in the panel versus the worker. If you extend the tool, assume the worker can vanish mid-session and design accordingly.</p>
 
 <h3>How traffic capture works</h3>
 
-<p>PhantomProxy uses the browser's <code>webRequest</code> API — a passive observation API that fires events for every HTTP request without intercepting or blocking traffic by default. Live hold/edit is handled separately by the Intercept tab (debugger or page-hook).</p>
+<p>Passive history uses <code>webRequest</code>: observe without rewriting. Intercept is a separate path (debugger attachment or page-level fetch/XHR hooks) because “see traffic” and “hold traffic” are different browser privileges with different failure modes.</p>
 
 <pre><code class="language-text">Page makes request
       ↓
@@ -572,19 +572,22 @@ Panel renders row in History tab</code></pre>
 
 <p>Repeater and Intruder requests are fired from the background worker using <code>fetch()</code> — this bypasses CORS restrictions that would block requests from the panel page context.</p>
 
-<h3>Security design</h3>
+<h3>Security design (why a research tool must not be a liability)</h3>
+
+<p>Extensions that can see all URLs are high-value malware if they are sloppy. Design choices I cared about:</p>
 
 <ul>
-<li><strong>No data leaves the browser</strong> — all captured traffic stays in local memory, never sent to any server</li>
-<li><strong>SSRF protection</strong> — Repeater/Intruder/WS block <code>file://</code>, <code>javascript:</code>, private/metadata hosts (incl. decimal IP forms), and private IP ranges (127.x, 10.x, 172.16–31.x, 192.168.x, 169.254.x, ::1, fc00::, fe80::)</li>
-<li><strong>CRLF injection prevention</strong> — all header names and values strip <code>\r</code>, <code>\n</code>, and <code>\0</code> before use</li>
-<li><strong>XSS prevention</strong> — all server-controlled values (URLs, headers, response bodies, status text) are rendered via <code>textContent</code> or DOM construction, never <code>innerHTML</code></li>
-<li><strong>ReDoS-resistant regex</strong> — inputs are length-capped and reject nested quantifiers</li>
-<li><strong>Prototype pollution guards</strong> — all header objects use <code>hasOwnProperty</code> checks; sensitive objects use <code>Object.create(null)</code></li>
-<li><strong>HTTP method whitelist</strong> — only known HTTP verbs accepted in Repeater</li>
-<li><strong>Body size / import caps</strong> — captured bodies truncated at 64 KB, repeater responses capped at 2 MB; HAR/project import size and shape guards</li>
-<li><strong>Intruder safety</strong> — max 500 payloads per attack; hard caps on combinatorial products</li>
+<li><strong>Local only</strong> — capture stays in browser memory; no analytics backend</li>
+<li><strong>SSRF brakes on active features</strong> — Repeater / Intruder / WS refuse <code>file:</code>, <code>javascript:</code>, metadata/link-local, and RFC1918-style targets (including awkward IP encodings)</li>
+<li><strong>Header hygiene</strong> — strip CR/LF/NUL on names and values before send</li>
+<li><strong>Safe rendering</strong> — server-controlled strings via <code>textContent</code> / DOM APIs, not <code>innerHTML</code></li>
+<li><strong>Regex budgets</strong> — length caps; reject nested quantifier patterns that are ReDoS bait</li>
+<li><strong>Prototype pollution hygiene</strong> on header maps; <code>Object.create(null)</code> where it matters</li>
+<li><strong>Method allowlist</strong> on repeater sends</li>
+<li><strong>Size caps</strong> — bodies, HAR/project imports, intruder cartesian products (500 payload ceiling per run)</li>
 </ul>
+
+<p>If you find a way to break those guarantees, I want the report more than I want a star on the repo.</p>
 
 <h2>Permissions</h2>
 
@@ -631,9 +634,9 @@ Panel renders row in History tab</code></pre>
 
 <p>Full privacy policy: <a href="https://thevillagehacker.com/projects/Phantom-Proxy_privacy-policy.html">thevillagehacker.com/projects/Phantom-Proxy_privacy-policy.html</a></p>
 
-<p>Thank you for reading! If you give PhantomProxy a try, I'd greatly appreciate your feedback, suggestions, or feature requests. Every bit of input helps improve the tool and shape future releases.</p>
+<p>If you use it on a real program and something feels wrong — missing capture, intercept edge case, SSRF bypass idea — open an issue or ping me with a repro. Feature requests that map to an actual testing loop beat vague “make it like Burp” tickets.</p>
 
-<p>Happy hacking!</p>
+<p>Ship notes and store listing stay on the repo and Edge add-ons page; this post is the researcher-facing overview.</p>
 
 </article>
 

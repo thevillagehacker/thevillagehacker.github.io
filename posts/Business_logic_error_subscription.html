@@ -11,7 +11,7 @@ Hotel Subscription Exploitation through Business Logic Errors — thevillagehack
 </title>
 
 <meta name="description"
-content="Business Logic Exploitation leading to free subscription upgrades and booking discounts."/>
+content="Reversing client-side AES on a hotel booking platform, then abusing payment_method logic to activate Diamond membership without paying."/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -136,148 +136,95 @@ pre::before{
 <article>
 
 <p>
-Business Logic Error leading to free subscription upgrades
-and 12% discounts on hotel bookings.
-</p>
-
-<h2>Target Application Overview</h2>
-
-<p>
-The target was a B2B hotel reservation platform providing
-hotel bookings and premium subscription services.
+The product team had wrapped every REST body in AES. Cloudflare
+sat in front. On a B2B hotel booking platform that looks
+“secure” in a recon report. It is not. Client-side encryption
+with a key shipped in the JS bundle is transport cosplay —
+once you can decrypt, you are editing business parameters the
+server still trusts.
 </p>
 
 <p>
-The application implemented four subscription tiers:
+This writeup is the money bug on that stack: free Diamond
+membership, 12% off bookings, loyalty multipliers, no extra
+charge. The crypto reverse is the door; the broken payment
+state machine is the room. For the pure RE notes on the same
+family of apps, see the
+<a href="./reversing-client-side-encryption.html">client-side encryption analysis</a>.
 </p>
 
-<ul>
-
-<li>Diamond</li>
-
-<li>Platinum</li>
-
-<li>Gold</li>
-
-<li>Silver</li>
-
-</ul>
+<h2>Target</h2>
 
 <p>
-Each tier provided loyalty point multipliers and booking
-discount benefits.
+B2B hotel reservation product. Bookings plus a paid club with
+four tiers — Silver, Gold, Platinum, Diamond. Diamond was the
+interesting one in the UI: roughly 12% off bookings, 3× loyalty
+points, short promotional membership windows attached to
+checkout flows.
 </p>
 
 <p>
-Diamond subscriptions offered:
+Stack from the outside: React SPA, REST APIs on separate hosts,
+AWS-side hosting, Cloudflare WAF. None of that blocked reading
+the browser’s own secrets.
 </p>
 
-<ul>
-
-<li>12% booking discount</li>
-
-<li>3x loyalty points</li>
-
-<li>Premium membership benefits</li>
-
-</ul>
-
-<h2>Technology Stack</h2>
-
-<ul>
-
-<li>Amazon Infrastructure</li>
-
-<li>Cloudflare WAF</li>
-
-<li>ReactJS</li>
-
-<li>REST APIs</li>
-
-</ul>
-
-<h2>Encrypted Application Traffic</h2>
+<h2>Why the traffic looked opaque</h2>
 
 <p>
-Application requests and responses were encrypted using
-symmetric cryptography.
+Request and response bodies were ciphertext. Same shared key
+material on client and server — classic “encrypt the JSON so
+Burp users give up” pattern. You cannot meaningfully test
+checkout logic until you can round-trip encrypt yourself.
 </p>
 
 <p>
-Both client-side and server-side logic relied on the same
-shared encryption key.
+The org also reused a CDN config blob across multiple apps, so
+one bundle analysis mapped more than one property. That is an
+architecture smell as much as a finding.
 </p>
+
+<h2>Keys in the clear</h2>
 
 <p>
-This required reversing the cryptographic implementation
-before manipulating requests.
+Webpack-style modules on the CDN exposed domains, test-looking
+S3 material, reCAPTCHA keys, and the crypto parameters used for
+API bodies:
 </p>
 
-<h2>JavaScript Analysis</h2>
+<pre><code class="language-js">91622: function (e, t) {
+  'use strict';
+  t.Z = {
+    apiDomain: 'https://api.target.com',
+    adminDomain: 'https://admin.target.com',
+    searchApiDomain: 'https://search.target.com',
+    preprodApiDomain: 'https://preprod.target.com',
+    bookingApiDomain: 'https://bookings.target.com',
+    blogsApiDomain: 'https://secure.target.com',
+    analyticsDomain: 'https://analytics.target.com',
+    cdnPath: 'https://cdn.target.com',
+    s3accessKeyId: 'test-############',
+    s3secretKey: 'test-############',
+    s3Region: 'west',
+    dataHasKey: '###################=',
+    dataIVKey: 'jm8lgqa3j1d0ajus',
+    zendesk: '###########################',
+    giftCardUrl: 'https://join.target.com/gift-card/',
+    ASSET_CDN_PATH: 'https://assets.target.com',
+    consoleEnv: 'production',
+    recaptchaV2Key: '###################-kAQFKNGH-',
+    SHOPBACK_URL_DYNAMIC: 'https://shopback.target.org/aff_l',
+    SHOPBACK_MERCHANT_ID: '#########',
+    encryptionKeys: '["##_analytics_detail||VWlRMVRtTnllWEJVSVRCdUo=","club_membership_detail||RFZEVW1WMEtFQlJKSDA9"]'
+  }
+}</code></pre>
 
 <p>
-Analysis of the application's JavaScript bundles revealed
-that cryptographic operations were centralized through a
-shared CDN architecture.
+Encrypt/decrypt lived in a shared factory — AES-CBC, PKCS7,
+static IV, key embedded next to the algorithm:
 </p>
 
-<p>
-The same cryptographic framework was reused across multiple
-applications operated by the organization.
-</p>
-
-<h2>Extracted CDN Configuration</h2>
-
-<pre><code class="language-js">
-91622: function (e, t) {
-      'use strict';
-      t.Z = {
-        apiDomain: 'https://api.target.com',
-        adminDomain: 'https://admin.target.com',
-        searchApiDomain: 'https://search.target.com',
-        searchApiDomain: 'https://search.target.com',
-        preprodApiDomain: 'https://preprod.target.com',
-        bookingApiDomain: 'https://bookings.target.com',
-        blogsApiDomain: 'https://secure.target.com',
-        analyticsDomain: 'https://analytics.target.com',
-        cdnPath: 'https://cdn.target.com',       
-        s3accessKeyId: 'test-############',
-        s3secretKey: 'test-############',
-        s3Region: 'west',
-        dataHasKey: '###################=',
-        dataIVKey: 'jm8lgqa3j1d0ajus',
-        zendesk: '###########################',
-        giftCardUrl: 'https://join.target.com/gift-card/',
-        ASSET_CDN_PATH: 'https://assets.target.com',
-        consoleEnv: 'production',
-        recaptchaV2Key: '###################-kAQFKNGH-',
-        SHOPBACK_URL_DYNAMIC: 'https://shopback.target.org/aff_l',
-        SHOPBACK_MERCHANT_ID: '#########',
-        encryptionKeys: '["##_analytics_detail||VWlRMVRtTnllWEJVSVRCdUo=","club_membership_detail||RFZEVW1WMEtFQlJKSDA9"]'
-      }
-    }
-</code></pre>
-
-<p>
-The JavaScript bundles exposed:
-</p>
-
-<ul>
-
-<li>Encryption keys</li>
-
-<li>Initialization vectors</li>
-
-<li>API endpoints</li>
-
-<li>Cryptographic modes</li>
-
-</ul>
-
-<h2>Extracted Encryption Logic</h2>
-
-<pre><code class="language-js">
-abc.factory('EncryptDecrypt', [
+<pre><code class="language-js">abc.factory('EncryptDecrypt', [
   'AppSettings',
   function () {
     return {
@@ -287,8 +234,8 @@ abc.factory('EncryptDecrypt', [
       },
       encrypt: function (t) {
         var e = this.encryptKEY,
-        n = 'jm8lgqa3j1d0ajus',
-        r = JSON.stringify(t);
+          n = 'jm8lgqa3j1d0ajus',
+          r = JSON.stringify(t);
         return CryptoJS.AES.encrypt(r, CryptoJS.enc.Utf8.parse(e), {
           iv: CryptoJS.enc.Utf8.parse(n),
           padding: CryptoJS.pad.Pkcs7,
@@ -297,239 +244,157 @@ abc.factory('EncryptDecrypt', [
       },
       decrypt: function (t) {
         var e = t.split('---'),
-        n = browserCrypto.Buffer.from(e[1], 'base64'),
-        r = browserCrypto.Buffer.from(e[0], 'base64'),
-        a = browserCrypto.Buffer.from(this.encryptKEY),
-        o = browserCrypto.createDecipheriv('aes256', a, n),
-        i = o._update(r),
-        s = o.final(),
-        l = (i = browserCrypto.Buffer.concat([i,
-        s])).toString();
+          n = browserCrypto.Buffer.from(e[1], 'base64'),
+          r = browserCrypto.Buffer.from(e[0], 'base64'),
+          a = browserCrypto.Buffer.from(this.encryptKEY),
+          o = browserCrypto.createDecipheriv('aes256', a, n),
+          i = o._update(r),
+          s = o.final(),
+          l = (i = browserCrypto.Buffer.concat([i, s])).toString();
         return JSON.parse(l)
       }
     }
   }
-])
-</code></pre>
+])</code></pre>
 
 <p>
-The application used:
+Wire format was effectively:
+<code>Base64(AES-CBC(JSON)) + "---" + Base64(IV)</code>.
+Static IV is its own problem; for this assessment the practical
+win was offline decrypt → edit → re-encrypt with the same
+parameters the SPA used.
 </p>
 
-<ul>
-
-<li>AES CBC mode</li>
-
-<li>Static IV</li>
-
-<li>Hardcoded encryption keys</li>
-
-<li>Client-side encryption</li>
-
-</ul>
-
-<h2>Reversing the Encryption</h2>
+<h2>Membership on the checkout path</h2>
 
 <p>
-Once the encryption parameters were extracted, encrypted
-payloads could be decrypted and modified externally.
+Club purchase was bolted onto booking. New-ish feature surface
+— multiple payment workflows, internal codes, membership flags
+traveling with the order. After decrypt, one field stood out:
+<code>payment_method</code>. It did not look like a card brand. It
+looked like a workflow selector.
 </p>
 
 <p>
-This enabled inspection of internal API workflows and
-business logic parameters.
+Adding membership hit endpoints in this shape (bodies encrypted
+on the wire):
 </p>
 
-<h2>Membership Subscription Flow</h2>
-
-<p>
-The application introduced a newly developed subscription
-feature with multiple payment workflows.
-</p>
-
-<p>
-A parameter named:
-</p>
-
-<pre><code class="language-json">
-"payment_method"
-</code></pre>
-
-<p>
-was used internally to identify payment handling logic.
-</p>
-
-<h2>Add Membership Request</h2>
-
-<pre><code class="language-text">
-PUT /api/v18/add_membership HTTP/2
+<pre><code class="language-text">PUT /api/v18/add_membership HTTP/2
 Host: api.target.com
 
 {
-  "data":
-  "EncryptedPayload---Base64IV"
-}
-</code></pre>
+  "data": "EncryptedPayload---Base64IV"
+}</code></pre>
 
-<p>
-The above request initiated a Diamond membership purchase
-during hotel booking.
-</p>
-
-<p>
-The intended workflow granted:
-</p>
-
-<ul>
-
-<li>12% booking discounts</li>
-
-<li>2 months of Diamond membership</li>
-
-<li>Enhanced loyalty point multipliers</li>
-
-</ul>
-
-<h2>Business Logic Flaw</h2>
-
-<p>
-During analysis it was discovered that modifying the
-<code>payment_method</code> value altered the backend
-payment processing behavior.
-</p>
-
-<p>
-Changing: 26 to 21.
-
-<p>
-Removed the additional payment amount associated with
-the Diamond membership subscription.
-</p>
-
-<h2>Payment Request</h2>
-
-<pre><code class="language-text">
-POST /api/v16/purchase_add_ons HTTP/2
+<pre><code class="language-text">POST /api/v16/purchase_add_ons HTTP/2
 Host: api.target.com
 
 {
-  "data":
-  "EncryptedPayload---Base64IV"
-}
-</code></pre>
+  "data": "EncryptedPayload---Base64IV"
+}</code></pre>
 
 <p>
-Despite the manipulated payment flow, the request still
-contained membership activation parameters.
+Intended happy path for the promo I was testing: pay for the
+room <em>and</em> the Diamond add-on → two months of Diamond, 12%
+discount semantics, loyalty boost.
 </p>
 
-<h2>Membership Parameters</h2>
+<h2>The logic bug</h2>
 
-<pre><code class="language-json">
-{
+<p>
+I compared payloads across payment paths and flipped
+<code>payment_method</code> from <code>26</code> to <code>21</code> inside the
+decrypted JSON, then re-encrypted. The membership-related flags
+stayed true. The extra line item for the club did not.
+</p>
+
+<p>
+After the add-on purchase call, activation parameters still
+looked like a successful club grant:
+</p>
+
+<pre><code class="language-json">{
   "user_club_membership_id": 123456,
   "diamond_club": true
-}
-</code></pre>
+}</code></pre>
 
 <p>
-The backend trusted the membership-related values supplied
-inside the encrypted request payload.
+Backend behavior matched the flags, not a server-side ledger
+check that “Diamond surcharge was captured.” Booking completed.
+Diamond benefits applied. No additional membership payment.
 </p>
-
-<p>
-As a result:
-</p>
-
-<ul>
-
-<li>Diamond membership activated successfully</li>
-
-<li>No additional payment was required</li>
-
-<li>Booking discounts were applied</li>
-
-<li>Loyalty multipliers became active</li>
-
-</ul>
 
 <blockquote>
-The backend validated booking completion but failed to
-verify whether membership payment was actually processed.
+Encryption only raised the cost of reading the parameters. It
+did not make those parameters trustworthy.
 </blockquote>
 
 <h2>Impact</h2>
 
-<ul>
-
-<li>Free premium subscriptions</li>
-
-<li>Unauthorized 12% booking discounts</li>
-
-<li>Loyalty reward abuse</li>
-
-<li>Payment workflow manipulation</li>
-
-<li>Revenue loss</li>
-
-<li>Business logic exploitation</li>
-
-</ul>
-
-<h2>Root Cause</h2>
+<p>
+For an attacker who can reverse the SPA crypto (anyone with
+DevTools):
+</p>
 
 <ul>
-
-<li>Improper payment validation</li>
-
-<li>Trusting client-controlled parameters</li>
-
-<li>Weak business workflow enforcement</li>
-
-<li>Hardcoded client-side cryptography</li>
-
-<li>Improper subscription activation logic</li>
-
+<li>Activate paid club tiers without paying the membership fee</li>
+<li>Apply Diamond-level booking discounts (observed ~12%)</li>
+<li>Accrue inflated loyalty multipliers</li>
+<li>Repeat across bookings while the broken path remains open</li>
 </ul>
-
-<h2>Mitigation</h2>
-
-<ul>
-
-<li>Validate payment completion server-side</li>
-
-<li>Remove client-side trust assumptions</li>
-
-<li>Separate payment and membership workflows</li>
-
-<li>Use secure cryptographic key management</li>
-
-<li>Implement transaction integrity checks</li>
-
-</ul>
-
-<h2>Conclusion</h2>
 
 <p>
-Business logic vulnerabilities frequently emerge when new
-features are integrated into existing transactional systems
-without holistic workflow validation.
+This is pure revenue and integrity loss — not RCE, but it is
+the kind of bug finance and product teams care about more than
+another reflected XSS.
+</p>
+
+<h2>Root cause</h2>
+
+<ol>
+<li><strong>Client-held secrets</strong> — AES key/IV and algorithm in
+distributed JS; “encrypted API” was reversible by design.</li>
+<li><strong>Workflow IDs as client input</strong> —
+<code>payment_method</code> changed server payment behavior without a
+matching authorization from a payment provider event.</li>
+<li><strong>Entitlement decoupled from settlement</strong> —
+<code>diamond_club: true</code> (and membership IDs) were honored
+without proving the membership SKU was paid.</li>
+<li><strong>Feature glue</strong> — subscription bolted onto booking
+checkout without an end-to-end invariant: “club benefits
+require successful club payment in this transaction.”</li>
+</ol>
+
+<h2>Remediation</h2>
+
+<ul>
+<li>Derive membership state only from server-side payment
+records / provider webhooks, never from a client flag in an
+encrypted blob.</li>
+<li>Treat <code>payment_method</code> and similar enums as hints at
+most; map them through allowlisted server workflows with
+server-priced line items.</li>
+<li>Stop shipping long-lived symmetric API keys in the frontend.
+If you need field-level protection, use per-session keys from
+a hardened channel — and still never trust decrypted client
+JSON for money.</li>
+<li>Add integration tests: every path that sets
+<code>diamond_club</code> must assert a captured charge for that SKU.</li>
+</ul>
+
+<h2>Takeaway</h2>
+
+<p>
+I see this pattern a lot on travel and marketplace stacks:
+new loyalty or subscription SKU, old checkout, “we’ll encrypt
+the body so partners feel safe.” The interesting bugs are not
+in AES-CBC. They are in the two-digit workflow codes and boolean
+entitlements that survive the round-trip.
 </p>
 
 <p>
-In this case, manipulating payment workflow identifiers
-allowed premium membership activation without successful
-payment processing.
-</p>
-
-<p>
-Applications handling subscriptions and financial logic
-must validate transactional integrity server-side rather
-than relying on client-controlled workflow parameters.
-</p>
-
-<p>
-Thank you for reading.
+Decrypt the boring layer. Then attack the state machine.
 </p>
 
 </article>
