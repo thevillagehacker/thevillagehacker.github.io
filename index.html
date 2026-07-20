@@ -26,9 +26,81 @@
         <canvas id="cyber-mesh" class="cyber-mesh"></canvas>
     </div>
 
-    <!-- Boot sequence overlay -->
+    <!-- Boot sequence — cyber ops dashboard (map + console). Cosmetic only. -->
     <div id="boot-overlay" class="boot-overlay" aria-hidden="true">
-        <pre id="boot-log" class="boot-log"></pre>
+        <div class="boot-ops" role="dialog" aria-label="Research node boot sequence">
+            <header class="boot-ops-header">
+                <div class="boot-ops-brand">
+                    <span class="boot-ops-mark">◈</span>
+                    <div>
+                        <div class="boot-ops-title">TVH · GLOBAL THREAT MATRIX</div>
+                        <div class="boot-ops-sub">research node · sim · no live intercept</div>
+                    </div>
+                </div>
+                <div class="boot-ops-pills">
+                    <span class="boot-pill boot-pill-live"><span class="boot-pill-dot"></span> LIVE FEED</span>
+                    <span class="boot-pill" id="boot-op-clock">--:--:--Z</span>
+                    <span class="boot-pill boot-pill-warn" id="boot-op-phase">PHASE 0 · INIT</span>
+                </div>
+            </header>
+
+            <div class="boot-ops-grid">
+                <section class="boot-map-panel" aria-label="Simulated global traffic map">
+                    <div class="boot-panel-chrome">
+                        <span>// attack-surface map</span>
+                        <span class="boot-panel-meta" id="boot-map-meta">warming sensors…</span>
+                    </div>
+                    <div class="boot-map-stage">
+                        <canvas id="boot-map" class="boot-map-canvas" aria-hidden="true"></canvas>
+                        <div class="boot-map-gridlines" aria-hidden="true"></div>
+                        <div class="boot-map-scan" aria-hidden="true"></div>
+                        <div class="boot-map-hud">
+                            <div class="boot-stat">
+                                <span class="boot-stat-label">PKT/s</span>
+                                <span class="boot-stat-value" id="boot-stat-pkt">0</span>
+                            </div>
+                            <div class="boot-stat">
+                                <span class="boot-stat-label">NODES</span>
+                                <span class="boot-stat-value" id="boot-stat-nodes">0</span>
+                            </div>
+                            <div class="boot-stat">
+                                <span class="boot-stat-label">ALERTS</span>
+                                <span class="boot-stat-value boot-stat-alert" id="boot-stat-alerts">0</span>
+                            </div>
+                            <div class="boot-stat">
+                                <span class="boot-stat-label">ROUTE</span>
+                                <span class="boot-stat-value" id="boot-stat-route">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="boot-console-panel" aria-label="Ops console">
+                    <div class="boot-terminal">
+                        <div class="term-chrome">
+                            <div class="term-dots" aria-hidden="true">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="term-title">ops@tvh — secure-shell — recon</div>
+                            <div class="term-actions" aria-hidden="true">●</div>
+                        </div>
+                        <pre id="boot-log" class="boot-log"></pre>
+                    </div>
+                </section>
+            </div>
+
+            <footer class="boot-ops-footer">
+                <div class="boot-progress-wrap">
+                    <div class="boot-progress-bar" id="boot-progress" style="width:0%"></div>
+                </div>
+                <div class="boot-ops-footer-meta">
+                    <span id="boot-progress-label">initializing…</span>
+                    <span id="boot-progress-pct">0%</span>
+                </div>
+            </footer>
+        </div>
     </div>
 
     <!-- NAVIGATION -->

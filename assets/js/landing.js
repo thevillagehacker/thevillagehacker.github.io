@@ -37,15 +37,400 @@
     el.textContent = `uptime: ${h}:${m}:${s}`;
   }
 
-  /* ── boot overlay ────────────────────────────────────── */
+  /* ── boot overlay · cyber ops dashboard ──────────────── */
+  let bootMapController = null;
+  let bootClockTimer = 0;
+
   function finishBoot(overlay) {
     if (!overlay) return;
     overlay.classList.remove("boot-visible");
     overlay.classList.add("boot-done");
     overlay.setAttribute("aria-hidden", "true");
-    // Clear log so a re-show never reflows leftover content
     const log = $("#boot-log");
     if (log) log.textContent = "";
+    if (bootMapController) {
+      bootMapController.stop();
+      bootMapController = null;
+    }
+    if (bootClockTimer) {
+      clearInterval(bootClockTimer);
+      bootClockTimer = 0;
+    }
+  }
+
+  function setBootProgress(pct, label) {
+    const bar = $("#boot-progress");
+    const pctEl = $("#boot-progress-pct");
+    const labelEl = $("#boot-progress-label");
+    const phase = $("#boot-op-phase");
+    const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+    if (bar) bar.style.width = clamped + "%";
+    if (pctEl) pctEl.textContent = clamped + "%";
+    if (labelEl && label) labelEl.textContent = label;
+    if (phase) {
+      if (clamped < 20) phase.textContent = "PHASE 1 · BOOT";
+      else if (clamped < 45) phase.textContent = "PHASE 2 · SENSOR GRID";
+      else if (clamped < 70) phase.textContent = "PHASE 3 · TRAFFIC MAP";
+      else if (clamped < 92) phase.textContent = "PHASE 4 · RECON LINK";
+      else phase.textContent = "PHASE 5 · HANDSHAKE";
+    }
+  }
+
+  function appendBootLine(log, text, cls) {
+    const span = document.createElement("div");
+    span.className = "boot-line " + (cls || "");
+    span.textContent = text;
+    log.appendChild(span);
+    log.scrollTop = log.scrollHeight;
+    return span;
+  }
+
+  async function typeBootLine(log, text, cls, charDelay) {
+    const span = document.createElement("div");
+    span.className = "boot-line " + (cls || "");
+    log.appendChild(span);
+    const cursor = document.createElement("span");
+    cursor.className = "boot-cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < text.length; i++) {
+      span.textContent = text.slice(0, i + 1);
+      if (!cursor.isConnected) span.appendChild(cursor);
+      log.scrollTop = log.scrollHeight;
+      await sleep(charDelay + Math.random() * 12);
+    }
+    cursor.remove();
+    span.textContent = text;
+    log.scrollTop = log.scrollHeight;
+    return span;
+  }
+
+  /**
+   * Simulated global traffic / attack-surface map (cosmetic only).
+   * Nodes = cities; arcs = packet routes; pulses = alerts.
+   */
+  function initBootMap(canvas) {
+    if (!canvas || prefersReducedMotion) return null;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    // [name, lon, lat] — rough equirectangular anchors
+    const CITIES = [
+      ["NYC", -74.0, 40.7],
+      ["LON", -0.1, 51.5],
+      ["PAR", 2.3, 48.9],
+      ["FRA", 8.7, 50.1],
+      ["DXB", 55.3, 25.2],
+      ["BOM", 72.9, 19.1],
+      ["DEL", 77.2, 28.6],
+      ["SGP", 103.8, 1.3],
+      ["TYO", 139.7, 35.7],
+      ["SYD", 151.2, -33.9],
+      ["SFO", -122.4, 37.8],
+      ["SAO", -46.6, -23.5],
+      ["JNB", 28.0, -26.2],
+      ["MOS", 37.6, 55.8],
+      ["SEL", 126.9, 37.5],
+      ["HKG", 114.2, 22.3],
+    ];
+
+    const RED = [255, 42, 61];
+    const SOFT = [255, 107, 122];
+    const AMBER = [212, 160, 84];
+
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let nodes = [];
+    let arcs = [];
+    let packets = [];
+    let blips = [];
+    let raf = 0;
+    let running = true;
+    let lastT = 0;
+    let intensity = 0.35;
+    let spawnAcc = 0;
+    let pktRate = 0;
+    let alertCount = 0;
+    let activeRoute = "—";
+
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    function rgba(c, a) {
+      return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+    }
+
+    function project(lon, lat) {
+      const x = ((lon + 180) / 360) * w;
+      // slight vertical padding so poles aren't clipped
+      const y = ((90 - lat) / 180) * h * 0.86 + h * 0.07;
+      return { x, y };
+    }
+
+    function resize() {
+      const rect = canvas.parentElement
+        ? canvas.parentElement.getBoundingClientRect()
+        : canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = Math.max(1, Math.floor(rect.width));
+      h = Math.max(1, Math.floor(rect.height));
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      nodes = CITIES.map(([name, lon, lat]) => {
+        const p = project(lon, lat);
+        return {
+          name,
+          lon,
+          lat,
+          x: p.x,
+          y: p.y,
+          phase: Math.random() * Math.PI * 2,
+          hot: Math.random() > 0.72,
+        };
+      });
+
+      arcs = [];
+      for (let i = 0; i < 18; i++) {
+        const a = nodes[Math.floor(Math.random() * nodes.length)];
+        let b = nodes[Math.floor(Math.random() * nodes.length)];
+        if (a === b) b = nodes[(nodes.indexOf(a) + 3) % nodes.length];
+        arcs.push({ a, b, hostile: Math.random() > 0.55 });
+      }
+    }
+
+    function spawnPacket() {
+      if (!arcs.length) return;
+      const link = arcs[Math.floor(Math.random() * arcs.length)];
+      const hostile = link.hostile || Math.random() > 0.6;
+      packets.push({
+        a: link.a,
+        b: link.b,
+        t: 0,
+        speed: 0.0035 + Math.random() * 0.008 * (0.6 + intensity),
+        hostile,
+        color: hostile ? RED : Math.random() > 0.5 ? SOFT : AMBER,
+      });
+      if (packets.length > 48) packets.splice(0, packets.length - 48);
+      activeRoute = link.a.name + " → " + link.b.name;
+      if (hostile && Math.random() > 0.55) {
+        alertCount++;
+        blips.push({
+          x: link.b.x,
+          y: link.b.y,
+          r: 0,
+          max: 18 + Math.random() * 28,
+          life: 1,
+          color: RED,
+        });
+      }
+    }
+
+    function setIntensity(v) {
+      intensity = Math.max(0.15, Math.min(1.4, v));
+    }
+
+    function step(dt) {
+      spawnAcc += dt;
+      const every = Math.max(40, 220 - intensity * 140);
+      if (spawnAcc > every) {
+        spawnAcc = 0;
+        const burst = intensity > 0.9 ? 3 : intensity > 0.55 ? 2 : 1;
+        for (let i = 0; i < burst; i++) spawnPacket();
+      }
+
+      pktRate = Math.round(packets.length * 7 + intensity * 40 + Math.random() * 12);
+
+      for (const n of nodes) {
+        n.phase += dt * 0.0025;
+      }
+
+      for (let i = packets.length - 1; i >= 0; i--) {
+        const p = packets[i];
+        p.t += p.speed * dt;
+        if (p.t >= 1) packets.splice(i, 1);
+      }
+
+      for (let i = blips.length - 1; i >= 0; i--) {
+        const b = blips[i];
+        b.r += dt * 0.09;
+        b.life = 1 - b.r / b.max;
+        if (b.life <= 0) blips.splice(i, 1);
+      }
+
+      setText("boot-stat-pkt", String(pktRate));
+      setText("boot-stat-nodes", String(nodes.length));
+      setText("boot-stat-alerts", String(alertCount));
+      setText("boot-stat-route", activeRoute);
+      setText(
+        "boot-map-meta",
+        intensity > 1
+          ? "hostile corridors elevated"
+          : intensity > 0.7
+            ? "correlating global routes"
+            : "passive sensor sweep"
+      );
+    }
+
+    function drawContinentHints() {
+      // Soft world silhouette via faint meridians / latitudes (not a real geo map)
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,42,61,0.06)";
+      ctx.lineWidth = 1;
+      for (let lon = -150; lon <= 150; lon += 30) {
+        const a = project(lon, 75);
+        const b = project(lon, -75);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+      for (let lat = -60; lat <= 60; lat += 30) {
+        const a = project(-170, lat);
+        const b = project(170, lat);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+      // equator emphasis
+      const e0 = project(-170, 0);
+      const e1 = project(170, 0);
+      ctx.strokeStyle = "rgba(255,42,61,0.1)";
+      ctx.beginPath();
+      ctx.moveTo(e0.x, e0.y);
+      ctx.lineTo(e1.x, e1.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawArc(a, b, color, alpha, width) {
+      const mx = (a.x + b.x) * 0.5;
+      const my = (a.y + b.y) * 0.5 - Math.hypot(b.x - a.x, b.y - a.y) * 0.22;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.quadraticCurveTo(mx, my, b.x, b.y);
+      ctx.strokeStyle = rgba(color, alpha);
+      ctx.lineWidth = width;
+      ctx.stroke();
+      return { mx, my };
+    }
+
+    function pointOnArc(a, b, t) {
+      const mx = (a.x + b.x) * 0.5;
+      const my = (a.y + b.y) * 0.5 - Math.hypot(b.x - a.x, b.y - a.y) * 0.22;
+      const u = 1 - t;
+      return {
+        x: u * u * a.x + 2 * u * t * mx + t * t * b.x,
+        y: u * u * a.y + 2 * u * t * my + t * t * b.y,
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+
+      // vignette fill already from CSS; soft core glow
+      const g = ctx.createRadialGradient(w * 0.5, h * 0.5, 20, w * 0.5, h * 0.5, Math.max(w, h) * 0.55);
+      g.addColorStop(0, "rgba(255,42,61," + (0.03 + intensity * 0.03) + ")");
+      g.addColorStop(1, "rgba(5,4,6,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      drawContinentHints();
+
+      for (const link of arcs) {
+        drawArc(
+          link.a,
+          link.b,
+          link.hostile ? RED : SOFT,
+          0.05 + intensity * 0.06,
+          link.hostile ? 1.1 : 0.7
+        );
+      }
+
+      for (const p of packets) {
+        const pos = pointOnArc(p.a, p.b, p.t);
+        // trail
+        for (let k = 1; k <= 4; k++) {
+          const tt = Math.max(0, p.t - k * 0.03);
+          const tp = pointOnArc(p.a, p.b, tt);
+          ctx.beginPath();
+          ctx.arc(tp.x, tp.y, 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = rgba(p.color, 0.12 * (1 - k / 5));
+          ctx.fill();
+        }
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, p.hostile ? 2.6 : 2, 0, Math.PI * 2);
+        ctx.fillStyle = rgba(p.color, 0.95);
+        ctx.shadowColor = rgba(p.color, 0.8);
+        ctx.shadowBlur = p.hostile ? 12 : 7;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      for (const b of blips) {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.strokeStyle = rgba(b.color, 0.35 * b.life);
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      ctx.font = "9px 'JetBrains Mono', ui-monospace, monospace";
+      for (const n of nodes) {
+        const breathe = 0.55 + Math.sin(n.phase) * 0.45;
+        const col = n.hot ? RED : SOFT;
+        const r = n.hot ? 2.6 : 1.8;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r * (2.2 + breathe), 0, Math.PI * 2);
+        ctx.fillStyle = rgba(col, 0.06 + intensity * 0.05);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = rgba(col, 0.55 + breathe * 0.35);
+        ctx.shadowColor = rgba(col, 0.7);
+        ctx.shadowBlur = n.hot ? 10 : 5;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        if (n.hot || intensity > 0.75) {
+          ctx.fillStyle = rgba(col, 0.35 + breathe * 0.2);
+          ctx.fillText(n.name, n.x + 6, n.y - 5);
+        }
+      }
+    }
+
+    function frame(ts) {
+      if (!running) return;
+      if (!lastT) lastT = ts;
+      let dt = ts - lastT;
+      lastT = ts;
+      if (dt > 50) dt = 50;
+      step(dt);
+      draw();
+      raf = requestAnimationFrame(frame);
+    }
+
+    resize();
+    for (let i = 0; i < 6; i++) spawnPacket();
+    window.addEventListener("resize", resize);
+    raf = requestAnimationFrame(frame);
+
+    return {
+      setIntensity,
+      stop() {
+        running = false;
+        cancelAnimationFrame(raf);
+        window.removeEventListener("resize", resize);
+      },
+    };
   }
 
   async function runBoot() {
@@ -58,30 +443,70 @@
       return;
     }
 
-    const lines = [
-      { t: "BIOS ⇨ thevillagehacker research node", c: "dim" },
-      { t: "Memory check .............. OK", c: "ok" },
-      { t: "Loading kernel modules ..... crypto, netfilter, curiosity", c: "dim" },
-      { t: "Mounting /dev/brain ........ RW", c: "ok" },
-      { t: "Starting services:", c: "" },
-      { t: "  [+] sshd                 listening", c: "ok" },
-      { t: "  [+] recon-daemon         active", c: "ok" },
-      { t: "  [+] caffeine-injector    critical", c: "warn" },
-      { t: "Initializing attack-surface map...", c: "dim" },
-      { t: "Handshake complete. Welcome, operator.", c: "accent" },
+    // Keep the whole boot experience under ~3s, then hand off to home.
+    const ops = [
+      { t: "TVH RESEARCH NODE · SECURE BOOT", c: "accent", type: false, wait: 90 },
+      { t: "[*] crypto vault · netfilter · curiosity.ko .... OK", c: "ok", type: false, wait: 120, map: 0.55 },
+      { t: "[*] sensor mesh · NYC LON FRA TYO SGP BOM ..... UP", c: "ok", type: false, wait: 140, map: 0.8 },
+      { t: "[*] mapping global traffic corridors ......... LIVE", c: "hl", type: false, wait: 150, map: 1.05 },
+      { t: "[!] caffeine-injector .................... CRITICAL", c: "warn", type: false, wait: 130, map: 1.15 },
+      { t: "[+] threat matrix warm · recon-daemon ACTIVE", c: "ok", type: false, wait: 140, map: 1.25 },
+      { t: "[✓] handshake complete. welcome, operator.", c: "accent", type: true, wait: 180, map: 1.3 },
     ];
 
     overlay.classList.remove("boot-done");
     overlay.classList.add("boot-visible");
     overlay.setAttribute("aria-hidden", "false");
-    for (const line of lines) {
-      const span = document.createElement("div");
-      span.className = "boot-line " + (line.c || "");
-      span.textContent = line.t;
-      log.appendChild(span);
-      await sleep(120 + Math.random() * 80);
+    setBootProgress(4, "powering research node…");
+
+    const clockEl = $("#boot-op-clock");
+    const tickBootClock = () => {
+      if (clockEl) {
+        clockEl.textContent =
+          new Date().toISOString().replace("T", " ").slice(11, 19) + "Z";
+      }
+    };
+    tickBootClock();
+    bootClockTimer = setInterval(tickBootClock, 1000);
+
+    // Map starts after first paint so canvas has layout size
+    await sleep(40);
+    bootMapController = initBootMap($("#boot-map"));
+
+    const total = ops.length;
+    for (let i = 0; i < total; i++) {
+      const step = ops[i];
+      const pct = 8 + ((i + 1) / total) * 86;
+      setBootProgress(
+        pct,
+        i < 2
+          ? "secure boot…"
+          : i < 4
+            ? "mapping traffic…"
+            : "handing off to shell…"
+      );
+
+      if (step.map != null && bootMapController) {
+        bootMapController.setIntensity(step.map);
+      }
+
+      if (!step.t) {
+        appendBootLine(log, " ", "dim");
+      } else if (step.type) {
+        // Fast typewriter only on the final line
+        await typeBootLine(log, step.t, step.c, 8);
+      } else {
+        appendBootLine(log, step.t, step.c);
+      }
+
+      await sleep(step.wait != null ? step.wait : 100);
     }
-    await sleep(450);
+
+    setBootProgress(100, "node online · entering shell");
+    if (bootMapController) bootMapController.setIntensity(1.35);
+    // Hold the ops dashboard briefly so the map/console can read, then home
+    await sleep(280 + 1500);
+
     finishBoot(overlay);
     sessionStorage.setItem("tvh_booted", "1");
   }

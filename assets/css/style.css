@@ -1166,22 +1166,24 @@ body.has-site-fx .blog-nav {
     opacity: 0.9;
 }
 
-/* Boot overlay — always fixed + out of document flow.
-   Never use position:relative here or visibility:hidden alone (both left a tall gap). */
+/* Boot overlay — cyber ops dashboard (map + console). Fixed out of flow. */
 .boot-overlay {
     position: fixed;
     inset: 0;
     z-index: 2000;
-    background: #0a0e14;
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 20%, rgba(255, 42, 61, 0.08), transparent 55%),
+        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(255, 42, 61, 0.04), transparent 50%),
+        #050406;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     overflow: hidden;
-    transition: opacity 0.45s ease, visibility 0.45s ease;
+    transition: opacity 0.55s ease, visibility 0.55s ease;
 }
 
 .boot-overlay.boot-visible {
@@ -1202,20 +1204,429 @@ body.has-site-fx .blog-nav {
     overflow: hidden;
 }
 
-.boot-log {
+.boot-ops {
+    width: min(980px, 100%);
+    height: min(560px, 88vh);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 42, 61, 0.28);
+    border-radius: 12px;
+    background: rgba(10, 9, 11, 0.96);
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.5),
+        0 28px 80px rgba(0, 0, 0, 0.65),
+        0 0 60px rgba(255, 42, 61, 0.12);
+    flex-shrink: 0;
+}
+
+.boot-ops-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 42, 61, 0.18);
+    background: linear-gradient(180deg, rgba(255, 42, 61, 0.08), transparent);
+}
+
+.boot-ops-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.boot-ops-mark {
+    color: var(--accent);
+    font-size: 18px;
+    text-shadow: 0 0 12px rgba(255, 42, 61, 0.7);
+    animation: boot-mark-pulse 2s ease-in-out infinite;
+}
+
+@keyframes boot-mark-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.65; transform: scale(0.92); }
+}
+
+.boot-ops-title {
     font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 1.7;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    color: var(--text-primary);
+}
+
+.boot-ops-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    letter-spacing: 0.4px;
+}
+
+.boot-ops-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.boot-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
     color: var(--text-secondary);
-    max-width: 560px;
+    border: 1px solid var(--border);
+    background: rgba(18, 16, 20, 0.9);
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.boot-pill-live {
+    color: var(--accent);
+    border-color: rgba(255, 42, 61, 0.4);
+    background: rgba(255, 42, 61, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.boot-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+.boot-pill-warn {
+    color: var(--yellow);
+    border-color: rgba(212, 160, 84, 0.35);
+}
+
+.boot-ops-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 0;
+    border-bottom: 1px solid rgba(255, 42, 61, 0.12);
+}
+
+@media (max-width: 780px) {
+    .boot-ops {
+        height: min(720px, 92vh);
+    }
+
+    .boot-ops-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 0.95fr 1.05fr;
+    }
+}
+
+.boot-map-panel,
+.boot-console-panel {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.boot-map-panel {
+    border-right: 1px solid rgba(255, 42, 61, 0.12);
+}
+
+@media (max-width: 780px) {
+    .boot-map-panel {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 42, 61, 0.12);
+    }
+}
+
+.boot-panel-chrome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(255, 42, 61, 0.04);
+    border-bottom: 1px solid rgba(255, 42, 61, 0.1);
+}
+
+.boot-panel-meta {
+    color: var(--text-dim);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.3px;
+}
+
+.boot-map-stage {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    background:
+        radial-gradient(ellipse 70% 55% at 50% 48%, rgba(255, 42, 61, 0.07), transparent 65%),
+        #070508;
+    overflow: hidden;
+}
+
+.boot-map-canvas {
+    position: absolute;
+    inset: 0;
     width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.boot-map-gridlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255, 42, 61, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 42, 61, 0.045) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, #000 30%, transparent 85%);
+    opacity: 0.7;
+}
+
+.boot-map-scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 28%;
+    top: -30%;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(255, 42, 61, 0.08),
+        transparent
+    );
+    animation: boot-map-scan 3.6s linear infinite;
+}
+
+@keyframes boot-map-scan {
+    0% { top: -30%; }
+    100% { top: 110%; }
+}
+
+.boot-map-hud {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    pointer-events: none;
+}
+
+@media (max-width: 520px) {
+    .boot-map-hud {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.boot-stat {
+    border: 1px solid rgba(255, 42, 61, 0.18);
+    background: rgba(8, 6, 10, 0.82);
+    backdrop-filter: blur(4px);
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+.boot-stat-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+}
+
+.boot-stat-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.boot-stat-alert {
+    color: var(--yellow);
+    text-shadow: 0 0 10px rgba(212, 160, 84, 0.35);
+}
+
+.boot-console-panel {
+    background: #0a080a;
+}
+
+/* Fixed console pane inside ops shell */
+.boot-terminal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    background: #0c080a;
+    overflow: hidden;
+    box-shadow: none;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.boot-terminal .term-chrome {
+    flex: 0 0 auto;
+}
+
+/* Reset global pre terminal chrome — boot-log is a plain log pane, not a nested window */
+.boot-log,
+pre.boot-log {
+    position: relative;
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 12px 14px !important;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.65;
+    color: var(--text-secondary);
     white-space: pre-wrap;
+    word-break: break-word;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.boot-log::before,
+.boot-log::after,
+pre.boot-log::before,
+pre.boot-log::after {
+    content: none !important;
+    display: none !important;
+    flex: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+.boot-line {
+    opacity: 0;
+    transform: translateX(-6px);
+    animation: boot-line-in 0.28s ease forwards;
+}
+
+@keyframes boot-line-in {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .boot-line.ok { color: var(--green); }
 .boot-line.warn { color: var(--yellow); }
 .boot-line.accent { color: var(--cyan); }
 .boot-line.dim { color: var(--text-dim); }
+.boot-line.err { color: var(--red); }
+.boot-line.hl {
+    color: var(--text-primary);
+    text-shadow: 0 0 12px rgba(255, 42, 61, 0.25);
+}
+
+.boot-line .boot-cursor {
+    display: inline-block;
+    width: 7px;
+    height: 12px;
+    margin-left: 2px;
+    background: var(--accent);
+    vertical-align: -1px;
+    animation: blink 0.8s step-end infinite;
+}
+
+.boot-ops-footer {
+    flex: 0 0 auto;
+    padding: 10px 14px 12px;
+    background: rgba(8, 6, 10, 0.95);
+}
+
+.boot-progress-wrap {
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 42, 61, 0.12);
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.boot-progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #c41e30, #ff2a3d, #ff6b7a);
+    box-shadow: 0 0 12px rgba(255, 42, 61, 0.55);
+    transition: width 0.35s ease;
+}
+
+.boot-ops-footer-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.4px;
+}
+
+.boot-ops-footer-meta #boot-progress-pct {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .boot-map-scan,
+    .boot-ops-mark,
+    .boot-pill-dot,
+    .boot-line {
+        animation: none !important;
+    }
+
+    .boot-line {
+        opacity: 1;
+        transform: none;
+    }
+}
 
 /* Nav overrides for landing */
 .landing-nav-inner {
@@ -1421,7 +1832,7 @@ body.mesh-breach .landing-grid {
     background: rgba(255,42,61,0.12);
 }
 
-/* Terminal window */
+/* Terminal window — fixed height so printing never resizes the frame */
 .term-window {
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -1433,13 +1844,16 @@ body.mesh-breach .landing-grid {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-height: 340px;
+    height: 380px;
+    min-height: 380px;
+    max-height: 380px;
 }
 
 .term-chrome {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex: 0 0 auto;
     padding: 10px 14px;
     background: linear-gradient(to bottom, #1a1216, #120e12);
     border-bottom: 1px solid #2a1e24;
@@ -1476,19 +1890,21 @@ body.mesh-breach .landing-grid {
 }
 
 .term-body {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 14px 16px;
     font-family: var(--font-mono);
     font-size: 12.5px;
     line-height: 1.65;
     color: var(--text-primary);
+    overflow-x: hidden;
     overflow-y: auto;
-    max-height: 280px;
+    -webkit-overflow-scrolling: touch;
     cursor: text;
 }
 
 .term-output {
-    min-height: 40px;
+    min-height: 0;
 }
 
 .term-line {
@@ -1531,6 +1947,7 @@ body.mesh-breach .landing-grid {
 }
 
 .term-hint {
+    flex: 0 0 auto;
     font-family: var(--font-mono);
     font-size: 10px;
     color: var(--text-dim);
@@ -1905,10 +2322,6 @@ a.cve-card:hover {
 
     .nav-right {
         gap: 14px;
-    }
-
-    .term-body {
-        max-height: 240px;
     }
 }
 
@@ -2706,7 +3119,9 @@ footer{
     }
 
     .term-window{
-        min-height:280px;
+        height:min(340px, 58vh);
+        min-height:min(340px, 58vh);
+        max-height:min(340px, 58vh);
         max-width:100%;
     }
 
@@ -2718,7 +3133,7 @@ footer{
     }
 
     .term-body{
-        max-height:min(280px, 48vh);
+        max-height:none;
     }
 
     .term-hint{
@@ -2754,13 +3169,22 @@ footer{
     }
 
     .boot-overlay{
-        padding:16px;
-        padding-bottom:max(16px, env(safe-area-inset-bottom, 0px));
+        padding:12px;
+        padding-bottom:max(12px, env(safe-area-inset-bottom, 0px));
+    }
+
+    .boot-ops{
+        height:min(780px, 94vh);
+        max-height:94vh;
     }
 
     .boot-log{
         font-size:11px;
-        max-width:100%;
+    }
+
+    .boot-ops-title{
+        font-size:11px;
+        letter-spacing:1px;
     }
 
     /* —— Blog archive —— */
@@ -2804,7 +3228,9 @@ footer{
 
     .archive-term.term-window,
     .archive-term{
-        min-height:260px;
+        height:min(300px, 52vh);
+        min-height:min(300px, 52vh);
+        max-height:min(300px, 52vh);
     }
 
     .research-item{
