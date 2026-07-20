@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+Analysis of Client-Side Encryption Reverse Engineering — thevillagehacker
+</title>
+
+<meta name="description"
+content="Reverse engineering client-side encryption implementation in a web application."/>
+
+<!-- FONTS -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+rel="stylesheet">
+
+<!-- HIGHLIGHT.JS -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<!-- GLOBAL CSS -->
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+/* HIGHLIGHT.JS OVERRIDES */
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:26px !important;
+
+    font-family:var(--font-mono) !important;
+    font-size:14.5px !important;
+    line-height:1.8 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+.hljs-keyword{
+    color:#c792ea !important;
+}
+
+.hljs-string{
+    color:#ecc48d !important;
+}
+
+.hljs-title,
+.hljs-function{
+    color:#82aaff !important;
+}
+
+.hljs-comment{
+    color:#5c6773 !important;
+    font-style:italic;
+}
+
+.hljs-number{
+    color:#f78c6c !important;
+}
+
+.hljs-attr,
+.hljs-attribute{
+    color:#ffcb6b !important;
+}
+
+.hljs-built_in,
+.hljs-literal{
+    color:#89ddff !important;
+}
+
+.hljs-variable{
+    color:#f07178 !important;
+}
+
+/* CODE BLOCK HEADER */
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body class="has-site-fx post-page">
+
+<!-- NAVIGATION -->
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- TOP BANNER -->
+
+<div class="advisory-banner">
+    REVERSE ENGINEERING // CLIENT-SIDE ENCRYPTION // API ABUSE
+</div>
+
+<!-- PAGE -->
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        Analysis of Client-Side Encryption Reverse Engineering
+    </h1>
+
+    <p class="subtitle">
+        AES CBC // REST API // HARDCODED ENCRYPTION KEYS
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-02-18</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Web / Android / iOS</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+An in-depth analysis of reverse engineering client-side encryption
+in a web application.
+</p>
+
+<h2>Target Background</h2>
+
+<p>
+The target is a web application accessible through both web browsers
+and mobile applications on Android and iOS platforms.
+</p>
+
+<p>
+The application utilizes a centralized CDN (Content Delivery Network)
+system indicating multiple applications sharing the same resources
+and architecture.
+</p>
+
+<p>
+Through subdomain enumeration it was discovered that the target had
+more than 15 applications sharing the same technology stack.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+Reconnaissance identified an interesting implementation where all
+REST API communications were encrypted.
+</p>
+
+<p>
+The request and response bodies were encoded before transmission.
+However the developers hardcoded encryption keys and IVs directly
+inside client-side JavaScript.
+</p>
+
+<blockquote>
+Client-side encryption becomes ineffective once secrets are embedded
+inside distributed JavaScript bundles.
+</blockquote>
+
+<h2>Recon</h2>
+
+<ul>
+
+<li>Technology Stack: ReactJS</li>
+
+<li>CDN: Amazon CDN</li>
+
+<li>REST API backend</li>
+
+<li>Different API domain from application domain</li>
+
+<li>JavaScript source analysis</li>
+
+<li>Encrypted request/response analysis</li>
+
+</ul>
+
+<h2>Files Discovered</h2>
+
+<ul>
+
+<li>booking.js</li>
+<li>desktop.js</li>
+<li>home.js</li>
+<li>search.js</li>
+<li>signin.js</li>
+<li>signup.js</li>
+<li>main.js</li>
+
+</ul>
+
+<p>
+Initial keyword searches focused on:
+</p>
+
+<ul>
+
+<li>encrypt</li>
+<li>enc</li>
+<li>key</li>
+<li>iv</li>
+<li>initialization vector</li>
+
+</ul>
+
+<p>
+Further analysis of <code>main.js</code> exposed the encryption logic.
+</p>
+
+<pre><code class="language-js">
+91622: function (e, t) {
+  'use strict';
+  t.Z = {
+    apiDomain: 'https://api.abc.com',
+    bookingApiDomain: 'https://bookings.abc.com',
+    cdnPath: 'https://cdn.abc.com',
+    dataHasKey: '###################=',
+    dataIVKey: 'jm8lgqa3j1d0ajus',
+    encryptionKeys: '[...]'
+  }
+}
+</code></pre>
+
+<p>
+The application exposed both the encryption key and initialization
+vector directly within the frontend bundle.
+</p>
+
+<img src="../assets/images/blogs/RE/reqandresp.png"
+alt="Request and response analysis">
+
+<h2>Encryption Function Discovery</h2>
+
+<p>
+Additional CDN-hosted JavaScript files were analyzed.
+</p>
+
+<p>
+A file named <code>app.js</code> exposed both encryption and
+decryption routines used by the API layer.
+</p>
+
+<pre><code class="language-js">
+abc.factory('EncryptDecrypt', [
+  'AppSettings',
+  function () {
+    return {
+      encryptKEY:
+      'UiQ1TmNyeXBUITBuJDVDUmV0KEBRJH0=',
+      encrypt: function (t) {
+        var e = this.encryptKEY,
+        n = 'jm8lgqa3j1d0ajus',
+        r = JSON.stringify(t);
+        return CryptoJS.AES.encrypt(
+          r,
+          CryptoJS.enc.Utf8.parse(e),
+          {
+            iv: CryptoJS.enc.Utf8.parse(n),
+            padding: CryptoJS.pad.Pkcs7,
+            mode: CryptoJS.mode.CBC
+          }
+        ).toString()
+      }
+    }
+  }
+])
+</code></pre>
+
+<h2>Encryption Parameters</h2>
+
+<ul>
+
+<li>AES CBC mode</li>
+
+<li>Static IV</li>
+
+<li>Hardcoded encryption key</li>
+
+<li>Client-side decryption support</li>
+
+<li>Predictable payload structure</li>
+
+</ul>
+
+<h2>Payload Structure</h2>
+
+<pre><code class="language-js">
+Encrypted Payload + "---" + Base64(IV)
+</code></pre>
+
+<p>
+After decrypting the request body the API payload became fully
+visible and modifiable.
+</p>
+
+<pre><code class="language-json">
+{
+  "first_name":"test",
+  "email":"test@example.com",
+  "password":"Pass@123",
+  "source":"LoginActivity"
+}
+</code></pre>
+
+<h2>CAPTCHA Workflow</h2>
+
+<p>
+The application used Google reCAPTCHA during registration.
+</p>
+
+<img src="../assets/images/blogs/RE/captcha.png"
+alt="captcha workflow">
+
+<p>
+The CAPTCHA validation process consisted of:
+</p>
+
+<ul>
+
+<li>Initial CAPTCHA challenge</li>
+
+<li>Verification request</li>
+
+<li>Token generation</li>
+
+<li>Encrypted API request submission</li>
+
+</ul>
+
+<h2>Bypass Analysis</h2>
+
+<p>
+Although CAPTCHA tokens were short-lived, the token generation
+endpoint lacked proper restrictions.
+</p>
+
+<pre><code class="language-text">
+HTTP/1.1 200 OK
+
+["uvresp",null,null,null,2]
+</code></pre>
+
+<img src="../assets/images/blogs/RE/captcha1.png"
+alt="captcha bypass">
+
+<h2>Attack Workflow</h2>
+
+<pre><code class="language-bash">
+Get CAPTCHA code
+    ↓
+Verify CAPTCHA
+    ↓
+Obtain final CAPTCHA token
+    ↓
+Encrypt crafted JSON body
+    ↓
+Send automated request
+</code></pre>
+
+<img src="../assets/images/blogs/RE/captcha2.png"
+alt="captcha attack chain">
+
+<h2>Impact</h2>
+
+<p>
+By chaining multiple weaknesses together it became possible to:
+</p>
+
+<ul>
+
+<li>Automate account registrations</li>
+
+<li>Generate large-scale fake accounts</li>
+
+<li>Abuse protected API endpoints</li>
+
+<li>Perform spam and brute-force attacks</li>
+
+<li>Increase infrastructure and DB resource usage</li>
+
+<li>Bypass intended anti-automation controls</li>
+
+</ul>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Client-side secret exposure</li>
+
+<li>Weak API trust model</li>
+
+<li>Improper CAPTCHA validation design</li>
+
+<li>Lack of anti-automation controls</li>
+
+<li>Predictable encryption workflow</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+Client-side encryption should never be treated as a standalone
+security control when encryption secrets are distributed directly
+to untrusted clients.
+</p>
+
+<p>
+Combined with weak CAPTCHA workflows and unrestricted token
+generation, the application exposed a fully automatable attack
+surface.
+</p>
+
+<p>
+Thanks for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<!-- HIGHLIGHT.JS -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+    <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

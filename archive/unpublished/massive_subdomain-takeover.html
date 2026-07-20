@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+Uncovering the Extensive Subdomain Takeover Vulnerability — thevillagehacker
+</title>
+
+<meta name="description"
+content="Massive subdomain takeover discovery using dnsx and subzy."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:26px !important;
+
+    font-family:var(--font-mono) !important;
+    font-size:14.5px !important;
+    line-height:1.8 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="advisory-banner">
+    SUBDOMAIN TAKEOVER // HEROKU // DNS MISCONFIGURATION
+</div>
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        Uncovering the Extensive Subdomain Takeover Vulnerability
+    </h1>
+
+    <p class="subtitle">
+        SUBDOMAIN ENUMERATION // HEROKU TAKEOVER // DNSX // SUBZY
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2021-05-08</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Web Infrastructure</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+Massive subdomain takeover discovery using dnsx and subzy.
+</p>
+
+<p>
+As part of responsible disclosure research, a large-scale
+subdomain enumeration exercise revealed more than 2000
+subdomains belonging to the target organization.
+</p>
+
+<p>
+Further reconnaissance identified multiple Heroku-hosted
+subdomains vulnerable to takeover due to dangling DNS
+configurations.
+</p>
+
+<h2>Reconnaissance</h2>
+
+<p>
+Initial enumeration focused on collecting CNAME records
+across the target's attack surface.
+</p>
+
+<p>
+The following tooling was used:
+</p>
+
+<ul>
+
+<li>dnsx</li>
+
+<li>subzy</li>
+
+<li>curl</li>
+
+<li>awk</li>
+
+<li>bash automation</li>
+
+</ul>
+
+<h2>Target Enumeration</h2>
+
+<p>
+The target organization exposed more than 2000 subdomains.
+</p>
+
+<p>
+dnsx from ProjectDiscovery was used to collect DNS records
+and identify third-party providers.
+</p>
+
+<img src="../assets/images/blogs/Massive_subdomain_takeover/1.webp"
+alt="dnsx results">
+
+<p>
+Analysis revealed that more than 20 subdomains pointed
+towards Heroku infrastructure.
+</p>
+
+<h2>Filtering Heroku Subdomains</h2>
+
+<p>
+The initial output required filtering to extract the
+Heroku-related targets.
+</p>
+
+<pre><code class="language-bash">
+cat vuln-subs.txt | awk '{print $2}'
+</code></pre>
+
+<p>
+The resulting output isolated candidate takeover targets.
+</p>
+
+<img src="../assets/images/blogs/Massive_subdomain_takeover/2.webp"
+alt="filtered subdomains">
+
+<h2>Cleanup Processing</h2>
+
+<p>
+Additional processing removed unwanted brackets and
+formatting artifacts.
+</p>
+
+<pre><code class="language-bash">
+cat vuln-subs.txt | awk '{print $2}' \
+| awk '{print substr($0,2,length()-2);}'
+</code></pre>
+
+<img src="../assets/images/blogs/Massive_subdomain_takeover/3.webp"
+alt="clean subdomain list">
+
+<h2>Automated Validation</h2>
+
+<p>
+The cleaned list was passed into subzy for automated
+subdomain takeover detection.
+</p>
+
+<pre><code class="language-bash">
+subzy run --targets vuln-heroku-subs.txt
+</code></pre>
+
+<img src="../assets/images/blogs/Massive_subdomain_takeover/4.webp"
+alt="subzy scan">
+
+<p>
+Not all identified subdomains were vulnerable.
+</p>
+
+<p>
+Only Heroku endpoints without active deployments were
+susceptible to takeover.
+</p>
+
+<img src="../assets/images/blogs/Massive_subdomain_takeover/5.webp"
+alt="vulnerable subdomains">
+
+<h2>Verification</h2>
+
+<p>
+Further validation was performed using curl to inspect
+HTTP response behavior.
+</p>
+
+<pre><code class="language-bash">
+for i in `cat vuln-heroku-subs.txt`;
+do
+    echo $i;
+    curl --head $i;
+done;
+</code></pre>
+
+<p>
+Subdomains returning HTTP 404 responses were confirmed
+as dangling targets vulnerable to takeover.
+</p>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Dangling CNAME records</li>
+
+<li>Orphaned Heroku applications</li>
+
+<li>Improper DNS lifecycle management</li>
+
+<li>Missing infrastructure cleanup</li>
+
+</ul>
+
+<h2>Impact</h2>
+
+<p>
+Successful subdomain takeover may allow attackers to:
+</p>
+
+<ul>
+
+<li>Host attacker-controlled content</li>
+
+<li>Steal session cookies</li>
+
+<li>Launch phishing campaigns</li>
+
+<li>Bypass origin trust assumptions</li>
+
+<li>Abuse trusted subdomains</li>
+
+<li>Compromise user trust</li>
+
+</ul>
+
+<h2>Responsible Disclosure</h2>
+
+<p>
+A full proof-of-concept demonstrating the takeover
+conditions was created and responsibly disclosed to
+the affected organization.
+</p>
+
+<h2>Tools Used</h2>
+
+<ul>
+
+<li>dnsx</li>
+
+<li>subzy</li>
+
+<li>awk</li>
+
+<li>curl</li>
+
+<li>bash scripting</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+Large-scale cloud infrastructure combined with weak DNS
+lifecycle management often creates opportunities for
+subdomain takeover vulnerabilities.
+</p>
+
+<p>
+Automated enumeration and validation tooling can quickly
+identify exposed cloud assets and dangling records across
+large attack surfaces.
+</p>
+
+<p>
+Thank you for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+        — Naveen Jagadeesan
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+    <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Mass Heroku Subdomain Takeover via Dangling DNS — thevillagehacker</title>
+<meta name="description" content="Large-scale subdomain enumeration uncovered thousands of hostnames and multiple Heroku CNAMEs pointing at unclaimed apps — a systematic dangling DNS takeover case study."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    SUBDOMAIN TAKEOVER // HEROKU // DANGLING DNS
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">WEB APPLICATION SECURITY</span>
+
+    <h1>Mass Heroku Subdomain Takeover via Dangling DNS</h1>
+
+    <p class="subtitle">DNSX // SUBZY // CNAME HUNTING</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2021-05-08</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Web Infrastructure / DNS</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>During a broad recon pass, subdomain enumeration produced a very large set of hostnames for the target organization (<strong>on the order of thousands</strong>). Fingerprinting CNAMEs with <code>dnsx</code> and takeover scanners (<code>subzy</code> and related checks) identified multiple <strong>Heroku dangling DNS</strong> records — DNS still pointed at Heroku hostnames that no longer had an active claimed app. Claiming those endpoints would have enabled content control on trusted corporate subdomains.</p>
+<h2 id="theory">Theory</h2>
+<p>Subdomain takeover is an inventory problem first:</p>
+<blockquote>
+<p>Organizations create SaaS CNAMEs faster than they decommission them.<br>
+Marketing sites, forgotten staging apps, hackathon demos, and “temporary” Heroku prototypes remain in DNS for years.</p>
+</blockquote>
+<p>The theory for scale: <strong>if the org’s culture is “ship a Heroku app, CNAME it, move on,” volume scanning will outperform manual browsing.</strong></p>
+<h2 id="methodology">Methodology</h2>
+<ol>
+<li><strong>Enumerate</strong> aggressively (passive + active sources appropriate to scope).</li>
+<li><strong>Resolve</strong> at scale; keep CNAME targets.</li>
+<li><strong>Classify</strong> SaaS fingerprints (Heroku, GitHub Pages, Azure, etc.).</li>
+<li><strong>Validate</strong> dangling state (service default pages / NX claim conditions — not just tool banners).</li>
+<li><strong>Proof carefully</strong> under program rules (often: demonstrate claimability without defacing production).</li>
+</ol>
+<p>Tooling used in the original workstream included:</p>
+<ul>
+<li><code>dnsx</code> for resolution / CNAME extraction</li>
+<li><code>subzy</code> (and manual verification) for takeover candidates</li>
+<li><code>curl</code>/browser checks for service fingerprints</li>
+</ul>
+<h2 id="what-interesting-looked-like-here">What “interesting” looked like here</h2>
+<p>Not a single forgotten blog. The signal was:</p>
+<ul>
+<li><strong>volume</strong> of dangling candidates</li>
+<li><strong>Heroku</strong> as a repeated pattern (process failure, not one-off mistake)</li>
+<li>corporate parent domain trust (cookies, SSO adjacency, phishing credibility)</li>
+</ul>
+<p>A takeover on <code>something.company.com</code> beats yet another XSS on a vanity microsite because of <strong>brand and cookie-scope narratives</strong> (exact cookie impact depends on cookie domains — always verify, never assume).</p>
+<h2 id="impact-classes">Impact classes</h2>
+<ul>
+<li>Phishing / credential harvesting on trusted hostnames</li>
+<li>OAuth redirector abuse if redirect allowlists are loose</li>
+<li>Stored malicious content on corporate subdomains</li>
+<li>Reputational harm and marketing site defacement risk</li>
+<li>Potential access to residual environment variables if old apps are reclaimable in edge cases (service-specific)</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>No DNS lifecycle ownership for SaaS CNAMEs</li>
+<li>Missing automated detection for dangling records</li>
+<li>Heroku (and similar) apps destroyed without DNS cleanup</li>
+<li>Large sprawl without continuous attack-surface management</li>
+</ul>
+<h2 id="defensive-program">Defensive program</h2>
+<ol>
+<li>Inventory all CNAMEs to third-party services continuously.</li>
+<li>Alert when a CNAME target returns provider “claim this app” fingerprints.</li>
+<li>Require infra tickets for DNS create/delete paired with SaaS app lifecycle.</li>
+<li>Prefer provider-verified domain controls that prevent casual claims where available.</li>
+<li>Periodic takeover scans in CI/ASM tooling — treat findings like exposed buckets.</li>
+</ol>
+<h2 id="takeaway">Takeaway</h2>
+<p>The skill in mass takeover work is not the final claim click — it is <strong>building a pipeline that turns DNS sprawl into prioritized, verified dangling records</strong>. When Heroku CNAMEs appear repeatedly, you are looking at an organizational process bug with technical consequences.</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2021 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

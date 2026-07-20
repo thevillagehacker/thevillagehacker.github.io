@@ -7,34 +7,36 @@ Why this exists
 ---------------
 Your posts share the same chrome (nav, fonts, highlight.js, site.js atmosphere).
 Write content in Markdown + YAML front matter; this script emits a full HTML
-page under posts/ that matches the current site template.
+page under posts/ that matches the live black + red cyber site template, and
+(by default) registers a hyperlink card on blog.html.
 
 Current site features baked into the template
 ---------------------------------------------
-  - Black + red cyber theme (matches live site tokens / fallbacks)
+  - Black + red cyber theme (theme-color, fallbacks, accent tokens)
   - style.css: post typography, terminal-style code windows (scrollable)
   - site.js: cyber neural mesh atmosphere, nav clock, HTTP req/res highlighter
   - highlight.js: generic language highlighting (HTTP bodies get JSON/XML boost
     from site.js when the block is auto-detected as request/response)
+  - Shared landing nav (Home · Blog · Writeups) + advisory banner + meta header
 
 Usage
 -----
-  # Basic
-  python tools/md_to_post.py tools/examples/sample-post.md
+  # Convert + write on blog.html (default)
+  python tools/md_to_post.py drafts/my-writeup.md
+
+  # Convert only (do not touch blog.html)
+  python tools/md_to_post.py drafts/my-writeup.md --no-blog
 
   # Custom output path
   python tools/md_to_post.py draft.md -o posts/My_New_Post.html
 
   # Preview HTML body only (no full page)
-  python tools/md_to_post.py draft.md --body-only
+  python tools/md_to_post.py draft.md --body-only --no-blog
 
   # Print a blog.html list-item snippet to paste
-  python tools/md_to_post.py draft.md --blog-snippet
+  python tools/md_to_post.py draft.md --blog-snippet --no-blog
 
-  # Write the post AND register/update it in blog.html
-  python tools/md_to_post.py draft.md --publish-blog
-
-  # Dry-run: print path + metadata, write nothing
+  # Dry-run: print path + metadata + blog action, write nothing
   python tools/md_to_post.py draft.md --dry-run
 
 Markdown front matter (YAML between --- lines)
@@ -43,13 +45,13 @@ Markdown front matter (YAML between --- lines)
   title: NGINX Rift: ...
   description: Short SEO blurb
   banner: NGINX RIFT: ...          # advisory strip (defaults to title uppercased)
-  tag: WEB APPLICATION SECURITY    # red cyber cve-tag
+  tag: WEB APPLICATION SECURITY    # red cyber cve-tag + research-cve on blog card
   subtitle: NGINX // RCE           # under the H1
   platform: Web Application
   researcher: Naveen Jagadeesan
   published: 2026-07-10            # YYYY-MM-DD (default: today)
   slug: nginx-rift                 # output filename stem (default: from title)
-  severity: critical               # critical | high | lab | medium (for --blog-snippet)
+  severity: critical               # critical | high | lab | medium (blog badge)
   target: NGINX // HTTP // RCE     # research-target line for blog listing
   ---
 
@@ -549,6 +551,8 @@ def build_blog_tags(meta: dict[str, str]) -> str:
                 meta["title"].lower(),
                 meta["tag"].lower(),
                 meta["target"].lower(),
+                meta.get("platform", "").lower(),
+                meta.get("description", "").lower(),
                 meta["severity"].lower(),
                 meta["year"],
             ],
@@ -558,53 +562,122 @@ def build_blog_tags(meta: dict[str, str]) -> str:
     return re.sub(r"\s+", " ", tags).strip()
 
 
+# ---------------------------------------------------------------------------
+# blog.html registration — threat case board cards
+# ---------------------------------------------------------------------------
+
+RE_DATA_ID = re.compile(r'data-id="(\d+)"')
+RE_VENDOR_GROUP = re.compile(
+    r'<div class="vendor-group[^"]*"\s+data-year="(\d{4})">',
+    re.IGNORECASE,
+)
+RE_RESEARCH_ITEM = re.compile(
+    r'<a\s+href="([^"]+)"\s+class="research-item[^"]*"[\s\S]*?</a>\s*',
+    re.IGNORECASE,
+)
+
+
+def format_case_id(data_id: str | int) -> str:
+    try:
+        return f"CASE-{int(data_id):03d}"
+    except (TypeError, ValueError):
+        return f"CASE-{data_id}"
+
+
+def tile_blurb(meta: dict[str, str], max_len: int = 150) -> str:
+    """Short dossier blurb for blog case tiles (from description / subtitle)."""
+    raw = (
+        (meta.get("description") or "").strip()
+        or (meta.get("subtitle") or "").strip()
+        or (meta.get("target") or "").strip()
+    )
+    raw = re.sub(r"\s+", " ", raw)
+    if len(raw) <= max_len:
+        return raw
+    cut = raw[: max_len - 1]
+    if " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    # Avoid dangling conjunctions / cut mid-clause
+    cut = re.sub(
+        r"(\b(and|or|the|a|an|to|of|for|with|via|in|on)\s*)$",
+        "",
+        cut,
+        flags=re.IGNORECASE,
+    ).rstrip(" .,;:-—")
+    return cut + "…"
+
+
 def research_item_html(
     meta: dict[str, str],
     out_name: str,
     data_id: str,
 ) -> str:
-    """One archive card matching the blog.html research-item shape."""
+    """
+    Vertical case-file *tile* for the threat case board on blog.html.
+
+    Includes title, classification, target, blurb, platform, date, severity,
+    and a hyperlink to the generated post.
+    """
     css, label = severity_tag_class(meta["severity"])
     href = post_href(out_name)
     tags = build_blog_tags(meta)
-    # Match indentation used in blog.html (16 spaces for the <a>)
+    case_id = format_case_id(data_id)
+    year = esc(meta["year"])
+    blurb = tile_blurb(meta)
+    platform = meta.get("platform") or "Research"
+    published = meta.get("published") or meta.get("year") or ""
     return f"""\
-                <a href="{esc(href)}" class="research-item"
+                <a href="{esc(href)}" class="research-item case-file"
                    data-id="{esc(str(data_id))}"
-                   data-year="{esc(meta['year'])}"
+                   data-year="{year}"
                    data-severity="{esc(meta['severity'].lower())}"
+                   data-platform="{esc(platform)}"
+                   data-published="{esc(published)}"
                    data-tags="{esc(tags)}">
-                    <div class="research-info">
-                        <div class="research-cve">{esc(meta['tag'])}</div>
-                        <div class="research-title">{esc(meta['title'])}</div>
-                        <div class="research-target">{esc(meta['target'])}</div>
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">{esc(case_id)}</span>
+                            <span class="case-year">{year}</span>
+                        </div>
+                        <div class="research-cve case-class">{esc(meta['tag'])}</div>
+                        <div class="research-title case-title">{esc(meta['title'])}</div>
+                        <p class="case-blurb">{esc(blurb)}</p>
+                        <div class="research-target case-target">{esc(meta['target'])}</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">{esc(platform)}</span>
+                            <span class="case-detail case-detail-date" title="published">{esc(published)}</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag {css}">{label}</span>
+                            <span class="case-open">open file →</span>
+                        </div>
                     </div>
-                    <div class="research-tag {css}">{label}</div>
                 </a>
 """
+
+
+def sync_archive_match_count(blog_html: str) -> str:
+    """Keep the static #archive-match-count label in sync with card count."""
+    n = len(RE_RESEARCH_ITEM.findall(blog_html))
+    label = f"{n} case" if n == 1 else f"{n} cases"
+    updated, count = re.subn(
+        r'(id="archive-match-count">)[^<]*',
+        rf"\g<1>{label}",
+        blog_html,
+        count=1,
+        flags=re.IGNORECASE,
+    )
+    return updated if count else blog_html
 
 
 def blog_snippet(meta: dict[str, str], out_name: str, data_id: str = "NEWID") -> str:
     item = research_item_html(meta, out_name, data_id).rstrip() + "\n"
     return (
-        f"<!-- paste into blog.html inside the {meta['year']} vendor-group "
-        f"(or use --publish-blog) -->\n{item}"
+        f"<!-- paste into blog.html inside the {meta['year']} intel-year group "
+        f"(or run converter without --no-blog) -->\n{item}"
     )
-
-
-# ---------------------------------------------------------------------------
-# blog.html registration
-# ---------------------------------------------------------------------------
-
-RE_DATA_ID = re.compile(r'data-id="(\d+)"')
-RE_VENDOR_GROUP = re.compile(
-    r'<div class="vendor-group" data-year="(\d{4})">',
-    re.IGNORECASE,
-)
-RE_RESEARCH_ITEM = re.compile(
-    r'<a\s+href="([^"]+)"\s+class="research-item"[\s\S]*?</a>\s*',
-    re.IGNORECASE,
-)
 
 
 def next_blog_data_id(blog_html: str) -> int:
@@ -655,21 +728,27 @@ def _vendor_group_span(html: str, year: str) -> tuple[int, int] | None:
 
 def _insert_item_into_group(group_html: str, item_html: str) -> str:
     """
-    Insert research-item as the first card after the year label
-    (newest-first within the year).
+    Insert case-file as the first card in the year group (newest-first).
 
-    Careful not to consume indentation belonging to the next card.
+    Prefers the .intel-cases grid inside the threat board layout.
     """
+    cases = re.search(r'(<div class="intel-cases">\s*)', group_html, re.IGNORECASE)
+    if cases:
+        return (
+            group_html[: cases.end()]
+            + "\n"
+            + item_html
+            + group_html[cases.end() :]
+        )
+
     label_re = re.compile(
-        r'(<div class="vendor-label">[^<]*</div>)(\r?\n)?',
+        r'(<div class="vendor-label[^"]*">[^<]*</div>)(\r?\n)?',
         re.IGNORECASE,
     )
     m = label_re.search(group_html)
     if not m:
-        # Fallback: after opening vendor-group tag
         open_end = group_html.find(">") + 1
         return group_html[:open_end] + "\n" + item_html + group_html[open_end:]
-    # Always leave a blank line after the label, then the new card
     return group_html[: m.end()] + "\n" + item_html + group_html[m.end() :]
 
 
@@ -677,12 +756,75 @@ def _year_group_block(year: str, item_html: str) -> str:
     return (
         f"""\
             <!-- {year} -->
-            <div class="vendor-group" data-year="{year}">
-                <div class="vendor-label">{year}</div>
+            <div class="vendor-group intel-year" data-year="{year}">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">{year}</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
+                </div>
+                <div class="intel-cases">
 
 {item_html.rstrip()}
+
+                </div>
             </div>
 """
+    )
+
+
+def _archive_insert_fallback(html: str, group_block: str) -> str:
+    """
+    Insert a year group when no vendor-group exists yet.
+
+    Supports the live blog.html (Research archive section) and older
+    markers (id=archive-list / empty-state).
+    """
+    # Preferred: after the archive section label block
+    label = re.search(
+        r'(class="section-label archive-section-label"[\s\S]*?</div>\s*)',
+        html,
+        re.IGNORECASE,
+    )
+    if label:
+        pos = label.end()
+        return html[:pos] + "\n" + group_block + html[pos:]
+
+    # id="archive-list" container (optional stable anchor)
+    m = re.search(r'id="archive-list"[^>]*>', html, re.IGNORECASE)
+    if m:
+        # insert after opening tag of that element
+        open_end = html.find(">", m.start()) + 1
+        return html[:open_end] + "\n" + group_block + html[open_end:]
+
+    # Legacy empty-state
+    anchor = re.search(
+        r'(id="empty-state"[^>]*>.*?</span>\s*</div>\s*)',
+        html,
+        re.DOTALL | re.IGNORECASE,
+    )
+    if anchor:
+        pos = anchor.end()
+        return html[:pos] + "\n" + group_block + html[pos:]
+
+    # Research archive section — before its closing </section>
+    sec = re.search(
+        r'<section[^>]*aria-label="Research archive"[^>]*>',
+        html,
+        re.IGNORECASE,
+    )
+    if sec:
+        close = html.find("</section>", sec.start())
+        if close >= 0:
+            return html[:close] + group_block + "\n        " + html[close:]
+
+    # Absolute last resort: first </section> after archive-container
+    cont = html.find("archive-container")
+    close = html.find("</section>", cont if cont >= 0 else 0)
+    if close >= 0:
+        return html[:close] + group_block + "\n        " + html[close:]
+
+    raise ValueError(
+        "could not find Research archive insertion point in blog.html "
+        "(expected vendor-group, archive-section-label, or archive-list)"
     )
 
 
@@ -693,21 +835,7 @@ def _insert_new_year_group(html: str, year: str, group_block: str) -> str:
     year_i = int(year)
     starts = list(RE_VENDOR_GROUP.finditer(html))
     if not starts:
-        # After archive section label / empty-state
-        anchor = re.search(
-            r'(id="empty-state"[^>]*>.*?</span>\s*</div>\s*)',
-            html,
-            re.DOTALL | re.IGNORECASE,
-        )
-        if anchor:
-            pos = anchor.end()
-            return html[:pos] + "\n" + group_block + html[pos:]
-        # Last resort: before </section> of archive-list
-        sec = html.find('id="archive-list"')
-        close = html.find("</section>", sec if sec >= 0 else 0)
-        if close >= 0:
-            return html[:close] + group_block + "\n" + html[close:]
-        raise ValueError("could not find archive-list insertion point in blog.html")
+        return _archive_insert_fallback(html, group_block)
 
     # Insert before first group with smaller year; else after last group
     insert_before: int | None = None
@@ -757,7 +885,7 @@ def publish_to_blog(
 
     # Replace existing card with same href (idempotent re-publish)
     item_pat = re.compile(
-        rf'<a\s+href="{re.escape(href)}"\s+class="research-item"[\s\S]*?</a>\s*',
+        rf'<a\s+href="{re.escape(href)}"\s+class="research-item[^"]*"[\s\S]*?</a>\s*',
         re.IGNORECASE,
     )
     if item_pat.search(html_out):
@@ -801,12 +929,15 @@ def publish_to_blog(
             )
             action = "inserted-year"
 
+    html_out = sync_archive_match_count(html_out)
+
     status = {
         "action": action,
         "href": href,
         "data_id": str(data_id),
         "year": year,
         "blog": str(blog_path),
+        "cards": str(len(RE_RESEARCH_ITEM.findall(html_out))),
     }
 
     if dry_run:
@@ -824,13 +955,16 @@ def publish_to_blog(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Convert Markdown + YAML front matter into a publish-ready blog post HTML page.",
+        description=(
+            "Convert Markdown + YAML front matter into a publish-ready blog post "
+            "HTML page (black + red cyber template) and register it on blog.html."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"
-            "  python tools/md_to_post.py tools/examples/sample-post.md\n"
-            "  python tools/md_to_post.py draft.md --publish-blog\n"
-            "  python tools/md_to_post.py draft.md -b --dry-run\n"
+            "  python tools/md_to_post.py drafts/my-writeup.md\n"
+            "  python tools/md_to_post.py drafts/my-writeup.md --no-blog\n"
+            "  python tools/md_to_post.py drafts/my-writeup.md --dry-run\n"
         ),
     )
     parser.add_argument(
@@ -858,8 +992,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "-b",
         "--publish-blog",
+        dest="publish_blog",
         action="store_true",
-        help="Register or update this post in blog.html (archive card)",
+        default=True,
+        help="Register or update this post in blog.html (default: on)",
+    )
+    parser.add_argument(
+        "--no-blog",
+        dest="publish_blog",
+        action="store_false",
+        help="Do not modify blog.html",
     )
     parser.add_argument(
         "--blog-file",
@@ -918,13 +1060,9 @@ def main(argv: list[str] | None = None) -> int:
             preview_id = "NEWID"
             if blog_path.is_file():
                 try:
-                    existing = find_existing_item_id(
-                        blog_path.read_text(encoding="utf-8"),
-                        post_href(out_path.name),
-                    )
-                    preview_id = existing or str(
-                        next_blog_data_id(blog_path.read_text(encoding="utf-8"))
-                    )
+                    text = blog_path.read_text(encoding="utf-8")
+                    existing = find_existing_item_id(text, post_href(out_path.name))
+                    preview_id = existing or str(next_blog_data_id(text))
                 except OSError:
                     pass
             print("\n── blog.html snippet ─────────────────")
@@ -940,11 +1078,13 @@ def main(argv: list[str] | None = None) -> int:
                 print(
                     f"blog: would {status['action']} "
                     f"id={status['data_id']} href={status['href']} "
-                    f"year={status['year']}"
+                    f"year={status['year']} cards={status.get('cards', '?')}"
                 )
             except (OSError, ValueError) as exc:
                 print(f"blog: dry-run failed: {exc}", file=sys.stderr)
                 return 1
+        else:
+            print("blog: skipped (--no-blog)")
         return 0
 
     if args.stdout:
@@ -962,34 +1102,37 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(f"wrote {rel}")
 
+    # Default: register hyperlink card on blog.html
     if args.publish_blog:
         if args.body_only:
             print(
-                "warning: --publish-blog ignored with --body-only",
+                "warning: blog registration skipped with --body-only "
+                "(use full page conversion to publish)",
                 file=sys.stderr,
             )
-        elif args.stdout and args.output is None:
-            # Still allow blog registration using slug-based filename
-            pass
-        try:
-            status = publish_to_blog(
-                meta,
-                out_path.name,
-                args.blog_file or BLOG_HTML,
-                dry_run=False,
-            )
-            blog_rel = Path(status["blog"])
+        else:
             try:
-                blog_rel = blog_rel.resolve().relative_to(ROOT)
-            except ValueError:
-                pass
-            print(
-                f"blog: {status['action']} id={status['data_id']} "
-                f"href={status['href']} year={status['year']} → {blog_rel}"
-            )
-        except (OSError, ValueError) as exc:
-            print(f"error: failed to update blog.html: {exc}", file=sys.stderr)
-            return 1
+                status = publish_to_blog(
+                    meta,
+                    out_path.name,
+                    args.blog_file or BLOG_HTML,
+                    dry_run=False,
+                )
+                blog_rel = Path(status["blog"])
+                try:
+                    blog_rel = blog_rel.resolve().relative_to(ROOT)
+                except ValueError:
+                    pass
+                print(
+                    f"blog: {status['action']} id={status['data_id']} "
+                    f"href={status['href']} year={status['year']} "
+                    f"cards={status.get('cards', '?')} → {blog_rel}"
+                )
+            except (OSError, ValueError) as exc:
+                print(f"error: failed to update blog.html: {exc}", file=sys.stderr)
+                return 1
+    else:
+        print("blog: skipped (--no-blog)")
 
     if args.blog_snippet:
         blog_path = args.blog_file or BLOG_HTML

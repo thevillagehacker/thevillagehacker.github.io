@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>DLL Search-Order Hijacking to RCE on a Business Automation Client — thevillagehacker</title>
+<meta name="description" content="Process Monitor-driven DLL hijacking against a Windows business automation product — from missing module loads to Calculator proof and Meterpreter, with the theory behind prioritizing desktop clients."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    DLL HIJACKING // SEARCH ORDER // WINDOWS RCE
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">WINDOWS APPLICATION SECURITY</span>
+
+    <h1>DLL Search-Order Hijacking to RCE on a Business Automation Client</h1>
+
+    <p class="subtitle">PROC MON // PAYLOAD DLL // METERPRETER</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2022-12-15</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Windows Desktop Application</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A Windows business-automation desktop client loaded libraries using <strong>relative search order</strong> without integrity checks. Planting a malicious DLL in a preferred search location yielded code execution on application start — first proven with a benign Calculator payload, then escalated to a Meterpreter session.</p>
+<h2 id="theory-why-desktop-clients-still-pay">Theory: why desktop clients still pay</h2>
+<p>Web apps get most of the attention in bug bounty programs. Desktop line-of-business tools often ship with:</p>
+<ul>
+<li>auto-updaters and helper EXEs</li>
+<li>plugins loaded by name only</li>
+<li>installers that leave <strong>writable application directories</strong></li>
+<li>no code-signing enforcement on dependent DLLs</li>
+</ul>
+<p>The working theory:</p>
+<blockquote>
+<p>If Procmon shows <code>NAME NOT FOUND</code> for a DLL in a directory the user (or a low-priv process) can write, you likely have a loader bug — not a malware technique demo.</p>
+</blockquote>
+<h2 id="dll-search-order-primer-attacker-view">DLL search-order primer (attacker view)</h2>
+<p>When an application calls <code>LoadLibrary("foo.dll")</code> without a full path, Windows walks a search order. Exact order depends on SafeDllSearchMode and API variants, but the practical attacker preference is:</p>
+<ol>
+<li><strong>Application directory</strong> (often writable on poorly packaged enterprise tools)</li>
+<li>Other early entries before system directories</li>
+</ol>
+<p>If the real dependency lives later in the order — or is optional and missing — a planted <code>foo.dll</code> wins.</p>
+<h2 id="enumeration-methodology">Enumeration methodology</h2>
+<h3 id="1-baseline-with-process-monitor">1) Baseline with Process Monitor</h3>
+<p>Filter on the target PID/process name:</p>
+<ul>
+<li>Operation: <code>CreateFile</code> / <code>Load Image</code></li>
+<li>Result: <code>NAME NOT FOUND</code> for <code>*.dll</code></li>
+<li>Path under the application install or working directory</li>
+</ul>
+<h3 id="2-rank-candidates">2) Rank candidates</h3>
+<p>Prefer DLLs that:</p>
+<ul>
+<li>are probed at every launch</li>
+<li>are not immediately followed by a successful load of the same name elsewhere (or are delay-loaded)</li>
+<li>sit in a writable directory for the attack scenario (local priv-esc vs planted via shared folder / supply-chain adjacent write)</li>
+</ul>
+<h2 id="exploitation-path">Exploitation path</h2>
+<h3 id="proof-payload">Proof payload</h3>
+<p>Generate a DLL that executes a non-destructive proof (e.g., launch Calculator) to confirm:</p>
+<ol>
+<li>load order preference</li>
+<li>no signature gate</li>
+<li>stability (app doesn’t crash before your DllMain runs)</li>
+</ol>
+<h3 id="plant">Plant</h3>
+<p>Copy the payload to the winning path identified in Procmon, matching the expected filename.</p>
+<h3 id="validate">Validate</h3>
+<p>On next start:</p>
+<ul>
+<li>Procmon shows successful load of the planted module</li>
+<li>Proof process executes</li>
+</ul>
+<h3 id="escalate">Escalate</h3>
+<p>Swap the proof DLL for a reverse-shell / Meterpreter-class payload. Without DLL signing checks or Safe loading policies, the loader treats malware as a dependency.</p>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>Remote/local code execution in the context of the user running the client</li>
+<li>Persistence if the client is a login item or always-on tray app</li>
+<li>Credential and session exposure for whatever the automation tool can reach</li>
+<li>Potential pivot into internal automation backends the client speaks to</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>Relative DLL loads without absolute paths</li>
+<li>Missing code integrity / catalog signing checks</li>
+<li>Writable install directories for standard users (or weak ACLs)</li>
+<li>No Safe DLL search hardening / delay-load vigilance</li>
+</ul>
+<h2 id="mitigations-vendor">Mitigations (vendor)</h2>
+<ul>
+<li>Load dependencies by <strong>full path</strong></li>
+<li>Enable and correctly use <strong>SafeDllSearchMode</strong> behaviors; prefer <code>LOAD_LIBRARY_SEARCH_*</code> flags</li>
+<li>Require <strong>Authenticode</strong> for plugins and delay-loaded modules</li>
+<li>Install under properly ACL’d Program Files locations</li>
+<li>Consider mitigations like Windows Defender Application Control for enterprise deployments</li>
+</ul>
+<h2 id="takeaway">Takeaway</h2>
+<p>DLL hijacking is “old,” but it remains high-signal against niche enterprise clients. The research skill is not generating the payload — it is <strong>seeing the missing load as a vulnerability class</strong> and proving impact with a clean chain from Procmon to shell.</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2022 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

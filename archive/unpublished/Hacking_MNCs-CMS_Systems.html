@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>
+Exploiting Misconfigurations and Authorization Vulnerabilities — thevillagehacker
+</title>
+
+<meta name="description"
+content="Exploiting CMS misconfigurations and authorization vulnerabilities."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+<link rel="stylesheet" href="../assets/css/style.css"/>
+
+<style>
+
+.hljs{
+    background:#070b12 !important;
+    color:#d6deeb !important;
+
+    padding:22px !important;
+
+    font-family:var(--font-mono) !important;
+    font-size:14.5px !important;
+    line-height:1.65 !important;
+
+    border-radius:0 0 8px 8px;
+}
+
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#82aaff !important;}
+.hljs-comment{color:#5c6773 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#89ddff !important;}
+.hljs-attr{color:#ffcb6b !important;}
+
+pre{
+    position:relative;
+}
+
+pre::before{
+
+    content:'';
+
+    display:block;
+
+    height:38px;
+
+    border-bottom:1px solid #1e2a38;
+
+    background:
+        radial-gradient(circle at 18px 19px,#ff5f56 0 4px,transparent 5px),
+        radial-gradient(circle at 36px 19px,#ffbd2e 0 4px,transparent 5px),
+        radial-gradient(circle at 54px 19px,#27c93f 0 4px,transparent 5px),
+        linear-gradient(to bottom,#101722,#0c121c);
+
+    border-radius:8px 8px 0 0;
+}
+
+</style>
+
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="advisory-banner">
+    AUTHORIZATION BYPASS // JWT MISCONFIGURATION // CMS ABUSE
+</div>
+
+<div class="container">
+
+<header class="header">
+
+    <span class="cve-tag">
+        WEB APPLICATION SECURITY
+    </span>
+
+    <h1>
+        Exploiting Misconfigurations and Authorization Vulnerabilities
+    </h1>
+
+    <p class="subtitle">
+        JWT ANALYSIS // AWS COGNITO // LOCAL STORAGE AUTHORIZATION BYPASS
+    </p>
+
+    <div class="meta">
+
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-03-25</div>
+        </div>
+
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">ReactJS / AWS Cognito</div>
+        </div>
+
+    </div>
+
+</header>
+
+<article>
+
+<p>
+This article discusses the exploitation of multiple
+misconfigurations and authorization vulnerabilities in a
+multinational company's Content Management System (CMS).
+</p>
+
+<h2>Target Background</h2>
+
+<p>
+The target organization operated a CMS platform used for
+managing product and service content across multiple public
+web properties.
+</p>
+
+<p>
+The application was built using ReactJS and leveraged AWS
+Cognito for authentication.
+</p>
+
+<p>
+Published content was automatically pushed to the live
+production websites associated with various business units.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+The application did not expose a public sign-up workflow.
+</p>
+
+<p>
+Only administrators were intended to create users and assign
+roles internally.
+</p>
+
+<p>
+The home page only presented a login form without any visible
+registration capability.
+</p>
+
+<h2>Reconnaissance</h2>
+
+<p>
+Initial reconnaissance identified the following technologies:
+</p>
+
+<ul>
+
+<li>ReactJS</li>
+
+<li>Amazon CDN</li>
+
+<li>REST APIs</li>
+
+<li>AWS Cognito</li>
+
+</ul>
+
+<h2>Source File Analysis</h2>
+
+<p>
+Analysis of the loaded JavaScript bundles did not immediately
+reveal accessible REST API endpoints.
+</p>
+
+<p>
+To extend reconnaissance, URL fuzzing techniques were used
+against the application paths.
+</p>
+
+<p>
+This process revealed a hidden registration endpoint:
+</p>
+
+<pre><code class="language-text">
+https://abc.com/abc/xyz/signup.html
+</code></pre>
+
+<h2>Misconfiguration #1 — Hidden Signup Workflow</h2>
+
+<p>
+Although the application did not expose a visible signup
+interface, the backend functionality remained enabled.
+</p>
+
+<p>
+The endpoint allowed arbitrary account creation without:
+</p>
+
+<ul>
+
+<li>Email verification</li>
+
+<li>Administrative approval</li>
+
+<li>Additional validation workflows</li>
+
+</ul>
+
+<p>
+After registration the application authenticated successfully,
+however access to internal CMS pages was denied.
+</p>
+
+<p>
+Further inspection confirmed that authentication succeeded,
+but authorization failed due to missing user roles.
+</p>
+
+<h2>JWT Analysis</h2>
+
+<p>
+Upon successful login the application issued a JWT token
+through the response headers.
+</p>
+
+<p>
+Decoding the JWT revealed empty Cognito permission groups.
+</p>
+
+<pre><code class="language-json">
+{
+  "sub": "e03f561e-9392-437d-abf7",
+  "cognito:groups": [
+    ""
+  ],
+  "cognito:username": "test",
+  "cognito:roles": [
+    ""
+  ],
+  "email": "nj@tvhsecurity.com"
+}
+</code></pre>
+
+<p>
+The token proved that authentication was successful while
+authorization roles were absent.
+</p>
+
+<h2>JWT Fuzzing</h2>
+
+<p>
+Several attempts were made to modify the JWT payload by
+injecting arbitrary Cognito role values.
+</p>
+
+<p>
+However the modified tokens failed validation and did not
+grant additional access.
+</p>
+
+<h2>Extracting Internal URLs</h2>
+
+<p>
+Using the valid authorization token, the frontend source
+files were downloaded and analyzed further.
+</p>
+
+<p>
+Embedded URLs were extracted using custom tooling and
+automated reconnaissance techniques.
+</p>
+
+<p>
+The following tools were used:
+</p>
+
+<ul>
+
+<li>curl</li>
+
+<li>HTTPX</li>
+
+<li>URLScrapy</li>
+
+</ul>
+
+<h2>HTTP Response Analysis</h2>
+
+<p>
+Extracted URLs were processed through HTTPX in order to
+identify pages with anomalous response lengths.
+</p>
+
+<p>
+One particular page exposed static role information related
+to internal CMS authorization logic.
+</p>
+
+<p>
+The following roles were identified:
+</p>
+
+<ul>
+
+<li>editor</li>
+
+<li>publisher</li>
+
+</ul>
+
+<p>
+Editors could create and modify content while publishers
+could approve deployments.
+</p>
+
+<h2>Checkpoint</h2>
+
+<p>
+At this stage the following components were available:
+</p>
+
+<ul>
+
+<li>Valid authenticated account</li>
+
+<li>JWT authorization token</li>
+
+<li>Knowledge of internal role names</li>
+
+<li>Frontend application source files</li>
+
+</ul>
+
+<h2>Authorization Bypass</h2>
+
+<p>
+During experimentation with browser developer tools a local
+storage variable named <code>user_role</code> was identified.
+</p>
+
+<p>
+The variable existed but remained empty for newly created
+accounts.
+</p>
+
+<p>
+By manually setting:
+</p>
+
+<pre><code class="language-js">
+localStorage.setItem("user_role", "editor")
+</code></pre>
+
+<p>
+and refreshing the page, the application granted editor-level
+access.
+</p>
+
+<blockquote>
+Authorization decisions were being performed entirely through
+client-side local storage values.
+</blockquote>
+
+<h2>Misconfiguration #2 — Broken Authorization</h2>
+
+<p>
+The application used AWS Cognito groups only for authentication
+validation but failed to enforce them server-side for
+authorization.
+</p>
+
+<p>
+The backend APIs trusted client-side role values supplied by
+the frontend application.
+</p>
+
+<p>
+As long as a valid JWT token existed, arbitrary role escalation
+became possible.
+</p>
+
+<h2>Privilege Escalation</h2>
+
+<p>
+Changing the local storage value from:
+</p>
+
+<pre><code class="language-js">
+editor
+</code></pre>
+
+<p>
+to:
+</p>
+
+<pre><code class="language-js">
+publisher
+</code></pre>
+
+<p>
+granted full publisher-level privileges after page refresh.
+</p>
+
+<p>
+This enabled:
+</p>
+
+<ul>
+
+<li>Approving content</li>
+
+<li>Publishing changes</li>
+
+<li>Rejecting submissions</li>
+
+<li>Accessing privileged CMS workflows</li>
+
+</ul>
+
+<h2>Impact</h2>
+
+<ul>
+
+<li>Unauthorized account creation</li>
+
+<li>Authentication bypass conditions</li>
+
+<li>Privilege escalation</li>
+
+<li>Publisher-level access</li>
+
+<li>Unauthorized content modification</li>
+
+<li>Potential production content compromise</li>
+
+</ul>
+
+<h2>Root Cause</h2>
+
+<ul>
+
+<li>Hidden legacy signup endpoint</li>
+
+<li>Improper authorization enforcement</li>
+
+<li>Client-side trust assumptions</li>
+
+<li>Missing server-side role validation</li>
+
+<li>Reliance on local storage for authorization</li>
+
+</ul>
+
+<h2>Conclusion</h2>
+
+<p>
+Applications should never rely on client-side storage values
+for authorization decisions.
+</p>
+
+<p>
+All authorization logic must be validated server-side using
+trusted identity providers and immutable permission checks.
+</p>
+
+<p>
+Combined with hidden registration functionality, the weak
+authorization implementation enabled full privilege escalation
+inside the CMS environment.
+</p>
+
+<p>
+Thank you for reading.
+</p>
+
+</article>
+
+<footer>
+
+    <span class="footer-text">
+        © 2026
+        <a href="../index.html">thevillagehacker</a>
+        — Naveen Jagadeesan
+    </span>
+
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+hljs.highlightAll();
+</script>
+
+    <script src="../assets/js/site.js" defer></script>
+</body>
+</html>

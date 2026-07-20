@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Reversing Client-Side AES: When ‘Encrypted APIs’ Are Just Obscurity — thevillagehacker</title>
+<meta name="description" content="How hardcoded AES-CBC keys and IVs in shared CDN JavaScript turned encrypted REST traffic into a fully automatable API surface — including CAPTCHA workflow abuse."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    CLIENT-SIDE CRYPTO // AES-CBC // CDN SECRETS
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">WEB APPLICATION SECURITY</span>
+
+    <h1>Reversing Client-Side AES: When ‘Encrypted APIs’ Are Just Obscurity</h1>
+
+    <p class="subtitle">CRYPTOJS // STATIC IV // API AUTOMATION</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-02-15</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Web / Android / iOS (shared API)</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A multi-app product family encrypted all REST bodies client-side with <strong>AES-CBC</strong>, advertising the design as a security control. Secrets lived in <strong>shared CDN JavaScript</strong> with a <strong>static IV</strong>. Once reversed, the “encrypted API” became a normal JSON API — and weak CAPTCHA token issuance enabled automated registration abuse.</p>
+<h2 id="theory">Theory</h2>
+<p>Client-side encryption of HTTP JSON is almost never confidentiality against the user. It is, at best:</p>
+<ul>
+<li>anti-debug friction</li>
+<li>a way to discourage casual script kiddies</li>
+<li>a compliance aesthetic</li>
+</ul>
+<p>The research theory:</p>
+<blockquote>
+<p>If encryption keys ship in the same trust domain as the attacker (browser/app), treat ciphertext as <strong>encoding</strong>, not security. Your job is to recover transform parameters and then test the <em>real</em> server-side controls underneath.</p>
+</blockquote>
+<p>Shared CDN + many subdomains made that theory stronger: one broken crypto helper would unlock a portfolio of apps.</p>
+<h2 id="recon-observations">Recon observations</h2>
+<ul>
+<li>React frontends + mobile clients hitting the same API family</li>
+<li>15+ related applications / hosts sharing technology</li>
+<li>Request/response bodies opaque at first glance</li>
+<li>Bundles: <code>main.js</code>, <code>signin.js</code>, <code>signup.js</code>, <code>booking.js</code>, …</li>
+</ul>
+<p>Keyword pass over bundles: <code>encrypt</code>, <code>decrypt</code>, <code>CryptoJS</code>, <code>iv</code>, <code>key</code>, <code>AES</code>.</p>
+<h2 id="recovering-the-transform">Recovering the transform</h2>
+<p>Configuration fragments exposed key material and endpoints:</p>
+<pre><code class="hljs language-javascript">// simplified shape observed in bundles
+{
+  apiDomain: &quot;https://api.example.com&quot;,
+  bookingApiDomain: &quot;https://bookings.example.com&quot;,
+  cdnPath: &quot;https://cdn.example.com&quot;,
+  dataHasKey: &quot;###################=&quot;,
+  dataIVKey: &quot;jm8lgqa3j1d0ajus&quot;,
+  encryptionKeys: &quot;[...]&quot;
+}
+</code></pre>
+<p>Encrypt helper (conceptual reconstruction):</p>
+<pre><code class="hljs language-javascript">encrypt: function (obj) {
+  const key = this.encryptKEY;           // hardcoded
+  const iv  = &quot;jm8lgqa3j1d0ajus&quot;;       // static IV
+  const plain = JSON.stringify(obj);
+  return CryptoJS.AES.encrypt(
+    plain,
+    CryptoJS.enc.Utf8.parse(key),
+    {
+      iv: CryptoJS.enc.Utf8.parse(iv),
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    }
+  ).toString() + &quot;---&quot; + btoa(iv);
+}
+</code></pre>
+<h3 id="cryptographic-red-flags">Cryptographic red flags</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Observation</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Key location</td>
+<td>Browser/app bundle</td>
+<td>Attacker is a legitimate client</td>
+</tr>
+<tr>
+<td>IV</td>
+<td>Static / reused</td>
+<td>Breaks semantic security; patterns leak</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>AES-CBC with client decrypt</td>
+<td>Server trusts client-produced ciphertext structure</td>
+</tr>
+<tr>
+<td>Framing</td>
+<td><code>cipher---b64(iv)</code></td>
+<td>Easy to reimplement offline</td>
+</tr>
+</tbody>
+</table>
+<p>After decryption, bodies were ordinary JSON (PII fields, passwords, activity sources, etc.).</p>
+<h2 id="captcha-workflow-under-the-microscope">CAPTCHA workflow under the microscope</h2>
+<p>Registration used Google reCAPTCHA, but token minting / verification steps were insufficiently bound to:</p>
+<ul>
+<li>single-use semantics with server-side accounting</li>
+<li>bot friction beyond short-lived tokens</li>
+<li>rate limits that survived scripted obtain→encrypt→POST loops</li>
+</ul>
+<p>Attack workflow:</p>
+<pre><code class="hljs language-text">obtain captcha challenge
+  → verify / mint token
+  → craft registration JSON
+  → AES-CBC encrypt with recovered key/IV
+  → POST to API
+  → repeat
+</code></pre>
+<p>Impact class: large-scale fake account creation, spam, resource exhaustion, bypass of “encrypted + captcha protected” assumptions.</p>
+<h2 id="why-this-is-worth-writing-up">Why this is worth writing up</h2>
+<p>Not because “AES in JavaScript is bad” as a slogan — but because:</p>
+<ol>
+<li>Crypto was positioned as a <strong>control</strong>, not friction.</li>
+<li>A <strong>shared CDN secret</strong> expanded blast radius across apps.</li>
+<li>Static IVs and recoverable keys made offline tooling trivial.</li>
+<li>Real server controls (CAPTCHA, rate limit, abuse) were weaker than the crypto cosplay suggested.</li>
+</ol>
+<h2 id="defender-guidance">Defender guidance</h2>
+<ul>
+<li>TLS already protects transit; do not invent app-layer body crypto unless you have a clear threat model (and even then, keys must not be world-readable).</li>
+<li>If you need field-level encryption, use <strong>server-held keys</strong> or platform KMS; clients get wrapped DEKs with short lifetime.</li>
+<li>Never ship long-term symmetric keys in mobile/web clients for security boundaries.</li>
+<li>Unique IVs/nonces per message; authenticate ciphertext (AEAD).</li>
+<li>Abuse prevention belongs in <strong>server-side</strong> rate limits, device attestation, and fraud systems — not in AES theater.</li>
+</ul>
+<h2 id="takeaway">Takeaway</h2>
+<p>When you see encrypted JSON APIs, reverse the client transform first. The interesting bugs usually start <strong>after</strong> <code>decrypt()</code> — where business logic and anti-automation were never as strong as the Base64 looked.</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2023 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Account Takeover via SessionStorage Authorization — thevillagehacker</title>
+<meta name="description" content="How a financial web app mixed cookie authentication with sessionStorage identity, user enumeration APIs, and OSINT-derived employee emails into full account takeover."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    ACCOUNT TAKEOVER // SESSION STORAGE // AUTHZ BYPASS
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">WEB APPLICATION SECURITY</span>
+
+    <h1>Account Takeover via SessionStorage Authorization</h1>
+
+    <p class="subtitle">REACT // COOKIE AUTH // CLIENT TRUST</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-03-30</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Financial Web Application</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A financial collaboration app authenticated with cookies but <strong>authorized with mutable browser sessionStorage</strong>. Combined with a verbose user-lookup API and OSINT-friendly employee emails, an attacker could mint another user’s client identity object and inherit their invoices, org data, and admin-capable UI workflows.</p>
+<h2 id="theory">Theory</h2>
+<p>Modern SPAs often cache a “user profile” object client-side for snappy UX. The dangerous pattern:</p>
+<blockquote>
+<p><strong>Authentication</strong> = HttpOnly cookie / token (good)<br>
+<strong>Authorization</strong> = whatever is in <code>sessionStorage.user</code> (bad)</p>
+</blockquote>
+<p>If the server does not re-resolve identity from the session on every sensitive read/write — or if APIs accept client-asserted user IDs — the SPA becomes an identity editor.</p>
+<p>Secondary theory: pre-login “lookup user by email” endpoints frequently overshare (role, status, userId), giving attackers a perfect template for the storage object they need to forge.</p>
+<h2 id="application-context">Application context</h2>
+<ul>
+<li>Financial workflows: invoices, payments, reconciliation</li>
+<li>Orgs + roles for multi-user teams</li>
+<li>React SPA, cookie sessions, REST APIs, edge WAF</li>
+</ul>
+<h2 id="recon-the-lookup-oracle">Recon: the lookup oracle</h2>
+<pre><code class="hljs language-http">GET /api/v1/user?email=researcher@example.com HTTP/2
+Host: www.target.example
+Cookie: session=&lt;valid-or-empty-as-applicable&gt;
+</code></pre>
+<pre><code class="hljs language-json">{
+  &quot;status&quot;: true,
+  &quot;message&quot;: &quot;Successfully Retrieved&quot;,
+  &quot;result&quot;: [
+    {
+      &quot;UserId&quot;: 601XXX,
+      &quot;EmailId&quot;: &quot;researcher@example.com&quot;,
+      &quot;RoleName&quot;: &quot;Admin&quot;,
+      &quot;CountryName&quot;: &quot;India&quot;,
+      &quot;Status&quot;: &quot;Approved&quot;,
+      &quot;IsActive&quot;: true
+    }
+  ]
+}
+</code></pre>
+<p>That response is already a finding: <strong>user enumeration + excessive data exposure</strong>. It also hands the exact schema of the client identity blob.</p>
+<h2 id="hypothesis-test-with-two-accounts">Hypothesis test with two accounts</h2>
+<ol>
+<li>Create Account A and Account B.</li>
+<li>Log in as A; dump <code>sessionStorage</code>.</li>
+<li>Observe profile keys matching the lookup API fields.</li>
+<li>Call lookup for B’s email; copy B’s object into A’s sessionStorage slot.</li>
+<li>Refresh.</li>
+</ol>
+<p>Result: UI and subsequent client-driven calls behaved as B — <strong>account takeover relative to the SPA’s trust model</strong>, including financial records visible to B.</p>
+<h2 id="weaponization-with-osint">Weaponization with OSINT</h2>
+<p>Corporate emails harvested from:</p>
+<ul>
+<li>public contact pages</li>
+<li>GitHub commits / issue comments</li>
+<li>support forums / developer discussions</li>
+</ul>
+<p>Intruder-style probing against <code>/api/v1/user?email=</code> using content-length / body differences identified valid staff accounts. Lookup returned Admin-capable metadata for some identities. Injecting those objects completed takeover against real organizational users (in authorized testing scope).</p>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>Full account takeover of enumerated users</li>
+<li>Access to invoices and financial artifacts</li>
+<li>Potential admin-role UX and data exposure</li>
+<li>User impersonation inside multi-tenant orgs</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ol>
+<li>Authorization decisions influenced by client-writable storage</li>
+<li>User lookup API returns rich identity material</li>
+<li>Missing server-side binding between session principal and requested resources</li>
+<li>Enumeration-friendly email oracle</li>
+</ol>
+<h2 id="fixes-that-actually-work">Fixes that actually work</h2>
+<ul>
+<li>Treat cookies/tokens as the <strong>only</strong> identity source; sessionStorage is cache, never authority.</li>
+<li>On every sensitive API call, authorize from server session / JWT <code>sub</code> claims — ignore client <code>UserId</code> assertions unless they match.</li>
+<li>Lookup endpoints should return minimal boolean existence (if needed at all), rate-limited and anti-enumerated.</li>
+<li>Prefer server-driven UI permission models (fetch <code>/me</code> from trusted session, not local edits).</li>
+</ul>
+<h2 id="takeaway">Takeaway</h2>
+<p>If you can edit who you are in DevTools and the app believes you, you do not have an authorization system — you have a suggestion box. Pair that with a chatty user oracle and ATO becomes an operational process, not a research moonshot.</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2023 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

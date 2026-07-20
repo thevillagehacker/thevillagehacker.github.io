@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Ni8mare: Unauthenticated RCE in n8n via Parser Confusion — thevillagehacker</title>
+<meta name="description" content="Technical breakdown of CVE-2026-21858 — content-type confusion to arbitrary file read, session forgery, workflow injection, and unauthenticated remote code execution in n8n."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    CONTENT-TYPE CONFUSION // FILE READ // WORKFLOW RCE
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">CVE-2026-21858</span>
+
+    <h1>Ni8mare: Unauthenticated RCE in n8n via Parser Confusion</h1>
+
+    <p class="subtitle">n8n // PARSER TRUST // EXECUTION SINKS</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2026-04-17</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">n8n Workflow Automation</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="why-this-finding-matters">Why this finding matters</h2>
+<p>This is not a “single bad <code>exec()</code>” bug report. <strong>Ni8mare (CVE-2026-21858)</strong> is a <strong>compound trust-boundary failure</strong>: parser ambiguity becomes file read, file read becomes identity, identity becomes workflow authorship, and workflow authorship becomes OS command execution.</p>
+<p>Automation platforms are attractive targets because they sit between the internet and internal systems — and they often treat “workflow definitions” as data while executing them as code.</p>
+<h2 id="working-theory-how-i-framed-the-hunt">Working theory (how I framed the hunt)</h2>
+<p>When reviewing workflow engines, I start from a simple model:</p>
+<ol>
+<li><strong>What can an unauthenticated caller touch?</strong> (webhooks, form triggers, public APIs)</li>
+<li><strong>What does the parser believe about the body?</strong> (JSON vs multipart vs raw)</li>
+<li><strong>Where does that belief become a filesystem or code path?</strong></li>
+<li><strong>What secrets or session material are on disk?</strong></li>
+<li><strong>Which sinks turn “admin capability” into process execution?</strong></li>
+</ol>
+<p>The theory for n8n was: <em>if webhook parsing is content-type flexible, a mismatch between declared type and actual structure can smuggle path-like fields into code paths that assume trusted multipart handling — and automation nodes already know how to run commands.</em></p>
+<p>That theory maps cleanly onto a multi-stage chain rather than a one-shot payload.</p>
+<h2 id="root-cause-shape">Root cause shape</h2>
+<p>The issue is best understood as stacked failures:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Failure</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Content-Type / parser confusion</td>
+<td>Unauthenticated request accepted into unexpected handler path</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Unsafe path / body handling</td>
+<td>Arbitrary file read</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Secrets on disk / weak session material</td>
+<td>Credential or signing secret recovery</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Session forgery</td>
+<td>Authenticated / privileged context</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Workflow write + execute</td>
+<td>Code path to <code>executeCommand</code>-class sinks</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Unsandboxed OS execution</td>
+<td>Full RCE</td>
+</tr>
+</tbody>
+</table>
+<h2 id="stage-analysis">Stage analysis</h2>
+<h3 id="1-unauthenticated-entry-via-webhooks">1) Unauthenticated entry via webhooks</h3>
+<p>Public webhook endpoints are intentionally internet-facing. That is correct product design — but it means <strong>every parser assumption on that path is a security boundary</strong>.</p>
+<h3 id="2-content-type-confusion-file-access">2) Content-Type confusion → file access</h3>
+<p>When request parsing branches on <code>Content-Type</code> without hard enforcement, an attacker can present a body that one subsystem treats as multipart/file metadata while another treats it as structured fields.</p>
+<pre><code class="hljs language-http">POST /webhook/test HTTP/1.1
+Host: n8n.target.local
+Content-Type: multipart/form-data; boundary=----XYZ
+
+------XYZ
+Content-Disposition: form-data; name=&quot;file&quot;; filename=&quot;../../../../etc/passwd&quot;
+Content-Type: text/plain
+
+x
+------XYZ--
+</code></pre>
+<p>The exact field names vary by version and node configuration, but the <strong>class</strong> of bug is consistent: <em>user-influenced paths crossing from “upload metadata” into “read this path”.</em></p>
+<h3 id="3-file-read-identity-material">3) File read → identity material</h3>
+<p>Once arbitrary read exists, the search prioritizes:</p>
+<ul>
+<li>configuration / env material</li>
+<li>database files containing user records</li>
+<li>session signing secrets</li>
+<li>encryption keys used for cookies or JWTs</li>
+</ul>
+<p>A file-read primitive against an automation host is rarely “just LFI.” It is usually <strong>pre-auth for the next stage</strong>.</p>
+<h3 id="4-session-forgery">4) Session forgery</h3>
+<p>If a signing secret or session blob is recoverable:</p>
+<pre><code class="hljs language-javascript">// conceptual — forge a privileged session after secret recovery
+const session = sign({ role: &quot;admin&quot; }, SECRET);
+</code></pre>
+<p>Parser confusion + file read becomes <strong>authentication bypass</strong>.</p>
+<h3 id="5-workflow-injection-as-code-execution">5) Workflow injection as code execution</h3>
+<p>n8n workflows are executable graphs. After privileged access, creating or editing a workflow that includes an execution node is effectively writing shell.</p>
+<pre><code class="hljs language-json">{
+  &quot;nodes&quot;: [
+    {
+      &quot;type&quot;: &quot;executeCommand&quot;,
+      &quot;parameters&quot;: {
+        &quot;command&quot;: &quot;id &amp;&amp; uname -a&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<h3 id="6-trigger-rce">6) Trigger → RCE</h3>
+<pre><code class="hljs language-http">POST /workflow/run HTTP/1.1
+Host: n8n.target.local
+Cookie: session=&lt;forged&gt;
+Content-Type: application/json
+
+{&quot;workflowId&quot;:&quot;&lt;injected&gt;&quot;}
+</code></pre>
+<p>At this point the platform’s intended automation features become the exploit payload delivery system.</p>
+<h2 id="end-to-end-chain">End-to-end chain</h2>
+<pre><code class="hljs language-text">[unauth webhook]
+      │
+      ▼
+[content-type / parser confusion]
+      │
+      ▼
+[arbitrary file read]
+      │
+      ▼
+[secret / session material]
+      │
+      ▼
+[session forgery / auth bypass]
+      │
+      ▼
+[workflow create/modify]
+      │
+      ▼
+[executeCommand sink]
+      │
+      ▼
+[remote code execution]
+</code></pre>
+<h2 id="why-chains-like-this-keep-appearing">Why chains like this keep appearing</h2>
+<p>Three recurring product decisions amplify impact:</p>
+<ol>
+<li><strong>Public triggers with rich parsers</strong> — multipart, binary, JSON, form-urlencoded all on one path.</li>
+<li><strong>Secrets local to the process host</strong> — readable by the same UID that runs workflows.</li>
+<li><strong>Powerful nodes without sandbox defaults</strong> — <code>executeCommand</code>, code nodes, shell nodes.</li>
+</ol>
+<p>Individually each may look “by design.” Together they form an RCE conveyor belt.</p>
+<h2 id="remediation-defender-oriented">Remediation (defender-oriented)</h2>
+<ul>
+<li><strong>Strict Content-Type allowlists</strong> per route; reject mismatches early.</li>
+<li><strong>Path canonicalization + root jail</strong> for any file operation; never trust filename metadata.</li>
+<li><strong>No high-value secrets world-readable</strong> to the runtime user; prefer OS secret stores / sealed config.</li>
+<li><strong>Disable or heavily gate OS execution nodes</strong> on internet-facing instances.</li>
+<li><strong>Server-side authorization on workflow mutate/run</strong>, independent of UI role flags.</li>
+<li><strong>Sandbox workflow execution</strong> (containers, seccomp, non-root, network egress controls).</li>
+</ul>
+<p>Conceptual guard:</p>
+<pre><code class="hljs language-javascript">if (!req.is(&quot;multipart/form-data&quot;)) {
+  throw new Error(&quot;invalid content-type&quot;);
+}
+if (!isSafePath(userPath, ALLOWED_ROOT)) {
+  throw new Error(&quot;invalid path&quot;);
+}
+// never: exec(userInput)
+</code></pre>
+<h2 id="takeaway">Takeaway</h2>
+<p>CVE-2026-21858 is a lesson in <strong>trust propagation</strong>: the dangerous part is not only the final <code>exec</code>, but every hop that turns untrusted bytes into trusted capability. When hunting automation platforms, map <em>parser → secret → privilege → sink</em> before you write the first PoC line.</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2026 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Blog // Research Log — thevillagehacker</title>
-    <meta name="description" content="Vulnerability research writeups, exploit notes, and security analysis — publishing soon from thevillagehacker research node.">
+    <title>Blog // Threat Case Board — thevillagehacker</title>
+    <meta name="description" content="Curated vulnerability research case files — RCE chains, authz failures, business logic, and infrastructure findings from thevillagehacker.">
 
     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
@@ -15,218 +15,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
-    <style>
-        /* Coming-soon log — page-local polish on shared cyber theme */
-        .soon-panel {
-            border: 1px solid var(--border);
-            background: rgba(18, 16, 20, 0.9);
-            backdrop-filter: blur(8px);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow:
-                0 0 0 1px rgba(0, 0, 0, 0.35),
-                0 20px 50px rgba(0, 0, 0, 0.4),
-                0 0 48px rgba(255, 42, 61, 0.06);
-        }
-
-        .soon-chrome {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: linear-gradient(to bottom, #1a1216, #120e12);
-            border-bottom: 1px solid #2a1e24;
-        }
-
-        .soon-chrome-title {
-            flex: 1;
-            text-align: center;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--text-dim);
-        }
-
-        .soon-body {
-            padding: 28px 26px 30px;
-        }
-
-        .soon-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.2px;
-            color: var(--accent);
-            border: 1px solid rgba(255, 42, 61, 0.35);
-            background: rgba(255, 42, 61, 0.08);
-            padding: 6px 12px;
-            margin-bottom: 22px;
-        }
-
-        .soon-status .pulse-ring {
-            background: var(--accent);
-            box-shadow: 0 0 0 0 rgba(255, 42, 61, 0.5);
-            animation: pulse-ring-breach 1.8s ease-out infinite;
-        }
-
-        .soon-title {
-            font-family: var(--font-body);
-            font-size: clamp(28px, 5vw, 42px);
-            font-weight: 800;
-            line-height: 1.15;
-            color: var(--text-primary);
-            margin-bottom: 14px;
-        }
-
-        .soon-title em {
-            font-style: normal;
-            color: var(--accent);
-        }
-
-        .soon-lead {
-            color: var(--text-secondary);
-            font-size: 16px;
-            line-height: 1.75;
-            max-width: 560px;
-            margin-bottom: 28px;
-        }
-
-        .soon-log {
-            font-family: var(--font-mono);
-            font-size: 12.5px;
-            line-height: 1.75;
-            color: var(--text-secondary);
-            background: rgba(8, 6, 10, 0.85);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 18px;
-            margin-bottom: 26px;
-            overflow-x: auto;
-        }
-
-        .soon-log .ok { color: var(--green); }
-        .soon-log .dim { color: var(--text-dim); }
-        .soon-log .accent { color: var(--accent); }
-        .soon-log .warn { color: var(--yellow); }
-
-        .pipeline {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 720px) {
-            .pipeline { grid-template-columns: 1fr; }
-        }
-
-        .pipe-card {
-            border: 1px solid var(--border);
-            background: rgba(10, 9, 11, 0.65);
-            padding: 16px 16px 14px;
-            transition: border-color 0.2s ease;
-        }
-
-        .pipe-card:hover {
-            border-color: var(--accent-dim);
-        }
-
-        .pipe-id {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .pipe-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 6px;
-        }
-
-        .pipe-desc {
-            font-size: 12px;
-            color: var(--text-dim);
-            line-height: 1.55;
-        }
-
-        .soon-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 28px;
-        }
-
-        .draft-queue {
-            margin-top: 40px;
-        }
-
-        .draft-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 16px;
-            border: 1px solid var(--border);
-            background: rgba(18, 16, 20, 0.75);
-            padding: 16px 18px;
-            margin-bottom: 10px;
-            text-decoration: none;
-            transition: border-color 0.2s ease, transform 0.15s ease;
-        }
-
-        .draft-item:hover {
-            border-color: var(--accent-dim);
-            transform: translateY(-1px);
-        }
-
-        .draft-meta {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--accent);
-            margin-bottom: 6px;
-        }
-
-        .draft-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .draft-note {
-            font-size: 12px;
-            color: var(--text-dim);
-        }
-
-        .draft-badge {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--bg-primary);
-            background: var(--accent);
-            padding: 4px 8px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .draft-badge.queued {
-            background: var(--yellow);
-        }
-
-        .draft-badge.outline {
-            background: transparent;
-            color: var(--text-dim);
-            border: 1px solid var(--border);
-        }
-    </style>
 </head>
 
-<body class="landing-page blog-archive">
+<body class="landing-page blog-archive has-site-fx">
 
     <div class="landing-atmosphere" aria-hidden="true">
         <div class="landing-grid"></div>
@@ -251,113 +42,424 @@
 
     <div class="container landing-container archive-container">
 
-        <section class="archive-hero" style="grid-template-columns: 1fr; margin-bottom: 28px;">
-            <div>
-                <div class="section-label" style="border: none; padding-bottom: 0; margin-bottom: 8px;">
-                    <span class="label-prompt">//</span> Research log
-                </div>
-                <h1 class="archive-title">Writeups in the <span style="color: var(--accent)">pipeline</span></h1>
-                <p class="archive-sub">
-                    Long-form vulnerability research, exploit notes, and analysis will land here.
-                    The node is live — the posts are still compiling.
-                </p>
-            </div>
-        </section>
-
-        <section class="soon-panel" aria-label="Blog status">
-            <div class="soon-chrome">
-                <div class="term-dots" aria-hidden="true">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                </div>
-                <div class="soon-chrome-title">blogd · status — publish queue</div>
-                <div class="term-actions" aria-hidden="true">●</div>
-            </div>
-            <div class="soon-body">
-                <div class="soon-status">
+        <section class="intel-hero" aria-label="Threat intelligence console">
+            <div class="intel-hero-main">
+                <div class="intel-kicker">
                     <span class="pulse-ring"></span>
-                    <span>STATUS · COMING SOON</span>
+                    <span>THREAT INTEL // CASE BOARD</span>
                 </div>
-
-                <h2 class="soon-title">Nothing published <em>yet</em>.</h2>
-                <p class="soon-lead">
-                    This channel will host technical writeups from the lab — CVEs, root-cause analysis,
-                    PoCs, and the occasional defensive takeaway. Until the first post ships, treat this
-                    page as a heartbeat on the research wire.
+                <h1 class="intel-title">
+                    Research <span class="intel-title-accent">case files</span>
+                </h1>
+                <p class="intel-lead">
+                    Vertical dossiers from the lab — multi-stage RCE, broken trust boundaries,
+                    and infrastructure ghosts. Each card is a classified finding; open one to read the chain.
                 </p>
 
-                <div class="soon-log" role="log" aria-label="Publish daemon log">
-                    <div><span class="dim">$</span> <span class="accent">systemctl status blogd</span></div>
-                    <div class="ok">● blogd.service — research publish daemon</div>
-                    <div class="dim">&nbsp;&nbsp;Loaded: loaded (/etc/systemd/system/blogd.service; enabled)</div>
-                    <div class="warn">&nbsp;&nbsp;Active: activating (start-pre) since boot…</div>
-                    <div class="dim">&nbsp;&nbsp;Docs:   vulnerability research · analysis · offensive notes</div>
-                    <div class="ok">&nbsp;&nbsp;Queue:  3 drafts staged · 0 public</div>
-                    <div class="accent">&nbsp;&nbsp;Hint:   content will be published soon. stay tuned.</div>
+                <div class="intel-search-row">
+                    <label class="intel-search-shell" for="archive-search">
+                        <span class="intel-search-prompt">root@tvh:~#</span>
+                        <input id="archive-search" class="archive-search intel-search" type="search"
+                               placeholder="grep cases — rce, authz, n8n, dll…"
+                               autocomplete="off" aria-label="Filter research case files">
+                    </label>
+                    <span class="archive-match-count intel-match" id="archive-match-count">10 cases</span>
                 </div>
 
-                <div class="pipeline" aria-label="What will appear here">
-                    <article class="pipe-card">
-                        <div class="pipe-id">[01] ./writeups</div>
-                        <div class="pipe-name">Vulnerability writeups</div>
-                        <div class="pipe-desc">Root cause, impact, and fix guidance for real findings.</div>
-                    </article>
-                    <article class="pipe-card">
-                        <div class="pipe-id">[02] ./analysis</div>
-                        <div class="pipe-name">Exploit notes</div>
-                        <div class="pipe-desc">PoC walkthroughs, edge cases, and chain-building notes.</div>
-                    </article>
-                    <article class="pipe-card">
-                        <div class="pipe-id">[03] ./ops</div>
-                        <div class="pipe-name">Field notes</div>
-                        <div class="pipe-desc">Practical offensive security lessons from the lab floor.</div>
-                    </article>
-                </div>
-
-                <div class="soon-actions">
-                    <a href="/" class="contact-link">← Back to home</a>
-                    <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="contact-link contact-link-secondary" target="_blank" rel="noopener">CTF writeups (live)</a>
+                <div class="intel-filters" id="intel-filters" role="toolbar" aria-label="Filter by class">
+                    <button type="button" class="intel-chip is-active" data-filter="all">ALL</button>
+                    <button type="button" class="intel-chip" data-filter="critical">CRITICAL</button>
+                    <button type="button" class="intel-chip" data-filter="high">HIGH</button>
+                    <button type="button" class="intel-chip" data-filter="rce">RCE</button>
+                    <button type="button" class="intel-chip" data-filter="authz">AUTHZ</button>
+                    <button type="button" class="intel-chip" data-filter="infra">INFRA</button>
                 </div>
             </div>
+
+            <aside class="intel-hud" aria-label="Case board stats">
+                <div class="intel-hud-chrome">
+                    <span>// ops.hud</span>
+                    <span class="intel-hud-live"><span class="boot-pill-dot"></span> LIVE</span>
+                </div>
+                <div class="intel-hud-grid">
+                    <div class="intel-stat">
+                        <span class="intel-stat-label">CASES</span>
+                        <span class="intel-stat-value" id="stat-cases">10</span>
+                    </div>
+                    <div class="intel-stat">
+                        <span class="intel-stat-label">CRITICAL</span>
+                        <span class="intel-stat-value intel-stat-crit" id="stat-crit">0</span>
+                    </div>
+                    <div class="intel-stat">
+                        <span class="intel-stat-label">HIGH</span>
+                        <span class="intel-stat-value intel-stat-high" id="stat-high">0</span>
+                    </div>
+                    <div class="intel-stat">
+                        <span class="intel-stat-label">YEARS</span>
+                        <span class="intel-stat-value" id="stat-years">0</span>
+                    </div>
+                </div>
+                <div class="intel-hud-note">
+                    <span class="intel-hud-note-key">policy</span>
+                    only multi-step / high-impact findings ship here
+                </div>
+            </aside>
         </section>
 
-        <section class="section draft-queue" aria-label="Staged drafts">
+        <section class="section intel-board-section" id="archive-list" aria-label="Research archive">
             <div class="section-label archive-section-label">
-                <span><span class="label-prompt">//</span> Draft queue</span>
-                <span class="archive-section-hint">not public · placeholders only</span>
+                <span><span class="label-prompt">//</span> case dossiers</span>
+                <span class="archive-section-hint">vertical board · click to open</span>
             </div>
 
-            <div class="draft-item" aria-disabled="true">
-                <div>
-                    <div class="draft-meta">DRAFT · vuln-research</div>
-                    <div class="draft-title">From triage to root cause — a researcher’s checklist</div>
-                    <div class="draft-note">How findings move from “interesting crash” to a clean advisory.</div>
+            <!-- 2026 -->
+            <div class="vendor-group intel-year" data-year="2026">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">2026</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
                 </div>
-                <span class="draft-badge queued">QUEUED</span>
+                <div class="intel-cases">
+
+                                <a href="/posts/nginx-rift.html" class="research-item case-file"
+                   data-id="1"
+                   data-year="2026"
+                   data-severity="critical"
+                   data-platform="Web Application / NGINX"
+                   data-published="2026-05-29"
+                   data-tags="nginx rift an 18-year-old bug that can hand attackers your server nginx rift nginx // rewrite/set // heap buffer overflow rce web application / nginx critical heap buffer overflow in nginx rewrite/set dating back to 2008 unauthenticated rce risk on millions of deployments. critical 2026">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-001</span>
+                            <span class="case-year">2026</span>
+                        </div>
+                        <div class="research-cve case-class">NGINX RIFT</div>
+                        <div class="research-title case-title">NGINX Rift: An 18-Year-Old Bug That Can Hand Attackers Your Server</div>
+                        <p class="case-blurb">Critical heap buffer overflow in NGINX rewrite/set dating back to 2008 — unauthenticated RCE risk on millions of deployments.</p>
+                        <div class="research-target case-target">NGINX // rewrite/set // Heap Buffer Overflow → RCE</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Web Application / NGINX</span>
+                            <span class="case-detail case-detail-date" title="published">2026-05-29</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">CRITICAL</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/posts/ni8mare-n8n-unauth-rce.html" class="research-item case-file"
+                   data-id="2"
+                   data-year="2026"
+                   data-severity="critical"
+                   data-platform="n8n Workflow Automation"
+                   data-published="2026-04-17"
+                   data-tags="ni8mare unauthenticated rce in n8n via parser confusion cve-2026-21858 n8n // webhooks // workflow engine n8n workflow automation technical breakdown of cve-2026-21858 content-type confusion to arbitrary file read session forgery workflow injection and unauthenticated remote code execution in n8n. critical 2026">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-002</span>
+                            <span class="case-year">2026</span>
+                        </div>
+                        <div class="research-cve case-class">CVE-2026-21858</div>
+                        <div class="research-title case-title">Ni8mare: Unauthenticated RCE in n8n via Parser Confusion</div>
+                        <p class="case-blurb">Technical breakdown of CVE-2026-21858 — content-type confusion to arbitrary file read, session forgery, workflow injection, and unauthenticated…</p>
+                        <div class="research-target case-target">n8n // Webhooks // Workflow Engine</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">n8n Workflow Automation</span>
+                            <span class="case-detail case-detail-date" title="published">2026-04-17</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">CRITICAL</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+</div>
             </div>
 
-            <div class="draft-item" aria-disabled="true">
-                <div>
-                    <div class="draft-meta">DRAFT · analysis</div>
-                    <div class="draft-title">Reading untrusted input like an attacker</div>
-                    <div class="draft-note">Patterns that keep showing up in appsec and product security reviews.</div>
+            <!-- 2024 -->
+            <div class="vendor-group intel-year" data-year="2024">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">2024</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
                 </div>
-                <span class="draft-badge queued">QUEUED</span>
+                <div class="intel-cases">
+
+                                <a href="/posts/os-command-injection-login-rce.html" class="research-item case-file"
+                   data-id="3"
+                   data-year="2024"
+                   data-severity="critical"
+                   data-platform="Windows / Web Application"
+                   data-published="2024-12-10"
+                   data-tags="unauthenticated os command injection in a login pre-check web application security asset management // login pre-check // windows host windows / web application how a windows-hosted asset management app turned username existence checks into out-of-band command execution and powershell reverse shells with the theory behind testing auth for os sinks. critical 2024">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-003</span>
+                            <span class="case-year">2024</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">Unauthenticated OS Command Injection in a Login Pre-Check</div>
+                        <p class="case-blurb">How a Windows-hosted asset management app turned username existence checks into out-of-band command execution and PowerShell reverse…</p>
+                        <div class="research-target case-target">Asset Management // Login Pre-Check // Windows Host</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Windows / Web Application</span>
+                            <span class="case-detail case-detail-date" title="published">2024-12-10</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">CRITICAL</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+</div>
             </div>
 
-            <div class="draft-item" aria-disabled="true">
-                <div>
-                    <div class="draft-meta">IDEA · field-notes</div>
-                    <div class="draft-title">Lab hygiene for offensive research</div>
-                    <div class="draft-note">Isolation, evidence, and not setting your own house on fire.</div>
+            <!-- 2023 -->
+            <div class="vendor-group intel-year" data-year="2023">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">2023</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
                 </div>
-                <span class="draft-badge outline">IDEA</span>
+                <div class="intel-cases">
+
+                                                <a href="/posts/hotel-subscription-payment-logic.html" class="research-item case-file"
+                   data-id="4"
+                   data-year="2023"
+                   data-severity="high"
+                   data-platform="Hotel Booking / Subscription Platform"
+                   data-published="2023-10-31"
+                   data-tags="free diamond memberships payment logic vs encrypted add-on apis web application security b2b hotels // membership tiers // purchase add-ons hotel booking / subscription platform reversing client-side aes on a hotel booking platform and abusing payment method / membership flags to activate diamond benefits without paying a business-logic chain under crypto friction. high 2023">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-004</span>
+                            <span class="case-year">2023</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">Free Diamond Memberships: Payment Logic vs Encrypted Add-On APIs</div>
+                        <p class="case-blurb">Reversing client-side AES on a hotel booking platform and abusing payment_method / membership flags to activate Diamond benefits without…</p>
+                        <div class="research-target case-target">B2B Hotels // Membership Tiers // Purchase Add-Ons</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Hotel Booking / Subscription Platform</span>
+                            <span class="case-detail case-detail-date" title="published">2023-10-31</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-high">HIGH</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/posts/mass-assignment-to-database-dump.html" class="research-item case-file"
+                   data-id="5"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-platform="Node.js / Express / MySQL"
+                   data-published="2023-07-13"
+                   data-tags="from mass assignment to database dump when type confusion becomes sqli web application security node.js api // profile update // mysql node.js / express / mysql how a profile-update mass-assignment bug array injection and verbose mysql errors chained into error-based sql injection and full database extraction on a node/express app. critical 2023">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-005</span>
+                            <span class="case-year">2023</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">From Mass Assignment to Database Dump: When Type Confusion Becomes SQLi</div>
+                        <p class="case-blurb">How a profile-update mass-assignment bug, array injection, and verbose MySQL errors chained into error-based SQL injection and full…</p>
+                        <div class="research-target case-target">Node.js API // Profile Update // MySQL</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Node.js / Express / MySQL</span>
+                            <span class="case-detail case-detail-date" title="published">2023-07-13</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">CRITICAL</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+<a href="/posts/ato-session-storage-authorization.html" class="research-item case-file"
+                   data-id="6"
+                   data-year="2023"
+                   data-severity="critical"
+                   data-platform="Financial Web Application"
+                   data-published="2023-03-30"
+                   data-tags="account takeover via sessionstorage authorization web application security financial saas // sessionstorage // user lookup api financial web application how a financial web app mixed cookie authentication with sessionstorage identity user enumeration apis and osint-derived employee emails into full account takeover. critical 2023">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-006</span>
+                            <span class="case-year">2023</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">Account Takeover via SessionStorage Authorization</div>
+                        <p class="case-blurb">How a financial web app mixed cookie authentication with sessionStorage identity, user enumeration APIs, and OSINT-derived employee emails…</p>
+                        <div class="research-target case-target">Financial SaaS // SessionStorage // User Lookup API</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Financial Web Application</span>
+                            <span class="case-detail case-detail-date" title="published">2023-03-30</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">CRITICAL</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/posts/cms-cognito-localstorage-authz.html" class="research-item case-file"
+                   data-id="7"
+                   data-year="2023"
+                   data-severity="high"
+                   data-platform="ReactJS / AWS Cognito CMS"
+                   data-published="2023-03-25"
+                   data-tags="cms privilege escalation cognito auth localstorage roles web application security mnc cms // cognito // content publishing reactjs / aws cognito cms breaking a multinational cms that used aws cognito for authentication but trusted a localstorage user role flag for editor/publisher authorization plus a hidden signup path. high 2023">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-007</span>
+                            <span class="case-year">2023</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">CMS Privilege Escalation: Cognito Auth, localStorage Roles</div>
+                        <p class="case-blurb">Breaking a multinational CMS that used AWS Cognito for authentication but trusted a localStorage user_role flag for editor/publisher…</p>
+                        <div class="research-target case-target">MNC CMS // Cognito // Content Publishing</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">ReactJS / AWS Cognito CMS</span>
+                            <span class="case-detail case-detail-date" title="published">2023-03-25</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-high">HIGH</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+<a href="/posts/client-side-encryption-reverse-engineering.html" class="research-item case-file"
+                   data-id="8"
+                   data-year="2023"
+                   data-severity="high"
+                   data-platform="Web / Android / iOS (shared API)"
+                   data-published="2023-02-15"
+                   data-tags="reversing client-side aes when encrypted apis are just obscurity web application security multi-app cdn // encrypted rest // recaptcha web / android / ios shared api how hardcoded aes-cbc keys and ivs in shared cdn javascript turned encrypted rest traffic into a fully automatable api surface including captcha workflow abuse. high 2023">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-008</span>
+                            <span class="case-year">2023</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">Reversing Client-Side AES: When ‘Encrypted APIs’ Are Just Obscurity</div>
+                        <p class="case-blurb">How hardcoded AES-CBC keys and IVs in shared CDN JavaScript turned encrypted REST traffic into a fully automatable API surface — including…</p>
+                        <div class="research-target case-target">Multi-App CDN // Encrypted REST // reCAPTCHA</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Web / Android / iOS (shared API)</span>
+                            <span class="case-detail case-detail-date" title="published">2023-02-15</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-high">HIGH</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+</div>
+            </div>
+
+            <!-- 2022 -->
+            <div class="vendor-group intel-year" data-year="2022">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">2022</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
+                </div>
+                <div class="intel-cases">
+
+                                <a href="/posts/dll-hijacking-business-automation-rce.html" class="research-item case-file"
+                   data-id="9"
+                   data-year="2022"
+                   data-severity="high"
+                   data-platform="Windows Desktop Application"
+                   data-published="2022-12-15"
+                   data-tags="dll search-order hijacking to rce on a business automation client windows application security windows desktop // business automation client windows desktop application process monitor-driven dll hijacking against a windows business automation product from missing module loads to calculator proof and meterpreter with the theory behind prioritizing desktop clients. high 2022">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-009</span>
+                            <span class="case-year">2022</span>
+                        </div>
+                        <div class="research-cve case-class">WINDOWS APPLICATION SECURITY</div>
+                        <div class="research-title case-title">DLL Search-Order Hijacking to RCE on a Business Automation Client</div>
+                        <p class="case-blurb">Process Monitor-driven DLL hijacking against a Windows business automation product — from missing module loads to Calculator proof and…</p>
+                        <div class="research-target case-target">Windows Desktop // Business Automation Client</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Windows Desktop Application</span>
+                            <span class="case-detail case-detail-date" title="published">2022-12-15</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-high">HIGH</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+</div>
+            </div>
+
+            <!-- 2021 -->
+            <div class="vendor-group intel-year" data-year="2021">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">2021</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
+                </div>
+                <div class="intel-cases">
+
+                                <a href="/posts/massive-heroku-subdomain-takeover.html" class="research-item case-file"
+                   data-id="10"
+                   data-year="2021"
+                   data-severity="high"
+                   data-platform="Web Infrastructure / DNS"
+                   data-published="2021-05-08"
+                   data-tags="mass heroku subdomain takeover via dangling dns web application security corporate dns // heroku cnames // dangling records web infrastructure / dns large-scale subdomain enumeration uncovered thousands of hostnames and multiple heroku cnames pointing at unclaimed apps a systematic dangling dns takeover case study. high 2021">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">CASE-010</span>
+                            <span class="case-year">2021</span>
+                        </div>
+                        <div class="research-cve case-class">WEB APPLICATION SECURITY</div>
+                        <div class="research-title case-title">Mass Heroku Subdomain Takeover via Dangling DNS</div>
+                        <p class="case-blurb">Large-scale subdomain enumeration uncovered thousands of hostnames and multiple Heroku CNAMEs pointing at unclaimed apps — a systematic…</p>
+                        <div class="research-target case-target">Corporate DNS // Heroku CNAMEs // Dangling Records</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="platform">Web Infrastructure / DNS</span>
+                            <span class="case-detail case-detail-date" title="published">2021-05-08</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-high">HIGH</span>
+                            <span class="case-open">open file →</span>
+                        </div>
+                    </div>
+                </a>
+
+</div>
             </div>
         </section>
 
         <footer class="landing-footer archive-footer">
-            <span class="footer-left">© <span id="year"></span> thevillagehacker · blog channel offline (by design)</span>
+            <span class="footer-left">© <span id="year"></span> thevillagehacker · threat case board</span>
             <span class="footer-right" id="uptime">uptime: --</span>
         </footer>
     </div>
@@ -371,6 +473,18 @@
             const pageStart = Date.now();
             const clock = document.getElementById("nav-clock");
             const uptime = document.getElementById("uptime");
+            const search = document.getElementById("archive-search");
+            const matchCount = document.getElementById("archive-match-count");
+            const items = () => Array.from(document.querySelectorAll(".research-item"));
+            const groups = () => Array.from(document.querySelectorAll(".vendor-group"));
+            const chips = Array.from(document.querySelectorAll(".intel-chip"));
+
+            const statCases = document.getElementById("stat-cases");
+            const statCrit = document.getElementById("stat-crit");
+            const statHigh = document.getElementById("stat-high");
+            const statYears = document.getElementById("stat-years");
+
+            let severityFilter = "all";
 
             const tick = () => {
                 if (clock) {
@@ -387,6 +501,78 @@
             };
             tick();
             setInterval(tick, 1000);
+
+            const refreshHud = () => {
+                const all = items();
+                if (statCases) statCases.textContent = String(all.length);
+                if (statCrit) {
+                    statCrit.textContent = String(
+                        all.filter((i) => (i.getAttribute("data-severity") || "") === "critical").length
+                    );
+                }
+                if (statHigh) {
+                    statHigh.textContent = String(
+                        all.filter((i) => (i.getAttribute("data-severity") || "") === "high").length
+                    );
+                }
+                if (statYears) {
+                    const years = new Set(all.map((i) => i.getAttribute("data-year")).filter(Boolean));
+                    statYears.textContent = String(years.size);
+                }
+            };
+
+            const chipMatch = (item, filter) => {
+                if (filter === "all") return true;
+                const sev = (item.getAttribute("data-severity") || "").toLowerCase();
+                const tags = (item.getAttribute("data-tags") || "").toLowerCase();
+                if (filter === "critical" || filter === "high") return sev === filter;
+                if (filter === "rce") {
+                    return /rce|command injection|dll|overflow|sqli|workflow/.test(tags);
+                }
+                if (filter === "authz") {
+                    return /authz|authorization|session|cognito|takeover|localstorage|role/.test(tags);
+                }
+                if (filter === "infra") {
+                    return /infra|dns|heroku|subdomain|nginx/.test(tags);
+                }
+                return true;
+            };
+
+            const applyFilter = () => {
+                const q = (search && search.value || "").trim().toLowerCase();
+                let visible = 0;
+                for (const item of items()) {
+                    const hay = (
+                        (item.getAttribute("data-tags") || "") + " " +
+                        (item.textContent || "")
+                    ).toLowerCase();
+                    const textOk = !q || hay.includes(q);
+                    const chipOk = chipMatch(item, severityFilter);
+                    const show = textOk && chipOk;
+                    item.classList.toggle("is-hidden", !show);
+                    if (show) visible++;
+                }
+                for (const g of groups()) {
+                    const any = g.querySelectorAll(".research-item:not(.is-hidden)").length > 0;
+                    g.classList.toggle("is-hidden", !any);
+                }
+                if (matchCount) {
+                    matchCount.textContent = visible + (visible === 1 ? " case" : " cases");
+                }
+            };
+
+            for (const chip of chips) {
+                chip.addEventListener("click", () => {
+                    chips.forEach((c) => c.classList.remove("is-active"));
+                    chip.classList.add("is-active");
+                    severityFilter = chip.getAttribute("data-filter") || "all";
+                    applyFilter();
+                });
+            }
+
+            if (search) search.addEventListener("input", applyFilter);
+            refreshHud();
+            applyFilter();
         });
     </script>
 </body>

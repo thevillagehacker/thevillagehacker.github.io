@@ -1,14 +1,14 @@
 # Blog tooling
 
-## `md_to_post.py` — Markdown → publish-ready HTML
+## `md_to_post.py` — Markdown → publish-ready HTML + blog card
 
-Convert research writeups from Markdown + YAML front matter into full HTML posts that match the live site chrome (nav, terminal code windows, cyber mesh, HTTP highlighting). Optionally register the post on `blog.html` in one step.
+Convert research writeups from Markdown + YAML front matter into full HTML posts that match the live site chrome (black + red cyber theme, nav, terminal code windows, cyber mesh, HTTP highlighting). **By default the converter also inserts/updates a hyperlink card on `blog.html`.**
 
 | Without a converter | With `md_to_post.py` |
 |---------------------|----------------------|
 | Copy-paste an old HTML post | One Markdown file + front matter |
 | Easy to forget `site.js` / fonts | Template always includes current chrome |
-| Manual `blog.html` cards | `--publish-blog` inserts/updates the archive |
+| Manual `blog.html` cards | **Default:** register/update archive hyperlink |
 | Hard to review diffs | Clean Markdown diffs in git |
 
 ---
@@ -29,13 +29,15 @@ Requires Python 3.10+ (uses modern type hints).
 ```bash
 # From repo root
 
-# 1) Convert sample Markdown → posts/<slug>.html (does not touch blog.html)
+# Convert sample Markdown → posts/<slug>.html AND update blog.html
 python tools/md_to_post.py tools/examples/sample-post.md
 
-# 2) Convert + register/update the archive card on blog.html
-python tools/md_to_post.py drafts/my-writeup.md --publish-blog
+# Convert only (leave blog.html untouched)
+python tools/md_to_post.py drafts/my-writeup.md --no-blog
 
-# Short form of the same:
+# Explicit (same as default)
+python tools/md_to_post.py drafts/my-writeup.md --publish-blog
+# Short form still works:
 python tools/md_to_post.py drafts/my-writeup.md -b
 ```
 
@@ -51,27 +53,28 @@ python tools/md_to_post.py <markdown> [options]
 |------|-------------|
 | `markdown` | Path to the `.md` source (required) |
 | `-o`, `--output PATH` | Output HTML path (default: `posts/<slug>.html`) |
-| `-b`, `--publish-blog` | Insert or update the post card in `blog.html` |
+| `-b`, `--publish-blog` | Register/update the post card in `blog.html` (**default: on**) |
+| `--no-blog` | Do not modify `blog.html` |
 | `--blog-file PATH` | Alternate archive file (default: `blog.html` at repo root) |
 | `--blog-snippet` | Print a ready-to-paste `research-item` card to stdout |
-| `--body-only` | Emit only the converted `<article>` body (no full page shell) |
+| `--body-only` | Emit only the converted `<article>` body (no full page shell; skips blog) |
 | `--stdout` | Print full HTML to stdout instead of writing a file |
 | `--dry-run` | Parse + report metadata / blog action; write nothing |
 
 #### Examples
 
 ```bash
-# Custom output path
+# Custom output path + blog registration
 python tools/md_to_post.py drafts/my-writeup.md -o posts/My_Writeup.html
 
 # Metadata + blog preview only (no files written)
-python tools/md_to_post.py drafts/my-writeup.md --publish-blog --dry-run
+python tools/md_to_post.py drafts/my-writeup.md --dry-run
 
-# Convert post, register on blog, and also print the card
-python tools/md_to_post.py drafts/my-writeup.md -b --blog-snippet
+# Convert without touching the archive
+python tools/md_to_post.py drafts/my-writeup.md --no-blog
 
 # Body fragment only (for debugging conversion)
-python tools/md_to_post.py drafts/my-writeup.md --body-only --stdout
+python tools/md_to_post.py drafts/my-writeup.md --body-only --stdout --no-blog
 ```
 
 ---
@@ -89,7 +92,7 @@ platform: Web Application
 researcher: Naveen Jagadeesan
 published: 2026-07-10       # YYYY-MM-DD → year group on blog.html
 slug: your-file-name        # → posts/your-file-name.html
-severity: critical           # critical | high | lab (blog card badge)
+severity: critical           # critical | high | lab | medium (blog card badge)
 target: NGINX // RCE        # grey research-target line on blog listing
 ---
 ```
@@ -102,8 +105,8 @@ Everything below the closing `---` is normal Markdown.
 
 ```bash
 # 1. Write drafts/my-writeup.md with front matter + body
-# 2. Generate HTML and register on the archive
-python tools/md_to_post.py drafts/my-writeup.md --publish-blog
+# 2. Generate HTML post + archive hyperlink in one step
+python tools/md_to_post.py drafts/my-writeup.md
 
 # 3. Preview from repo root (important: not from posts/)
 python -m http.server 8080
@@ -115,21 +118,38 @@ python -m http.server 8080
 #    blog.html
 ```
 
-#### `--publish-blog` behavior
+#### Blog registration behavior (default)
 
 | Situation | Result |
 |-----------|--------|
 | New post | Inserts a card at the **top** of that year group; assigns next numeric `data-id` |
 | Same `/posts/...` href again | **Updates** the existing card (safe re-publish) |
 | Year group missing | Creates a new `vendor-group` in descending year order |
+| Post count label | Syncs `#archive-match-count` (`N posts`) |
 | `--dry-run` | Shows the card / action without writing |
+| `--no-blog` | Leaves `blog.html` alone |
 
-Card fields come from front matter: `title`, `tag`, `target`, `severity`, `published` (year).
+Each **case-file tile** on `blog.html` includes:
 
-Without `--publish-blog`, generate a pasteable card with:
+| Tile field | Front matter source |
+|------------|---------------------|
+| CASE-00N | auto `data-id` |
+| Year badge | `published` year |
+| Classification | `tag` |
+| Title | `title` |
+| Blurb | `description` (truncated) |
+| Target line | `target` |
+| Platform chip | `platform` |
+| Date chip | `published` |
+| Severity badge | `severity` |
+| Hyperlink | `/posts/<slug>.html` |
+
+The card is a full clickable tile — not just a bare link.
+
+Without auto-publish, generate a pasteable card with:
 
 ```bash
-python tools/md_to_post.py drafts/my-writeup.md --blog-snippet
+python tools/md_to_post.py drafts/my-writeup.md --blog-snippet --no-blog
 ```
 
 ---
@@ -137,14 +157,15 @@ python tools/md_to_post.py drafts/my-writeup.md --blog-snippet
 ### What generated posts include
 
 - Inter + JetBrains Mono
-- `/assets/css/style.css` — post typography, **terminal-style code windows** (fixed chrome, snug height, x/y scroll)
-- highlight.js + token color fallbacks
+- Favicon + `theme-color` (`#0a090b`)
+- Black + red cyber critical CSS fallback
+- `/assets/css/style.css` — post typography, **terminal-style code windows**
+- highlight.js + red-cyber token overrides
 - `has-site-fx post-page` body classes
 - `/assets/js/site.js` — **cyber neural mesh**, nav clock, **HTTP request/response highlighter**
 - Shared top-nav (Home · Blog · Writeups)
 - Advisory banner, meta header, footer
-- Inline **black + red cyber** theme fallback so the page never flashes unstyled white
-- Favicon + `theme-color` aligned with the live site
+- Matching `research-item` hyperlink on `blog.html` (unless `--no-blog`)
 
 ---
 
@@ -175,60 +196,3 @@ Content-Type: application/json
 **Aliases:** `http`, `https`, `request`, `response`, `req`, `res`.
 
 Plain ` ```text ` / ` ```plaintext ` blocks that *start* like HTTP (`POST /…`, `HTTP/1.1 200 …`) are **auto-promoted** to `language-http`. At runtime, `site.js` colors methods, status codes (2xx soft red / 4xx amber / 5xx intense red), headers, and JSON/XML bodies under the black + red cyber theme.
-
-#### Other fences
-
-````markdown
-```python
-print("ok")
-```
-
-```bash
-curl -i https://target/
-```
-
-```json
-{"ok": true}
-```
-````
-
-#### Images
-
-```markdown
-![diagram](../assets/images/blogs/my-post/flow.webp)
-```
-
-Paths are normalized to root-absolute `/assets/...`. Images are wrapped in `<figure class="post-shot">` for the macOS-style shadow presentation.
-
----
-
-### Preview locally
-
-Serve from the **repo root** (not from `posts/`):
-
-```bash
-python -m http.server 8080
-# http://127.0.0.1:8080/posts/your-slug.html
-# http://127.0.0.1:8080/blog.html
-```
-
-If the server root is `posts/`, `/assets/...` will 404 and the page looks unstyled.
-
----
-
-### Sample source
-
-`tools/examples/sample-post.md` — demo front matter, code fences, HTTP request/response, table, image path.
-
-```bash
-python tools/md_to_post.py tools/examples/sample-post.md --dry-run
-```
-
-Do **not** leave the sample registered on `blog.html` in production; use `--dry-run` or delete the card if you tested `--publish-blog` against the real archive.
-
----
-
-### Notes
-
-- The converter never deletes posts; it only writes HTML and optionally updates `blog.html`.
-- When site chrome changes, update `POST_TEMPLATE` / `postprocess_article_html` / `publish_to_blog` in `md_to_post.py` so new posts stay in sync.

