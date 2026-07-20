@@ -181,6 +181,7 @@
         print(`  <span class="t-ok">breach</span>     — hostile mesh mode (~8s)`);
         print(`  <span class="t-ok">skills</span>     — focus areas`);
         print(`  <span class="t-ok">writeups</span>   — CTF writeups (GitBook)`);
+        print(`  <span class="t-ok">blog</span>       — research log (soon)`);
         print(`  <span class="t-ok">contact</span>    — reach the operator`);
         print(`  <span class="t-ok">neofetch</span>   — system card`);
         print(`  <span class="t-ok">clear</span>      — clear terminal + calm mesh`);
@@ -240,6 +241,11 @@
           () => window.open("https://thevillagehacker-security.gitbook.io/ctf-writeups", "_blank"),
           400
         );
+      },
+      blog() {
+        print(`opening <span class="t-accent">research log</span>…`);
+        print(`<span class="t-dim">status: coming soon · drafts staged</span>`);
+        setTimeout(() => { window.location.href = "/blog.html"; }, 350);
       },
       contact() {
         print(`LinkedIn  → <span class="t-accent">https://linkedin.com/in/thevillagehacker</span>`);

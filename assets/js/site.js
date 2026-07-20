@@ -95,10 +95,11 @@
       return null;
     }
 
-    const CYAN = [107, 184, 212];
-    const GREEN = [92, 219, 126];
+    /* Black + red cyber mesh palette */
+    const CYAN = [255, 42, 61];   /* primary red (legacy name) */
+    const GREEN = [255, 107, 122]; /* soft red secondary */
     const AMBER = [212, 160, 84];
-    const RED = [224, 85, 101];
+    const RED = [255, 31, 51];
 
     const PWN_LABELS = ["PWNED", "RCE", "SHELL", "0DAY", "ROOT"];
 
@@ -614,12 +615,12 @@
         Math.max(w, h) * 0.7
       );
       if (breach) {
-        g.addColorStop(0, "rgba(224,85,101,0.045)");
-        g.addColorStop(0.5, "rgba(212,160,84,0.02)");
-        g.addColorStop(1, "rgba(15,19,24,0)");
+        g.addColorStop(0, "rgba(255,31,51,0.06)");
+        g.addColorStop(0.5, "rgba(212,160,84,0.025)");
+        g.addColorStop(1, "rgba(10,9,11,0)");
       } else {
-        g.addColorStop(0, "rgba(107,184,212,0.02)");
-        g.addColorStop(1, "rgba(15,19,24,0)");
+        g.addColorStop(0, "rgba(255,42,61,0.035)");
+        g.addColorStop(1, "rgba(10,9,11,0)");
       }
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
@@ -627,7 +628,7 @@
       // Breach glitch bars
       if (breach && Math.random() > 0.86) {
         const gy = Math.random() * h;
-        ctx.fillStyle = rgba(RED, 0.035 + Math.random() * 0.04);
+        ctx.fillStyle = rgba(RED, 0.045 + Math.random() * 0.05);
         ctx.fillRect(0, gy, w, 1 + Math.random() * 3);
       }
 
@@ -778,15 +779,15 @@
         ctx.beginPath();
         ctx.arc(mouse.x, mouse.y, 46, 0, Math.PI * 2);
         ctx.strokeStyle = breach
-          ? "rgba(224,85,101,0.1)"
-          : "rgba(107,184,212,0.08)";
+          ? "rgba(255,31,51,0.14)"
+          : "rgba(255,42,61,0.1)";
         ctx.lineWidth = 1;
         ctx.stroke();
         ctx.beginPath();
         ctx.arc(mouse.x, mouse.y, 2, 0, Math.PI * 2);
         ctx.fillStyle = breach
-          ? "rgba(224,85,101,0.45)"
-          : "rgba(107,184,212,0.35)";
+          ? "rgba(255,31,51,0.5)"
+          : "rgba(255,42,61,0.4)";
         ctx.fill();
 
         if (nearest[0] && nearest[0].d < 120) {
