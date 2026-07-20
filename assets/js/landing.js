@@ -608,6 +608,7 @@
         print(`  <span class="t-ok">writeups</span>   — CTF writeups (GitBook)`);
         print(`  <span class="t-ok">blog</span>       — research log (soon)`);
         print(`  <span class="t-ok">contact</span>    — reach the operator`);
+        print(`  <span class="t-ok">github</span>     — open GitHub profile`);
         print(`  <span class="t-ok">neofetch</span>   — system card`);
         print(`  <span class="t-ok">clear</span>      — clear terminal + calm mesh`);
         print(`  <span class="t-ok">sudo</span>       — you know what this does`);
@@ -674,7 +675,15 @@
       },
       contact() {
         print(`LinkedIn  → <span class="t-accent">https://linkedin.com/in/thevillagehacker</span>`);
+        print(`GitHub    → <span class="t-accent">https://github.com/thevillagehacker</span>`);
         print(`X         → <span class="t-accent">https://x.com/thevillagehackr</span>`);
+      },
+      github() {
+        print(`opening <span class="t-accent">GitHub</span>…`);
+        setTimeout(
+          () => window.open("https://github.com/thevillagehacker", "_blank"),
+          350
+        );
       },
       neofetch() {
         const status = meshApi() && meshApi().isBreach && meshApi().isBreach()
