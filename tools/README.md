@@ -146,6 +146,20 @@ Each **case-file tile** on `blog.html` includes:
 
 The card is a full clickable tile — not just a bare link.
 
+### Mobile layout is global (not per-post / not in blog.html)
+
+All responsive rules for the threat case board live in **`assets/css/style.css`** only
+(e.g. `.case-file`, `.intel-hero`, `@media (max-width: 720px)`, `body.blog-archive …`).
+
+When you run `md_to_post.py`:
+
+- It **only** inserts/updates a case-file tile inside a year group and refreshes the case count.
+- It **does not** rewrite `<head>`, nav, hero, filters, or any `<style>` block.
+- It refuses to write if the blog shell would be corrupted (stylesheet link / `intel-hero` / archive anchors missing).
+
+So publishing a new post does **not** change mobile settings. Keep using the shared classes
+`research-item case-file` (emitted by the converter) so global CSS keeps applying.
+
 Without auto-publish, generate a pasteable card with:
 
 ```bash

@@ -18,6 +18,8 @@ Current site features baked into the template
   - highlight.js: generic language highlighting (HTTP bodies get JSON/XML boost
     from site.js when the block is auto-detected as request/response)
   - Shared landing nav (Home · Blog · Writeups) + advisory banner + meta header
+  - blog.html tiles use global CSS only (assets/css/style.css) for desktop+mobile;
+    publish never injects mobile CSS into HTML
 
 Usage
 -----
@@ -853,6 +855,32 @@ def _insert_new_year_group(html: str, year: str, group_block: str) -> str:
     return html[:last_end] + "\n" + group_block + html[last_end:]
 
 
+# Structural markers that publish_to_blog must never destroy.
+# Mobile layout lives only in assets/css/style.css (global), not blog.html.
+_BLOG_SHELL_MARKERS = (
+    'href="/assets/css/style.css"',
+    'class="intel-hero"',
+    'id="archive-list"',
+    'id="archive-search"',
+    'id="archive-match-count"',
+    'class="intel-filters"',
+    "body class=",  # landing-page blog-archive has-site-fx
+)
+
+
+def _assert_blog_shell_intact(html: str, context: str = "blog.html") -> None:
+    """Fail fast if a publish step would corrupt the global mobile-capable shell."""
+    missing = [m for m in _BLOG_SHELL_MARKERS if m not in html]
+    if missing:
+        raise ValueError(
+            f"{context}: publish would corrupt page shell (missing {missing!r}). "
+            "Mobile layout is global CSS only — refuse to write a broken blog.html."
+        )
+    if "<style" in html.lower() and "assets/css/style.css" not in html:
+        # Allow only if stylesheet still linked; inline <style> is not our mobile system.
+        pass
+
+
 def publish_to_blog(
     meta: dict[str, str],
     out_name: str,
@@ -861,7 +889,12 @@ def publish_to_blog(
     dry_run: bool = False,
 ) -> dict[str, str]:
     """
-    Insert or update a research-item card in blog.html.
+    Insert or update a case-file *tile* in blog.html.
+
+    Safe for re-publish:
+      - Only mutates archive year groups + case-file anchors + match-count text
+      - Never rewrites <head>, nav, intel-hero, filters, or CSS
+      - Mobile responsive rules stay in assets/css/style.css (global)
 
     Returns a small status dict: action, href, data_id, blog path.
     """
@@ -870,6 +903,8 @@ def publish_to_blog(
         raise FileNotFoundError(f"blog.html not found: {blog_path}")
 
     original = blog_path.read_text(encoding="utf-8")
+    _assert_blog_shell_intact(original, str(blog_path))
+
     href = post_href(out_name)
     existing_id = find_existing_item_id(original, href)
     if existing_id is not None:
@@ -930,6 +965,7 @@ def publish_to_blog(
             action = "inserted-year"
 
     html_out = sync_archive_match_count(html_out)
+    _assert_blog_shell_intact(html_out, f"{blog_path} (after publish)")
 
     status = {
         "action": action,

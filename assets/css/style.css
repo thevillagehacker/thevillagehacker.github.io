@@ -2384,6 +2384,15 @@ a.cve-card:hover {
 
 .blog-archive {
     text-align: left;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+}
+
+html:has(body.blog-archive),
+body.blog-archive {
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 .blog-archive .blog-container.archive-container,
@@ -2391,7 +2400,36 @@ a.cve-card:hover {
     position: relative;
     z-index: 1;
     max-width: 1180px;
+    width: 100%;
+    box-sizing: border-box;
     padding: 76px 32px 60px;
+}
+
+/* Homepage + archive classes share one element on blog.html — pin both */
+body.blog-archive .container.landing-container.archive-container {
+    width: 100%;
+    max-width: min(1180px, 100%);
+    box-sizing: border-box;
+    padding: 76px 28px 96px;
+    overflow-x: hidden;
+    min-width: 0;
+}
+
+body.blog-archive .intel-board-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-bottom: 8px;
+    overflow: visible;
+}
+
+body.blog-archive .landing-footer.archive-footer {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-top: 28px;
+    margin-bottom: 0;
+    padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
 }
 
 .nav-path {
@@ -2564,15 +2602,19 @@ a.cve-card:hover {
 
 .intel-hero {
     display: grid;
-    grid-template-columns: 1.35fr 0.85fr;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
     gap: 22px;
     margin-bottom: 36px;
     align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
     .intel-hero {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -2584,6 +2626,11 @@ a.cve-card:hover {
         rgba(12, 8, 10, 0.92);
     padding: 26px 26px 22px;
     box-shadow: 0 0 40px rgba(255, 42, 61, 0.05);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden; /* contain chip/search overflow so page doesn't grow sideways */
 }
 
 .intel-kicker {
@@ -2610,6 +2657,8 @@ a.cve-card:hover {
     line-height: 1.1;
     color: var(--text-primary);
     margin-bottom: 12px;
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .intel-title-accent {
@@ -2621,9 +2670,13 @@ a.cve-card:hover {
     color: var(--text-secondary);
     font-size: 15px;
     line-height: 1.7;
-    max-width: 54ch;
+    max-width: 100%;
     margin-bottom: 20px;
     text-align: left;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: manual;
 }
 
 .intel-search-row {
@@ -2632,10 +2685,14 @@ a.cve-card:hover {
     gap: 12px;
     align-items: center;
     margin-bottom: 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .intel-search-shell {
-    flex: 1 1 260px;
+    flex: 1 1 auto;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -2644,6 +2701,11 @@ a.cve-card:hover {
     border-radius: 8px;
     padding: 10px 14px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .intel-search-shell:focus-within {
@@ -2657,11 +2719,14 @@ a.cve-card:hover {
     color: var(--accent);
     white-space: nowrap;
     font-weight: 600;
+    flex-shrink: 0;
 }
 
 .intel-search {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
+    width: 100%;
+    max-width: 100%;
     background: transparent;
     border: none;
     outline: none;
@@ -2669,6 +2734,7 @@ a.cve-card:hover {
     font-family: var(--font-mono);
     font-size: 13px;
     caret-color: var(--accent);
+    box-sizing: border-box;
 }
 
 .intel-match {
@@ -2680,12 +2746,19 @@ a.cve-card:hover {
     padding: 8px 12px;
     border-radius: 999px;
     white-space: nowrap;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
+/* Chip row: bounded width + internal scroll so it never expands the page */
 .intel-filters {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .intel-chip {
@@ -2700,6 +2773,8 @@ a.cve-card:hover {
     border-radius: 999px;
     cursor: pointer;
     transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    flex: 0 0 auto;
+    box-sizing: border-box;
 }
 
 .intel-chip:hover {
@@ -2722,6 +2797,10 @@ a.cve-card:hover {
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     box-shadow: 0 0 36px rgba(255, 42, 61, 0.06);
 }
 
@@ -2865,11 +2944,13 @@ a.cve-card:hover {
 
 .intel-cases {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
     gap: 14px;
     align-items: stretch;
     width: 100%;
+    max-width: 100%;
     min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Vertical dossier tiles — full post details for blog board */
@@ -3028,6 +3109,15 @@ a.cve-card:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    box-sizing: border-box;
+}
+
+@media (max-width: 720px) {
+    .case-detail {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
 }
 
 .case-detail-date {
@@ -3108,41 +3198,96 @@ a.cve-card:hover {
 /* —— Mobile / narrow viewports —— */
 @media (max-width: 900px) {
     .intel-hero {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 14px;
         margin-bottom: 28px;
     }
 
     .intel-cases {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        /* never force a min column wider than the phone */
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
 @media (max-width: 720px) {
-    .blog-archive,
-    .blog-archive .archive-container,
-    .blog-archive .intel-board-section {
-        overflow-x: clip;
+    html:has(body.blog-archive),
+    body.blog-archive {
+        overflow-x: hidden !important;
+        max-width: 100vw;
+    }
+
+    body.blog-archive,
+    body.blog-archive .archive-container,
+    body.blog-archive .intel-board-section,
+    body.blog-archive .intel-hero,
+    body.blog-archive .intel-hero-main,
+    body.blog-archive .intel-hud {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    body.blog-archive .container.landing-container.archive-container {
+        padding-top: 68px;
+        padding-left: max(12px, env(safe-area-inset-left, 0px));
+        padding-right: max(12px, env(safe-area-inset-right, 0px));
+        padding-bottom: max(120px, calc(88px + env(safe-area-inset-bottom, 0px)));
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .intel-hero-main {
+        padding: 18px 14px 16px;
+        overflow: hidden;
+    }
+
+    .intel-lead {
+        font-size: 14px;
+        line-height: 1.6;
+        max-width: 100%;
+    }
+
+    .intel-search-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .intel-match {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
     }
 
     .intel-board-section .vendor-group.intel-year,
     .vendor-group.intel-year {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 12px;
-        margin-bottom: 28px;
+        margin-bottom: 24px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .vendor-group.intel-year:last-child {
+        margin-bottom: 12px;
     }
 
     .intel-year-rail {
         flex-direction: row;
         align-items: center;
         padding-top: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
     }
 
     .intel-year-spine {
-        flex: 1;
+        flex: 1 1 auto;
         width: auto;
         height: 2px;
         min-height: 0;
+        min-width: 0;
         background: linear-gradient(90deg, rgba(255, 42, 61, 0.55), rgba(255, 42, 61, 0.05));
     }
 
@@ -3153,18 +3298,38 @@ a.cve-card:hover {
     }
 
     .intel-cases {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 12px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
     }
 
     .case-file.research-item {
         min-height: 0;
         width: 100%;
+        max-width: 100%;
+        flex-direction: row;
+        box-sizing: border-box;
     }
 
     .case-file-body {
-        padding: 14px 14px 12px;
+        padding: 14px 12px 12px;
         gap: 7px;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .case-title,
+    .case-file .research-title,
+    .case-target,
+    .case-file .research-target,
+    .case-class,
+    .case-blurb {
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .case-title,
@@ -3177,19 +3342,36 @@ a.cve-card:hover {
         -webkit-line-clamp: 3;
     }
 
+    .case-file-foot {
+        flex-wrap: wrap;
+        row-gap: 8px;
+        max-width: 100%;
+    }
+
+    .case-open {
+        white-space: normal;
+    }
+
+    /* Horizontal chip scroller — must NOT expand parent width */
     .intel-filters {
         display: flex;
         flex-wrap: nowrap;
         gap: 8px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
         overflow-x: auto;
+        overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
         scrollbar-width: none;
-        padding-bottom: 2px;
-        margin-right: -4px;
+        padding-bottom: 4px;
+        box-sizing: border-box;
     }
 
     .intel-filters::-webkit-scrollbar {
         display: none;
+        height: 0;
     }
 
     .intel-chip {
@@ -3201,11 +3383,19 @@ a.cve-card:hover {
 }
 
 @media (max-width: 600px) {
-    .archive-container {
-        padding: 64px 14px 48px;
-        padding-left: max(14px, env(safe-area-inset-left, 0px));
-        padding-right: max(14px, env(safe-area-inset-right, 0px));
-        padding-bottom: max(48px, env(safe-area-inset-bottom, 0px));
+    body.blog-archive .container.landing-container.archive-container,
+    body.blog-archive .archive-container {
+        padding-top: 64px;
+        padding-left: max(12px, env(safe-area-inset-left, 0px));
+        padding-right: max(12px, env(safe-area-inset-right, 0px));
+        padding-bottom: max(128px, calc(96px + env(safe-area-inset-bottom, 0px)));
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    body.blog-archive .landing-container {
+        max-width: 100%;
     }
 
     .intel-hero-main {
@@ -4068,24 +4258,25 @@ footer{
         max-height:min(300px, 52vh);
     }
 
-    .research-item{
+    /* Legacy flat archive cards only — do not reshape case-file tiles */
+    .research-item:not(.case-file){
         flex-direction:column;
         align-items:flex-start;
         padding:16px;
         gap:12px;
     }
 
-    .research-title{
+    .research-item:not(.case-file) .research-title{
         font-size:14px;
         overflow-wrap:anywhere;
     }
 
-    .research-target{
+    .research-item:not(.case-file) .research-target{
         overflow-wrap:anywhere;
         word-break:break-word;
     }
 
-    .research-tag{
+    .research-item:not(.case-file) .research-tag{
         align-self:flex-start;
     }
 
@@ -4093,6 +4284,11 @@ footer{
     .landing-footer.archive-footer{
         flex-direction:column;
         align-items:flex-start;
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+        margin-bottom:0;
+        padding-bottom:max(12px, env(safe-area-inset-bottom, 0px));
     }
 }
 
@@ -4109,11 +4305,17 @@ footer{
     }
 
     body.post-page .container,
-    body.post-page .post-container,
-    .landing-container,
-    .archive-container{
+    body.post-page .post-container{
         padding-left:12px;
         padding-right:12px;
+    }
+
+    body.blog-archive .container.landing-container.archive-container,
+    body.blog-archive .landing-container,
+    body.blog-archive .archive-container{
+        padding-left:max(12px, env(safe-area-inset-left, 0px));
+        padding-right:max(12px, env(safe-area-inset-right, 0px));
+        padding-bottom:max(128px, calc(96px + env(safe-area-inset-bottom, 0px)));
     }
 
     .htag{
