@@ -459,6 +459,76 @@
             </div>
         </section>
 
+        <!-- Lab projects — only product pages (privacy/docs linked from project detail) -->
+        <section class="section intel-board-section blog-projects-strip" id="blog-projects" aria-label="Lab projects">
+            <div class="section-label archive-section-label">
+                <span><span class="label-prompt">//</span> lab projects</span>
+                <span class="archive-section-hint"><a href="/projects.html" class="blog-projects-all">view all projects →</a></span>
+            </div>
+
+            <div class="vendor-group intel-year" data-year="lab">
+                <div class="intel-year-rail">
+                    <div class="vendor-label intel-year-badge">LAB</div>
+                    <div class="intel-year-spine" aria-hidden="true"></div>
+                </div>
+                <div class="intel-cases">
+
+                <a href="/projects/phantom-proxy.html" class="research-item case-file project-tile"
+                   data-id="p1"
+                   data-type="tool"
+                   data-tags="phantomproxy browser proxy intercept repeater tool">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">PROJ-001</span>
+                            <span class="case-year">v2.3.0</span>
+                        </div>
+                        <div class="research-cve case-class">BROWSER EXTENSION</div>
+                        <div class="research-title case-title">PhantomProxy — Browser HTTP Proxy &amp; Toolkit</div>
+                        <p class="case-blurb">Manifest V3 Edge/Chrome extension: intercept, history, repeater, intruder, and tools suite — Burp-style workflow without a system proxy.</p>
+                        <div class="research-target case-target">Intercept · History · Repeater · Intruder</div>
+                        <div class="case-details">
+                            <span class="case-detail">Tooling</span>
+                            <span class="case-detail case-detail-date">/projects/phantom-proxy.html</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">TOOL</span>
+                            <span class="case-open">open project →</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/projects/reconkit.html" class="research-item case-file project-tile"
+                   data-id="p2"
+                   data-type="tool"
+                   data-tags="reconkit recon bug bounty toolkit tool">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">PROJ-002</span>
+                            <span class="case-year">ACTIVE</span>
+                        </div>
+                        <div class="research-cve case-class">RECON TOOLKIT</div>
+                        <div class="research-title case-title">Reconkit — Authorized Bug Bounty Recon Toolkit</div>
+                        <p class="case-blurb">Modular recon, scope gates, safe prove, multi-provider LLM agents, attack-path graph, and Starfleet Bridge dashboard.</p>
+                        <div class="research-target case-target">Recon · Scope Gates · Safe Prove · LLM Agents</div>
+                        <div class="case-details">
+                            <span class="case-detail">Tooling</span>
+                            <span class="case-detail case-detail-date">/projects/reconkit.html</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">TOOL</span>
+                            <span class="case-open">open project →</span>
+                        </div>
+                    </div>
+                </a>
+
+                </div>
+            </div>
+        </section>
+
         <footer class="landing-footer archive-footer">
             <span class="footer-left">© <span id="year"></span> thevillagehacker · threat case board</span>
             <span class="footer-right" id="uptime">uptime: --</span>
@@ -476,9 +546,10 @@
             const uptime = document.getElementById("uptime");
             const search = document.getElementById("archive-search");
             const matchCount = document.getElementById("archive-match-count");
-            const items = () => Array.from(document.querySelectorAll(".research-item"));
-            const groups = () => Array.from(document.querySelectorAll(".vendor-group"));
-            const chips = Array.from(document.querySelectorAll(".intel-chip"));
+            /* Scope filters to research archive only — project tiles are separate */
+            const items = () => Array.from(document.querySelectorAll("#archive-list .research-item"));
+            const groups = () => Array.from(document.querySelectorAll("#archive-list .vendor-group"));
+            const chips = Array.from(document.querySelectorAll("#intel-filters .intel-chip"));
 
             const statCases = document.getElementById("stat-cases");
             const statCrit = document.getElementById("stat-crit");

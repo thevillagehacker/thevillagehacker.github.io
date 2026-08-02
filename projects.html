@@ -61,7 +61,7 @@
                     <label class="intel-search-shell" for="project-search">
                         <span class="intel-search-prompt">root@tvh:~#</span>
                         <input id="project-search" class="archive-search intel-search" type="search"
-                               placeholder="filter: recon, proxy, privacy…"
+                               placeholder="filter: recon, proxy…"
                                autocomplete="off" aria-label="Filter projects">
                     </label>
                     <span class="archive-match-count intel-match" id="project-match-count">2 projects</span>
@@ -70,8 +70,6 @@
                 <div class="intel-filters" id="project-filters" role="toolbar" aria-label="Filter by type">
                     <button type="button" class="intel-chip is-active" data-filter="all">ALL</button>
                     <button type="button" class="intel-chip" data-filter="tool">TOOL</button>
-                    <button type="button" class="intel-chip" data-filter="docs">DOCS</button>
-                    <button type="button" class="intel-chip" data-filter="privacy">PRIVACY</button>
                 </div>
             </div>
 
@@ -118,8 +116,36 @@
                 </div>
                 <div class="intel-cases">
 
-                <a href="/projects/reconkit.html" class="research-item case-file"
+                <a href="/projects/phantom-proxy.html" class="research-item case-file"
                    data-id="1"
+                   data-year="active"
+                   data-severity="critical"
+                   data-type="tool"
+                   data-tags="phantomproxy browser http proxy intercept repeater intruder history decoder burp edge chrome extension tool">
+                    <span class="case-file-corners" aria-hidden="true"></span>
+                    <div class="case-file-rail" aria-hidden="true"></div>
+                    <div class="case-file-body">
+                        <div class="case-file-meta">
+                            <span class="case-id">PROJ-001</span>
+                            <span class="case-year">v2.3.0</span>
+                        </div>
+                        <div class="research-cve case-class">BROWSER EXTENSION</div>
+                        <div class="research-title case-title">PhantomProxy — Browser HTTP Proxy &amp; Toolkit</div>
+                        <p class="case-blurb">Manifest V3 Edge/Chrome extension: live intercept, history, repeater, intruder, tools suite, and decoder — Burp-style workflow without a system proxy or Java.</p>
+                        <div class="research-target case-target">Intercept · History · Repeater · Intruder · Local-Only</div>
+                        <div class="case-details">
+                            <span class="case-detail" title="type">Tooling</span>
+                            <span class="case-detail case-detail-date" title="path">/projects/phantom-proxy.html</span>
+                        </div>
+                        <div class="case-file-foot">
+                            <span class="research-tag tag-critical">TOOL</span>
+                            <span class="case-open">open project →</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/projects/reconkit.html" class="research-item case-file"
+                   data-id="2"
                    data-year="active"
                    data-severity="critical"
                    data-type="tool"
@@ -128,7 +154,7 @@
                     <div class="case-file-rail" aria-hidden="true"></div>
                     <div class="case-file-body">
                         <div class="case-file-meta">
-                            <span class="case-id">PROJ-001</span>
+                            <span class="case-id">PROJ-002</span>
                             <span class="case-year">ACTIVE</span>
                         </div>
                         <div class="research-cve case-class">RECON TOOLKIT</div>
@@ -141,34 +167,6 @@
                         </div>
                         <div class="case-file-foot">
                             <span class="research-tag tag-critical">TOOL</span>
-                            <span class="case-open">open project →</span>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="/projects/Phantom-Proxy_privacy-policy.html" class="research-item case-file"
-                   data-id="2"
-                   data-year="active"
-                   data-severity="high"
-                   data-type="docs privacy"
-                   data-tags="phantomproxy privacy policy browser proxy repeater devtools no telemetry local only docs privacy">
-                    <span class="case-file-corners" aria-hidden="true"></span>
-                    <div class="case-file-rail" aria-hidden="true"></div>
-                    <div class="case-file-body">
-                        <div class="case-file-meta">
-                            <span class="case-id">PROJ-002</span>
-                            <span class="case-year">POLICY</span>
-                        </div>
-                        <div class="research-cve case-class">PHANTOMPROXY</div>
-                        <div class="research-title case-title">PhantomProxy — Privacy Policy</div>
-                        <p class="case-blurb">Privacy policy for PhantomProxy, a browser-native HTTP proxy and repeater DevTools extension. No telemetry, no tracking, no data leaves your browser.</p>
-                        <div class="research-target case-target">Browser Extension · Proxy · Repeater · Local-Only</div>
-                        <div class="case-details">
-                            <span class="case-detail" title="type">Privacy / Docs</span>
-                            <span class="case-detail case-detail-date" title="path">/projects/Phantom-Proxy_privacy-policy.html</span>
-                        </div>
-                        <div class="case-file-foot">
-                            <span class="research-tag tag-high">DOCS</span>
                             <span class="case-open">open project →</span>
                         </div>
                     </div>
@@ -230,12 +228,8 @@
                     );
                 }
                 if (statDocs) {
-                    statDocs.textContent = String(
-                        all.filter((i) => {
-                            const t = i.getAttribute("data-type") || "";
-                            return t.includes("docs") || t.includes("privacy");
-                        }).length
-                    );
+                    // Supporting docs (e.g. privacy) are linked from project pages, not board tiles
+                    statDocs.textContent = "0";
                 }
             };
 
@@ -244,8 +238,6 @@
                 const type = (item.getAttribute("data-type") || "").toLowerCase();
                 const tags = (item.getAttribute("data-tags") || "").toLowerCase();
                 if (filter === "tool") return type.includes("tool") || tags.includes("tool");
-                if (filter === "docs") return type.includes("docs") || tags.includes("docs") || tags.includes("policy");
-                if (filter === "privacy") return type.includes("privacy") || tags.includes("privacy");
                 return true;
             };
 

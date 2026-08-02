@@ -2432,6 +2432,25 @@ body.blog-archive .landing-footer.archive-footer {
     padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
 }
 
+/* Project tiles strip on blog.html */
+.blog-projects-strip {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 42, 61, 0.12);
+}
+
+.blog-projects-all {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.blog-projects-all:hover {
+    text-decoration: underline;
+}
+
 .nav-path {
     color: var(--text-dim);
     font-weight: 500;
