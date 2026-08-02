@@ -606,7 +606,8 @@
         print(`  <span class="t-ok">breach</span>     — hostile mesh mode (~8s)`);
         print(`  <span class="t-ok">skills</span>     — focus areas`);
         print(`  <span class="t-ok">writeups</span>   — CTF writeups (GitBook)`);
-        print(`  <span class="t-ok">blog</span>       — research log (soon)`);
+        print(`  <span class="t-ok">blog</span>       — research case board`);
+        print(`  <span class="t-ok">projects</span>   — tooling project board`);
         print(`  <span class="t-ok">contact</span>    — reach the operator`);
         print(`  <span class="t-ok">github</span>     — open GitHub profile`);
         print(`  <span class="t-ok">neofetch</span>   — system card`);
@@ -669,9 +670,12 @@
         );
       },
       blog() {
-        print(`opening <span class="t-accent">research log</span>…`);
-        print(`<span class="t-dim">status: coming soon · drafts staged</span>`);
+        print(`opening <span class="t-accent">research case board</span>…`);
         setTimeout(() => { window.location.href = "/blog.html"; }, 350);
+      },
+      projects() {
+        print(`opening <span class="t-accent">project board</span>…`);
+        setTimeout(() => { window.location.href = "/projects.html"; }, 350);
       },
       contact() {
         print(`LinkedIn  → <span class="t-accent">https://linkedin.com/in/thevillagehacker</span>`);

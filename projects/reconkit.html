@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Reconkit — Authorized Bug Bounty Recon Toolkit — thevillagehacker</title>
+<meta name="description" content="Complete usage guide for Reconkit v3 — modular recon, scope gates, safe prove, multi-provider LLM agents, attack-path graph, and Starfleet Bridge dashboard."/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#0a090b"/>
+
+<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
+<style>
+  html,body{background:#0a090b;color:#e8e2e4;}
+  body{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}
+  a{color:#ff2a3d;}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+
+<style>
+/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
+.hljs-keyword{color:#c792ea !important;}
+.hljs-string{color:#ecc48d !important;}
+.hljs-title{color:#ff6b7a !important;}
+.hljs-comment{color:#5c5458 !important;}
+.hljs-number{color:#f78c6c !important;}
+.hljs-built_in{color:#ff8a96 !important;}
+.hljs-attr{color:#ffcb6b !important;}
+.hljs-attribute{color:#ffcb6b !important;}
+.hljs-meta{color:#ff2a3d !important;}
+.hljs-literal{color:#ff8a96 !important;}
+.hljs-name{color:#ff6b7a !important;}
+.hljs-tag{color:#ff8a96 !important;}
+.hljs-selector-tag{color:#ff2a3d !important;}
+.hljs-type{color:#ff6b7a !important;}
+.hljs-symbol{color:#ff6b7a !important;}
+.hljs-bullet{color:#ff2a3d !important;}
+.hljs-link{color:#ff2a3d !important;}
+.hljs-addition{color:#ff6b7a !important;}
+
+/* Project doc extras — TOC + repo CTA (matches projects/ chrome) */
+.toc{
+  margin: 8px 0 36px;
+  padding: 18px 22px 16px;
+  border: 1px solid var(--border, #2a2426);
+  border-radius: 6px;
+  background: var(--bg-secondary, #121014);
+}
+.toc::before{
+  content: "// CONTENTS";
+  display: block;
+  margin-bottom: 12px;
+  color: var(--cyan, #ff6b7a);
+  font-family: var(--font-body, Inter, system-ui, sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+.toc ul{ margin: 0; padding-left: 1.15rem; }
+.toc > ul{ columns: 2; column-gap: 28px; }
+.toc li{ break-inside: avoid; margin: 4px 0; }
+.toc a{
+  color: var(--text-secondary, #b8b0b3);
+  text-decoration: none;
+  font-size: 14px;
+}
+.toc a:hover{ color: var(--green, #ff6b7a); text-decoration: underline; }
+.toc ul ul{ margin-top: 2px; padding-left: 0.9rem; columns: 1; }
+.toc ul ul a{ font-size: 13px; opacity: 0.9; }
+
+.repo-cta{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 8px 0 28px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 107, 122, 0.28);
+  border-radius: 6px;
+  background: rgba(255, 42, 61, 0.06);
+}
+.repo-cta p{ margin: 0; flex: 1 1 220px; font-size: 15px; line-height: 1.55; }
+.repo-cta a.cta-btn{
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 107, 122, 0.45);
+  border-radius: 4px;
+  background: rgba(255, 42, 61, 0.12);
+  color: var(--green, #ff6b7a);
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.repo-cta a.cta-btn:hover{ background: rgba(255, 42, 61, 0.22); }
+
+article table{ width: 100%; border-collapse: collapse; margin: 20px 0 8px; font-size: 14.5px; }
+article th{
+  background: var(--bg-tertiary, #1a1618);
+  color: var(--cyan, #ff6b7a);
+  font-family: var(--font-body, Inter, system-ui, sans-serif);
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; text-align: left;
+  padding: 10px 14px; border: 1px solid var(--border, #2a2426);
+}
+article td{
+  padding: 10px 14px; border: 1px solid var(--border, #2a2426);
+  color: var(--text-secondary, #b8b0b3); vertical-align: top;
+}
+article tr:nth-child(even) td{ background: rgba(255,255,255,.02); }
+
+@media (max-width: 720px){
+  .toc > ul{ columns: 1; }
+}
+</style>
+</head>
+
+<body class="has-site-fx post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/projects</span>
+            <span class="status-dot" title="open source project"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link">Blog</a>
+            <a href="/projects.html" class="nav-link nav-link-active">Projects</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="advisory-banner">
+    RECONKIT v3.0 // AUTHORIZED RECON · SAFE PROVE · LLM AGENTS · ATTACK GRAPH
+</div>
+
+<div class="container post-container">
+
+<header class="header">
+
+    <span class="cve-tag">OPEN SOURCE TOOLING</span>
+
+    <h1>Reconkit — Authorized Bug Bounty Recon Toolkit</h1>
+
+    <p class="subtitle">DETECTION + SAFE VALIDATION · SCOPE-GATED · LOCAL OR CLOUD LLM</p>
+
+    <div class="meta">
+        <div class="meta-item">
+            <div class="label">researcher</div>
+            <div class="value">Naveen Jagadeesan</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">published</div>
+            <div class="value">2026-08-02</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">platform</div>
+            <div class="value">Cross-platform (Windows / Linux / macOS)</div>
+        </div>
+    </div>
+
+</header>
+
+<div class="repo-cta">
+  <p><strong>Reconkit v3.0</strong> — open-source authorized bug bounty recon. Source, issues, and full markdown docs on GitHub.</p>
+  <a class="cta-btn" href="https://github.com/thevillagehacker/Reconkit" target="_blank" rel="noopener">github.com/thevillagehacker/Reconkit →</a>
+</div>
+
+<article>
+
+<div class="toc">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#what-you-get">What you get</a><ul>
+<li><a href="#entry-points">Entry points</a></li>
+</ul>
+</li>
+<li><a href="#project-layout">Project layout</a><ul>
+<li><a href="#local-data-reconkit">Local data (~/.reconkit)</a></li>
+</ul>
+</li>
+<li><a href="#one-time-setup">One-time setup</a><ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#install-sequence">Install sequence</a></li>
+<li><a href="#shell-equivalents">Shell equivalents</a></li>
+</ul>
+</li>
+<li><a href="#authorization-scope-gate">Authorization (scope gate)</a></li>
+<li><a href="#api-keys-optional">API keys (optional)</a></li>
+<li><a href="#recon-modules">Recon modules</a></li>
+<li><a href="#running-recon">Running recon</a><ul>
+<li><a href="#cli">CLI</a></li>
+<li><a href="#shell-shortcuts">Shell shortcuts</a></li>
+<li><a href="#verbosity">Verbosity</a></li>
+</ul>
+</li>
+<li><a href="#interactive-cyber-shell">Interactive cyber shell</a><ul>
+<li><a href="#live-autocomplete">Live autocomplete</a></li>
+<li><a href="#shell-map-high-level">Shell map (high level)</a></li>
+</ul>
+</li>
+<li><a href="#findings-index-program-profiles">Findings index &amp; program profiles</a><ul>
+<li><a href="#program-profiles-bug-bounty-weights">Program profiles (bug bounty weights)</a></li>
+</ul>
+</li>
+<li><a href="#prove-safe-validation">Prove — safe validation</a><ul>
+<li><a href="#techniques">Techniques</a></li>
+<li><a href="#policy-configexploit_policyjson">Policy (config/exploit_policy.json)</a></li>
+<li><a href="#commands">Commands</a></li>
+</ul>
+</li>
+<li><a href="#attack-graph">Attack graph</a></li>
+<li><a href="#dashboard-starfleet-bridge">Dashboard (Starfleet Bridge)</a><ul>
+<li><a href="#tabs">Tabs</a></li>
+<li><a href="#selected-api-routes">Selected API routes</a></li>
+</ul>
+</li>
+<li><a href="#agents-llm-local-cloud">Agents &amp; LLM (local + cloud)</a><ul>
+<li><a href="#specialist-map">Specialist map</a></li>
+<li><a href="#providers">Providers</a></li>
+<li><a href="#configure-run">Configure &amp; run</a></li>
+</ul>
+</li>
+<li><a href="#agent-skill-suite-c0c4">Agent skill suite (C0–C4)</a><ul>
+<li><a href="#core-skills-always-role-routed">Core skills (always role-routed)</a></li>
+<li><a href="#on-demand-mini-skills-max-3-turn">On-demand mini-skills (max 3 / turn)</a></li>
+<li><a href="#confidence-path">Confidence path</a></li>
+<li><a href="#worked-example-xss-surface">Worked example (XSS surface)</a></li>
+</ul>
+</li>
+<li><a href="#ordered-hunt-phases-ao">Ordered hunt (phases A–O)</a><ul>
+<li><a href="#copy-paste-skeleton-cli">Copy-paste skeleton (CLI)</a></li>
+<li><a href="#shell-skeleton">Shell skeleton</a></li>
+</ul>
+</li>
+<li><a href="#report-critic-jobs">Report, critic &amp; jobs</a></li>
+<li><a href="#safety-ethics">Safety &amp; ethics</a></li>
+<li><a href="#troubleshooting-quick">Troubleshooting (quick)</a></li>
+<li><a href="#repository-docs-map">Repository docs map</a></li>
+<li><a href="#links">Links</a></li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p><strong>Reconkit</strong> is a cross-platform toolkit for <strong>authorized</strong> bug bounty reconnaissance. It wires together modular scan stages, a hard <strong>scope gate</strong>, program-weighted findings, <strong>safe prove</strong> (canary-only validation), an attack-path graph, multi-provider LLM agents, and a local cyber dashboard.</p>
+<p>It is <strong>not</strong> an exploit framework. Default posture is detection + safe validation — no sqlmap, reverse shells, credential stuffing, or data dumps.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Version</strong></td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td><strong>License / code</strong></td>
+<td><a href="https://github.com/thevillagehacker/Reconkit">github.com/thevillagehacker/Reconkit</a></td>
+</tr>
+<tr>
+<td><strong>Author</strong></td>
+<td>Naveen Jagadeesan (<a href="https://github.com/thevillagehacker">@thevillagehacker</a>)</td>
+</tr>
+<tr>
+<td><strong>Data home</strong></td>
+<td><code>~/.reconkit/</code> (secrets, scope, output — never commit)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Principle:</strong> recon finds · programs prioritize · prove confirms safely · graph explains · skills kill FPs · cloud or local LLM.</p>
+<hr>
+<h2 id="what-you-get">What you get</h2>
+<p>Six layers, one toolkit:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>reconkit</strong></td>
+<td>Install tools, enforce scope, run scan modules, write files</td>
+</tr>
+<tr>
+<td><strong>prove</strong></td>
+<td>Safe re-check of candidates (markers / canaries only)</td>
+</tr>
+<tr>
+<td><strong>agents</strong></td>
+<td>LLM chooses next modules — local Ollama <strong>or</strong> cloud providers</td>
+</tr>
+<tr>
+<td><strong>skills</strong></td>
+<td>Role-routed + on-demand mini-skills; FP kill + prove mapping (C0–C4)</td>
+</tr>
+<tr>
+<td><strong>findings / graph / programs</strong></td>
+<td>Index, scores, attack paths, BB program weights</td>
+</tr>
+<tr>
+<td><strong>dashboard</strong></td>
+<td>Local web UI — Recon · Proofs · Graph · Insights · Mission bridge</td>
+</tr>
+<tr>
+<td><strong>shell</strong></td>
+<td>Interactive cyber prompt with live <code>/</code> autocomplete</td>
+</tr>
+</tbody>
+</table>
+<h3 id="entry-points">Entry points</h3>
+<table>
+<thead>
+<tr>
+<th>Launcher</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python recon_shell.py</code></td>
+<td><strong>Daily driver</strong> — interactive slash commands</td>
+</tr>
+<tr>
+<td><code>python reconkit.py …</code></td>
+<td>Scripts, CI, one-shot CLI (+ <code>prove</code>)</td>
+</tr>
+<tr>
+<td><code>python recon_prove.py …</code></td>
+<td>Safe validation queue / run</td>
+</tr>
+<tr>
+<td><code>python recon_agents.py …</code></td>
+<td>Multi-agent LLM recon / providers / check-llm</td>
+</tr>
+<tr>
+<td><code>python recon_dashboard.py</code></td>
+<td>Browse findings, proofs, graph in the browser</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="hljs language-bash">cd path/to/Reconkit
+pip install prompt_toolkit colorama
+python reconkit.py --version
+# → reconkit 3.0.0
+
+python recon_shell.py
+</code></pre>
+<hr>
+<h2 id="project-layout">Project layout</h2>
+<pre><code class="hljs language-text">Reconkit/
+├── USAGE.md / OPERATIONS.md / WORKFLOW.md / AGENTS.md
+├── reconkit.py           # pipeline + setup + scope + keys
+├── recon_shell.py        # interactive cyber prompt
+├── recon_dashboard.py    # web UI
+├── recon_agents.py       # multi-agent LLM CLI
+├── recon_prove.py        # safe validation CLI
+├── prove/                # queue, validators, policy
+├── agents/               # llm, skills, orchestrator, eval
+├── skills/               # Agent skill packs (SKILL.md)
+├── findings/ graph/ shell/ dashboard/ programs/
+└── config/               # agent + exploit policy + program profiles
+</code></pre>
+<h3 id="local-data-reconkit">Local data (<code>~/.reconkit</code>)</h3>
+<p>Runtime data lives <strong>outside the repo</strong> so secrets and loot never get committed.</p>
+<pre><code class="hljs language-text">~/.reconkit/
+├── config.json
+├── scope.txt                 # authorized targets (hard gate)
+├── secrets.env               # API keys (owner-only)
+├── agent_config.json         # optional user-global LLM config
+├── wordlists/
+├── logs/debug.log
+├── index/findings_index.json
+├── history/&lt;target&gt;/
+└── output/&lt;target&gt;/
+    ├── subdomains.txt, alive.txt, urls.txt, …
+    ├── agent_report.md, report_draft.md, critic_review.md
+    └── proofs/
+</code></pre>
+<p><strong>Mental model:</strong> files under <code>output/</code> are source of truth. The findings index is a <strong>query cache</strong> for the UI — not a separate live database.</p>
+<hr>
+<h2 id="one-time-setup">One-time setup</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Python <strong>3.10+</strong> (3.11+ recommended)</li>
+<li><code>git</code></li>
+<li><code>go</code> (ProjectDiscovery / tomnomnom tools)</li>
+<li><code>cargo</code> optional (Rust tools)</li>
+<li><code>pip install prompt_toolkit colorama</code> for shell UX</li>
+</ul>
+<h3 id="install-sequence">Install sequence</h3>
+<pre><code class="hljs language-bash">cd path/to/Reconkit
+
+pip install prompt_toolkit colorama
+python reconkit.py checkenv
+python reconkit.py setup
+# Apply PATH lines setup prints (Go bin, Cargo bin, user Scripts)
+# Open a NEW terminal, cd back to the project
+
+python reconkit.py verify
+python reconkit.py wordlists
+</code></pre>
+<p><code>setup</code> is <strong>idempotent</strong> — safe to re-run; skips what already exists.</p>
+<h3 id="shell-equivalents">Shell equivalents</h3>
+<pre><code class="hljs language-text">/checkenv
+/setup
+/verify
+/wordlists
+</code></pre>
+<hr>
+<h2 id="authorization-scope-gate">Authorization (scope gate)</h2>
+<p><strong>Nothing in <code>run</code> / <code>/run</code> / agents executes</strong> against a host that is not in scope.</p>
+<pre><code class="hljs language-bash">python reconkit.py scope add example.com          # type yes to confirm authorization
+python reconkit.py scope add &quot;*.example.com&quot;      # wildcard OK
+python reconkit.py scope list
+python reconkit.py scope check example.com
+</code></pre>
+<p>File: <code>~/.reconkit/scope.txt</code> (one domain per line; <code>#</code> comments allowed).</p>
+<pre><code class="hljs language-text">/scope add example.com
+/scope list
+/scope check example.com
+</code></pre>
+<p>Only test assets you are <strong>explicitly authorized</strong> to assess (bug bounty program scope, signed pentest RoE, or your own lab).</p>
+<hr>
+<h2 id="api-keys-optional">API keys (optional)</h2>
+<p>Keys boost subdomain yield (<code>subfinder -all</code>, chaos, GitHub, Shodan, …). Stored only in <code>~/.reconkit/secrets.env</code> — <strong>never in the repo</strong>.</p>
+<pre><code class="hljs language-bash">python reconkit.py keys set PDCP_API_KEY &lt;value&gt;
+python reconkit.py keys set GITHUB_TOKEN &lt;value&gt;
+python reconkit.py keys set SHODAN_API_KEY &lt;value&gt;
+python reconkit.py keys set CENSYS_API_ID &lt;value&gt;
+python reconkit.py keys set SECURITYTRAILS_API_KEY &lt;value&gt;
+python reconkit.py keys set VIRUSTOTAL_API_KEY &lt;value&gt;
+
+python reconkit.py keys list      # values masked
+python reconkit.py keys remove SHODAN_API_KEY
+</code></pre>
+<pre><code class="hljs language-text">/keys list
+/keys set PDCP_API_KEY &lt;value&gt;
+/keys remove PDCP_API_KEY
+</code></pre>
+<p>LLM keys (Grok, Claude, OpenAI, …) use environment variables such as <code>XAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code> — see <a href="#agents--llm-local--cloud">Agents &amp; LLM</a>.</p>
+<hr>
+<h2 id="recon-modules">Recon modules</h2>
+<pre><code class="hljs language-bash">python reconkit.py modules
+# shell: /modules
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subdomains</code></td>
+<td>subfinder, amass, assetfinder, chaos, findomain, crt.sh, Wayback, HackerTarget → merge/dedupe</td>
+</tr>
+<tr>
+<td><code>dns</code></td>
+<td>dnsx multi-record + CNAME takeover fingerprint candidates</td>
+</tr>
+<tr>
+<td><code>httpprobe</code></td>
+<td>httpx alive hosts, title, status, tech</td>
+</tr>
+<tr>
+<td><code>tls</code></td>
+<td>tlsx cert details, expiry/self-signed/mismatch, JARM</td>
+</tr>
+<tr>
+<td><code>crawl</code></td>
+<td>katana, gospider, hakrawler, gau, waybackurls → URLs</td>
+</tr>
+<tr>
+<td><code>js</code></td>
+<td>collect <code>.js</code>, regex extract secrets/endpoints (<strong>read-only</strong>)</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td>unfurl param names + arjun hidden params</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>sensitive paths + ffuf directory fuzz</td>
+</tr>
+<tr>
+<td><code>xss</code></td>
+<td>gf xss → kxss → dalfox (<strong>detection</strong> of candidates)</td>
+</tr>
+<tr>
+<td><code>sqli</code></td>
+<td>gf sqli → error/boolean <strong>detection canaries</strong> (non-destructive)</td>
+</tr>
+<tr>
+<td><code>ssrf_ssti</code></td>
+<td>cloud-metadata SSRF probe + <code>{{7*7}}</code> SSTI canary</td>
+</tr>
+<tr>
+<td><code>nuclei</code></td>
+<td>CVE / takeover / panel / misconfig templates</td>
+</tr>
+<tr>
+<td><code>cloud</code></td>
+<td>S3/Azure/GCP/Firebase refs + read-only S3 public list check</td>
+</tr>
+<tr>
+<td><code>screenshots</code></td>
+<td>gowitness screenshots of alive hosts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Logical dependency order:</strong></p>
+<pre><code class="hljs language-text">subdomains → dns / httpprobe → tls, crawl, content, nuclei, screenshots
+crawl → js, params, xss, sqli, ssrf_ssti, cloud
+</code></pre>
+<p>Missing tools print <code>[WARN]</code> and skip that stage — they do not crash the whole run.</p>
+<hr>
+<h2 id="running-recon">Running recon</h2>
+<h3 id="cli">CLI</h3>
+<pre><code class="hljs language-bash"># Full pipeline
+python reconkit.py run --target example.com
+
+# Selected modules (comma-separated, no spaces)
+python reconkit.py run --target example.com --modules subdomains,dns,httpprobe,nuclei
+
+# Verbosity flags BEFORE the subcommand
+python reconkit.py -v 3 run --target example.com --modules subdomains
+python reconkit.py --debug run --target example.com
+</code></pre>
+<p>Output: <code>~/.reconkit/output/example.com/</code></p>
+<h3 id="shell-shortcuts">Shell shortcuts</h3>
+<pre><code class="hljs language-text">/target example.com
+/run example.com
+/run example.com --modules subdomains,dns,httpprobe
+/quick example.com          # subdomains + dns + httpprobe
+/full example.com           # all modules
+/scan                       # interactive module picker
+/pause /resume /stop /jobs  # background job control
+</code></pre>
+<p><code>/run</code> is <strong>background by default</strong>; use <code>--fg</code> to block until complete.</p>
+<h3 id="verbosity">Verbosity</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Level</th>
+<th>Name</th>
+<th>Console behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">0</td>
+<td>quiet</td>
+<td>Banners + OK/WARN/FAIL</td>
+</tr>
+<tr>
+<td style="text-align: left;">1</td>
+<td>normal</td>
+<td>Default — command lines + stage progress</td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td>debug</td>
+<td>+ timing, exit codes, stderr snippets</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td>live</td>
+<td>+ full live stdout/stderr of tools</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="hljs language-text">/verbose
+/verbose 2
+/verbose live
+</code></pre>
+<hr>
+<h2 id="interactive-cyber-shell">Interactive cyber shell</h2>
+<pre><code class="hljs language-bash">python recon_shell.py
+python recon_shell.py --target example.com -v 2
+</code></pre>
+<h3 id="live-autocomplete">Live autocomplete</h3>
+<p>Install <code>prompt_toolkit</code> for LIVE slash matching (type <code>/co</code> → <code>/commands</code> <code>/config</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Suggestions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/run T --modules</code></td>
+<td>module names + <code>all</code></td>
+</tr>
+<tr>
+<td><code>/keys set</code></td>
+<td>key names (<code>PDCP_API_KEY</code>, …)</td>
+</tr>
+<tr>
+<td><code>/prove run T --technique</code></td>
+<td>validators (<code>xss_reflect</code>, …)</td>
+</tr>
+<tr>
+<td><code>/config set --provider</code></td>
+<td>LLM providers</td>
+</tr>
+</tbody>
+</table>
+<p>Every command supports:</p>
+<pre><code class="hljs language-text">/&lt;command&gt; -h
+/&lt;command&gt; --help
+</code></pre>
+<h3 id="shell-map-high-level">Shell map (high level)</h3>
+<pre><code class="hljs language-text">/setup /verify /wordlists
+/scope add|list|check
+/keys set|list|remove
+/target /verbose /rate
+/run /quick /full /scan /playbook
+/pause /resume /stop /jobs
+/findings reindex
+/program list|show|set
+/notable /diff /doctor /tips
+/prove policy|techniques|queue|run|list|show
+/graph summary|show
+/report /critic
+/config …  /check-llm  /agent …
+/dashboard
+</code></pre>
+<p>Full catalog lives in the repo as <strong>OPERATIONS.md</strong>.</p>
+<hr>
+<h2 id="findings-index-program-profiles">Findings index &amp; program profiles</h2>
+<p>After scans, reindex so scoring / notable / prove queue stay current:</p>
+<pre><code class="hljs language-bash">python reconkit.py findings reindex
+# shell:
+/findings reindex
+/findings summary example.com
+/notable
+/diff example.com
+</code></pre>
+<h3 id="program-profiles-bug-bounty-weights">Program profiles (bug bounty weights)</h3>
+<pre><code class="hljs language-text">/program list
+/program set example-web
+/findings reindex
+/notable
+</code></pre>
+<p>Profiles live in <code>config/programs/*.json</code>. Env override: <code>RECON_PROGRAM=…</code>. Weights affect <code>/notable</code> and prove queue priority after reindex.</p>
+<hr>
+<h2 id="prove-safe-validation">Prove — safe validation</h2>
+<p>Prove re-checks scanner candidates with <strong>canaries / markers only</strong>. It does not run exploit frameworks.</p>
+<h3 id="techniques">Techniques</h3>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xss_reflect</code></td>
+<td>Unique marker + context classification (html/attr/js/url/encoded)</td>
+</tr>
+<tr>
+<td><code>ssti_math</code></td>
+<td>Math canary (e.g. <code>{{7*7}}</code>)</td>
+</tr>
+<tr>
+<td><code>nuclei_recheck</code></td>
+<td>Re-run selected nuclei evidence safely</td>
+</tr>
+<tr>
+<td><code>takeover_fingerprint</code></td>
+<td>DNS/CNAME takeover fingerprint</td>
+</tr>
+<tr>
+<td><code>ssrf_canary_review</code></td>
+<td>OAST-oriented SSRF canary review</td>
+</tr>
+<tr>
+<td><code>sqli_boolean</code></td>
+<td>Optional true/false canary (<strong>off by default</strong>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policy-configexploit_policyjson">Policy (<code>config/exploit_policy.json</code>)</h3>
+<ul>
+<li>Mode: <code>safe_validation</code></li>
+<li><code>require_scope: true</code></li>
+<li><code>allow_sqli_boolean: false</code> by default</li>
+<li>Set <code>oast_base_url</code> for interactsh/collaborator-style OAST SSRF</li>
+<li>Disallowed by design: sqlmap, shells, credential stuffing, mass scan, data exfil, destructive</li>
+</ul>
+<h3 id="commands">Commands</h3>
+<pre><code class="hljs language-bash">python recon_prove.py policy
+python recon_prove.py techniques
+python recon_prove.py queue --target example.com
+python recon_prove.py run --target example.com --dry-run
+python recon_prove.py run --target example.com
+python recon_prove.py run --target example.com --technique xss_reflect
+</code></pre>
+<pre><code class="hljs language-text">/prove policy
+/prove techniques
+/prove queue example.com
+/prove run example.com --dry-run
+/prove run example.com --technique xss_reflect
+/prove list example.com
+/prove show &lt;id&gt;
+</code></pre>
+<p>Confirmed proof ≈ confidence <strong>C2</strong> in the skill suite (see below).</p>
+<hr>
+<h2 id="attack-graph">Attack graph</h2>
+<pre><code class="hljs language-text">/graph summary
+/graph show example.com
+</code></pre>
+<pre><code class="hljs language-bash">curl -s &quot;http://127.0.0.1:8787/api/graph?target=example.com&amp;min_score=40&quot;
+</code></pre>
+<p>The graph links findings + proofs into attack paths for the dashboard <strong>Graph</strong> tab (force layout, drag nodes).</p>
+<hr>
+<h2 id="dashboard-starfleet-bridge">Dashboard (Starfleet Bridge)</h2>
+<pre><code class="hljs language-bash">python recon_dashboard.py
+python recon_dashboard.py --port 8787 --no-browser
+# shell:
+/dashboard
+/dashboard --host 127.0.0.1    # localhost only (recommended on shared LANs)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Where you browse</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Same machine</td>
+<td>http://127.0.0.1:8787/</td>
+</tr>
+<tr>
+<td>Host → VM</td>
+<td>http://<code>&lt;VM_LAN_IP&gt;</code>:8787/</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tabs">Tabs</h3>
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Recon / Sensors</strong></td>
+<td>Findings, filters, evidence</td>
+</tr>
+<tr>
+<td><strong>Proof Locker</strong></td>
+<td>Validation proofs by status / technique</td>
+</tr>
+<tr>
+<td><strong>Tactical Map / Graph</strong></td>
+<td>Attack-path graph</td>
+</tr>
+<tr>
+<td><strong>Science / Insights</strong></td>
+<td>Severity / module charts</td>
+</tr>
+<tr>
+<td><strong>Mission</strong></td>
+<td>Phase replay — modules as fleet deployment</td>
+</tr>
+</tbody>
+</table>
+<h3 id="selected-api-routes">Selected API routes</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/health</code></td>
+<td>Liveness</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/overview</code></td>
+<td>Recon + proof counts</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/records?…</code></td>
+<td>Filtered recon records</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/proofs?…</code></td>
+<td>Filtered proofs</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/graph?target=&amp;min_score=</code></td>
+<td>Attack-path nodes/edges</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/stats/charts?target=</code></td>
+<td>Chart data</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/program</code></td>
+<td>Active BB profile</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/reindex</code></td>
+<td>Rebuild index from disk (no server restart)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Security note:</strong> default bind is often <code>0.0.0.0</code> for VM→host access. Any client that can reach the port can see recon data. Prefer <code>--host 127.0.0.1</code> on shared networks. <strong>Do not</strong> expose this UI on the public internet.</p>
+<hr>
+<h2 id="agents-llm-local-cloud">Agents &amp; LLM (local + cloud)</h2>
+<p>A <strong>planner</strong> picks specialists; specialists run recon modules; an <strong>analyst</strong> writes <code>agent_report.md</code>. The same client talks to <strong>local Ollama</strong> or cloud APIs.</p>
+<h3 id="specialist-map">Specialist map</h3>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Modules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subdomain</code></td>
+<td><code>subdomains</code></td>
+</tr>
+<tr>
+<td><code>discovery</code></td>
+<td><code>dns</code>, <code>httpprobe</code>, <code>tls</code></td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>crawl</code>, <code>js</code>, <code>params</code>, <code>content</code></td>
+</tr>
+<tr>
+<td><code>vuln</code></td>
+<td><code>xss</code>, <code>sqli</code>, <code>ssrf_ssti</code>, <code>nuclei</code>, <code>cloud</code></td>
+</tr>
+<tr>
+<td><code>visual</code></td>
+<td><code>screenshots</code></td>
+</tr>
+<tr>
+<td><code>planner</code></td>
+<td>decides next step</td>
+</tr>
+<tr>
+<td><code>analyst</code></td>
+<td>final report</td>
+</tr>
+</tbody>
+</table>
+<p>If the LLM is down, <strong>heuristics</strong> still advance the pipeline.</p>
+<h3 id="providers">Providers</h3>
+<pre><code class="hljs language-bash">python recon_agents.py providers
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Default model</th>
+<th>Key env</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ollama</code></td>
+<td><code>qwen3:8b</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>xai</code> / <code>grok</code></td>
+<td><code>grok-2-latest</code></td>
+<td><code>XAI_API_KEY</code></td>
+</tr>
+<tr>
+<td><code>anthropic</code></td>
+<td>Claude Sonnet class</td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+</tr>
+<tr>
+<td><code>openai</code></td>
+<td><code>gpt-4o-mini</code></td>
+<td><code>OPENAI_API_KEY</code></td>
+</tr>
+<tr>
+<td><code>google</code> / <code>gemma</code></td>
+<td>Gemini / Gemma</td>
+<td><code>GOOGLE_API_KEY</code></td>
+</tr>
+<tr>
+<td><code>openrouter</code></td>
+<td>many</td>
+<td><code>OPENROUTER_API_KEY</code></td>
+</tr>
+<tr>
+<td><code>groq</code> / <code>deepseek</code> / …</td>
+<td>see <code>providers</code></td>
+<td>matching <code>*_API_KEY</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="configure-run">Configure &amp; run</h3>
+<pre><code class="hljs language-bash"># Local Ollama (from a VM: use Windows host IP, not the Kali IP)
+python recon_agents.py config set --provider ollama \
+  --base-url http://192.168.1.4:11434 --model qwen3:8b
+
+# Cloud — set the key in the environment first
+# PowerShell: $env:XAI_API_KEY = &quot;xai-...&quot;
+# bash:       export XAI_API_KEY=...
+python recon_agents.py config set --provider xai --model grok-2-latest
+
+python recon_agents.py check-llm
+python recon_agents.py agents
+python recon_agents.py run --target example.com --dry-run
+python recon_agents.py run --target example.com --max-steps 8
+</code></pre>
+<pre><code class="hljs language-text">/config set --provider xai --model grok-2-latest
+/check-llm
+/agents
+/agent example.com --max-steps 8
+</code></pre>
+<p><strong>Tip:</strong> keep API keys in the environment (or <code>~/.reconkit</code>), not in tracked <code>config/agent_config.json</code>. Cloud walkthrough: <code>config/CLOUD_LLM_SETUP.md</code> in the repo.</p>
+<hr>
+<h2 id="agent-skill-suite-c0c4">Agent skill suite (C0–C4)</h2>
+<p>Skills inject methodology by <strong>role</strong> and <strong>surface</strong>. They reduce false positives and map scanner hits to safe prove techniques.</p>
+<h3 id="core-skills-always-role-routed">Core skills (always role-routed)</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reconkit-bug-bounty</code></td>
+<td>Master pipeline + scope rules</td>
+</tr>
+<tr>
+<td><code>reconkit-efficiency</code></td>
+<td>Token budgets (≤3 modules/step)</td>
+</tr>
+<tr>
+<td><code>reconkit-fp-eval</code></td>
+<td>C0–C4 tiers, kill-fast FPs</td>
+</tr>
+<tr>
+<td><code>reconkit-exploit-prove</code></td>
+<td>Canary PoCs + <code>/prove</code> technique map</td>
+</tr>
+<tr>
+<td><code>reconkit-triage-gate</code></td>
+<td>Pre-report 7-gate / N/A prevention</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Skills</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>planner</td>
+<td>bug-bounty + efficiency + fp-eval</td>
+</tr>
+<tr>
+<td>specialist</td>
+<td>bug-bounty + fp-eval</td>
+</tr>
+<tr>
+<td>analyst</td>
+<td>bug-bounty + fp-eval + exploit-prove + triage-gate</td>
+</tr>
+<tr>
+<td>critic</td>
+<td>fp-eval + triage-gate + exploit-prove</td>
+</tr>
+</tbody>
+</table>
+<h3 id="on-demand-mini-skills-max-3-turn">On-demand mini-skills (max 3 / turn)</h3>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Example trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reconkit-vuln-xss</code></td>
+<td>module <code>xss</code></td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-sqli</code></td>
+<td>module <code>sqli</code></td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-ssrf</code></td>
+<td><code>ssrf_ssti</code> / cloud / nuclei</td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-jwt</code></td>
+<td><code>js</code> + bearer / <code>eyJ</code></td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-secrets</code></td>
+<td><code>js</code> / cloud secrets</td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-idor</code></td>
+<td><code>params</code> / crawl APIs</td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-graphql</code></td>
+<td>crawl + graphql text</td>
+</tr>
+<tr>
+<td><code>reconkit-vuln-takeover</code></td>
+<td><code>dns</code> / nuclei takeover</td>
+</tr>
+</tbody>
+</table>
+<h3 id="confidence-path">Confidence path</h3>
+<pre><code class="hljs language-text">C0 noise          → drop
+C1 scanner hit    → /prove or manual
+C2 canary confirmed → PoC draft
+C3 impact (human) → triage-gate
+C4 report-ready
+</code></pre>
+<pre><code class="hljs language-bash">python recon_agents.py agents    # suite by role + surface list
+# RECON_AGENT_SKILL=reconkit-bug-bounty   # default
+# RECON_AGENT_SKILL=off
+# RECON_AGENT_SKILL_EXTRA=reconkit-efficiency
+</code></pre>
+<h3 id="worked-example-xss-surface">Worked example (XSS surface)</h3>
+<pre><code class="hljs language-bash">python recon_agents.py run --target example.com --modules xss --max-steps 4
+python reconkit.py findings reindex
+python recon_prove.py run --target example.com --technique xss_reflect
+# confirmed proof ≈ C2; write impact manually for C3; /critic for triage-gate
+</code></pre>
+<hr>
+<h2 id="ordered-hunt-phases-ao">Ordered hunt (phases A–O)</h2>
+<p>Replace <code>example.com</code> with a domain you are <strong>authorized</strong> to test.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong> Setup</td>
+<td><code>checkenv</code> → <code>setup</code> → PATH</td>
+</tr>
+<tr>
+<td><strong>B</strong> Verify</td>
+<td><code>verify</code></td>
+</tr>
+<tr>
+<td><strong>C</strong> Wordlists &amp; keys</td>
+<td><code>wordlists</code> · <code>/keys set …</code></td>
+</tr>
+<tr>
+<td><strong>D</strong> Scope</td>
+<td><code>scope add</code> · type <code>yes</code></td>
+</tr>
+<tr>
+<td><strong>E</strong> Discover</td>
+<td><code>modules</code> · <code>/cmd -h</code></td>
+</tr>
+<tr>
+<td><strong>F</strong> Verbosity / rate</td>
+<td><code>/verbose 2</code> · <code>/rate</code></td>
+</tr>
+<tr>
+<td><strong>G</strong> Recon</td>
+<td><code>/quick</code> or <code>/run</code> / <code>/full</code> / <code>/scan</code></td>
+</tr>
+<tr>
+<td><strong>H</strong> Program + index</td>
+<td><code>/program set</code> · <code>/findings reindex</code></td>
+</tr>
+<tr>
+<td><strong>I</strong> Triage helpers</td>
+<td><code>/notable</code> · <code>/diff</code> · <code>/doctor</code> · <code>/tips</code></td>
+</tr>
+<tr>
+<td><strong>J</strong> Prove</td>
+<td><code>/prove queue</code> · <code>/prove run</code></td>
+</tr>
+<tr>
+<td><strong>K</strong> Graph</td>
+<td><code>/graph show</code></td>
+</tr>
+<tr>
+<td><strong>L</strong> Dashboard</td>
+<td><code>/dashboard</code></td>
+</tr>
+<tr>
+<td><strong>M</strong> Agents</td>
+<td><code>/check-llm</code> · <code>/agent</code></td>
+</tr>
+<tr>
+<td><strong>N</strong> Report</td>
+<td><code>/report</code> · <code>/critic</code></td>
+</tr>
+<tr>
+<td><strong>O</strong> Session</td>
+<td><code>/jobs</code> · <code>/pause</code> · <code>/stop</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="copy-paste-skeleton-cli">Copy-paste skeleton (CLI)</h3>
+<pre><code class="hljs language-bash">cd path/to/Reconkit
+pip install prompt_toolkit colorama
+
+python reconkit.py checkenv
+python reconkit.py setup
+python reconkit.py verify
+python reconkit.py wordlists
+
+python reconkit.py scope add example.com
+python reconkit.py run --target example.com --modules subdomains,dns,httpprobe,nuclei
+python reconkit.py findings reindex
+
+python recon_prove.py queue --target example.com
+python recon_prove.py run --target example.com --dry-run
+python recon_prove.py run --target example.com
+
+python recon_dashboard.py --host 127.0.0.1
+</code></pre>
+<h3 id="shell-skeleton">Shell skeleton</h3>
+<pre><code class="hljs language-text">python recon_shell.py
+
+/setup
+/verify
+/scope add example.com
+/keys list
+/quick example.com
+/findings reindex
+/program set example-web
+/notable
+/prove queue example.com
+/prove run example.com --dry-run
+/prove run example.com
+/graph show example.com
+/dashboard --host 127.0.0.1
+/report example.com
+/critic example.com
+</code></pre>
+<hr>
+<h2 id="report-critic-jobs">Report, critic &amp; jobs</h2>
+<pre><code class="hljs language-text">/report example.com      # draft markdown under output/
+/critic example.com      # triage-gate style review
+/jobs                    # background recon jobs
+/pause /resume /stop
+</code></pre>
+<p>Outputs typically land under:</p>
+<pre><code class="hljs language-text">~/.reconkit/output/&lt;target&gt;/report_draft.md
+~/.reconkit/output/&lt;target&gt;/critic_review.md
+~/.reconkit/output/&lt;target&gt;/agent_report.md
+</code></pre>
+<hr>
+<h2 id="safety-ethics">Safety &amp; ethics</h2>
+<table>
+<thead>
+<tr>
+<th>Do</th>
+<th>Don&rsquo;t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Confirm written authorization before <code>scope add</code></td>
+<td>Scan random internet hosts</td>
+</tr>
+<tr>
+<td>Prefer safe prove canaries</td>
+<td>Run sqlmap / shells / dumps via this tool</td>
+</tr>
+<tr>
+<td>Keep keys in <code>~/.reconkit/secrets.env</code> or env</td>
+<td>Commit <code>secrets.env</code> or live <code>api_key</code> values</td>
+</tr>
+<tr>
+<td>Bind dashboard to localhost on shared LANs</td>
+<td>Expose dashboard on the public internet</td>
+</tr>
+<tr>
+<td>Use program RoE for optional <code>sqli_boolean</code></td>
+<td>Treat C1 scanner noise as report-ready</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Default path:</strong> C1 scanner → <code>/prove</code> (C2) → PoC draft → human impact (C3) → triage (C4).<br>
+No reverse shells, credential spray lists, or destructive modules in the default path.</p>
+<hr>
+<h2 id="troubleshooting-quick">Troubleshooting (quick)</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>out of scope</code> / run refused</td>
+<td><code>scope list</code> · <code>scope check &lt;host&gt;</code></td>
+</tr>
+<tr>
+<td>Tool missing</td>
+<td><code>verify</code> · re-run <code>setup</code> · PATH for Go/Cargo</td>
+</tr>
+<tr>
+<td>Shell has no autocomplete</td>
+<td><code>pip install prompt_toolkit</code></td>
+</tr>
+<tr>
+<td>LLM fails</td>
+<td><code>check-llm</code> · provider key env · <code>providers</code></td>
+</tr>
+<tr>
+<td>Ollama from VM</td>
+<td>Use <strong>host</strong> IP in <code>base_url</code>, not guest IP; firewall TCP 11434</td>
+</tr>
+<tr>
+<td>Dashboard empty</td>
+<td><code>/findings reindex</code> · confirm <code>~/.reconkit/output/&lt;target&gt;/</code></td>
+</tr>
+<tr>
+<td>Dashboard unreachable from host</td>
+<td>Bind <code>0.0.0.0</code>, open VM firewall on 8787</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="repository-docs-map">Repository docs map</h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/thevillagehacker/Reconkit/blob/main/USAGE.md">USAGE.md</a></td>
+<td>Architecture, modules, configs, troubleshooting</td>
+</tr>
+<tr>
+<td><a href="https://github.com/thevillagehacker/Reconkit/blob/main/OPERATIONS.md">OPERATIONS.md</a></td>
+<td>Every CLI / shell / API operation</td>
+</tr>
+<tr>
+<td><a href="https://github.com/thevillagehacker/Reconkit/blob/main/WORKFLOW.md">WORKFLOW.md</a></td>
+<td>Ordered hunt phases A–O</td>
+</tr>
+<tr>
+<td><a href="https://github.com/thevillagehacker/Reconkit/blob/main/AGENTS.md">AGENTS.md</a></td>
+<td>LLM / skills / prove / graph quick start</td>
+</tr>
+<tr>
+<td><a href="https://github.com/thevillagehacker/Reconkit/blob/main/skills/README.md">skills/README.md</a></td>
+<td>Skill suite design</td>
+</tr>
+<tr>
+<td><a href="https://github.com/thevillagehacker/Reconkit/blob/main/ROADMAP.md">ROADMAP.md</a></td>
+<td>Done vs planned</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="links">Links</h2>
+<ul>
+<li><strong>Source:</strong> <a href="https://github.com/thevillagehacker/Reconkit">github.com/thevillagehacker/Reconkit</a></li>
+<li><strong>Author:</strong> <a href="https://github.com/thevillagehacker">thevillagehacker</a> · <a href="https://linkedin.com/in/thevillagehacker">LinkedIn</a> · <a href="https://x.com/thevillagehackr">X</a></li>
+</ul>
+<blockquote>
+<p>Use Reconkit only on systems you own or are explicitly authorized to test. Happy (authorized) hunting.</p>
+</blockquote>
+
+
+</article>
+
+<footer>
+    <span class="footer-text">
+        © 2026 <a href="/">thevillagehacker</a> — Naveen Jagadeesan
+    </span>
+    <span class="footer-text">
+        status: active<span class="blink"></span>
+    </span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>
