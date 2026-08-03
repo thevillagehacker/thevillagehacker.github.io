@@ -1,12 +1,13 @@
 /**
- * Global site effects — atmosphere, cyber neural mesh, clock helpers,
- * HTTP request/response code highlighting.
+ * Global site effects — theme toggle, clock, HTTP highlighting.
+ * Atmosphere / cyber mesh are OFF by default (readability).
  * Include on every page:
  *   <script src="/assets/js/site.js" defer></script>
  *   (posts / projects: ../assets/js/site.js)
  *
  * Auto-runs on DOMContentLoaded. Page scripts can use window.TVH.
- * Mesh control API: TVH.mesh.{ recon, breach, calm, compromiseAt }
+ * Theme: TVH.theme.{ get, set, toggle }
+ * Mesh (opt-in): TVH.mesh / body.fx-mesh
  * HTTP highlight: TVH.enhanceHttpHighlighting()
  */
 (function (global) {
@@ -15,6 +16,8 @@
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
+
+  const THEME_KEY = "tvh_theme";
 
   const $ = (sel, root = document) => root.querySelector(sel);
 
@@ -1126,15 +1129,100 @@
     setTimeout(enhanceHttpHighlighting, 120);
   }
 
+  /* ── theme (light / dark) ──────────────────────────────── */
+  function getStoredTheme() {
+    try {
+      const t = localStorage.getItem(THEME_KEY);
+      if (t === "light" || t === "dark") return t;
+    } catch (_) {
+      /* private mode */
+    }
+    return "dark";
+  }
+
+  function applyTheme(theme) {
+    const mode = theme === "light" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", mode);
+    try {
+      localStorage.setItem(THEME_KEY, mode);
+    } catch (_) {
+      /* ignore */
+    }
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute("content", mode === "light" ? "#f5f5f5" : "#050505");
+    }
+    syncThemeToggleUi();
+    document.dispatchEvent(
+      new CustomEvent("tvh:theme", { detail: { theme: mode } })
+    );
+  }
+
+  function toggleTheme() {
+    applyTheme(getStoredTheme() === "light" ? "dark" : "light");
+  }
+
+  function syncThemeToggleUi() {
+    const btn = $("#theme-toggle");
+    if (!btn) return;
+    const mode = getStoredTheme();
+    const isLight = mode === "light";
+    btn.setAttribute("aria-label", isLight ? "Switch to dark theme" : "Switch to light theme");
+    btn.setAttribute("title", isLight ? "Dark mode" : "Light mode");
+    const icon = btn.querySelector(".theme-toggle-icon");
+    const label = btn.querySelector(".theme-toggle-label");
+    if (icon) icon.textContent = isLight ? "☾" : "☀";
+    if (label) label.textContent = isLight ? "Dark" : "Light";
+  }
+
+  function injectThemeToggle() {
+    if ($("#theme-toggle")) {
+      syncThemeToggleUi();
+      return;
+    }
+    const host =
+      $(".nav-right") ||
+      $(".landing-nav-inner") ||
+      $(".nav-inner") ||
+      $("nav");
+    if (!host) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "theme-toggle";
+    btn.className = "theme-toggle";
+    btn.innerHTML =
+      '<span class="theme-toggle-icon" aria-hidden="true">☀</span>' +
+      '<span class="theme-toggle-label">Light</span>';
+    btn.addEventListener("click", toggleTheme);
+
+    // Prefer end of nav-right (after clock / links)
+    if (host.classList.contains("nav-right") || host.querySelector(".nav-link")) {
+      host.appendChild(btn);
+    } else {
+      host.insertBefore(btn, host.firstChild);
+    }
+    syncThemeToggleUi();
+  }
+
+  // Apply stored theme ASAP (before full init) to reduce flash
+  try {
+    applyTheme(getStoredTheme());
+  } catch (_) {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+
   function init(options) {
     const raw = options || {};
     const opts = Object.assign(
       {
-        atmosphere: true,
-        cyberMesh: true,
+        /* Mesh/atmosphere off by default — solid readable pages */
+        atmosphere: false,
+        cyberMesh: false,
         clock: true,
         monoFont: true,
         httpHighlight: true,
+        themeToggle: true,
       },
       raw
     );
@@ -1144,18 +1232,26 @@
     }
 
     if (opts.monoFont) ensureMonoFont();
-    if (opts.atmosphere) injectAtmosphere();
+    /* Atmosphere only if explicitly enabled (body.fx-atmosphere for CSS) */
+    if (opts.atmosphere) {
+      injectAtmosphere();
+      document.body.classList.add("fx-atmosphere");
+    }
     elevateContent();
-    if (opts.cyberMesh) initCyberMesh();
+    if (opts.cyberMesh) {
+      document.body.classList.add("fx-mesh");
+      initCyberMesh();
+    }
     if (opts.clock) initClock();
     if (opts.httpHighlight) initHttpHighlighting();
+    if (opts.themeToggle) injectThemeToggle();
 
     document.dispatchEvent(new CustomEvent("tvh:ready", { detail: TVH }));
     return TVH;
   }
 
   const TVH = {
-    version: "1.3.0",
+    version: "1.4.0",
     prefersReducedMotion,
     mesh: null,
     assetBase,
@@ -1165,6 +1261,11 @@
     initClock,
     enhanceHttpHighlighting,
     initHttpHighlighting,
+    theme: {
+      get: getStoredTheme,
+      set: applyTheme,
+      toggle: toggleTheme,
+    },
     init,
     $,
     sleep(ms) {
