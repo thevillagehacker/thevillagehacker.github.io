@@ -830,7 +830,7 @@
       // Don't steal clicks from interactive UI
       if (
         e.target.closest(
-          "a, button, input, textarea, select, label, summary, .term-window, .top-nav, .nav-link, .social-link, .htag, .cve-section, .contact-link, .service-card, .boot-overlay"
+          "a, button, input, textarea, select, label, summary, .term-window, .top-nav, .nav-link, .social-link, .htag, .cve-section, .contact-link, .service-card"
         )
       ) {
         return;

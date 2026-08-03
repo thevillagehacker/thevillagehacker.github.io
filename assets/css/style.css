@@ -143,14 +143,98 @@ body{
     }
 }
 
-/* Keep code / terminal panes dark in both themes (syntax contrast) */
+/* Keep code blocks dark (syntax contrast); homepage terminal gets its own light skin */
 html[data-theme="light"] pre,
 html[data-theme="light"] pre code,
 html[data-theme="light"] pre code.hljs,
-html[data-theme="light"] .term-window,
 html[data-theme="light"] .boot-ops,
 html[data-theme="light"] .boot-terminal{
     color-scheme:dark;
+}
+
+/* ── Light theme: readable paper terminal ───────────────── */
+html[data-theme="light"] .term-window{
+    color-scheme:light;
+    background:#f7f4f2;
+    border-color:#d8d0cc;
+    box-shadow:
+        0 0 0 1px rgba(0,0,0,0.04),
+        0 16px 40px rgba(20,12,10,0.1),
+        0 0 0 1px rgba(196,30,48,0.06);
+}
+
+html[data-theme="light"] .term-chrome{
+    background:linear-gradient(to bottom,#efeae7,#e4ddd9);
+    border-bottom:1px solid #d0c8c4;
+}
+
+html[data-theme="light"] .term-title,
+html[data-theme="light"] .term-actions{
+    color:#6b6360;
+}
+
+html[data-theme="light"] .term-body{
+    color:#1c1816;
+    background:#f7f4f2;
+}
+
+html[data-theme="light"] .term-input{
+    color:#1c1816;
+    caret-color:#c41e30;
+}
+
+html[data-theme="light"] .term-input::placeholder{
+    color:#8a817c;
+    opacity:0.85;
+}
+
+html[data-theme="light"] .term-hint{
+    color:#6b6360;
+    border-top:1px solid #d8d0cc;
+    background:#efeae7;
+}
+
+html[data-theme="light"] .term-hint code{
+    color:#9e1826;
+}
+
+/* Prompt colors on light paper */
+html[data-theme="light"] .ps1-user,
+html[data-theme="light"] .term-echo .ps1-user{
+    color:#9e1826;
+}
+html[data-theme="light"] .ps1-at{
+    color:#6b6360;
+}
+html[data-theme="light"] .ps1-host{
+    color:#0d7a4f;
+}
+html[data-theme="light"] .ps1-path{
+    color:#9a6700;
+}
+
+/* Command output tokens — dark-friendly accents on light bg */
+html[data-theme="light"] .t-dim{
+    color:#6b6360;
+}
+html[data-theme="light"] .t-ok{
+    color:#0d7a4f;
+}
+html[data-theme="light"] .t-accent{
+    color:#9e1826;
+}
+html[data-theme="light"] .t-warn{
+    color:#9a6700;
+}
+html[data-theme="light"] .t-err{
+    color:#b42318;
+}
+
+/* Role typewriter / cursor stay readable on light page */
+html[data-theme="light"] .role-prefix,
+html[data-theme="light"] .role-typewriter,
+html[data-theme="light"] .cursor-blink{
+    color:var(--accent);
 }
 
 html[data-theme="light"] .advisory-banner{
@@ -1030,23 +1114,23 @@ pre:focus-within{
 
 .service-icon {
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--accent);
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 .service-name {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 8px;
 }
 
 .service-desc {
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text-dim);
-    line-height: 1.6;
+    line-height: 1.65;
     text-align: justify;
 }
 
@@ -2308,10 +2392,10 @@ body.mesh-breach .landing-grid {
     border: 1px solid var(--border);
     background: var(--bg-secondary);
     backdrop-filter: none;
-    padding: 14px 16px;
+    padding: 16px 18px;
     text-decoration: none;
     color: inherit;
-    min-height: 132px;
+    min-height: 148px;
     transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
@@ -2330,7 +2414,7 @@ a.cve-card:hover {
 
 .cve-id {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--accent);
     letter-spacing: 0.2px;
@@ -2338,10 +2422,10 @@ a.cve-card:hover {
 
 .cve-sev {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.4px;
-    padding: 3px 7px;
+    padding: 3px 8px;
     border: 1px solid currentColor;
     white-space: nowrap;
     flex-shrink: 0;
@@ -2355,8 +2439,8 @@ a.cve-card:hover {
 
 .cve-summary {
     margin: 0;
-    font-size: 12px;
-    line-height: 1.55;
+    font-size: 14px;
+    line-height: 1.6;
     color: var(--text-secondary);
     flex: 1;
 }
@@ -2366,12 +2450,12 @@ a.cve-card:hover {
     justify-content: space-between;
     gap: 8px;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-dim);
 }
 
 .cve-skeleton {
-    min-height: 132px;
+    min-height: 148px;
     pointer-events: none;
     background:
         linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
