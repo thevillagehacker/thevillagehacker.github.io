@@ -102,6 +102,7 @@ body{
     align-items:center;
     justify-content:center;
     gap:6px;
+    flex:0 0 auto;
     flex-shrink:0;
     min-width:40px;
     min-height:36px;
@@ -116,6 +117,9 @@ body{
     letter-spacing:0.4px;
     cursor:pointer;
     transition:border-color .15s ease, background .15s ease, color .15s ease;
+    /* Never let the control get clipped by overflow parents */
+    position:relative;
+    z-index:2;
 }
 
 .theme-toggle:hover{
@@ -2610,12 +2614,13 @@ a.cve-card:hover {
         padding: 68px 18px 60px;
     }
 
-    .landing-nav-inner {
-        padding: 12px 16px;
+    .landing-nav-inner,
+    .nav-inner.landing-nav-inner {
+        padding: 10px 12px;
     }
 
     .nav-right {
-        gap: 14px;
+        gap: 6px 8px;
     }
 }
 
@@ -4219,26 +4224,39 @@ footer{
         font-size:16px;
     }
 
-    /* Fixed top nav: keep usable on narrow screens */
+    /* Fixed top nav: keep usable on narrow screens (esp. iPhone) */
     .top-nav{
-        padding-left:env(safe-area-inset-left, 0);
-        padding-right:env(safe-area-inset-right, 0);
+        left:0;
+        right:0;
+        width:100%;
+        max-width:100%;
+        /* safe-area so the last control isn't under the bezel / home indicator area */
+        padding-left:env(safe-area-inset-left, 0px);
+        padding-right:env(safe-area-inset-right, 0px);
+        box-sizing:border-box;
+        overflow:visible;
     }
 
+    .nav-inner,
     .nav-inner.landing-nav-inner,
     .landing-nav-inner{
-        padding:12px 14px;
-        gap:10px;
+        padding:10px 12px;
+        gap:8px;
         flex-wrap:nowrap;
+        width:100%;
+        max-width:100%;
+        min-width:0;
+        box-sizing:border-box;
     }
 
     .nav-brand{
         font-size:12px;
         min-width:0;
-        max-width:52%;
+        max-width:36%;
         overflow:hidden;
         text-overflow:ellipsis;
         white-space:nowrap;
+        flex:0 1 auto;
     }
 
     .nav-path{
@@ -4246,17 +4264,50 @@ footer{
     }
 
     .nav-right{
-        gap:10px 12px;
-        flex-shrink:0;
+        /* Must shrink so Blog/Projects/CTF + theme toggle fit; flex-shrink:0 was clipping the toggle */
+        display:flex;
+        flex:1 1 auto;
+        flex-shrink:1;
+        min-width:0;
+        max-width:100%;
+        gap:6px 8px;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+        align-items:center;
+        row-gap:6px;
     }
 
     .nav-link{
         font-size:12px;
         padding:8px 4px; /* larger touch target */
+        flex:0 0 auto;
+    }
+
+    /* Long label eats the toggle on ~390px screens */
+    a.nav-link[href*="ctf-writeups"]{
+        font-size:0;
+        letter-spacing:0;
+        line-height:0;
+    }
+
+    a.nav-link[href*="ctf-writeups"]::before{
+        content:"CTF";
+        font-size:12px;
+        font-weight:600;
+        letter-spacing:normal;
+        line-height:1.2;
     }
 
     .nav-clock{
         display:none;
+    }
+
+    .theme-toggle{
+        flex:0 0 auto;
+        min-width:36px;
+        min-height:36px;
+        padding:6px 8px;
+        margin:0;
     }
 
     /* —— Research posts —— */
@@ -4553,13 +4604,23 @@ footer{
 /* Very small phones */
 @media (max-width: 380px) {
     .nav-brand{
-        max-width:46%;
+        max-width:32%;
         font-size:11px;
     }
 
     .nav-link{
         font-size:11px;
         padding:8px 2px;
+    }
+
+    a.nav-link[href*="ctf-writeups"]::before{
+        font-size:11px;
+    }
+
+    .theme-toggle{
+        min-width:34px;
+        min-height:34px;
+        padding:5px 7px;
     }
 
     body.post-page .container,
