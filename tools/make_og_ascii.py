@@ -1,4 +1,8 @@
-"""Generate legacy-shell ASCII Open Graph preview (1200x630)."""
+"""Generate legacy-shell ASCII Open Graph preview (1200x630).
+
+Typography matches classic macOS Terminal.app:
+  Menlo / SF Mono lineage → bundled DejaVu Sans Mono (open Menlo ancestor).
+"""
 from __future__ import annotations
 
 import os
@@ -8,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "assets" / "images" / "og-image.png"
+FONTS = ROOT / "assets" / "fonts"
 
 W, H = 1200, 630
 BG = (6, 8, 6)
@@ -19,11 +24,56 @@ RED = (255, 80, 90)
 BORDER = (28, 72, 38)
 
 
-def mono_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+def mono_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    """Prefer Mac Terminal–style monospaced faces, then bundled DejaVu (Menlo family)."""
+    names = (
+        (
+            # Real Apple faces if present (dev machines with Mac fonts installed)
+            "SF-Mono-Regular.otf",
+            "SFMono-Regular.otf",
+            "Menlo.ttc",
+            "Menlo-Regular.ttf",
+            "Monaco.ttf",
+            # Bundled Menlo-lineage open font
+            "DejaVuSansMono-Bold.ttf" if bold else "DejaVuSansMono.ttf",
+            "DejaVuSansMono.ttf",
+        )
+        if not bold
+        else (
+            "SF-Mono-Bold.otf",
+            "SFMono-Bold.otf",
+            "Menlo-Bold.ttf",
+            "DejaVuSansMono-Bold.ttf",
+            "DejaVuSansMono.ttf",
+        )
+    )
+
+    search_dirs = [
+        FONTS,
+        Path(r"C:\Windows\Fonts"),
+        Path("/System/Library/Fonts"),
+        Path("/System/Library/Fonts/Supplemental"),
+        Path("/Library/Fonts"),
+        Path.home() / "Library" / "Fonts",
+    ]
+
+    for d in search_dirs:
+        if not d.is_dir():
+            continue
+        for name in names:
+            p = d / name
+            if p.is_file():
+                try:
+                    # Menlo.ttc is a collection; index 0 is regular
+                    if p.suffix.lower() == ".ttc":
+                        return ImageFont.truetype(str(p), size, index=0)
+                    return ImageFont.truetype(str(p), size)
+                except OSError:
+                    continue
+
+    # Last-resort Windows monos
     for p in (
         r"C:\Windows\Fonts\consola.ttf",
-        r"C:\Windows\Fonts\CascadiaMono.ttf",
-        r"C:\Windows\Fonts\lucon.ttf",
         r"C:\Windows\Fonts\cour.ttf",
     ):
         if os.path.exists(p):
@@ -54,20 +104,22 @@ def main() -> None:
         x = m + 16 + i * 18
         draw.ellipse([x, m + 13, x + 12, m + 25], fill=c)
 
-    f_bar = mono_font(15)
-    f_body = mono_font(18)
-    f_small = mono_font(15)
+    # Menlo/SF Mono metrics — slightly tighter tracking feel of Terminal.app
+    f_bar = mono_font(14)
+    f_body = mono_font(17)
+    f_body_b = mono_font(17, bold=True)
+    f_small = mono_font(13)
 
     draw.text(
         (m + 78, m + 12),
-        "tvh@research-node: ~  —  bash  —  80x24",
+        "Terminal — tvh@research-node: ~ — -bash — 80×24",
         font=f_bar,
         fill=PHOS_DIM,
     )
 
     x0 = m + 26
     y = m + 54
-    line_h = 21
+    line_h = 20
 
     # Pure ASCII — FIGlet-style TVH + shell transcript
     lines: list[tuple[tuple[int, int, int], str]] = [
@@ -100,12 +152,20 @@ def main() -> None:
         if text == "":
             y += max(8, line_h // 2)
             continue
+        # Bold for ASCII banner + identity lines (Menlo Bold)
+        use_bold = text in (
+            "thevillagehacker",
+            "thevillagehacker.com",
+        ) or text.startswith(r"  _") or text.startswith(r" |_") or text.startswith(r"   |")
+
+        font = f_body_b if use_bold else f_body
         if text == "tvh@node:~$ ":
             draw.text((x0, y), text, font=f_body, fill=color)
             tw = draw.textlength(text, font=f_body)
-            draw.rectangle([x0 + tw + 2, y + 2, x0 + tw + 12, y + 16], fill=PHOS)
+            # block cursor like Terminal.app
+            draw.rectangle([x0 + tw + 1, y + 1, x0 + tw + 11, y + 15], fill=PHOS)
         else:
-            draw.text((x0, y), text, font=f_body, fill=color)
+            draw.text((x0, y), text, font=font, fill=color)
         y += line_h
 
     draw.rectangle(
