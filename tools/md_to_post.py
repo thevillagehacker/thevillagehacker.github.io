@@ -133,6 +133,20 @@ POST_TEMPLATE = """\
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>{title_html} — {site_suffix}</title>
 <meta name="description" content="{description_html}"/>
+<link rel="canonical" href="{canonical_url}"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="thevillagehacker"/>
+<meta property="og:url" content="{canonical_url}"/>
+<meta property="og:title" content="{title_html} — {site_suffix}"/>
+<meta property="og:description" content="{description_html}"/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="{title_html} — {site_suffix}"/>
+<meta name="twitter:description" content="{description_html}"/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/og-image.png"/>
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
@@ -523,6 +537,8 @@ def esc(s: str) -> str:
 
 
 def build_page(meta: dict[str, str], article_html: str) -> str:
+    slug = meta.get("slug") or "post"
+    canonical_url = f"https://thevillagehacker.com/posts/{slug}.html"
     return POST_TEMPLATE.format(
         title_html=esc(meta["title"]),
         description_html=esc(meta["description"]),
@@ -535,6 +551,7 @@ def build_page(meta: dict[str, str], article_html: str) -> str:
         article_html=article_html,
         year=esc(meta["year"]),
         site_suffix=SITE_SUFFIX,
+        canonical_url=esc(canonical_url),
     )
 
 
