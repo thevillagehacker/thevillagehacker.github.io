@@ -139,14 +139,14 @@ POST_TEMPLATE = """\
 <meta property="og:url" content="{canonical_url}"/>
 <meta property="og:title" content="{title_html} — {site_suffix}"/>
 <meta property="og:description" content="{description_html}"/>
-<meta property="og:image" content="https://thevillagehacker.com/assets/images/og-image.png"/>
-<meta property="og:image:width" content="1200"/>
-<meta property="og:image:height" content="630"/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<meta property="og:image:width" content="1673"/>
+<meta property="og:image:height" content="940"/>
 <meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="{title_html} — {site_suffix}"/>
 <meta name="twitter:description" content="{description_html}"/>
-<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/og-image.png"/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png"/>
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
