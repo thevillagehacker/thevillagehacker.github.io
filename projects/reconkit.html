@@ -440,6 +440,7 @@ python reconkit.py wordlists
 <h2 id="authorization-scope-gate">Authorization (scope gate)</h2>
 <p><strong>Nothing in <code>run</code> / <code>/run</code> / agents executes</strong> against a host that is not in scope.</p>
 <pre><code class="hljs language-bash">python reconkit.py scope add example.com          # type yes to confirm authorization
+python reconkit.py scope add example.com --yes    # skip prompt (automation / SSH)
 python reconkit.py scope add &quot;*.example.com&quot;      # wildcard OK
 python reconkit.py scope list
 python reconkit.py scope check example.com
