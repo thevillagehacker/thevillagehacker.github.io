@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TVH — TheVillageHacker">
+  <rect width="512" height="512" rx="92" fill="#050505"/>
+  <text
+    x="256"
+    y="318"
+    text-anchor="middle"
+    font-family="Arial Black, Helvetica Neue, Arial, sans-serif"
+    font-size="168"
+    font-weight="900"
+    letter-spacing="8"
+  >
+    <tspan fill="#f4f4f5">T</tspan><tspan fill="#ff3b4d">V</tspan><tspan fill="#f4f4f5">H</tspan>
+  </text>
+</svg>
