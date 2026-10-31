@@ -1,41 +1,14 @@
 /**
- * Landing page simulations — terminal, recon HUD, CVE feed.
- * Atmosphere / cyber mesh: assets/js/site.js (global).
- * Purely cosmetic; no real scanning or network activity.
+ * Homepage behavior: role typewriter and the live CVE feed.
+ * Theme, clock, year, and uptime live in assets/js/site.js.
  */
 (function () {
   "use strict";
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const pageStart = Date.now();
 
-  /* ── helpers ─────────────────────────────────────────── */
   const $ = (sel, root = document) => root.querySelector(sel);
   const sleep = (ms) => new Promise((r) => setTimeout(r, prefersReducedMotion ? 0 : ms));
-
-  function randomHex(n) {
-    let s = "";
-    for (let i = 0; i < n; i++) s += Math.floor(Math.random() * 16).toString(16);
-    return s;
-  }
-
-  /* ── clock + uptime ──────────────────────────────────── */
-  function tickClock() {
-    const el = $("#nav-clock");
-    if (!el) return;
-    const now = new Date();
-    el.textContent = now.toISOString().replace("T", " ").slice(0, 19) + "Z";
-  }
-
-  function tickUptime() {
-    const el = $("#uptime");
-    if (!el) return;
-    const sec = Math.floor((Date.now() - pageStart) / 1000);
-    const h = String(Math.floor(sec / 3600)).padStart(2, "0");
-    const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
-    const s = String(sec % 60).padStart(2, "0");
-    el.textContent = `uptime: ${h}:${m}:${s}`;
-  }
 
   /* ── role typewriter ─────────────────────────────────── */
   function reserveRoleHeight(el, roles) {
@@ -94,199 +67,6 @@
       await sleep(280);
       i++;
     }
-  }
-
-  /* ── interactive terminal ────────────────────────────── */
-  function meshApi() {
-    return (window.TVH && window.TVH.mesh) || null;
-  }
-
-  function initTerminal() {
-    const output = $("#term-output");
-    const input = $("#term-input");
-    const body = $("#term-body");
-    if (!output || !input) return;
-
-    const print = (html, cls = "") => {
-      const line = document.createElement("div");
-      line.className = "term-line " + cls;
-      line.innerHTML = html;
-      output.appendChild(line);
-      body.scrollTop = body.scrollHeight;
-    };
-
-    const banner = () => {
-      print(`<span class="t-dim">thevillagehacker lab shell v1.4.0</span>`);
-      print(`<span class="t-dim">type <span class="t-accent">help</span> for available commands</span>`);
-      print(`<span class="t-dim">mesh live — try <span class="t-accent">recon</span> · <span class="t-accent">breach</span> · click a node</span>`);
-      print("");
-    };
-
-    const commands = {
-      help() {
-        print(`<span class="t-accent">available commands</span>`);
-        print(`  <span class="t-ok">whoami</span>     — operator identity`);
-        print(`  <span class="t-ok">id</span>         — research profile`);
-        print(`  <span class="t-ok">ls</span>         — list research paths`);
-        print(`  <span class="t-ok">recon</span>      — surface scan + mesh pulse`);
-        print(`  <span class="t-ok">breach</span>     — hostile mesh mode (~8s)`);
-        print(`  <span class="t-ok">skills</span>     — focus areas`);
-        print(`  <span class="t-ok">writeups</span>   — CTF writeups (GitBook)`);
-        print(`  <span class="t-ok">blog</span>       — research case board`);
-        print(`  <span class="t-ok">projects</span>   — tooling project board`);
-        print(`  <span class="t-ok">contact</span>    — reach the operator`);
-        print(`  <span class="t-ok">github</span>     — open GitHub profile`);
-        print(`  <span class="t-ok">neofetch</span>   — system card`);
-        print(`  <span class="t-ok">clear</span>      — clear terminal + calm mesh`);
-        print(`  <span class="t-ok">sudo</span>       — you know what this does`);
-      },
-      whoami() {
-        print(`naveen · thevillagehacker`);
-        print(`<span class="t-dim">uid=1337(researcher) gid=0(root) groups=offensive,appsec,caffeine</span>`);
-      },
-      id() {
-        print(`name:     Naveen Jagadeesan`);
-        print(`role:     Security Researcher`);
-        print(`focus:    vulnerability research · exploit analysis`);
-        print(`org:      Societe Generale (Security Analyst)`);
-        print(`handle:   @thevillagehackr`);
-      },
-      ls() {
-        print(`drwxr-xr-x  writeups/`);
-        print(`-rw-r--r--  identity.txt`);
-        print(`-rwxr-xr-x  recon.sh`);
-        print(`-rwxr-xr-x  breach.sh`);
-        print(`-rw-------  secrets.enc  <span class="t-dim"># redacted</span>`);
-      },
-      async recon() {
-        print(`<span class="t-dim">[*] starting passive recon simulation...</span>`);
-        const mesh = meshApi();
-        if (mesh) mesh.recon();
-        const steps = [
-          "enumerating subdomains",
-          "fingerprinting stack",
-          "mapping auth flows",
-          "probing input sinks",
-          "correlating findings",
-        ];
-        for (const s of steps) {
-          await sleep(280);
-          print(`<span class="t-ok">[+]</span> ${s} <span class="t-dim">0x${randomHex(6)}</span>`);
-        }
-        print(`<span class="t-accent">[✓]</span> surface map updated · mesh refreshed`);
-      },
-      async breach() {
-        print(`<span class="t-err">[!] injecting hostile traffic into attack-surface map...</span>`);
-        const mesh = meshApi();
-        if (mesh) mesh.breach(8000);
-        await sleep(200);
-        print(`<span class="t-warn">[*] session chrome → COMPROMISED</span>`);
-        print(`<span class="t-warn">[*] packet density ↑ · glitch channels open</span>`);
-        await sleep(350);
-        print(`<span class="t-dim">breach window ~8s · type <span class="t-accent">clear</span> to force calm</span>`);
-      },
-      skills() {
-        print(`vulnerability research · security analysis · offensive security · consultancy`);
-      },
-      writeups() {
-        print(`opening <span class="t-accent">CTF Writeups</span> on GitBook...`);
-        setTimeout(
-          () => window.open("https://thevillagehacker-security.gitbook.io/ctf-writeups", "_blank"),
-          400
-        );
-      },
-      blog() {
-        print(`opening <span class="t-accent">research case board</span>…`);
-        setTimeout(() => { window.location.href = "/blog.html"; }, 350);
-      },
-      projects() {
-        print(`opening <span class="t-accent">project board</span>…`);
-        setTimeout(() => { window.location.href = "/projects.html"; }, 350);
-      },
-      contact() {
-        print(`LinkedIn  → <span class="t-accent">https://linkedin.com/in/thevillagehacker</span>`);
-        print(`GitHub    → <span class="t-accent">https://github.com/thevillagehacker</span>`);
-        print(`X         → <span class="t-accent">https://x.com/thevillagehackr</span>`);
-      },
-      github() {
-        print(`opening <span class="t-accent">GitHub</span>…`);
-        setTimeout(
-          () => window.open("https://github.com/thevillagehacker", "_blank"),
-          350
-        );
-      },
-      neofetch() {
-        const status = meshApi() && meshApi().isBreach && meshApi().isBreach()
-          ? `<span class="t-err">BREACH</span>`
-          : `<span class="t-ok">online</span>`;
-        print(`<span class="t-accent">       ___</span>  thevillagehacker`);
-        print(`<span class="t-accent">   .─´   \`─.</span>  -------------`);
-        print(`<span class="t-accent">  /  lab   \\</span> OS: Research Node`);
-        print(`<span class="t-accent"> |  ○   ○  |</span> Shell: zsh + caffeine`);
-        print(`<span class="t-accent">  \\   ▽   /</span>  Focus: vuln research`);
-        print(`<span class="t-accent">   \`─────´</span>   Status: ${status}`);
-      },
-      clear() {
-        output.innerHTML = "";
-        const mesh = meshApi();
-        if (mesh) mesh.calm(2800);
-      },
-      sudo() {
-        print(`<span class="t-warn">[sudo] password for naveen:</span> ********`);
-        print(`<span class="t-dim">nice try. privilege already assumed in research mode.</span>`);
-      },
-      exit() {
-        print(`logout`);
-        print(`<span class="t-dim">connection closed — refreshing session...</span>`);
-      },
-    };
-
-    banner();
-
-    const history = [];
-    let histIdx = -1;
-
-    input.addEventListener("keydown", async (e) => {
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        if (!history.length) return;
-        histIdx = Math.max(0, histIdx < 0 ? history.length - 1 : histIdx - 1);
-        input.value = history[histIdx];
-        return;
-      }
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        if (histIdx < 0) return;
-        histIdx++;
-        if (histIdx >= history.length) {
-          histIdx = -1;
-          input.value = "";
-        } else input.value = history[histIdx];
-        return;
-      }
-      if (e.key !== "Enter") return;
-
-      const raw = input.value.trim();
-      print(
-        `<span class="term-echo"><span class="ps1-user">naveen</span>@lab:~$ ${escapeHtml(raw)}</span>`
-      );
-      input.value = "";
-      histIdx = -1;
-      if (!raw) return;
-      history.push(raw);
-
-      const [cmd, ...args] = raw.split(/\s+/);
-      const key = cmd.toLowerCase();
-      const fn = commands[key];
-      if (fn) {
-        await fn(args);
-      } else {
-        print(`<span class="t-err">command not found:</span> ${escapeHtml(cmd)}`);
-        print(`<span class="t-dim">type help for the command list</span>`);
-      }
-    });
-
-    body.addEventListener("click", () => input.focus());
   }
 
   function escapeHtml(s) {
@@ -836,22 +616,9 @@
     });
   }
 
-  /* ── init ────────────────────────────────────────────── */
-  /* Atmosphere + cyber mesh: assets/js/site.js (global) */
-  document.addEventListener("DOMContentLoaded", async () => {
-    const year = $("#year");
-    if (year) year.textContent = String(new Date().getFullYear());
-
-    tickClock();
-    tickUptime();
-    setInterval(tickClock, 1000);
-    setInterval(tickUptime, 1000);
-
+  document.addEventListener("DOMContentLoaded", () => {
     wireCveRefresh();
-    const cveReady = initCveFeed();
-
+    initCveFeed();
     typeRoles();
-    initTerminal();
-    await cveReady;
   });
 })();

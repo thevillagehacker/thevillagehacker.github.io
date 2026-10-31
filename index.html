@@ -24,22 +24,15 @@
     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
-    <meta name="theme-color" content="#0a090b">
+    <meta name="theme-color" content="#ffffff">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
 <body class="landing-page">
-
-    <!-- Subtle scanline / grid atmosphere + cyber neural mesh -->
-    <div class="landing-atmosphere" aria-hidden="true">
-        <div class="landing-grid"></div>
-        <div class="landing-scanline"></div>
-        <canvas id="cyber-mesh" class="cyber-mesh"></canvas>
-    </div>
 
     <!-- NAVIGATION -->
     <nav class="top-nav landing-nav">
@@ -51,7 +44,6 @@
             <div class="nav-right">
                 <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
                 <a href="/blog.html" class="nav-link">Blog</a>
-                <a href="/projects.html" class="nav-link">Projects</a>
                 <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
             </div>
         </div>
@@ -59,7 +51,7 @@
 
     <div class="container landing-container">
 
-        <!-- HERO: identity + terminal -->
+        <!-- HERO -->
         <section class="landing-hero">
             <div class="landing-identity">
                 <div class="session-badge">
@@ -89,27 +81,6 @@
                     <span class="htag">Offensive Security</span>
                     <span class="htag">Consultancy</span>
                 </div>
-            </div>
-
-            <!-- Interactive terminal -->
-            <div class="term-window" id="term-window">
-                <div class="term-chrome">
-                    <div class="term-dots" aria-hidden="true">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <div class="term-title">naveen@lab — zsh — 80×24</div>
-                    <div class="term-actions" aria-hidden="true">●</div>
-                </div>
-                <div class="term-body" id="term-body" tabindex="0" role="log" aria-label="Interactive terminal">
-                    <div id="term-output" class="term-output"></div>
-                    <div class="term-input-line">
-                        <span class="term-ps1"><span class="ps1-user">naveen</span><span class="ps1-at">@</span><span class="ps1-host">lab</span>:<span class="ps1-path">~</span>$</span>
-                        <input id="term-input" class="term-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command" placeholder="type help">
-                    </div>
-                </div>
-                <div class="term-hint">try: <code>help</code> · <code>recon</code> · <code>breach</code> · <code>clear</code> · click a mesh node</div>
             </div>
         </section>
 
@@ -163,12 +134,12 @@
                 </article>
 
                 <article class="service-card landing-card">
-                    <div class="service-icon">[03] ./analyst</div>
-                    <div class="service-name">Security Analyst</div>
+                    <div class="service-icon">[03] ./appsec-testing</div>
+                    <div class="service-name">Penetration Testing</div>
                     <div class="service-desc">
-                        Security Analyst at Société Générale — threat analysis, assessments, and posture work.
+                        Penetration testing and secure code review, including SAST, DAST, and software composition analysis.
                     </div>
-                    <div class="card-footer-cmd">org: Societe Generale · active</div>
+                    <div class="card-footer-cmd">scope: pentest · sast · dast · sca</div>
                 </article>
             </div>
         </section>
