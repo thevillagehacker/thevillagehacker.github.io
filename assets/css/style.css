@@ -1693,9 +1693,15 @@ article blockquote{
     border-radius:999px;
 }
 
+.blog-archive .archive-container{
+    max-width:var(--measure);
+    margin-left:auto;
+    margin-right:auto;
+}
+
 .blog-archive .intel-hero{
     display:block;
-    max-width:var(--measure);
+    max-width:none;
     margin-bottom:48px;
 }
 
