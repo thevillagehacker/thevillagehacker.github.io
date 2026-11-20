@@ -217,7 +217,9 @@ article p{
     margin-top:1.25em;
     margin-bottom:1.25em;
     color:var(--text-secondary);
-    text-align:left;
+    text-align:justify;
+    text-align-last:start;
+    hyphens:auto;
 }
 
 article a{
@@ -630,7 +632,6 @@ article{
 }
 
 .landing-identity .hero-bio{
-    max-width: 520px;
     margin-bottom: 18px;
 }
 
@@ -1092,7 +1093,9 @@ html:has(body.blog-archive){
     line-height: 1.7;
     max-width: 100%;
     margin-bottom: 20px;
-    text-align: left;
+    text-align: justify;
+    text-align-last: start;
+    hyphens: auto;
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: normal;
@@ -1484,14 +1487,24 @@ h1, .hero-name, .intel-title{
 }
 
 .landing-identity{
-    max-width:var(--measure);
+    max-width:none;
 }
 
 .hero-bio, .intel-lead, .contact-text, .cve-intro, .service-desc{
     font-size:1rem;
     line-height:1.5;
     font-weight:400;
-    text-align:left;
+}
+
+.service-desc,
+.intel-lead,
+.post-card p,
+article p,
+article li,
+article blockquote{
+    text-align:justify;
+    text-align-last:start;
+    hyphens:auto;
 }
 
 .hero-bio, .intel-lead{
@@ -1500,7 +1513,11 @@ h1, .hero-name, .intel-title{
 }
 
 .landing-identity .hero-bio{
-    max-width:var(--measure);
+    max-width:none;
+    width:100%;
+    text-align:justify;
+    text-align-last:start;
+    hyphens:auto;
 }
 
 .nav-brand{
@@ -1868,6 +1885,9 @@ article ol{
 
 article li{
     margin:0.35em 0;
+    text-align:justify;
+    text-align-last:start;
+    hyphens:auto;
 }
 
 article li p{
@@ -2090,6 +2110,9 @@ article td{
     font-size:0.95rem;
     line-height:1.5;
     margin:0 0 10px;
+    text-align:justify;
+    text-align-last:start;
+    hyphens:auto;
 }
 
 .post-card-kicker{
