@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Free Diamond Memberships: Payment Logic vs Encrypted Add-On APIs — thevillagehacker</title>
+<meta name="description" content="Reversing client-side AES on a hotel booking platform and abusing payment_method / membership flags to activate Diamond benefits without paying — a business-logic chain under crypto friction."/>
+<link rel="canonical" href="https://thevillagehacker.com/posts/hotel-subscription-payment-logic.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="thevillagehacker"/>
+<meta property="og:url" content="https://thevillagehacker.com/posts/hotel-subscription-payment-logic.html"/>
+<meta property="og:title" content="Free Diamond Memberships: Payment Logic vs Encrypted Add-On APIs — thevillagehacker"/>
+<meta property="og:description" content="Reversing client-side AES on a hotel booking platform and abusing payment_method / membership flags to activate Diamond benefits without paying — a business-logic chain under crypto friction."/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<meta property="og:image:width" content="1673"/>
+<meta property="og:image:height" content="940"/>
+<meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Free Diamond Memberships: Payment Logic vs Encrypted Add-On APIs — thevillagehacker"/>
+<meta name="twitter:description" content="Reversing client-side AES on a hotel booking platform and abusing payment_method / membership flags to activate Diamond benefits without paying — a business-logic chain under crypto friction."/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#ffffff"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+
+<body id="top" class="landing-page post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="online"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container archive-container post-container">
+
+<header class="post-header">
+    <a class="post-back" href="/blog.html">Blog</a>
+    <div class="intel-kicker">
+        <span class="pulse-ring"></span>
+        <span>WEB APPLICATION SECURITY</span>
+    </div>
+    <h1>Free Diamond Memberships: Payment Logic vs Encrypted Add-On APIs</h1>
+    <p class="intel-lead post-dek">HOTEL B2B // AES BODY CRYPTO // ADD-ON FLOW</p>
+    <div class="post-meta">
+        <span>Naveen Jagadeesan</span>
+        <time datetime="2023-10-31">2023-10-31</time>
+        <span>Hotel Booking / Subscription Platform</span>
+    </div>
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A B2B hotel reservation platform sold tiered memberships (Silver through Diamond) with booking discounts and loyalty multipliers. API bodies were AES-encrypted in the browser, which slowed casual testing but not analysis. After recovering keys from shared JavaScript, changing the <strong>payment method</strong> and <strong>membership flags</strong> activated Diamond benefits without a completed membership payment.</p>
+<figure class="post-shot">
+    <img alt="A crimson room key beside a blank payment slip" src="/assets/images/blogs/hotel-subscription-payment-logic.jpg">
+</figure>
+<h2 id="why-this-is-more-than-change-price-to-0">Why this is more than “change price to 0”</h2>
+<p>The interesting failure is <strong>workflow desynchronization</strong>:</p>
+<blockquote>
+<p>Payment completion and entitlement activation were not the same server-side transaction.<br>
+The client could still assert membership state inside “encrypted” add-on calls.</p>
+</blockquote>
+<p>Crypto friction made the bug look advanced; the root cause is ordinary business-logic.</p>
+<h2 id="stack-friction">Stack &amp; friction</h2>
+<ul>
+<li>AWS + Cloudflare WAF</li>
+<li>React SPA, REST APIs</li>
+<li>Request/response bodies encrypted (AES-CBC style helpers)</li>
+<li>Shared CDN crypto configuration across properties</li>
+</ul>
+<h2 id="reversing-enough-crypto-to-test-logic">Reversing enough crypto to test logic</h2>
+<p>Bundles exposed domains, keys, IVs, and encrypt/decrypt helpers (same class of issue as other portfolio apps). Payload framing resembled:</p>
+<div class="code-window" data-lang="text"><pre><code class="hljs language-text">Base64Ciphertext + &quot;---&quot; + Base64(IV)
+</code></pre></div>
+<p>With offline decrypt/encrypt, Burp became useful again: read real JSON, mutate, re-seal.</p>
+<h2 id="membership-purchase-flow">Membership purchase flow</h2>
+<p>High-level:</p>
+<ol>
+<li>User selects Diamond (or similar) during booking.</li>
+<li>Client calls membership add API with encrypted body.</li>
+<li>Client calls purchase/add-on API with payment metadata.</li>
+<li>Backend should: charge → verify → activate entitlements.</li>
+</ol>
+<p>Observed sensitive fields after decrypt (simplified):</p>
+<div class="code-window" data-lang="json"><pre><code class="hljs language-json">{
+  &quot;user_club_membership_id&quot;: 123456,
+  &quot;diamond_club&quot;: true,
+  &quot;payment_method&quot;: 26
+}
+</code></pre></div>
+<h2 id="exploit-theory">Exploit theory</h2>
+<p>Probe enums around <code>payment_method</code> while keeping entitlement flags true:</p>
+<ul>
+<li>Does the server re-price based on method?</li>
+<li>Does method <code>21</code> vs <code>26</code> skip a surcharge path?</li>
+<li>Is <code>diamond_club: true</code> honored even when payment authorization is absent?</li>
+</ul>
+<h3 id="result">Result</h3>
+<p>Changing <code>payment_method</code> from the premium path value to an alternate internal code removed the additional membership charge while membership activation parameters remained present. Backend still applied:</p>
+<ul>
+<li>Diamond membership active</li>
+<li>~12% booking discount behavior</li>
+<li>Enhanced loyalty multipliers</li>
+</ul>
+<p><strong>Payment was not a hard prerequisite for entitlement.</strong></p>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>Free premium subscriptions</li>
+<li>Unauthorized booking discounts</li>
+<li>Loyalty economy abuse</li>
+<li>Direct revenue loss at scale if automated</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>Entitlement flags accepted from client-influenced payloads</li>
+<li>Payment verification not bound to membership activation (missing transactional integrity)</li>
+<li>Client-side cryptography used as a control boundary</li>
+<li>Insufficient server-side state machine for add-on purchases</li>
+</ul>
+<h2 id="fixes">Fixes</h2>
+<ol>
+<li>Server-side state machine: <code>PAYMENT_CAPTURED → ENTITLEMENT_GRANT</code> only.</li>
+<li>Ignore client <code>diamond_club</code> assertions; derive tier from paid invoices.</li>
+<li>Idempotent server records linking <code>payment_intent</code> ↔ <code>membership_id</code>.</li>
+<li>Remove long-term symmetric keys from clients (see crypto writeup).</li>
+<li>Monitor activations without matching settlement events.</li>
+</ol>
+<h2 id="takeaway">Takeaway</h2>
+<p>Encrypting a broken workflow yields an encrypted broken workflow. Once you can read the JSON, test <strong>whether money movement and privilege grants are inseparable</strong> — that is where the real bugs hide.</p>
+
+
+</article>
+
+<a class="back-to-top" href="#top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back to top</span>
+</a>
+
+<footer class="landing-footer archive-footer">
+    <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+    <span class="footer-right"><a href="/blog.html">All posts</a></span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="/assets/js/codehl.js"></script>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

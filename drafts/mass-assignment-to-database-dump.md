@@ -14,7 +14,9 @@ target: Node.js API // Profile Update // MySQL
 
 ## Summary
 
-A “simple” authenticated profile update endpoint became a **database dump** path. The interesting part is not mass assignment alone — it is how **unsafe object binding + loose type handling + SQL string assembly + verbose errors** composed into a reliable extraction channel.
+A “simple” authenticated profile update endpoint became a **database dump** path. The interesting part is not mass assignment alone. **Unsafe object binding, loose type handling, SQL string assembly, and verbose errors** composed into a reliable extraction channel.
+
+![A fan of blank index cards sliding into an open card drawer](/assets/images/blogs/mass-assignment-to-database-dump.jpg)
 
 ## Theory that guided testing
 

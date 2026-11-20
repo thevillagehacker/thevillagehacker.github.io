@@ -1,185 +1,130 @@
 ---
-title: "Ni8mare: Unauthenticated RCE in n8n via Parser Confusion"
-description: "Technical breakdown of CVE-2026-21858 — content-type confusion to arbitrary file read, session forgery, workflow injection, and unauthenticated remote code execution in n8n."
-banner: CONTENT-TYPE CONFUSION // FILE READ // WORKFLOW RCE
+title: "Ni8mare: Unauthenticated File Read in n8n Form Workflows"
+description: "Breakdown of CVE-2026-21858. A content-type mix-up in n8n form workflows lets an unauthenticated caller choose which file the server reads. Fixed in 1.121.0."
+banner: CVE-2026-21858 // CONTENT-TYPE CONFUSION // FORM WORKFLOWS
 tag: CVE-2026-21858
-subtitle: n8n // PARSER TRUST // EXECUTION SINKS
+subtitle: n8n 1.65.0–1.120.x // FORM WEBHOOK // FILE READ
 platform: n8n Workflow Automation
 researcher: Naveen Jagadeesan
 published: 2026-04-17
 slug: ni8mare-n8n-unauth-rce
 severity: critical
-target: n8n // Webhooks // Workflow Engine
+target: n8n // Form Workflows // File Read
 ---
 
 ## Why this finding matters
 
-This is not a “single bad `exec()`” bug report. **Ni8mare (CVE-2026-21858)** is a **compound trust-boundary failure**: parser ambiguity becomes file read, file read becomes identity, identity becomes workflow authorship, and workflow authorship becomes OS command execution.
+**Ni8mare (CVE-2026-21858)** is a content-type confusion bug in n8n, disclosed by Dor Attias at Cyera on 7 January 2026. It is not a generic path traversal in multipart filenames. On instances from **1.65.0 up to, but not including, 1.121.0**, a form-based workflow that handles uploads can be talked into reading a file the caller names. NVD scores the issue critical. The fix is **1.121.0**.
 
-Automation platforms are attractive targets because they sit between the internet and internal systems — and they often treat “workflow definitions” as data while executing them as code.
+This note is a breakdown of the public advisory. I did not discover the bug.
 
-## Working theory (how I framed the hunt)
+Automation hosts are attractive because they sit between the internet and internal systems, and they often store the credentials those workflows use. A file read on that host is already a serious bug. What an attacker can do after the read depends on what the file contains and which execution features that instance has turned on.
 
-When reviewing workflow engines, I start from a simple model:
+![A plain envelope set into the parcel slot of a mail sorter](/assets/images/blogs/ni8mare-n8n-unauth-rce.jpg)
 
-1. **What can an unauthenticated caller touch?** (webhooks, form triggers, public APIs)
-2. **What does the parser believe about the body?** (JSON vs multipart vs raw)
-3. **Where does that belief become a filesystem or code path?**
-4. **What secrets or session material are on disk?**
-5. **Which sinks turn “admin capability” into process execution?**
+## Working theory
 
-The theory for n8n was: *if webhook parsing is content-type flexible, a mismatch between declared type and actual structure can smuggle path-like fields into code paths that assume trusted multipart handling — and automation nodes already know how to run commands.*
+When a workflow engine exposes a public form, four questions matter:
 
-That theory maps cleanly onto a multi-stage chain rather than a one-shot payload.
+1. What can an unauthenticated caller reach? Form webhooks are meant to be public.
+2. Which parser runs? n8n uses a file-upload parser for `multipart/form-data` and an ordinary body parser for JSON.
+3. Does the file-handling code check that the upload parser actually ran?
+4. Which path does it then open?
 
-## Root cause shape
+The theory that matches the advisory: if a form node copies `body.files[].filepath` without confirming the request was multipart, a JSON body can supply that object. The upload parser normally fills `filepath` with a random temporary path. The JSON parser will accept whatever path the caller puts there.
 
-The issue is best understood as stacked failures:
+That is a precondition bug. It needs a **form workflow that processes a file field**. A stock n8n with no such workflow is not automatically exposed.
 
-| Stage | Failure | Result |
-|------|---------|--------|
-| 1 | Content-Type / parser confusion | Unauthenticated request accepted into unexpected handler path |
-| 2 | Unsafe path / body handling | Arbitrary file read |
-| 3 | Secrets on disk / weak session material | Credential or signing secret recovery |
-| 4 | Session forgery | Authenticated / privileged context |
-| 5 | Workflow write + execute | Code path to `executeCommand`-class sinks |
-| 6 | Unsandboxed OS execution | Full RCE |
+## What actually goes wrong
 
-## Stage analysis
+| Stage | What fails | Result |
+|------|------------|--------|
+| 1 | Form webhook is public by design | Unauthenticated request reaches the node |
+| 2 | File helper trusts `body.files` for any content type | Caller picks the path |
+| 3 | `multipart/form-data` is not required | JSON body is parsed as normal JSON |
+| 4 | `filepath` is opened on the server | Arbitrary file read |
 
-### 1) Unauthenticated entry via webhooks
+The patched check is the one the public fix describes: reject the request unless the content type is `multipart/form-data`, and keep using the upload parser's temporary paths.
 
-Public webhook endpoints are intentionally internet-facing. That is correct product design — but it means **every parser assumption on that path is a security boundary**.
+### The request shape
 
-### 2) Content-Type confusion → file access
-
-When request parsing branches on `Content-Type` without hard enforcement, an attacker can present a body that one subsystem treats as multipart/file metadata while another treats it as structured fields.
+A real upload is `multipart/form-data`. The vulnerable case is the other content type. The field names below match the shape described in public writeups of the form node (`files`, then the field, then `filepath`). Hosts and workflow ids vary.
 
 ```http
-POST /webhook/test HTTP/1.1
-Host: n8n.target.local
-Content-Type: multipart/form-data; boundary=----XYZ
-
-------XYZ
-Content-Disposition: form-data; name="file"; filename="../../../../etc/passwd"
-Content-Type: text/plain
-
-x
-------XYZ--
-```
-
-The exact field names vary by version and node configuration, but the **class** of bug is consistent: *user-influenced paths crossing from “upload metadata” into “read this path”.*
-
-### 3) File read → identity material
-
-Once arbitrary read exists, the search prioritizes:
-
-- configuration / env material
-- database files containing user records
-- session signing secrets
-- encryption keys used for cookies or JWTs
-
-A file-read primitive against an automation host is rarely “just LFI.” It is usually **pre-auth for the next stage**.
-
-### 4) Session forgery
-
-If a signing secret or session blob is recoverable:
-
-```javascript
-// conceptual — forge a privileged session after secret recovery
-const session = sign({ role: "admin" }, SECRET);
-```
-
-Parser confusion + file read becomes **authentication bypass**.
-
-### 5) Workflow injection as code execution
-
-n8n workflows are executable graphs. After privileged access, creating or editing a workflow that includes an execution node is effectively writing shell.
-
-```json
-{
-  "nodes": [
-    {
-      "type": "executeCommand",
-      "parameters": {
-        "command": "id && uname -a"
-      }
-    }
-  ]
-}
-```
-
-### 6) Trigger → RCE
-
-```http
-POST /workflow/run HTTP/1.1
-Host: n8n.target.local
-Cookie: session=<forged>
+POST /form/<form-id> HTTP/1.1
+Host: n8n.example
 Content-Type: application/json
 
-{"workflowId":"<injected>"}
+{
+  "files": {
+    "field-0": {
+      "filepath": "/etc/passwd",
+      "originalFilename": "note.txt",
+      "mimeType": "text/plain"
+    }
+  }
+}
 ```
 
-At this point the platform’s intended automation features become the exploit payload delivery system.
+A filename such as `../../../../etc/passwd` inside a genuine multipart upload is the wrong mental model. The multipart parser does not trust that name as the path it opens. The JSON body does, because it never went through that parser.
 
-## End-to-end chain
+## What the read is worth
+
+Once the node will open an attacker-chosen path, the useful files on an n8n host are the ones that hold configuration, the database, and whatever the instance uses to sign sessions. A read of those files can expose credentials stored for workflows. That is the impact the advisory warns about: sensitive data on the server, and further compromise that depends on the deployment and on the workflows people have built.
+
+Code execution is not automatic.
+
+- The Execute Command node is off unless the instance sets the option that allows it.
+- A separate bug, **CVE-2025-68613**, later showed expression injection into n8n's sandbox. That is a different issue, fixed in the 1.120.4 / 1.121.0 line. It is not the content-type bug.
+
+Treat "file read" and "shell" as two steps. The first is CVE-2026-21858. The second needs something else: a recovered secret plus an enabled execution feature, or a different vulnerability.
+
+## Chain, stated carefully
 
 ```text
-[unauth webhook]
-      │
-      ▼
-[content-type / parser confusion]
-      │
-      ▼
-[arbitrary file read]
-      │
-      ▼
-[secret / session material]
-      │
-      ▼
-[session forgery / auth bypass]
-      │
-      ▼
-[workflow create/modify]
-      │
-      ▼
-[executeCommand sink]
-      │
-      ▼
-[remote code execution]
+public form workflow that handles a file
+        |
+        v
+JSON body instead of multipart/form-data
+        |
+        v
+node reads body.files[].filepath
+        |
+        v
+file on the n8n host
+        |
+        v
+impact follows whatever that file contains
 ```
 
-## Why chains like this keep appearing
+## Why this class keeps showing up
 
-Three recurring product decisions amplify impact:
+Three product choices make parser bugs expensive on automation platforms:
 
-1. **Public triggers with rich parsers** — multipart, binary, JSON, form-urlencoded all on one path.
-2. **Secrets local to the process host** — readable by the same UID that runs workflows.
-3. **Powerful nodes without sandbox defaults** — `executeCommand`, code nodes, shell nodes.
+1. Public triggers accept several body types on one route.
+2. Secrets for those workflows live on the same host, readable by the same user.
+3. Powerful nodes exist. Whether they run is a configuration question, not a reason to ignore the read.
 
-Individually each may look “by design.” Together they form an RCE conveyor belt.
+Each choice can look reasonable alone. Together, a parser mistake becomes access to the credentials the product is holding for its users.
 
-## Remediation (defender-oriented)
+## Remediation
 
-- **Strict Content-Type allowlists** per route; reject mismatches early.
-- **Path canonicalization + root jail** for any file operation; never trust filename metadata.
-- **No high-value secrets world-readable** to the runtime user; prefer OS secret stores / sealed config.
-- **Disable or heavily gate OS execution nodes** on internet-facing instances.
-- **Server-side authorization on workflow mutate/run**, independent of UI role flags.
-- **Sandbox workflow execution** (containers, seccomp, non-root, network egress controls).
+- Upgrade to **n8n 1.121.0** or later. That release rejects this content-type confusion.
+- On instances you cannot upgrade the same day, take public form workflows offline, or restrict who can reach them.
+- Rotate credentials and API keys stored in workflows if a vulnerable form was exposed.
+- Keep command and code nodes off on internet-facing instances unless you have a reason to run them.
+- Read [GHSA-v4pr-fm98-w9pg](https://github.com/n8n-io/n8n/security/advisories/GHSA-v4pr-fm98-w9pg) and the [Cyera writeup](https://www.cyera.com/research-labs/ni8mare-unauthenticated-remote-code-execution-in-n8n-cve-2026-21858) for the vendor's version range and credit.
 
-Conceptual guard:
+The guard the fix adds is small. The file helper has to know which parser ran:
 
 ```javascript
-if (!req.is("multipart/form-data")) {
-  throw new Error("invalid content-type");
+if (req.contentType !== "multipart/form-data") {
+  throw new Error("Expected multipart/form-data");
 }
-if (!isSafePath(userPath, ALLOWED_ROOT)) {
-  throw new Error("invalid path");
-}
-// never: exec(userInput)
 ```
+
+A matching allowlist on the directory, after the content-type check, is the second half. The temporary path from the upload parser should be the only path that helper opens.
 
 ## Takeaway
 
-CVE-2026-21858 is a lesson in **trust propagation**: the dangerous part is not only the final `exec`, but every hop that turns untrusted bytes into trusted capability. When hunting automation platforms, map *parser → secret → privilege → sink* before you write the first PoC line.
+CVE-2026-21858 is a lesson in which parser you trusted. The dangerous assumption was that `body.files` only exists after the upload parser has filled it. When a public form will open `filepath` for a JSON body, the rest of the compromise is about what is on disk, not about a clever filename.

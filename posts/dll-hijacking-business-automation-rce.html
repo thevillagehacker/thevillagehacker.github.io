@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>DLL Search-Order Hijacking to RCE on a Business Automation Client — thevillagehacker</title>
+<meta name="description" content="Process Monitor-driven DLL search-order hijacking against a Windows business automation client. A missing module load in a writable path became code execution on startup."/>
+<link rel="canonical" href="https://thevillagehacker.com/posts/dll-hijacking-business-automation-rce.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="thevillagehacker"/>
+<meta property="og:url" content="https://thevillagehacker.com/posts/dll-hijacking-business-automation-rce.html"/>
+<meta property="og:title" content="DLL Search-Order Hijacking to RCE on a Business Automation Client — thevillagehacker"/>
+<meta property="og:description" content="Process Monitor-driven DLL search-order hijacking against a Windows business automation client. A missing module load in a writable path became code execution on startup."/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<meta property="og:image:width" content="1673"/>
+<meta property="og:image:height" content="940"/>
+<meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="DLL Search-Order Hijacking to RCE on a Business Automation Client — thevillagehacker"/>
+<meta name="twitter:description" content="Process Monitor-driven DLL search-order hijacking against a Windows business automation client. A missing module load in a writable path became code execution on startup."/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#ffffff"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+
+<body id="top" class="landing-page post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="online"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container archive-container post-container">
+
+<header class="post-header">
+    <a class="post-back" href="/blog.html">Blog</a>
+    <div class="intel-kicker">
+        <span class="pulse-ring"></span>
+        <span>WINDOWS APPLICATION SECURITY</span>
+    </div>
+    <h1>DLL Search-Order Hijacking to RCE on a Business Automation Client</h1>
+    <p class="intel-lead post-dek">PROC MON // SEARCH ORDER // CODE EXECUTION</p>
+    <div class="post-meta">
+        <span>Naveen Jagadeesan</span>
+        <time datetime="2022-12-15">2022-12-15</time>
+        <span>Windows Desktop Application</span>
+    </div>
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A Windows business-automation desktop client loaded libraries using <strong>relative search order</strong> without integrity checks. Planting a DLL in a preferred search location ran code when the application started. The first proof was a benign Calculator payload. The same load then accepted a remote-access payload.</p>
+<figure class="post-shot">
+    <img alt="A row of pale folders with one crimson folder set in the line" src="/assets/images/blogs/dll-hijacking-business-automation-rce.jpg">
+</figure>
+<h2 id="theory-why-desktop-clients-still-pay">Theory: why desktop clients still pay</h2>
+<p>Web apps get most of the attention in bug bounty programs. Desktop line-of-business tools often ship with:</p>
+<ul>
+<li>auto-updaters and helper EXEs</li>
+<li>plugins loaded by name only</li>
+<li>installers that leave <strong>writable application directories</strong></li>
+<li>no code-signing enforcement on dependent DLLs</li>
+</ul>
+<p>The working theory:</p>
+<blockquote>
+<p>If Procmon shows <code>NAME NOT FOUND</code> for a DLL in a directory the user (or a low-priv process) can write, you likely have a loader bug — not a malware technique demo.</p>
+</blockquote>
+<h2 id="dll-search-order-primer-attacker-view">DLL search-order primer (attacker view)</h2>
+<p>When an application calls <code>LoadLibrary("foo.dll")</code> without a full path, Windows walks a search order. Exact order depends on SafeDllSearchMode and API variants, but the practical attacker preference is:</p>
+<ol>
+<li><strong>Application directory</strong> (often writable on poorly packaged enterprise tools)</li>
+<li>Other early entries before system directories</li>
+</ol>
+<p>If the real dependency lives later in the order — or is optional and missing — a planted <code>foo.dll</code> wins.</p>
+<h2 id="enumeration-methodology">Enumeration methodology</h2>
+<h3 id="1-baseline-with-process-monitor">1) Baseline with Process Monitor</h3>
+<p>Filter on the target PID/process name:</p>
+<ul>
+<li>Operation: <code>CreateFile</code> / <code>Load Image</code></li>
+<li>Result: <code>NAME NOT FOUND</code> for <code>*.dll</code></li>
+<li>Path under the application install or working directory</li>
+</ul>
+<h3 id="2-rank-candidates">2) Rank candidates</h3>
+<p>Prefer DLLs that:</p>
+<ul>
+<li>are probed at every launch</li>
+<li>are not immediately followed by a successful load of the same name elsewhere (or are delay-loaded)</li>
+<li>sit in a writable directory for the attack scenario (local priv-esc vs planted via shared folder / supply-chain adjacent write)</li>
+</ul>
+<h2 id="exploitation-path">Exploitation path</h2>
+<h3 id="proof-payload">Proof payload</h3>
+<p>Generate a DLL that executes a non-destructive proof (e.g., launch Calculator) to confirm:</p>
+<ol>
+<li>load order preference</li>
+<li>no signature gate</li>
+<li>stability (app doesn’t crash before your DllMain runs)</li>
+</ol>
+<h3 id="plant">Plant</h3>
+<p>Copy the payload to the winning path identified in Procmon, matching the expected filename.</p>
+<h3 id="validate">Validate</h3>
+<p>On next start:</p>
+<ul>
+<li>Procmon shows successful load of the planted module</li>
+<li>Proof process executes</li>
+</ul>
+<h3 id="escalate">Escalate</h3>
+<p>The same load accepted a second payload that opened a session. Without a signature check, the loader treats the planted file as a dependency.</p>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>Code execution as the user who launches the client</li>
+<li>Persistence if the client is a login item or always-on tray app</li>
+<li>Credential and session exposure for whatever the automation tool can reach</li>
+<li>Potential pivot into internal automation backends the client speaks to</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>Relative DLL loads without absolute paths</li>
+<li>Missing code integrity / catalog signing checks</li>
+<li>Writable install directories for standard users (or weak ACLs)</li>
+<li>No Safe DLL search hardening / delay-load vigilance</li>
+</ul>
+<h2 id="mitigations-vendor">Mitigations (vendor)</h2>
+<ul>
+<li>Load dependencies by <strong>full path</strong></li>
+<li>Enable and correctly use <strong>SafeDllSearchMode</strong> behaviors; prefer <code>LOAD_LIBRARY_SEARCH_*</code> flags</li>
+<li>Require <strong>Authenticode</strong> for plugins and delay-loaded modules</li>
+<li>Install under properly ACL’d Program Files locations</li>
+<li>Consider mitigations like Windows Defender Application Control for enterprise deployments</li>
+</ul>
+<h2 id="takeaway">Takeaway</h2>
+<p>DLL hijacking is “old,” but it remains high-signal against niche enterprise clients. The research skill is not generating the payload — it is <strong>seeing the missing load as a vulnerability class</strong> and proving impact with a clean chain from Procmon to shell.</p>
+
+
+</article>
+
+<a class="back-to-top" href="#top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back to top</span>
+</a>
+
+<footer class="landing-footer archive-footer">
+    <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+    <span class="footer-right"><a href="/blog.html">All posts</a></span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="/assets/js/codehl.js"></script>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

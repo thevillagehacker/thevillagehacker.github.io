@@ -1,9 +1,9 @@
 ---
 title: "DLL Search-Order Hijacking to RCE on a Business Automation Client"
-description: "Process Monitor-driven DLL hijacking against a Windows business automation product — from missing module loads to Calculator proof and Meterpreter, with the theory behind prioritizing desktop clients."
+description: "Process Monitor-driven DLL search-order hijacking against a Windows business automation client. A missing module load in a writable path became code execution on startup."
 banner: DLL HIJACKING // SEARCH ORDER // WINDOWS RCE
 tag: WINDOWS APPLICATION SECURITY
-subtitle: PROC MON // PAYLOAD DLL // METERPRETER
+subtitle: PROC MON // SEARCH ORDER // CODE EXECUTION
 platform: Windows Desktop Application
 researcher: Naveen Jagadeesan
 published: 2022-12-15
@@ -14,7 +14,9 @@ target: Windows Desktop // Business Automation Client
 
 ## Summary
 
-A Windows business-automation desktop client loaded libraries using **relative search order** without integrity checks. Planting a malicious DLL in a preferred search location yielded code execution on application start — first proven with a benign Calculator payload, then escalated to a Meterpreter session.
+A Windows business-automation desktop client loaded libraries using **relative search order** without integrity checks. Planting a DLL in a preferred search location ran code when the application started. The first proof was a benign Calculator payload. The same load then accepted a remote-access payload.
+
+![A row of pale folders with one crimson folder set in the line](/assets/images/blogs/dll-hijacking-business-automation-rce.jpg)
 
 ## Theory: why desktop clients still pay
 
@@ -79,11 +81,11 @@ On next start:
 
 ### Escalate
 
-Swap the proof DLL for a reverse-shell / Meterpreter-class payload. Without DLL signing checks or Safe loading policies, the loader treats malware as a dependency.
+The same load accepted a second payload that opened a session. Without a signature check, the loader treats the planted file as a dependency.
 
 ## Impact
 
-- Remote/local code execution in the context of the user running the client
+- Code execution as the user who launches the client
 - Persistence if the client is a login item or always-on tray app
 - Credential and session exposure for whatever the automation tool can reach
 - Potential pivot into internal automation backends the client speaks to

@@ -14,7 +14,9 @@ target: MNC CMS // Cognito // Content Publishing
 
 ## Summary
 
-A corporate CMS authenticated users via **AWS Cognito JWTs** but enforced **editor/publisher** capabilities using a client-controlled `localStorage.user_role` value. With any valid low-privilege session, setting `publisher` in localStorage unlocked content approval and production publishing workflows. A hidden/legacy registration path made obtaining that first valid JWT easier than intended.
+A corporate CMS authenticated users via **AWS Cognito JWTs** but enforced **editor/publisher** capabilities using a client-controlled `localStorage.user_role` value. With any valid low-privilege session, setting `publisher` in localStorage unlocked content approval and production publishing workflows. A hidden or legacy registration path made obtaining that first valid JWT easier than intended.
+
+![A sealed metal badge beside a paper badge with a blank stripe](/assets/images/blogs/cms-cognito-localstorage-authz.jpg)
 
 ## Theory
 

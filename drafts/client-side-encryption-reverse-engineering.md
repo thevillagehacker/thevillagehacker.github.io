@@ -14,7 +14,9 @@ target: Multi-App CDN // Encrypted REST // reCAPTCHA
 
 ## Summary
 
-A multi-app product family encrypted all REST bodies client-side with **AES-CBC**, advertising the design as a security control. Secrets lived in **shared CDN JavaScript** with a **static IV**. Once reversed, the “encrypted API” became a normal JSON API — and weak CAPTCHA token issuance enabled automated registration abuse.
+A multi-app product family encrypted all REST bodies client-side with **AES-CBC**, advertising the design as a security control. Secrets lived in **shared CDN JavaScript** with a **static IV**. Once reversed, the “encrypted API” became a normal JSON API, and weak CAPTCHA token handling allowed scripted registration.
+
+![An open glass padlock and its key on a folded letter](/assets/images/blogs/client-side-encryption-reverse-engineering.jpg)
 
 ## Theory
 

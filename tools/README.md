@@ -2,7 +2,7 @@
 
 ## `md_to_post.py` — Markdown → publish-ready HTML + blog card
 
-Convert research writeups from Markdown + YAML front matter into full HTML posts that match the live site chrome (black + red cyber theme, nav, terminal code windows, cyber mesh, HTTP highlighting). **By default the converter also inserts/updates a hyperlink card on `blog.html`.**
+Convert research writeups from Markdown + YAML front matter into full HTML posts that match the live site (Poppins, light/dark theme, nav, labeled code windows). **By default the converter also inserts or updates a card on `blog.html`.**
 
 | Without a converter | With `md_to_post.py` |
 |---------------------|----------------------|
@@ -129,19 +129,14 @@ python -m http.server 8080
 | `--dry-run` | Shows the card / action without writing |
 | `--no-blog` | Leaves `blog.html` alone |
 
-Each **case-file tile** on `blog.html` includes:
+Each card on `blog.html` includes:
 
 | Tile field | Front matter source |
 |------------|---------------------|
-| CASE-00N | auto `data-id` |
-| Year badge | `published` year |
-| Classification | `tag` |
+| Date | `published` |
+| Severity | `severity` |
 | Title | `title` |
 | Blurb | `description` (truncated) |
-| Target line | `target` |
-| Platform chip | `platform` |
-| Date chip | `published` |
-| Severity badge | `severity` |
 | Hyperlink | `/posts/<slug>.html` |
 
 The card is a full clickable tile — not just a bare link.
@@ -170,16 +165,11 @@ python tools/md_to_post.py drafts/my-writeup.md --blog-snippet --no-blog
 
 ### What generated posts include
 
-- Inter + JetBrains Mono
-- Favicon + `theme-color` (`#0a090b`)
-- Black + red cyber critical CSS fallback
-- `/assets/css/style.css` — post typography, **terminal-style code windows**
-- highlight.js + red-cyber token overrides
-- `has-site-fx post-page` body classes
-- `/assets/js/site.js` — **cyber neural mesh**, nav clock, **HTTP request/response highlighter**
-- Shared top-nav (Home · Blog · Writeups)
-- Advisory banner, meta header, footer
-- Matching `research-item` hyperlink on `blog.html` (unless `--no-blog`)
+- Poppins + JetBrains Mono, same nav as `blog.html`
+- `/assets/css/style.css` — post typography and labeled code windows
+- highlight.js for fenced code
+- `landing-page post-page` body classes, theme toggle from `site.js`
+- A card on `blog.html`, newest date first (unless `--no-blog`)
 
 ---
 

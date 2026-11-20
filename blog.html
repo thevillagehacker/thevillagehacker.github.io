@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Blog — thevillagehacker</title>
-    <meta name="description" content="Nothing interesting to post yet.">
+    <meta name="description" content="Vulnerability research notes and tooling writeups.">
 
     <link rel="canonical" href="https://thevillagehacker.com/blog.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="thevillagehacker">
     <meta property="og:url" content="https://thevillagehacker.com/blog.html">
     <meta property="og:title" content="Blog — thevillagehacker">
-    <meta property="og:description" content="Nothing interesting to post yet.">
+    <meta property="og:description" content="Vulnerability research notes and tooling writeups.">
     <meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png">
     <meta property="og:image:width" content="1673">
     <meta property="og:image:height" content="940">
     <meta property="og:image:alt" content="thevillagehacker — Security Researcher">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Blog — thevillagehacker">
-    <meta name="twitter:description" content="Nothing interesting to post yet.">
+    <meta name="twitter:description" content="Vulnerability research notes and tooling writeups.">
     <meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png">
 
     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
@@ -42,8 +42,8 @@
             </a>
             <div class="nav-right">
                 <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
-                <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
                 <a href="/" class="nav-link">Home</a>
+                <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
                 <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
             </div>
         </div>
@@ -56,13 +56,108 @@
                     <span class="pulse-ring"></span>
                     <span>BLOG</span>
                 </div>
-                <h1 class="intel-title">Nothing interesting to post yet.</h1>
+                <h1 class="intel-title">Research notes</h1>
                 <p class="intel-lead">
-                    Writeups will show up here when there is something worth publishing.
-                    CTF notes stay on the writeups link in the nav.
+                    Vulnerability writeups and notes on tooling.
+                    Targets in the research posts are redacted.
                 </p>
+                <p class="post-count-line" id="post-count">9 posts</p>
             </div>
         </section>
+
+        <div class="post-index" id="post-list">
+            <!-- posts:start -->
+<a class="post-card" href="/posts/ni8mare-n8n-unauth-rce.html" data-published="2026-04-17" data-severity="critical">
+                    <div class="post-card-kicker">
+                        <time datetime="2026-04-17">2026-04-17</time>
+                        <span class="post-card-tag tag-critical">CRITICAL</span>
+                    </div>
+                    <h2>Ni8mare: Unauthenticated File Read in n8n Form Workflows</h2>
+                    <p>Breakdown of CVE-2026-21858. A content-type mix-up in n8n form workflows lets an unauthenticated caller choose which file the server reads. Fixed in 1.121.0.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/os-command-injection-login-rce.html" data-published="2024-12-10" data-severity="critical">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-12-10">2024-12-10</time>
+                        <span class="post-card-tag tag-critical">CRITICAL</span>
+                    </div>
+                    <h2>Unauthenticated OS Command Injection in a Login Pre-Check</h2>
+                    <p>How a Windows-hosted asset management app turned username existence checks into out-of-band command execution and PowerShell reverse shells — with the theory behind testing auth for OS sinks.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/hotel-subscription-payment-logic.html" data-published="2023-10-31" data-severity="high">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-31">2023-10-31</time>
+                        <span class="post-card-tag tag-high">HIGH</span>
+                    </div>
+                    <h2>Free Diamond Memberships: Payment Logic vs Encrypted Add-On APIs</h2>
+                    <p>Reversing client-side AES on a hotel booking platform and abusing payment_method / membership flags to activate Diamond benefits without paying — a business-logic chain under crypto friction.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/mass-assignment-to-database-dump.html" data-published="2023-07-13" data-severity="critical">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-13">2023-07-13</time>
+                        <span class="post-card-tag tag-critical">CRITICAL</span>
+                    </div>
+                    <h2>From Mass Assignment to Database Dump: When Type Confusion Becomes SQLi</h2>
+                    <p>How a profile-update mass-assignment bug, array injection, and verbose MySQL errors chained into error-based SQL injection and full database extraction on a Node/Express app.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/ato-session-storage-authorization.html" data-published="2023-03-30" data-severity="critical">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-03-30">2023-03-30</time>
+                        <span class="post-card-tag tag-critical">CRITICAL</span>
+                    </div>
+                    <h2>Account Takeover via SessionStorage Authorization</h2>
+                    <p>How a financial web app mixed cookie authentication with sessionStorage identity, user enumeration APIs, and OSINT-derived employee emails into full account takeover.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/cms-cognito-localstorage-authz.html" data-published="2023-03-25" data-severity="high">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-03-25">2023-03-25</time>
+                        <span class="post-card-tag tag-high">HIGH</span>
+                    </div>
+                    <h2>CMS Privilege Escalation: Cognito Auth, localStorage Roles</h2>
+                    <p>Breaking a multinational CMS that used AWS Cognito for authentication but trusted a localStorage user_role flag for editor/publisher authorization — plus a hidden signup path.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/client-side-encryption-reverse-engineering.html" data-published="2023-02-15" data-severity="high">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-02-15">2023-02-15</time>
+                        <span class="post-card-tag tag-high">HIGH</span>
+                    </div>
+                    <h2>Reversing Client-Side AES: When ‘Encrypted APIs’ Are Just Obscurity</h2>
+                    <p>How hardcoded AES-CBC keys and IVs in shared CDN JavaScript turned encrypted REST traffic into a fully automatable API surface — including CAPTCHA workflow abuse.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/dll-hijacking-business-automation-rce.html" data-published="2022-12-15" data-severity="high">
+                    <div class="post-card-kicker">
+                        <time datetime="2022-12-15">2022-12-15</time>
+                        <span class="post-card-tag tag-high">HIGH</span>
+                    </div>
+                    <h2>DLL Search-Order Hijacking to RCE on a Business Automation Client</h2>
+                    <p>Process Monitor-driven DLL search-order hijacking against a Windows business automation client. A missing module load in a writable path became code execution on startup.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+
+<a class="post-card" href="/posts/massive-heroku-subdomain-takeover.html" data-published="2021-05-08" data-severity="high">
+                    <div class="post-card-kicker">
+                        <time datetime="2021-05-08">2021-05-08</time>
+                        <span class="post-card-tag tag-high">HIGH</span>
+                    </div>
+                    <h2>Mass Heroku Subdomain Takeover via Dangling DNS</h2>
+                    <p>Large-scale subdomain enumeration uncovered thousands of hostnames and multiple Heroku CNAMEs pointing at unclaimed apps — a systematic dangling DNS takeover case study.</p>
+                    <span class="post-card-more">Read</span>
+                </a>
+            <!-- posts:end -->
+        </div>
 
         <footer class="landing-footer archive-footer">
             <span class="footer-left">© <span id="year"></span> thevillagehacker</span>

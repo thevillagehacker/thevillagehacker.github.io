@@ -14,7 +14,9 @@ target: Asset Management // Login Pre-Check // Windows Host
 
 ## Summary
 
-An asset-management web application exposed an unauthenticated (or pre-auth) username check that concatenated user input into an OS command on a **Windows** host. Responses were nearly binary (`success: true/false`), so confirmation relied on **out-of-band (OOB)** and timing signals. A PowerShell stager completed full RCE under a high-privilege service account.
+An asset-management web application exposed an unauthenticated username check that concatenated user input into an OS command on a **Windows** host. Responses were nearly binary (`success: true/false`), so confirmation relied on **out-of-band** callbacks and timing. A PowerShell stager then produced a shell under a high-privilege service account.
+
+![A reception bell joined by a crimson tube to a machine in the next room](/assets/images/blogs/os-command-injection-login-rce.jpg)
 
 ## Why look for RCE on a login form?
 

@@ -16,6 +16,8 @@ target: Financial SaaS // SessionStorage // User Lookup API
 
 A financial collaboration app authenticated with cookies but **authorized with mutable browser sessionStorage**. Combined with a verbose user-lookup API and OSINT-friendly employee emails, an attacker could mint another user’s client identity object and inherit their invoices, org data, and admin-capable UI workflows.
 
+![Blank identity cards, one card pulled out of a glass sleeve](/assets/images/blogs/ato-session-storage-authorization.jpg)
+
 ## Theory
 
 Modern SPAs often cache a “user profile” object client-side for snappy UX. The dangerous pattern:

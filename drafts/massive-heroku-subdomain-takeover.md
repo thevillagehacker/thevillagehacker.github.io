@@ -14,7 +14,9 @@ target: Corporate DNS // Heroku CNAMEs // Dangling Records
 
 ## Summary
 
-During a broad recon pass, subdomain enumeration produced a very large set of hostnames for the target organization (**on the order of thousands**). Fingerprinting CNAMEs with `dnsx` and takeover scanners (`subzy` and related checks) identified multiple **Heroku dangling DNS** records — DNS still pointed at Heroku hostnames that no longer had an active claimed app. Claiming those endpoints would have enabled content control on trusted corporate subdomains.
+During a broad recon pass, subdomain enumeration produced a very large set of hostnames for the target organization (on the order of thousands). Fingerprinting CNAMEs with `dnsx` and takeover checks (`subzy`, then a manual look) identified multiple **Heroku dangling DNS** records. DNS still pointed at Heroku hostnames that no longer had an active claimed app. Claiming those endpoints would have enabled content control on trusted corporate subdomains.
+
+![An empty shop with a crimson awning and a plain arrow at the dark door](/assets/images/blogs/massive-heroku-subdomain-takeover.jpg)
 
 ## Theory
 

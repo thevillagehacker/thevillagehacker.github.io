@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Ni8mare: Unauthenticated File Read in n8n Form Workflows — thevillagehacker</title>
+<meta name="description" content="Breakdown of CVE-2026-21858. A content-type mix-up in n8n form workflows lets an unauthenticated caller choose which file the server reads. Fixed in 1.121.0."/>
+<link rel="canonical" href="https://thevillagehacker.com/posts/ni8mare-n8n-unauth-rce.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="thevillagehacker"/>
+<meta property="og:url" content="https://thevillagehacker.com/posts/ni8mare-n8n-unauth-rce.html"/>
+<meta property="og:title" content="Ni8mare: Unauthenticated File Read in n8n Form Workflows — thevillagehacker"/>
+<meta property="og:description" content="Breakdown of CVE-2026-21858. A content-type mix-up in n8n form workflows lets an unauthenticated caller choose which file the server reads. Fixed in 1.121.0."/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<meta property="og:image:width" content="1673"/>
+<meta property="og:image:height" content="940"/>
+<meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Ni8mare: Unauthenticated File Read in n8n Form Workflows — thevillagehacker"/>
+<meta name="twitter:description" content="Breakdown of CVE-2026-21858. A content-type mix-up in n8n form workflows lets an unauthenticated caller choose which file the server reads. Fixed in 1.121.0."/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#ffffff"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+
+<body id="top" class="landing-page post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="online"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container archive-container post-container">
+
+<header class="post-header">
+    <a class="post-back" href="/blog.html">Blog</a>
+    <div class="intel-kicker">
+        <span class="pulse-ring"></span>
+        <span>CVE-2026-21858</span>
+    </div>
+    <h1>Ni8mare: Unauthenticated File Read in n8n Form Workflows</h1>
+    <p class="intel-lead post-dek">n8n 1.65.0–1.120.x // FORM WEBHOOK // FILE READ</p>
+    <div class="post-meta">
+        <span>Naveen Jagadeesan</span>
+        <time datetime="2026-04-17">2026-04-17</time>
+        <span>n8n Workflow Automation</span>
+    </div>
+</header>
+
+<article>
+
+<h2 id="why-this-finding-matters">Why this finding matters</h2>
+<p><strong>Ni8mare (CVE-2026-21858)</strong> is a content-type confusion bug in n8n, disclosed by Dor Attias at Cyera on 7 January 2026. It is not a generic path traversal in multipart filenames. On instances from <strong>1.65.0 up to, but not including, 1.121.0</strong>, a form-based workflow that handles uploads can be talked into reading a file the caller names. NVD scores the issue critical. The fix is <strong>1.121.0</strong>.</p>
+<p>This note is a breakdown of the public advisory. I did not discover the bug.</p>
+<p>Automation hosts are attractive because they sit between the internet and internal systems, and they often store the credentials those workflows use. A file read on that host is already a serious bug. What an attacker can do after the read depends on what the file contains and which execution features that instance has turned on.</p>
+<figure class="post-shot">
+    <img alt="A plain envelope set into the parcel slot of a mail sorter" src="/assets/images/blogs/ni8mare-n8n-unauth-rce.jpg">
+</figure>
+<h2 id="working-theory">Working theory</h2>
+<p>When a workflow engine exposes a public form, four questions matter:</p>
+<ol>
+<li>What can an unauthenticated caller reach? Form webhooks are meant to be public.</li>
+<li>Which parser runs? n8n uses a file-upload parser for <code>multipart/form-data</code> and an ordinary body parser for JSON.</li>
+<li>Does the file-handling code check that the upload parser actually ran?</li>
+<li>Which path does it then open?</li>
+</ol>
+<p>The theory that matches the advisory: if a form node copies <code>body.files[].filepath</code> without confirming the request was multipart, a JSON body can supply that object. The upload parser normally fills <code>filepath</code> with a random temporary path. The JSON parser will accept whatever path the caller puts there.</p>
+<p>That is a precondition bug. It needs a <strong>form workflow that processes a file field</strong>. A stock n8n with no such workflow is not automatically exposed.</p>
+<h2 id="what-actually-goes-wrong">What actually goes wrong</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>What fails</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Form webhook is public by design</td>
+<td>Unauthenticated request reaches the node</td>
+</tr>
+<tr>
+<td>2</td>
+<td>File helper trusts <code>body.files</code> for any content type</td>
+<td>Caller picks the path</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>multipart/form-data</code> is not required</td>
+<td>JSON body is parsed as normal JSON</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>filepath</code> is opened on the server</td>
+<td>Arbitrary file read</td>
+</tr>
+</tbody>
+</table></div>
+<p>The patched check is the one the public fix describes: reject the request unless the content type is <code>multipart/form-data</code>, and keep using the upload parser&rsquo;s temporary paths.</p>
+<h3 id="the-request-shape">The request shape</h3>
+<p>A real upload is <code>multipart/form-data</code>. The vulnerable case is the other content type. The field names below match the shape described in public writeups of the form node (<code>files</code>, then the field, then <code>filepath</code>). Hosts and workflow ids vary.</p>
+<div class="code-window" data-lang="http"><pre><code class="hljs language-http">POST /form/&lt;form-id&gt; HTTP/1.1
+Host: n8n.example
+Content-Type: application/json
+
+{
+  &quot;files&quot;: {
+    &quot;field-0&quot;: {
+      &quot;filepath&quot;: &quot;/etc/passwd&quot;,
+      &quot;originalFilename&quot;: &quot;note.txt&quot;,
+      &quot;mimeType&quot;: &quot;text/plain&quot;
+    }
+  }
+}
+</code></pre></div>
+<p>A filename such as <code>../../../../etc/passwd</code> inside a genuine multipart upload is the wrong mental model. The multipart parser does not trust that name as the path it opens. The JSON body does, because it never went through that parser.</p>
+<h2 id="what-the-read-is-worth">What the read is worth</h2>
+<p>Once the node will open an attacker-chosen path, the useful files on an n8n host are the ones that hold configuration, the database, and whatever the instance uses to sign sessions. A read of those files can expose credentials stored for workflows. That is the impact the advisory warns about: sensitive data on the server, and further compromise that depends on the deployment and on the workflows people have built.</p>
+<p>Code execution is not automatic.</p>
+<ul>
+<li>The Execute Command node is off unless the instance sets the option that allows it.</li>
+<li>A separate bug, <strong>CVE-2025-68613</strong>, later showed expression injection into n8n&rsquo;s sandbox. That is a different issue, fixed in the 1.120.4 / 1.121.0 line. It is not the content-type bug.</li>
+</ul>
+<p>Treat &ldquo;file read&rdquo; and &ldquo;shell&rdquo; as two steps. The first is CVE-2026-21858. The second needs something else: a recovered secret plus an enabled execution feature, or a different vulnerability.</p>
+<h2 id="chain-stated-carefully">Chain, stated carefully</h2>
+<div class="code-window" data-lang="text"><pre><code class="hljs language-text">public form workflow that handles a file
+        |
+        v
+JSON body instead of multipart/form-data
+        |
+        v
+node reads body.files[].filepath
+        |
+        v
+file on the n8n host
+        |
+        v
+impact follows whatever that file contains
+</code></pre></div>
+<h2 id="why-this-class-keeps-showing-up">Why this class keeps showing up</h2>
+<p>Three product choices make parser bugs expensive on automation platforms:</p>
+<ol>
+<li>Public triggers accept several body types on one route.</li>
+<li>Secrets for those workflows live on the same host, readable by the same user.</li>
+<li>Powerful nodes exist. Whether they run is a configuration question, not a reason to ignore the read.</li>
+</ol>
+<p>Each choice can look reasonable alone. Together, a parser mistake becomes access to the credentials the product is holding for its users.</p>
+<h2 id="remediation">Remediation</h2>
+<ul>
+<li>Upgrade to <strong>n8n 1.121.0</strong> or later. That release rejects this content-type confusion.</li>
+<li>On instances you cannot upgrade the same day, take public form workflows offline, or restrict who can reach them.</li>
+<li>Rotate credentials and API keys stored in workflows if a vulnerable form was exposed.</li>
+<li>Keep command and code nodes off on internet-facing instances unless you have a reason to run them.</li>
+<li>Read <a href="https://github.com/n8n-io/n8n/security/advisories/GHSA-v4pr-fm98-w9pg">GHSA-v4pr-fm98-w9pg</a> and the <a href="https://www.cyera.com/research-labs/ni8mare-unauthenticated-remote-code-execution-in-n8n-cve-2026-21858">Cyera writeup</a> for the vendor&rsquo;s version range and credit.</li>
+</ul>
+<p>The guard the fix adds is small. The file helper has to know which parser ran:</p>
+<div class="code-window" data-lang="javascript"><pre><code class="hljs language-javascript">if (req.contentType !== &quot;multipart/form-data&quot;) {
+  throw new Error(&quot;Expected multipart/form-data&quot;);
+}
+</code></pre></div>
+<p>A matching allowlist on the directory, after the content-type check, is the second half. The temporary path from the upload parser should be the only path that helper opens.</p>
+<h2 id="takeaway">Takeaway</h2>
+<p>CVE-2026-21858 is a lesson in which parser you trusted. The dangerous assumption was that <code>body.files</code> only exists after the upload parser has filled it. When a public form will open <code>filepath</code> for a JSON body, the rest of the compromise is about what is on disk, not about a clever filename.</p>
+
+
+</article>
+
+<a class="back-to-top" href="#top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back to top</span>
+</a>
+
+<footer class="landing-footer archive-footer">
+    <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+    <span class="footer-right"><a href="/blog.html">All posts</a></span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="/assets/js/codehl.js"></script>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

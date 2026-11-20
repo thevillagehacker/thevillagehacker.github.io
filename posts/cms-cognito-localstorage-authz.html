@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>CMS Privilege Escalation: Cognito Auth, localStorage Roles — thevillagehacker</title>
+<meta name="description" content="Breaking a multinational CMS that used AWS Cognito for authentication but trusted a localStorage user_role flag for editor/publisher authorization — plus a hidden signup path."/>
+<link rel="canonical" href="https://thevillagehacker.com/posts/cms-cognito-localstorage-authz.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="thevillagehacker"/>
+<meta property="og:url" content="https://thevillagehacker.com/posts/cms-cognito-localstorage-authz.html"/>
+<meta property="og:title" content="CMS Privilege Escalation: Cognito Auth, localStorage Roles — thevillagehacker"/>
+<meta property="og:description" content="Breaking a multinational CMS that used AWS Cognito for authentication but trusted a localStorage user_role flag for editor/publisher authorization — plus a hidden signup path."/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<meta property="og:image:width" content="1673"/>
+<meta property="og:image:height" content="940"/>
+<meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="CMS Privilege Escalation: Cognito Auth, localStorage Roles — thevillagehacker"/>
+<meta name="twitter:description" content="Breaking a multinational CMS that used AWS Cognito for authentication but trusted a localStorage user_role flag for editor/publisher authorization — plus a hidden signup path."/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#ffffff"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+
+<body id="top" class="landing-page post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="online"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container archive-container post-container">
+
+<header class="post-header">
+    <a class="post-back" href="/blog.html">Blog</a>
+    <div class="intel-kicker">
+        <span class="pulse-ring"></span>
+        <span>WEB APPLICATION SECURITY</span>
+    </div>
+    <h1>CMS Privilege Escalation: Cognito Auth, localStorage Roles</h1>
+    <p class="intel-lead post-dek">REACT CMS // ROLE FLAGS // PUBLISHER ESCAPE</p>
+    <div class="post-meta">
+        <span>Naveen Jagadeesan</span>
+        <time datetime="2023-03-25">2023-03-25</time>
+        <span>ReactJS / AWS Cognito CMS</span>
+    </div>
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>A corporate CMS authenticated users via <strong>AWS Cognito JWTs</strong> but enforced <strong>editor/publisher</strong> capabilities using a client-controlled <code>localStorage.user_role</code> value. With any valid low-privilege session, setting <code>publisher</code> in localStorage unlocked content approval and production publishing workflows. A hidden or legacy registration path made obtaining that first valid JWT easier than intended.</p>
+<figure class="post-shot">
+    <img alt="A sealed metal badge beside a paper badge with a blank stripe" src="/assets/images/blogs/cms-cognito-localstorage-authz.jpg">
+</figure>
+<h2 id="theory">Theory</h2>
+<p>Identity provider integration creates a false sense of completion:</p>
+<blockquote>
+<p>Teams bolt on Cognito/Auth0/Okta for <strong>authentication</strong>, then leave <strong>authorization</strong> in the SPA because “the API checks the JWT.”<br>
+Often the API only checks <em>signature + expiry</em>, not <em>group/role claims</em> for each mutating route.</p>
+</blockquote>
+<p>The theory under test: <strong>if role names appear in the frontend, they are probably also the authorization vocabulary — and might be client-settable.</strong></p>
+<h2 id="recon-approach">Recon approach</h2>
+<ol>
+<li>Map CMS hosts and content admin paths (curl/httpx style probing).</li>
+<li>Diff response lengths to find admin-ish static artifacts.</li>
+<li>Extract role vocabulary from JS and HTML: <code>editor</code>, <code>publisher</code>.</li>
+<li>Create a normal authenticated user; inspect storage and tokens.</li>
+</ol>
+<p>Observed roles:</p>
+<ul>
+<li><strong>editor</strong> — create/modify content</li>
+<li><strong>publisher</strong> — approve/deploy to production properties</li>
+</ul>
+<h2 id="misconfiguration-1-authn-without-authz-depth">Misconfiguration #1 — authn without authz depth</h2>
+<p>Cognito groups / JWT claims existed, but privileged CMS actions trusted the SPA’s notion of role. A valid JWT was necessary; the <em>role string</em> was not cryptographically bound in practice to server decisions for those workflows.</p>
+<h2 id="misconfiguration-2-localstorage-as-rbac">Misconfiguration #2 — localStorage as RBAC</h2>
+<div class="code-window" data-lang="javascript"><pre><code class="hljs language-javascript">localStorage.setItem(&quot;user_role&quot;, &quot;editor&quot;);
+// refresh → editor UX and actions
+localStorage.setItem(&quot;user_role&quot;, &quot;publisher&quot;);
+// refresh → publisher UX and actions
+</code></pre></div>
+<p>No server round-trip revalidation of group membership for the escalated actions that mattered.</p>
+<h2 id="hidden-registration-onboarding-friction">Hidden registration / onboarding friction</h2>
+<p>A legacy or poorly restricted signup route allowed account creation outside the expected enterprise invite flow. That reduced the attack to:</p>
+<div class="code-window" data-lang="text"><pre><code class="hljs language-text">obtain any valid Cognito session
+  → set localStorage role
+  → exercise publisher APIs/UI
+</code></pre></div>
+<h2 id="impact">Impact</h2>
+<ul>
+<li>Privilege escalation to publisher</li>
+<li>Unauthorized content modification and approval</li>
+<li>Potential production website content compromise</li>
+<li>Trust failure in a multi-property CMS pipeline</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>Client-side role source of truth</li>
+<li>APIs accepting JWTs without enforcing Cognito group claims per operation</li>
+<li>Role names and workflows fully discoverable from frontend</li>
+<li>Weak account provisioning controls</li>
+</ul>
+<h2 id="hardening">Hardening</h2>
+<ol>
+<li>Authorize on the server using IdP groups/claims (<code>cognito:groups</code>, custom claims) for every write/publish API.</li>
+<li>Never read RBAC from <code>localStorage</code> / <code>sessionStorage</code> except as non-authoritative UI cache.</li>
+<li>Disable legacy signup; enforce invite-only or SSO-only provisioning.</li>
+<li>Add integration tests: valid user JWT <strong>without</strong> publisher group must receive <code>403</code> on publish endpoints even if UI is tampered.</li>
+<li>Monitor publish events correlated with group membership changes.</li>
+</ol>
+<h2 id="takeaway">Takeaway</h2>
+<p>Cognito solved “who logged in.” The CMS still needed “who may ship content to production.” When that second question is answered by <code>localStorage</code>, every authenticated user is a potential publisher one DevTools line away.</p>
+
+
+</article>
+
+<a class="back-to-top" href="#top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back to top</span>
+</a>
+
+<footer class="landing-footer archive-footer">
+    <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+    <span class="footer-right"><a href="/blog.html">All posts</a></span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="/assets/js/codehl.js"></script>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

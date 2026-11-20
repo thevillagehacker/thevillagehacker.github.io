@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Mass Heroku Subdomain Takeover via Dangling DNS — thevillagehacker</title>
+<meta name="description" content="Large-scale subdomain enumeration uncovered thousands of hostnames and multiple Heroku CNAMEs pointing at unclaimed apps — a systematic dangling DNS takeover case study."/>
+<link rel="canonical" href="https://thevillagehacker.com/posts/massive-heroku-subdomain-takeover.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="thevillagehacker"/>
+<meta property="og:url" content="https://thevillagehacker.com/posts/massive-heroku-subdomain-takeover.html"/>
+<meta property="og:title" content="Mass Heroku Subdomain Takeover via Dangling DNS — thevillagehacker"/>
+<meta property="og:description" content="Large-scale subdomain enumeration uncovered thousands of hostnames and multiple Heroku CNAMEs pointing at unclaimed apps — a systematic dangling DNS takeover case study."/>
+<meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<meta property="og:image:width" content="1673"/>
+<meta property="og:image:height" content="940"/>
+<meta property="og:image:alt" content="thevillagehacker — Security Researcher"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Mass Heroku Subdomain Takeover via Dangling DNS — thevillagehacker"/>
+<meta name="twitter:description" content="Large-scale subdomain enumeration uncovered thousands of hostnames and multiple Heroku CNAMEs pointing at unclaimed apps — a systematic dangling DNS takeover case study."/>
+<meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png"/>
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#ffffff"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css"/>
+</head>
+
+<body id="top" class="landing-page post-page">
+
+<nav class="top-nav landing-nav">
+    <div class="nav-inner landing-nav-inner">
+        <a href="/" class="nav-brand">
+            <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
+            <span class="status-dot" title="online"></span>
+        </a>
+        <div class="nav-right">
+            <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container archive-container post-container">
+
+<header class="post-header">
+    <a class="post-back" href="/blog.html">Blog</a>
+    <div class="intel-kicker">
+        <span class="pulse-ring"></span>
+        <span>WEB APPLICATION SECURITY</span>
+    </div>
+    <h1>Mass Heroku Subdomain Takeover via Dangling DNS</h1>
+    <p class="intel-lead post-dek">DNSX // SUBZY // CNAME HUNTING</p>
+    <div class="post-meta">
+        <span>Naveen Jagadeesan</span>
+        <time datetime="2021-05-08">2021-05-08</time>
+        <span>Web Infrastructure / DNS</span>
+    </div>
+</header>
+
+<article>
+
+<h2 id="summary">Summary</h2>
+<p>During a broad recon pass, subdomain enumeration produced a very large set of hostnames for the target organization (on the order of thousands). Fingerprinting CNAMEs with <code>dnsx</code> and takeover checks (<code>subzy</code>, then a manual look) identified multiple <strong>Heroku dangling DNS</strong> records. DNS still pointed at Heroku hostnames that no longer had an active claimed app. Claiming those endpoints would have enabled content control on trusted corporate subdomains.</p>
+<figure class="post-shot">
+    <img alt="An empty shop with a crimson awning and a plain arrow at the dark door" src="/assets/images/blogs/massive-heroku-subdomain-takeover.jpg">
+</figure>
+<h2 id="theory">Theory</h2>
+<p>Subdomain takeover is an inventory problem first:</p>
+<blockquote>
+<p>Organizations create SaaS CNAMEs faster than they decommission them.<br>
+Marketing sites, forgotten staging apps, hackathon demos, and “temporary” Heroku prototypes remain in DNS for years.</p>
+</blockquote>
+<p>The theory for scale: <strong>if the org’s culture is “ship a Heroku app, CNAME it, move on,” volume scanning will outperform manual browsing.</strong></p>
+<h2 id="methodology">Methodology</h2>
+<ol>
+<li><strong>Enumerate</strong> aggressively (passive + active sources appropriate to scope).</li>
+<li><strong>Resolve</strong> at scale; keep CNAME targets.</li>
+<li><strong>Classify</strong> SaaS fingerprints (Heroku, GitHub Pages, Azure, etc.).</li>
+<li><strong>Validate</strong> dangling state (service default pages / NX claim conditions — not just tool banners).</li>
+<li><strong>Proof carefully</strong> under program rules (often: demonstrate claimability without defacing production).</li>
+</ol>
+<p>Tooling used in the original workstream included:</p>
+<ul>
+<li><code>dnsx</code> for resolution / CNAME extraction</li>
+<li><code>subzy</code> (and manual verification) for takeover candidates</li>
+<li><code>curl</code>/browser checks for service fingerprints</li>
+</ul>
+<h2 id="what-interesting-looked-like-here">What “interesting” looked like here</h2>
+<p>Not a single forgotten blog. The signal was:</p>
+<ul>
+<li><strong>volume</strong> of dangling candidates</li>
+<li><strong>Heroku</strong> as a repeated pattern (process failure, not one-off mistake)</li>
+<li>corporate parent domain trust (cookies, SSO adjacency, phishing credibility)</li>
+</ul>
+<p>A takeover on <code>something.company.com</code> beats yet another XSS on a vanity microsite because of <strong>brand and cookie-scope narratives</strong> (exact cookie impact depends on cookie domains — always verify, never assume).</p>
+<h2 id="impact-classes">Impact classes</h2>
+<ul>
+<li>Phishing / credential harvesting on trusted hostnames</li>
+<li>OAuth redirector abuse if redirect allowlists are loose</li>
+<li>Stored malicious content on corporate subdomains</li>
+<li>Reputational harm and marketing site defacement risk</li>
+<li>Potential access to residual environment variables if old apps are reclaimable in edge cases (service-specific)</li>
+</ul>
+<h2 id="root-causes">Root causes</h2>
+<ul>
+<li>No DNS lifecycle ownership for SaaS CNAMEs</li>
+<li>Missing automated detection for dangling records</li>
+<li>Heroku (and similar) apps destroyed without DNS cleanup</li>
+<li>Large sprawl without continuous attack-surface management</li>
+</ul>
+<h2 id="defensive-program">Defensive program</h2>
+<ol>
+<li>Inventory all CNAMEs to third-party services continuously.</li>
+<li>Alert when a CNAME target returns provider “claim this app” fingerprints.</li>
+<li>Require infra tickets for DNS create/delete paired with SaaS app lifecycle.</li>
+<li>Prefer provider-verified domain controls that prevent casual claims where available.</li>
+<li>Periodic takeover scans in CI/ASM tooling — treat findings like exposed buckets.</li>
+</ol>
+<h2 id="takeaway">Takeaway</h2>
+<p>The skill in mass takeover work is not the final claim click — it is <strong>building a pipeline that turns DNS sprawl into prioritized, verified dangling records</strong>. When Heroku CNAMEs appear repeatedly, you are looking at an organizational process bug with technical consequences.</p>
+
+
+</article>
+
+<a class="back-to-top" href="#top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back to top</span>
+</a>
+
+<footer class="landing-footer archive-footer">
+    <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+    <span class="footer-right"><a href="/blog.html">All posts</a></span>
+</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="/assets/js/codehl.js"></script>
+<script src="/assets/js/site.js" defer></script>
+</body>
+</html>

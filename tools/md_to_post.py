@@ -119,7 +119,7 @@ SITE_SUFFIX = "thevillagehacker"
 # ---------------------------------------------------------------------------
 # HTML shell — mirrors current post chrome
 #   fonts · style.css (terminal code windows, post typography)
-#   highlight.js · site.js (cyber mesh, clock, HTTP req/res highlighter)
+#   highlight.js · codehl.js (HTTP req/res values, shell tokens) · site.js
 # ---------------------------------------------------------------------------
 
 # NOTE: Asset URLs are root-absolute (/assets/...) so styles load when the site is
@@ -150,91 +150,46 @@ POST_TEMPLATE = """\
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
-<meta name="theme-color" content="#0a090b"/>
-
-<!-- Critical black + red cyber fallback if stylesheet is slow/missing -->
-<style>
-  html,body{{background:#0a090b;color:#e8e2e4;}}
-  body{{font-family:"Helvetica Neue",Inter,ui-sans-serif,system-ui,sans-serif;line-height:1.6;margin:0;}}
-  a{{color:#ff2a3d;}}
-</style>
+<meta name="theme-color" content="#ffffff"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css"/>
-
-<style>
-/* Token colors for highlight.js — black + red cyber (window chrome lives in style.css) */
-.hljs-keyword{{color:#c792ea !important;}}
-.hljs-string{{color:#ecc48d !important;}}
-.hljs-title{{color:#ff6b7a !important;}}
-.hljs-comment{{color:#5c5458 !important;}}
-.hljs-number{{color:#f78c6c !important;}}
-.hljs-built_in{{color:#ff8a96 !important;}}
-.hljs-attr{{color:#ffcb6b !important;}}
-.hljs-attribute{{color:#ffcb6b !important;}}
-.hljs-meta{{color:#ff2a3d !important;}}
-.hljs-literal{{color:#ff8a96 !important;}}
-.hljs-name{{color:#ff6b7a !important;}}
-.hljs-tag{{color:#ff8a96 !important;}}
-.hljs-selector-tag{{color:#ff2a3d !important;}}
-.hljs-type{{color:#ff6b7a !important;}}
-.hljs-symbol{{color:#ff6b7a !important;}}
-.hljs-bullet{{color:#ff2a3d !important;}}
-.hljs-link{{color:#ff2a3d !important;}}
-.hljs-addition{{color:#ff6b7a !important;}}
-</style>
 </head>
 
-<body class="has-site-fx post-page">
+<body id="top" class="landing-page post-page">
 
 <nav class="top-nav landing-nav">
     <div class="nav-inner landing-nav-inner">
         <a href="/" class="nav-brand">
             <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/posts</span>
-            <span class="status-dot" title="research post"></span>
+            <span class="status-dot" title="online"></span>
         </a>
         <div class="nav-right">
             <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
             <a href="/" class="nav-link">Home</a>
             <a href="/blog.html" class="nav-link nav-link-active">Blog</a>
-            <a href="/projects.html" class="nav-link">Projects</a>
-            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">Writeups</a>
+            <a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" class="nav-link" target="_blank" rel="noopener">CTF Writeups</a>
         </div>
     </div>
 </nav>
 
-<div class="advisory-banner">
-    {banner_html}
-</div>
+<div class="container archive-container post-container">
 
-<div class="container post-container">
-
-<header class="header">
-
-    <span class="cve-tag">{tag_html}</span>
-
-    <h1>{title_html}</h1>
-
-    <p class="subtitle">{subtitle_html}</p>
-
-    <div class="meta">
-        <div class="meta-item">
-            <div class="label">researcher</div>
-            <div class="value">{researcher_html}</div>
-        </div>
-        <div class="meta-item">
-            <div class="label">published</div>
-            <div class="value">{published_html}</div>
-        </div>
-        <div class="meta-item">
-            <div class="label">platform</div>
-            <div class="value">{platform_html}</div>
-        </div>
+<header class="post-header">
+    <a class="post-back" href="/blog.html">Blog</a>
+    <div class="intel-kicker">
+        <span class="pulse-ring"></span>
+        <span>{tag_html}</span>
     </div>
-
+    <h1>{title_html}</h1>
+    <p class="intel-lead post-dek">{subtitle_html}</p>
+    <div class="post-meta">
+        <span>{researcher_html}</span>
+        <time datetime="{published_html}">{published_html}</time>
+        <span>{platform_html}</span>
+    </div>
 </header>
 
 <article>
@@ -243,20 +198,24 @@ POST_TEMPLATE = """\
 
 </article>
 
-<footer>
-    <span class="footer-text">
-        © {year} <a href="/">thevillagehacker</a> — {researcher_html}
-    </span>
-    <span class="footer-text">
-        status: active<span class="blink"></span>
-    </span>
+<a class="back-to-top" href="#top">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Back to top</span>
+</a>
+
+<footer class="landing-footer archive-footer">
+    <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+    <span class="footer-right"><a href="/blog.html">All posts</a></span>
 </footer>
 
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-<!-- site.js: cyber mesh atmosphere · nav clock · HTTP request/response highlighter -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/http.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="/assets/js/codehl.js"></script>
 <script src="/assets/js/site.js" defer></script>
 </body>
 </html>
@@ -437,6 +396,24 @@ def normalize_code_block_classes(fragment: str) -> str:
     return RE_CODE_BLOCK.sub(repl, fragment)
 
 
+def wrap_code_windows(fragment: str) -> str:
+    """Wrap each fenced block in a labeled code window."""
+
+    def repl(m: re.Match[str]) -> str:
+        classes = m.group(1) or ""
+        lang = _lang_from_classes(classes) or "text"
+        if lang == "plaintext":
+            lang = "text"
+        label = html.escape(lang, quote=True)
+        return (
+            f'<div class="code-window" data-lang="{label}">'
+            f'<pre><code class="{classes}">{m.group(2)}</code></pre>'
+            f"</div>"
+        )
+
+    return RE_CODE_BLOCK.sub(repl, fragment)
+
+
 def postprocess_article_html(fragment: str) -> str:
     """
     - Map ```lang fences to highlight.js classes (language-xxx)
@@ -459,6 +436,10 @@ def postprocess_article_html(fragment: str) -> str:
 
     # Code fences → hljs / language-http / language-*
     fragment = normalize_code_block_classes(fragment)
+    fragment = wrap_code_windows(fragment)
+
+    fragment = fragment.replace("<table>", '<div class="table-wrap"><table>')
+    fragment = fragment.replace("</table>", "</table></div>")
 
     # Only wrap <p><img ...></p> patterns common from markdown images.
     # figure.post-shot gets macOS-style centered drop shadow via style.css
@@ -630,60 +611,39 @@ def tile_blurb(meta: dict[str, str], max_len: int = 150) -> str:
 def research_item_html(
     meta: dict[str, str],
     out_name: str,
-    data_id: str,
+    data_id: str = "",
 ) -> str:
-    """
-    Vertical case-file *tile* for the threat case board on blog.html.
-
-    Includes title, classification, target, blurb, platform, date, severity,
-    and a hyperlink to the generated post.
-    """
+    """Reading-list card for blog.html. data_id is unused; kept for callers."""
+    del data_id
     css, label = severity_tag_class(meta["severity"])
     href = post_href(out_name)
-    tags = build_blog_tags(meta)
-    case_id = format_case_id(data_id)
-    year = esc(meta["year"])
-    blurb = tile_blurb(meta)
-    platform = meta.get("platform") or "Research"
+    blurb = tile_blurb(meta, max_len=220)
     published = meta.get("published") or meta.get("year") or ""
     return f"""\
-                <a href="{esc(href)}" class="research-item case-file"
-                   data-id="{esc(str(data_id))}"
-                   data-year="{year}"
-                   data-severity="{esc(meta['severity'].lower())}"
-                   data-platform="{esc(platform)}"
-                   data-published="{esc(published)}"
-                   data-tags="{esc(tags)}">
-                    <span class="case-file-corners" aria-hidden="true"></span>
-                    <div class="case-file-rail" aria-hidden="true"></div>
-                    <div class="case-file-body">
-                        <div class="case-file-meta">
-                            <span class="case-id">{esc(case_id)}</span>
-                            <span class="case-year">{year}</span>
-                        </div>
-                        <div class="research-cve case-class">{esc(meta['tag'])}</div>
-                        <div class="research-title case-title">{esc(meta['title'])}</div>
-                        <p class="case-blurb">{esc(blurb)}</p>
-                        <div class="research-target case-target">{esc(meta['target'])}</div>
-                        <div class="case-details">
-                            <span class="case-detail" title="platform">{esc(platform)}</span>
-                            <span class="case-detail case-detail-date" title="published">{esc(published)}</span>
-                        </div>
-                        <div class="case-file-foot">
-                            <span class="research-tag {css}">{label}</span>
-                            <span class="case-open">open file →</span>
-                        </div>
+                <a class="post-card" href="{esc(href)}" data-published="{esc(published)}" data-severity="{esc(meta['severity'].lower())}">
+                    <div class="post-card-kicker">
+                        <time datetime="{esc(published)}">{esc(published)}</time>
+                        <span class="post-card-tag {css}">{label}</span>
                     </div>
+                    <h2>{esc(meta['title'])}</h2>
+                    <p>{esc(blurb)}</p>
+                    <span class="post-card-more">Read</span>
                 </a>
 """
 
 
+RE_POST_CARD = re.compile(
+    r'<a class="post-card"[\s\S]*?</a>\s*',
+    re.IGNORECASE,
+)
+
+
 def sync_archive_match_count(blog_html: str) -> str:
-    """Keep the static #archive-match-count label in sync with card count."""
-    n = len(RE_RESEARCH_ITEM.findall(blog_html))
-    label = f"{n} case" if n == 1 else f"{n} cases"
+    """Keep the static #post-count label in sync with card count."""
+    n = len(RE_POST_CARD.findall(blog_html))
+    label = f"{n} post" if n == 1 else f"{n} posts"
     updated, count = re.subn(
-        r'(id="archive-match-count">)[^<]*',
+        r'(id="post-count">)[^<]*',
         rf"\g<1>{label}",
         blog_html,
         count=1,
@@ -878,11 +838,9 @@ def _insert_new_year_group(html: str, year: str, group_block: str) -> str:
 _BLOG_SHELL_MARKERS = (
     'href="/assets/css/style.css"',
     'class="intel-hero"',
-    'id="archive-list"',
-    'id="archive-search"',
-    'id="archive-match-count"',
-    'class="intel-filters"',
-    "body class=",  # landing-page blog-archive has-site-fx
+    'id="post-list"',
+    'id="post-count"',
+    "body class=",
 )
 
 
@@ -907,14 +865,9 @@ def publish_to_blog(
     dry_run: bool = False,
 ) -> dict[str, str]:
     """
-    Insert or update a case-file *tile* in blog.html.
+    Insert or update a post card in blog.html, newest published date first.
 
-    Safe for re-publish:
-      - Only mutates archive year groups + case-file anchors + match-count text
-      - Never rewrites <head>, nav, intel-hero, filters, or CSS
-      - Mobile responsive rules stay in assets/css/style.css (global)
-
-    Returns a small status dict: action, href, data_id, blog path.
+    Only rewrites the #post-list cards and the #post-count label.
     """
     blog_path = blog_path or BLOG_HTML
     if not blog_path.is_file():
@@ -924,63 +877,31 @@ def publish_to_blog(
     _assert_blog_shell_intact(original, str(blog_path))
 
     href = post_href(out_name)
-    existing_id = find_existing_item_id(original, href)
-    if existing_id is not None:
-        data_id = existing_id
-        action = "updated"
-    else:
-        data_id = str(next_blog_data_id(original))
-        action = "inserted"
+    item = research_item_html(meta, out_name).strip()
+    kept: list[str] = []
+    action = "inserted"
+    for match in RE_POST_CARD.finditer(original):
+        block = match.group(0).strip()
+        href_m = re.search(r'href="([^"]+)"', block)
+        if href_m and href_m.group(1) == href:
+            action = "updated"
+            continue
+        kept.append(block)
+    kept.append(item)
 
-    item = research_item_html(meta, out_name, data_id)
-    year = meta["year"]
-    html_out = original
+    def published_of(block: str) -> str:
+        found = re.search(r'data-published="([^"]+)"', block)
+        return found.group(1) if found else ""
 
-    # Replace existing card with same href (idempotent re-publish)
-    item_pat = re.compile(
-        rf'<a\s+href="{re.escape(href)}"\s+class="research-item[^"]*"[\s\S]*?</a>\s*',
-        re.IGNORECASE,
-    )
-    if item_pat.search(html_out):
-        html_out = item_pat.sub(item.rstrip() + "\n\n", html_out, count=1)
-        # If year changed, the card stays in the old year group on simple replace.
-        # Detect mismatch and relocate.
-        m_old = re.search(
-            rf'href="{re.escape(href)}"[^>]*data-year="(\d{{4}})"',
-            original,
-            re.IGNORECASE,
-        )
-        old_year = m_old.group(1) if m_old else year
-        if old_year != year:
-            # Remove from current place and re-insert into correct year
-            html_out = item_pat.sub("", html_out, count=1)
-            action = "moved"
-            # fall through to insert path with html_out cleaned
-            span = _vendor_group_span(html_out, year)
-            if span:
-                g0, g1 = span
-                group = html_out[g0:g1]
-                # Avoid double if somehow still present
-                group = item_pat.sub("", group)
-                new_group = _insert_item_into_group(group, item)
-                html_out = html_out[:g0] + new_group + html_out[g1:]
-            else:
-                html_out = _insert_new_year_group(
-                    html_out, year, _year_group_block(year, item)
-                )
-        # else: already replaced in place — done
-    else:
-        span = _vendor_group_span(html_out, year)
-        if span:
-            g0, g1 = span
-            group = html_out[g0:g1]
-            new_group = _insert_item_into_group(group, item)
-            html_out = html_out[:g0] + new_group + html_out[g1:]
-        else:
-            html_out = _insert_new_year_group(
-                html_out, year, _year_group_block(year, item)
-            )
-            action = "inserted-year"
+    kept.sort(key=published_of, reverse=True)
+    inner = "\n\n".join(kept)
+    start = "<!-- posts:start -->"
+    end = "<!-- posts:end -->"
+    if start not in original or end not in original:
+        raise ValueError("blog.html is missing <!-- posts:start --> / <!-- posts:end -->")
+    pre, rest = original.split(start, 1)
+    _mid, post = rest.split(end, 1)
+    html_out = pre + start + "\n" + inner + "\n            " + end + post
 
     html_out = sync_archive_match_count(html_out)
     _assert_blog_shell_intact(html_out, f"{blog_path} (after publish)")
@@ -988,10 +909,10 @@ def publish_to_blog(
     status = {
         "action": action,
         "href": href,
-        "data_id": str(data_id),
-        "year": year,
+        "data_id": meta.get("published") or meta["year"],
+        "year": meta["year"],
         "blog": str(blog_path),
-        "cards": str(len(RE_RESEARCH_ITEM.findall(html_out))),
+        "cards": str(len(RE_POST_CARD.findall(html_out))),
     }
 
     if dry_run:

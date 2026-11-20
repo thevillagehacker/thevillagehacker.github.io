@@ -14,11 +14,13 @@ target: B2B Hotels // Membership Tiers // Purchase Add-Ons
 
 ## Summary
 
-A B2B hotel reservation platform sold tiered memberships (Silver → Diamond) with booking discounts and loyalty multipliers. API bodies were AES-encrypted in the browser, which slowed casual testing — but not analysis. After recovering keys from shared JS, manipulating **payment method selectors** and **membership flags** activated Diamond benefits **without** a successful membership payment.
+A B2B hotel reservation platform sold tiered memberships (Silver through Diamond) with booking discounts and loyalty multipliers. API bodies were AES-encrypted in the browser, which slowed casual testing but not analysis. After recovering keys from shared JavaScript, changing the **payment method** and **membership flags** activated Diamond benefits without a completed membership payment.
+
+![A crimson room key beside a blank payment slip](/assets/images/blogs/hotel-subscription-payment-logic.jpg)
 
 ## Why this is more than “change price to 0”
 
-Classic price tampering was partially mitigated elsewhere in the industry narrative. Here the interesting failure is **workflow desynchronization**:
+The interesting failure is **workflow desynchronization**:
 
 > Payment completion and entitlement activation were not the same server-side transaction.  
 > The client could still assert membership state inside “encrypted” add-on calls.
