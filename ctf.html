@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CTF Writeups — thevillagehacker</title>
+    <meta name="description" content="Proving Grounds Play and Practice walkthroughs.">
+
+    <link rel="canonical" href="https://thevillagehacker.com/ctf.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="thevillagehacker">
+    <meta property="og:url" content="https://thevillagehacker.com/ctf.html">
+    <meta property="og:title" content="CTF Writeups — thevillagehacker">
+    <meta property="og:description" content="Proving Grounds Play and Practice walkthroughs.">
+    <meta property="og:image" content="https://thevillagehacker.com/assets/images/img.png">
+    <meta property="og:image:width" content="1673">
+    <meta property="og:image:height" content="940">
+    <meta property="og:image:alt" content="thevillagehacker — Security Researcher">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CTF Writeups — thevillagehacker">
+    <meta name="twitter:description" content="Proving Grounds Play and Practice walkthroughs.">
+    <meta name="twitter:image" content="https://thevillagehacker.com/assets/images/img.png">
+
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/assets/images/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" sizes="180x180">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body class="landing-page blog-archive">
+
+    <nav class="top-nav landing-nav">
+        <div class="nav-inner landing-nav-inner">
+            <a href="/" class="nav-brand">
+                <span class="nav-prompt">~/</span>thevillagehacker<span class="nav-path">/ctf</span>
+                <span class="status-dot" title="online"></span>
+            </a>
+            <div class="nav-right">
+                <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/blog.html" class="nav-link">Blog</a>
+                <a href="/ctf.html" class="nav-link nav-link-active">CTF Writeups</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container landing-container archive-container">
+        <section class="intel-hero" aria-label="CTF writeups">
+            <div class="intel-hero-main">
+                <div class="intel-kicker">
+                    <span class="pulse-ring"></span>
+                    <span>CTF</span>
+                </div>
+                <h1 class="intel-title">CTF writeups</h1>
+                <p class="intel-lead">
+                    Proving Grounds Play and Practice notes.
+                    Each walkthrough opens on GitBook.
+                </p>
+                <p class="post-count-line" id="post-count">76 writeups</p>
+            </div>
+        </section>
+
+        <div class="post-index" id="writeup-list">
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-06-20-proving_grounds_practice_sybaris" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-06-20">2024-06-20</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Sybaris</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-05-20-proving_grounds_practice_potfish" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-05-20">2024-05-20</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Potfish</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-04-28-proving_grounds_practice_zenphoto" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-04-28">2024-04-28</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>ZenPhoto</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-04-12-proving_grounds_practice_peppo" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-04-12">2024-04-12</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Peppo</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-03-27-proving_grounds_practice_hetemit" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-03-27">2024-03-27</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Hetemit</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-03-07-proving_grounds_practice_zino" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-03-07">2024-03-07</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Zino</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-02-25-proving_grounds_practice_hunit" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-02-25">2024-02-25</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Hunit</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-02-08-proving_grounds_practice_dibble" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-02-08">2024-02-08</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Dibble</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-01-15-proving_grounds_practice_banzai" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-01-15">2024-01-15</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Banzai</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2024-01-05-proving_grounds_practice_nibbles" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2024-01-05">2024-01-05</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Nibbles</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-12-30-proving_grounds_practice_fail" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-12-30">2023-12-30</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Fail</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-21-proving_grounds_practice-wombo" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-21">2023-10-21</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Wombo</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-19-proving_grounds_practice-payday" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-19">2023-10-19</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Payday</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-16-proving_grounds_practice-hawat" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-16">2023-10-16</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Hawat</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-15-proving_grounds_practice-glpi" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-15">2023-10-15</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>GLPI</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-14-proving_grounds_practice-fractal" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-14">2023-10-14</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Fractal</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-09-proving_grounds_practice-muddy" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-09">2023-10-09</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Muddy</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-08-proving_grounds_practice-wheels" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-08">2023-10-08</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Wheels</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-07-proving_grounds_practice-levram" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-07">2023-10-07</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Levram</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-06-proving_grounds_practice-flimsy" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-06">2023-10-06</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Flimsy</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-05-proving_grounds_practice-astronaut" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-05">2023-10-05</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Astronaut</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-05-proving_grounds_practice-bratarina" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-05">2023-10-05</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Bratarina</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-04-proving_grounds_practice-codo" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-04">2023-10-04</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Codo</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-03-proving_grounds_practice-fanatastic" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-03">2023-10-03</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Fanatastic</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-02-proving_grounds_play-btrsys2.1" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-02">2023-10-02</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>BTRSys2.1</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-02-proving_grounds_play-stapler" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-02">2023-10-02</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Stapler</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-01-proving_grounds_play-empire-breakout" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-01">2023-10-01</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Empire-breakout</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-10-01-proving_grounds_play-sunsetdecoy" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-10-01">2023-10-01</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>SunsetDecoy</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-30-proving_grounds_play-bbscute" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-30">2023-09-30</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>BBSCute</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-30-proving_grounds_play-ha-natraj" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-30">2023-09-30</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Ha-natraj</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-29-proving_grounds_play-gaara" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-29">2023-09-29</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Gaara</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-28-proving_grounds_play-katana" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-28">2023-09-28</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Katana</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-27-proving_grounds_play-lampiao" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-27">2023-09-27</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Lampiao</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-25-proving_grounds_play-monitoring" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-25">2023-09-25</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Monitoring</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-25-proving_grounds_play-photographer" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-25">2023-09-25</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Photographer</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-23-proving_grounds_play-dawn" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-23">2023-09-23</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Dawn</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-22-proving_grounds_play-amaterasu" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-22">2023-09-22</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Amaterasu</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-22-proving_grounds_play-inclusiveness" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-22">2023-09-22</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Inclusiveness</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-21-proving_grounds_play-vegeta1" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-21">2023-09-21</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Vegeta1</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-20-proving_grounds_play-potato" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-20">2023-09-20</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Potato</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-19-proving_grounds_play-seppuku" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-19">2023-09-19</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Seppuku</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-17-proving_grounds_play-pyexp" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-17">2023-09-17</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>PyExp</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-17-proving_grounds_play-shakabrah" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-17">2023-09-17</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Shakabrah</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-16-proving_grounds_play-funboxeasy" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-16">2023-09-16</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>FunboxEasy</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-15-proving_grounds_play-funboxeasyenum" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-15">2023-09-15</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>FunboxEasyEnum</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-14-proving_grounds_play-funboxrookie" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-14">2023-09-14</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>FunboxRookie</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-13-proving_grounds_play-solstice" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-13">2023-09-13</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Solstice</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-12-proving_grounds_play-moneybox" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-12">2023-09-12</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Moneybox</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-11-proving_grounds_play-sunsetnoontide" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-11">2023-09-11</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>SunsetNoontide</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-10-proving_grounds_play-driftingblues6" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-10">2023-09-10</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>DriftingBlues6</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-06-proving_grounds_play-dc-2" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-06">2023-09-06</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>DC-2</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-02-proving_grounds_play-dc-1" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-02">2023-09-02</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>DC-1</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-02-proving_grounds_play-evilbox-one" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-02">2023-09-02</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>EvilBox-One</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-09-02-proving_grounds_play-infosec.prep" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-09-02">2023-09-02</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Infosecprep</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-29-proving_grounds_play-cybersploit1" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-29">2023-08-29</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>CyberSploit1</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-29-proving_grounds_play-sumo" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-29">2023-08-29</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Sumo</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-28-proving_grounds_practice-internal" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-28">2023-08-28</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Internal</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-28-proving_grounds_practice-kevin" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-28">2023-08-28</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Kevin</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-27-proving_grounds_practice-helpdesk" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-27">2023-08-27</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Helpdesk</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-27-proving_grounds_practice-rubydome" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-27">2023-08-27</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>RubyDome</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-27-proving_grounds_practice-twiggy" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-27">2023-08-27</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Twiggy</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-26-proving_grounds_practice-algernon" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-26">2023-08-26</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Algernon</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-26-proving_grounds_practice-exfiltrated" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-26">2023-08-26</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Exfiltrated</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-20-proving_grounds_practice-clamav" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-20">2023-08-20</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>ClamAV</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-20-proving_grounds_practice-squid" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-20">2023-08-20</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Squid</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-18-proving_grounds_practice-hub" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-18">2023-08-18</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Hub</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-18-proving_grounds_practice-pebbles" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-18">2023-08-18</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Pebbles</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-16-proving_grounds_play-access" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-16">2023-08-16</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Access</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-08-12-proving_grounds_practice-vault" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-08-12">2023-08-12</time>
+                        <span class="post-card-tag">PRACTICE</span>
+                    </div>
+                    <h2>Vault</h2>
+                    <p>Proving Grounds Practice walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-29-proving_grounds_play-djinn3" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-29">2023-07-29</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Djinn3</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-28-proving_grounds_play-sunset-midnight" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-28">2023-07-28</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>SunsetMidnight</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-23-proving_grounds_play-sar" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-23">2023-07-23</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Sar</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-22-proving_grounds_play-sosimple" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-22">2023-07-22</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>SoSimple</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-18-proving_grounds_play-election1" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-18">2023-07-18</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>Election1</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-15-proving_grounds_play-icmp" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-15">2023-07-15</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>ICMP</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+<a class="post-card" href="https://thevillagehacker-security.gitbook.io/ctf-writeups/2023-07-07-proving_grounds_play-onsystemshelldredd" target="_blank" rel="noopener">
+                    <div class="post-card-kicker">
+                        <time datetime="2023-07-07">2023-07-07</time>
+                        <span class="post-card-tag">PLAY</span>
+                    </div>
+                    <h2>OnSystemShellDredd</h2>
+                    <p>Proving Grounds Play walkthrough.</p>
+                    <span class="post-card-more">Open</span>
+                </a>
+        </div>
+
+        <footer class="landing-footer archive-footer">
+            <span class="footer-left">© <span id="year"></span> thevillagehacker</span>
+            <span class="footer-right"><a href="https://thevillagehacker-security.gitbook.io/ctf-writeups" target="_blank" rel="noopener">GitBook</a></span>
+        </footer>
+    </div>
+
+    <script src="/assets/js/site.js" defer></script>
+</body>
+</html>
